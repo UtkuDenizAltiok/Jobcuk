@@ -5,7 +5,8 @@
 1. Click **Settings** (top right).
 2. **AI provider:** choose yours, paste your key → **Save**, click **Load model list** and pick a
    model (a fast, low-cost one is a good start), then **Test connection**.
-3. **Job site keys:** paste your Adzuna and Reed keys → **Save** → **Test**.
+3. **Job site keys (optional):** paste your Adzuna and Reed keys → **Save** → **Test**. Most of
+   Jobcu's job sites and company career pages need no key.
 
 Keys are saved only on your computer.
 

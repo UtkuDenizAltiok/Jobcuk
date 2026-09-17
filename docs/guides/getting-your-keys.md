@@ -1,7 +1,8 @@
 # Get your keys
 
-A key is a long code that lets Jobcu use a service on your account. You need three: an **AI key**,
-an **Adzuna** key and a **Reed** key. **Never share keys or paste them into a chat**; save them in a
+A key is a long code that lets Jobcu use a service on your account. You need one: an **AI key**.
+The free **Adzuna** and **Reed** keys are optional and add two more job sites; everything else
+Jobcu searches needs no key. **Never share keys or paste them into a chat**; save them in a
 password manager, then enter them in Jobcu's **Settings**.
 
 ## AI key (your choice of provider)

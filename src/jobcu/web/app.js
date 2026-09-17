@@ -82,24 +82,32 @@ function renderChecklist() {
   const settings = state.settings;
   if (!settings) return;
   const provider = settings.providers.find((p) => p.id === settings.ai.provider);
+  // Only the AI steps are needed; the job site keys just add two more sites.
   const items = [
-    ["Choose an AI provider", Boolean(provider)],
+    ["Choose an AI provider", Boolean(provider), false],
     [
       "Save your AI key",
       Boolean(provider && (provider.key.saved || provider.key_optional)),
+      false,
     ],
-    ["Choose an AI model", Boolean(settings.ai.model)],
-    ["Save your Adzuna keys", keySaved("adzuna_app_id") && keySaved("adzuna_app_key")],
-    ["Save your Reed key", keySaved("reed_api_key")],
+    ["Choose an AI model", Boolean(settings.ai.model), false],
+    [
+      "Save your Adzuna keys",
+      keySaved("adzuna_app_id") && keySaved("adzuna_app_key"),
+      true,
+    ],
+    ["Save your Reed key", keySaved("reed_api_key"), true],
   ];
-  $("setup-card").hidden = items.every(([, done]) => done);
+  $("setup-card").hidden = items.every(([, done, optional]) => done || optional);
   list.replaceChildren(
-    ...items.map(([label, done]) =>
+    ...items.map(([label, done, optional]) =>
       el(
         "li",
         { class: done ? "done" : "" },
         el("span", { class: "mark", "aria-hidden": "true", text: done ? "✓" : "○" }),
-        el("span", { text: `${label}${done ? "" : " (not done yet)"}` }),
+        el("span", {
+          text: `${label}${done ? "" : optional ? " (optional, adds two more job sites)" : " (not done yet)"}`,
+        }),
       ),
     ),
   );
