@@ -43,6 +43,7 @@ SITE_INTERVALS = {
     "api.adzuna.com": 2.6,
     "www.reed.co.uk": 0.5,
     "rest.arbeitsagentur.de": 0.7,
+    "jobsireland.ie": 2.0,
     # Adzuna's job pages are read at a relaxed, human-like pace.
     **{f"www.adzuna.{ending}": 3.0
        for ending in ("de", "co.uk", "at", "be", "ch", "es", "fr", "it", "nl", "pl")},

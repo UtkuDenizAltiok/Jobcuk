@@ -1,0 +1,73 @@
+"""Matching jobs to the search words and named places on Jobcu's side.
+
+Most sources search by words and places themselves. Some can only list their newest jobs
+(JobsIreland.ie, company career systems), so Jobcu reads that list and keeps the jobs that
+match here. Matching is generous on purpose: the quick relevance check and scoring decide
+what's really relevant, so a job is only left out when nothing in it matches.
+"""
+
+import re
+import unicodedata
+from collections.abc import Iterable
+
+from jobcu.keywords import SearchTerm
+from jobcu.location import Place
+
+# Words this short must match a whole word ("IT" shouldn't match "digital").
+_SHORT_WORD = 3
+
+
+def normalise(text: str | None) -> str:
+    """Lower case, accents removed ("München" → "munchen"), punctuation as spaces."""
+    text = unicodedata.normalize("NFKD", (text or "").replace("ß", "ss"))
+    text = "".join(c for c in text if not unicodedata.combining(c)).casefold()
+    return " ".join(re.sub(r"[^\w]+", " ", text).split())
+
+
+def _contains(haystack: str, word: str) -> bool:
+    if len(word) <= _SHORT_WORD:
+        return re.search(rf"\b{re.escape(word)}\b", haystack) is not None
+    return word in haystack
+
+
+def term_matches(term_text: str, text: str) -> bool:
+    """Every word of the term appears in the text, in any order ("Engineer, Hardware" matches
+    "Hardware Engineer"; "Elektronik" matches "Leistungselektronik")."""
+    words = normalise(term_text).split()
+    haystack = normalise(text)
+    return bool(words) and all(_contains(haystack, word) for word in words)
+
+
+def matches_terms(
+    terms: Iterable[SearchTerm], languages: set[str], title: str, description: str = ""
+) -> bool:
+    """Job titles are matched against the title; field words also against the ad text."""
+    for term in terms:
+        if term.language not in languages:
+            continue
+        if term_matches(term.text, title):
+            return True
+        if description and term.kind == "field_or_skill" and term_matches(term.text, description):
+            return True
+    return False
+
+
+def matches_places(places: list[Place], country: str, location_text: str | None) -> bool:
+    """True when no place was named in this country, or the job's location names one of them.
+
+    Distances ("within 50 km") can't be checked without map data yet (Phase 2), so a job in a
+    nearby town is only kept when its location also names the place, as Irish addresses do
+    with their county ("Swords, Co. Dublin").
+    """
+    wanted = [p for p in places if p.country == country]
+    if not wanted:
+        return True
+    location = normalise(location_text)
+    if not location:
+        return True  # unknown location: can't be proven to be elsewhere
+    return any(
+        _contains(location, normalise(name))
+        for place in wanted
+        for name in {place.name, place.local_name}
+        if normalise(name)
+    )

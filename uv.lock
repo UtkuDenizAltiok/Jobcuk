@@ -635,6 +635,7 @@ dependencies = [
     { name = "python-multipart" },
     { name = "rapidfuzz" },
     { name = "trafilatura" },
+    { name = "tzdata" },
     { name = "uvicorn" },
 ]
 
@@ -660,6 +661,7 @@ requires-dist = [
     { name = "python-multipart", specifier = ">=0.0.32" },
     { name = "rapidfuzz", specifier = ">=3.14.6" },
     { name = "trafilatura", specifier = ">=2.2.0" },
+    { name = "tzdata", specifier = ">=2026.4" },
     { name = "uvicorn", specifier = ">=0.53.0" },
 ]
 

@@ -56,6 +56,52 @@ Update this whenever a source changes or something new is learned. Decisions are
 - **Also lists jobs abroad** (e.g. Austria): the country comes from `adresse.land` (German names).
 - No rate limit found; Jobcu pauses 0.7 s.
 
+## JobsIreland.ie (`src/jobcu/sources/jobsireland.py`), checked 2026-09-17
+
+- The Irish public employment service's job board (Department of Social Protection). About
+  5,100 open vacancies, roughly 300 new a day; many are care, retail, trades and Community
+  Employment (CE) scheme placements, some engineering and technician jobs.
+- **No API.** The browse page loads its list from
+  `GET /Jobsireland.API/JobsIreland/BrowseJobs?keyWord=&location=&page=N&pageSize=100`
+  (also `CareerlevelId`, `vacancyId`, `VacancyTypeId`, `ContractTypeId`, all empty). It answers
+  **HTML**, sorted **newest first** by publish time; page size 100 works (the page offers 10–100).
+  Each answer takes about 5 s.
+- Each job block (`div.job-heading[data-vacancyid]`) has hidden inputs `JobId`, `JobTitle`,
+  `Location` (often starts with the employer's name), `StartDate` (publish time, **Irish local
+  time without a zone**, e.g. `2026-09-16T14:24:50`), `EndDate` (closing date), `VacancyTypeId`
+  (0 paid position, 3 CE scheme, 4 apprenticeship, 6 self-employed, 10 WPEP work placement).
+  The employer's name is only in the logo's `alt="Logo of …"`, and not always. `ul#longlats li`
+  holds `lat;lon;address;title;id;ref`, several per job with several locations. The page also
+  carries an empty template block (`#JobId`).
+- **Keyword search looks at titles only** ("Azure" found nothing although it was in an ad's
+  text), so Jobcu reads the newest pages and matches titles itself.
+- Job page `GET /en-US/job-Details?id=N`: full ad in `<pre ng-bind-html="Description | linky">`,
+  and a list `ul.job-detail_list` with employer, "39 hours per week", "37000.00 Euro Annually" or
+  "30000.00 - 34500.00 Euro Annually", publish and closing dates. **No schema.org JobPosting, no
+  permanent/temporary information.**
+- **robots.txt allows everything.** Terms: the information "is intended only for use by
+  jobseekers searching for suitable employment"; re-publishing or reproducing it needs the
+  department's permission. Jobcu only shows jobs to the person searching, on their computer.
+- Jobcu pauses 2 s between requests and reads at most 40 list pages per search.
+- Many JobsIreland jobs also appear on EURES (IDs like `base64("2470780 18")`, 18 = JobsIreland),
+  but EURES showed only ~1,970 of its ~5,100 jobs.
+
+## Checked and not used
+
+- **EURES** (europa.eu/eures), checked 2026-09-17. Technically ideal: `POST
+  /eures/api/jv-searchengine/public/jv-search/search` returns full ads with exact creation times
+  for all EU/EEA countries (max 50 per page; space-separated keywords mean OR, separate keyword
+  entries mean AND; `publicationPeriod` LAST_DAY / LAST_THREE_DAYS / LAST_WEEK / LAST_MONTH;
+  keyword codes EVERYWHERE / TITLE / DESCRIPTION / EMPLOYER; europa.eu robots.txt asks for a
+  10 s crawl delay). **Not used:** the "Find a job" terms say users may not use "screen
+  scraping" or any other automated system to extract vacancy data to process it further, and
+  that only EURES partner organisations recognised by a National Coordination Office may extract
+  data using the API. Its jobs come from public employment services Jobcu reads directly
+  (Bundesagentur, JobsIreland) or may read later.
+- **UK Find a Job (DWP)**, findajob.dwp.gov.uk, checked 2026-09-17. Requests with Jobcu's
+  User-Agent time out, and a browser-like request gets a web-application-firewall page ("Something
+  went wrong"). That's bot protection, so Jobcu doesn't use it.
+
 ## General observations
 
 - In 815 real ads (Reed + Bundesagentur, one week, electronics roles), **employer links almost
