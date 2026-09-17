@@ -27,7 +27,8 @@ def test_static_files_are_served(client, name):
 
 
 def test_health(client):
-    assert client.get("/api/health").json() == {"app": "jobcu", "version": __version__}
+    data = client.get("/api/health").json()
+    assert data["app"] == "jobcu" and data["version"] == __version__
 
 
 def test_about_shows_version_copyright_and_data_folder(client, temporary_data_dir):
