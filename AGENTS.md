@@ -154,8 +154,9 @@ the browser, and `JOBCU_SELFTEST=1` starts Jobcu, checks that it answers, then s
   with no technical words and no filler, just enough to use Jobcu fully. Developers:
   `CONTRIBUTING.md`, this file and `docs/`, technical and detailed. When a screen, message or step
   changes, update the user guides in the same commit.
-- **Country priority:** Ireland, the UK and Germany first (coverage, testing), then the other
-  supported countries.
+- **Coverage:** reach as many jobs as possible in **every** supported country, through every legally
+  safe route, not only APIs (see DECISIONS.md). Ireland, the UK and Germany are worked on and
+  tested first; that's an order, not a limit.
 
 ## Lessons learned (avoid repeating these mistakes)
 

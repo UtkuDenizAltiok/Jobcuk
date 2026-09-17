@@ -26,12 +26,17 @@ helper program uv themselves. Before that: full ads from Adzuna's job pages, and
    should say he's open to any electronic hardware design field, with power electronics preferred
    and aerospace and defence also of interest.
 
-**Top-priority countries: Ireland, UK, Germany** (other European countries matter too).
+**Coverage goal:** as many jobs as possible across **every** supported European country, from as
+many platforms and routes as possible (not only APIs), without legal risk. **Ireland, UK and
+Germany are worked on and tested first**; that's the order of work, not a limit.
 
 **Next tasks for the assistant, in this order:**
-1. **Connect Irish job sources (none today!)** and strengthen the UK and Germany. Verify each first
-   (API or feed, terms, limits; record in `docs/SOURCES.md`), clearly permitted sources first.
-   Candidates to check:
+1. **Coverage, starting with Ireland (no source today!), then the UK and Germany, and designed for
+   every supported country.** Plan the routes that reach jobs beyond APIs: public employment
+   services, EURES, published job feeds, career systems' public job lists, schema.org JobPosting
+   pages, an employer directory per country, and AI web search to discover job pages anywhere.
+   Verify each route first (terms, robots.txt, limits) and record it in `docs/SOURCES.md`.
+   Candidates for the first three countries:
    - JobsIreland.ie (Irish public employment service)
    - publicjobs.ie (Irish public service)
    - EURES (EU job mobility portal, all EU countries including Ireland and Germany)
