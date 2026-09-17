@@ -221,3 +221,11 @@ has at least 0.3% of its country's total population."*
 | **Tester-ready documents now, ahead of Phase 4:** the README first screen for testers, and guides for installing and starting (Mac and Windows, including the Apple "could not verify" and Windows "protected your PC" warnings), the first search, and troubleshooting. Pictures come later. | Someone who has never used GitHub must be able to install and use Jobcu from the repository alone (HANDOVER §2.1). Real tester feedback helps the scoring work. |
 | **A tester gets access by being invited to the private repository as a collaborator.** Before more friends are invited, the repository moves to a free organization, as planned. | For one trusted friend this is the simplest path. Collaborators on a personal repository can technically change files, but every change stays visible in the history and can be undone. |
 | The GitHub "Download ZIP" keeps the Mac start file runnable (checked: `jobcu-main/Start Jobcu.command` keeps its "can be started" setting) | Otherwise the Mac guide wouldn't work. |
+
+## 2026-09-17 (late evening): Documentation style and country priority
+
+| Decision | Reason |
+|---|---|
+| **Two audiences, kept apart.** Everyday users get `README.md` and `docs/guides/`: short, simple, no technical words, just enough to use Jobcu fully. Developers get `CONTRIBUTING.md` (developer guide), `AGENTS.md` and the files in `docs/`: technical and detailed. | The owner's instruction: the user side must be clear and sleek, not bloated. Technical detail belongs to developers. |
+| **Top-priority countries: Ireland, the UK and Germany.** Other EU and European countries are also important, but these three come first for coverage work and testing. | The owner's instruction. |
+| **Ireland wasn't connected yet** because the Phase 1 starter sources (Adzuna, Reed, Bundesagentur) came from the original plan, and Adzuna turned out not to cover Ireland. **Connecting Irish sources is now the next task**, ahead of the rest of Phase 1, and coverage for the UK and Germany is strengthened at the same time. Clearly permitted sources come first (owner's earlier choice). | Coverage is Jobcu's main purpose (HANDOVER §9.0), and Ireland is a top-priority country with no source at all today. |

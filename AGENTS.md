@@ -150,8 +150,12 @@ the browser, and `JOBCU_SELFTEST=1` starts Jobcu, checks that it answers, then s
   failing source must never break a search. Be polite: limit request rates, back off on errors
   and respect `Retry-After`.
 - **Text users see:** friendly, plain English without jargon.
-- **Guides for everyday users** live in `docs/guides/` (install and start, keys, first search,
-  troubleshooting). When a screen, message or step changes, update the guides in the same commit.
+- **Two audiences for documents.** Everyday users: `README.md` and `docs/guides/`, short and simple,
+  with no technical words and no filler, just enough to use Jobcu fully. Developers:
+  `CONTRIBUTING.md`, this file and `docs/`, technical and detailed. When a screen, message or step
+  changes, update the user guides in the same commit.
+- **Country priority:** Ireland, the UK and Germany first (coverage, testing), then the other
+  supported countries.
 
 ## Lessons learned (avoid repeating these mistakes)
 

@@ -6,54 +6,63 @@ tested and shown to the owner before the next one starts. Decisions are in
 
 ## Right now
 
-*Last updated: 2026-09-17, end of the first working session (before `/clear`).*
+*Last updated: 2026-09-17, late evening, before `/clear`.*
 
 **Where we are:** Phase 1 (usable first version), most of it built. Everything is committed and
 pushed, and GitHub's tests pass on macOS and Windows. A full check-up after an interrupted reply
 found nothing lost or broken.
 
-**Last finished:** tester-ready README and guides (install and start on Mac and Windows, first
-search, troubleshooting), and Start Jobcu files that install the helper program uv themselves.
-Before that: reading full ads from Adzuna's job pages (owner approved), employer's own page as
-the main link, a full project check-up, the owner's guidance on usage and money
-([DECISIONS.md](DECISIONS.md), "Owner's guidance on usage and money").
+**Last finished:** documents split into a short user side (`README.md`, `docs/guides/`) and a
+technical developer side (`CONTRIBUTING.md`, `AGENTS.md`, `docs/`). Start Jobcu files install the
+helper program uv themselves. Before that: full ads from Adzuna's job pages, and a full check-up.
 
 **Waiting on the owner (Utku):**
-0. **Invite his friend as a tester:** add the friend's GitHub username under the repository's
-   Settings → Collaborators, then send him the link to the README. The friend follows
-   `docs/guides/install-and-start.md` → `getting-your-keys.md` → `first-search.md`. Collect the
-   friend's feedback (installation problems, confusing steps, results quality).
-1. **Step 4: run a real search himself** (double-click Start Jobcu → Search) and give feedback: do
-   the top results look right, is anything scored too high or too low, were any titles "left out
-   as clearly unrelated" (in Search details) actually relevant?
-2. Optional, in his own time: a **generic cover letter**. The uploaded one is written for Tesla. The
-   generic one should say he's open to any electronic hardware design field, with power electronics
-   preferred and aerospace and defence also of interest.
+1. **A friend is testing Jobcu.** The owner invites him on GitHub himself. Collect the friend's
+   feedback (installation, confusing steps, results) and fix what it shows.
+2. **Step 4: run a real search himself** and give feedback: do the top results look right, is
+   anything scored too high or too low, were titles "left out as clearly unrelated" (Search details)
+   actually relevant?
+3. Optional: a **generic cover letter**. The uploaded one is written for Tesla. The generic one
+   should say he's open to any electronic hardware design field, with power electronics preferred
+   and aerospace and defence also of interest.
+
+**Top-priority countries: Ireland, UK, Germany** (other European countries matter too).
 
 **Next tasks for the assistant, in this order:**
-1. **Adaptive Adzuna budget** (`sources/adzuna.py`, `sources/budget.py`): replace the fixed 40
-   requests per search with a share of what's left this month, spread over the remaining days at
-   about 3 searches a day. Never above what's left today, and roughly 25–60 per search. Test it.
-2. **Usage meter and limits in Settings** (HANDOVER §13): AI tokens for the last search and this
-   month, estimated cost from an editable price table (no prices built in), optional monthly
-   token or cost limit (already enforced in `ai/client.py`), scoring limit, and job source on/off
-   switches (`settings.sources_disabled` already exists). Also show Adzuna requests used
-   today and this month.
-3. **Score check / quality test set** (HANDOVER §13, owner chose "quick review"): collect about 40
-   real ads from real searches (a mix of good, okay and poor fits). Claude pre-fills a rating for
-   each (good / okay / poor, plus blockers such as language or visa). Build a simple review page
-   in Jobcu where the owner corrects the ratings; store them in the data folder, never in the
-   repository. Then measure Jobcu's scores against the ratings and check:
-   - does the quick relevance check drop jobs he rates okay or good?
+1. **Connect Irish job sources (none today!)** and strengthen the UK and Germany. Verify each first
+   (API or feed, terms, limits; record in `docs/SOURCES.md`), clearly permitted sources first.
+   Candidates to check:
+   - JobsIreland.ie (Irish public employment service)
+   - publicjobs.ie (Irish public service)
+   - EURES (EU job mobility portal, all EU countries including Ireland and Germany)
+   - Jooble API and Careerjet API (aggregators covering Ireland, UK and Germany; free keys; the
+     owner would need to sign up, so give him one step at a time)
+   - career systems (Workday, Greenhouse, SmartRecruiters and similar) of major employers in
+     Ireland, the UK and Germany: bring the employer directory forward from Phase 3 for these three
+     countries, reading pages with `jobposting.py`
+   - UK: Find a Job (DWP)
+   - Job boards such as IrishJobs.ie, Jobs.ie, Indeed, LinkedIn and StepStone stay on hold (owner:
+     permitted sources first, decide with coverage numbers).
+2. **Adaptive Adzuna budget** (`sources/adzuna.py`, `sources/budget.py`): instead of a fixed 40
+   requests per search, share what's left this month over the remaining days at about 3 searches a
+   day. Never above what's left today, and roughly 25–60 per search.
+3. **Usage meter and limits in Settings** (HANDOVER §13): AI tokens for the last search and this
+   month, estimated cost from an editable price table (no prices built in), optional monthly limit
+   (already enforced in `ai/client.py`), scoring limit, source on/off switches
+   (`settings.sources_disabled` exists), and Adzuna requests used today and this month.
+4. **Score check / quality test set** (HANDOVER §13, "quick review"): about 40 real ads with
+   Claude's pre-filled ratings (good / okay / poor, plus blockers); a review page in Jobcu where
+   the owner corrects them (stored in the data folder, never in the repository). Then measure
+   scores against ratings and check:
+   - the quick relevance check
    - batch size 4 vs 1
-   - short summary vs full ad
-   - scoring reasoning effort
+   - summary vs full ad
+   - reasoning effort
 
-   Tune the scoring prompt, and record results and choices in DECISIONS.md.
-4. Keep the guides in `docs/guides/` in step with every screen change, and fix whatever the
-   friend's feedback shows is unclear.
-5. Confirm Phase 1 "Done when" with the owner, update the README progress line, then plan
-   Phase 2 (smart location filter, design choices already in DECISIONS.md).
+   Tune the prompt and record the results.
+5. Keep `docs/guides/` short and in step with the screens; fix what the tester's feedback shows.
+6. Confirm Phase 1 "Done when" with the owner, then plan Phase 2 (design choices already in
+   DECISIONS.md).
 
 **Useful facts:** source behaviour and limits are in [SOURCES.md](SOURCES.md).
 - **Owner's data folder:** `~/Library/Application Support/Jobcu`, with keys `adzuna_app_id`,
