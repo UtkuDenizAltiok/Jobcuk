@@ -37,7 +37,7 @@ tested and shown to the owner before the next one starts. Decisions are in
       OpenAI-compatible option; rate-limit handling; setup check (HANDOVER §13)
 - [x] Settings screen: choose provider and model, enter keys (saved only on the computer),
       test the AI connection and the Adzuna and Reed keys
-- [ ] Owner enters his keys in Jobcu and all three tests pass
+- [x] Owner entered his keys in Jobcu and all three tests pass (2026-09-17)
 - [ ] CV and cover letter upload, read fresh at every search (§3, §4)
 - [ ] Simple location input: explicit places and countries (§6)
 - [ ] Time filter (6 h / 24 h / 72 h / 1 week) and job type filter (§7, §8)
