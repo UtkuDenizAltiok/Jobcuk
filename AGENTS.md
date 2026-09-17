@@ -6,7 +6,8 @@ People should start with [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## What Jobcu is
 
-Jobcu is a private job search app for every country that lies fully or mostly in Europe. It runs
+Jobcu is a private job search app for 20 European countries (the top 20 by GDP per person, see
+`countries.py`). It runs
 on the user's own Mac or Windows computer and is used through a browser. The user gives it a CV,
 a cover letter and a free-text description of where they want to work. On **Search**, it collects
 fresh job ads from as many sources as possible, removes duplicates, applies the location criteria,
@@ -65,7 +66,7 @@ they say otherwise.
 6. **The repository is private and its history is permanent:** never make it public, force-push,
    rewrite or squash shared history, or delete commits. Commit dates are the record of the
    owner's work.
-7. English UI only. Supported countries only: those fully or mostly in Europe (`countries.py`).
+7. English UI only. Supported countries only: the 20 in `countries.py`.
 
 ## When goals conflict, decide in this order
 
@@ -156,7 +157,7 @@ the browser, and `JOBCU_SELFTEST=1` starts Jobcu, checks that it answers, then s
   with no technical words and no filler, just enough to use Jobcu fully. Developers:
   `CONTRIBUTING.md`, this file and `docs/`, technical and detailed. When a screen, message or step
   changes, update the user guides in the same commit.
-- **Coverage:** reach as many jobs as possible in **every** supported country, through every legally
+- **Coverage:** reach as many jobs as possible in **all 20** supported countries, through every legally
   safe route, not only APIs (see DECISIONS.md). Ireland, the UK and Germany are worked on and
   tested first; that's an order, not a limit.
 

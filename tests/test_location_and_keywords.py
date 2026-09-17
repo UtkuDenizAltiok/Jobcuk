@@ -15,12 +15,12 @@ def understanding(**changes):
     return LocationUnderstanding.model_validate({**base, **changes})
 
 
-def test_supported_countries_are_those_fully_or_mostly_in_europe():
-    assert len(COUNTRIES) == 45
-    assert {"GB", "CH", "NO", "IS", "IE", "DE", "UA", "RS", "AL", "CY", "VA"} <= set(COUNTRIES)
-    assert not {"TR", "RU", "KZ", "GE", "AM", "AZ"} & set(COUNTRIES)
+def test_supported_countries_are_the_owners_top_20():
     from jobcu.countries import LANGUAGE_NAMES
 
+    assert len(COUNTRIES) == 20
+    assert {"IE", "GB", "DE", "CH", "LU", "ES", "SI", "CZ"} <= set(COUNTRIES)
+    assert not {"LI", "SM", "AD", "MC", "VA", "PL", "PT", "TR"} & set(COUNTRIES)
     assert all(lang in LANGUAGE_NAMES for c in COUNTRIES.values() for lang in c.ad_languages)
 
 
