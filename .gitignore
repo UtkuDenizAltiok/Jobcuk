@@ -1,0 +1,54 @@
+# ------------------------------------------------------------------
+# Personal data and secrets: these must NEVER be uploaded to GitHub.
+# (tools/check_no_secrets.py double-checks this before every commit.)
+# ------------------------------------------------------------------
+.env
+.env.*
+keys.json
+secrets.json
+*.key
+*.pem
+jobcu-data/
+
+# Databases (saved jobs, job states)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Documents such as CVs and cover letters.
+# Tests may only use fake documents in tests/fixtures/fake_documents/.
+*.pdf
+*.doc
+*.docx
+*.odt
+*.rtf
+*.pages
+!tests/fixtures/fake_documents/*
+
+# ------------------------------------------------------------------
+# Files the computer creates automatically
+# ------------------------------------------------------------------
+# Python and uv
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+build/
+dist/
+*.egg-info/
+
+# macOS and Windows
+.DS_Store
+._*
+Thumbs.db
+desktop.ini
+
+# Editors and local tool settings
+.vscode/
+.idea/
+.claude/settings.local.json
