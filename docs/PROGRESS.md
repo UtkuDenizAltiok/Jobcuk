@@ -4,6 +4,58 @@ Jobcu is built in phases (see section 16 of [HANDOVER.md](HANDOVER.md)). Each ph
 tested and shown to the owner before the next one starts. Decisions are in
 [DECISIONS.md](DECISIONS.md).
 
+## Right now
+
+*Last updated: 2026-09-17, end of the first working session (before `/clear`).*
+
+**Where we are:** Phase 1 (usable first version), most of it built. Everything is committed and
+pushed, and GitHub's tests pass on macOS and Windows. A full check-up after an interrupted reply
+found nothing lost or broken.
+
+**Last finished:** reading full ads from Adzuna's job pages (owner approved), employer's own page as
+the main link, a full project check-up, the owner's guidance on usage and money
+([DECISIONS.md](DECISIONS.md), "Owner's guidance on usage and money").
+
+**Waiting on the owner (Utku):**
+1. **Step 4: run a real search himself** (double-click Start Jobcu → Search) and give feedback: do
+   the top results look right, is anything scored too high or too low, were any titles "left out
+   as clearly unrelated" (in Search details) actually relevant?
+2. Optional, in his own time: a **generic cover letter**. The uploaded one is written for Tesla. The
+   generic one should say he's open to any electronic hardware design field, with power electronics
+   preferred and aerospace and defence also of interest.
+
+**Next tasks for the assistant, in this order:**
+1. **Adaptive Adzuna budget** (`sources/adzuna.py`, `sources/budget.py`): replace the fixed 40
+   requests per search with a share of what's left this month, spread over the remaining days at
+   about 3 searches a day. Never above what's left today, and roughly 25–60 per search. Test it.
+2. **Usage meter and limits in Settings** (HANDOVER §13): AI tokens for the last search and this
+   month, estimated cost from an editable price table (no prices built in), optional monthly
+   token or cost limit (already enforced in `ai/client.py`), scoring limit, and job source on/off
+   switches (`settings.sources_disabled` already exists). Also show Adzuna requests used
+   today and this month.
+3. **Score check / quality test set** (HANDOVER §13, owner chose "quick review"): collect about 40
+   real ads from real searches (a mix of good, okay and poor fits). Claude pre-fills a rating for
+   each (good / okay / poor, plus blockers such as language or visa). Build a simple review page
+   in Jobcu where the owner corrects the ratings; store them in the data folder, never in the
+   repository. Then measure Jobcu's scores against the ratings and check:
+   - does the quick relevance check drop jobs he rates okay or good?
+   - batch size 4 vs 1
+   - short summary vs full ad
+   - scoring reasoning effort
+
+   Tune the scoring prompt, and record results and choices in DECISIONS.md.
+4. Confirm Phase 1 "Done when" with the owner, update the README progress line, then plan
+   Phase 2 (smart location filter, design choices already in DECISIONS.md).
+
+**Useful facts:** source behaviour and limits are in [SOURCES.md](SOURCES.md).
+- **Owner's data folder:** `~/Library/Application Support/Jobcu`, with keys `adzuna_app_id`,
+  `adzuna_app_key`, `ai_gemini` and `reed_api_key`. He uses Google Gemini, model
+  `gemini-3.8-flash`, on the free allowance with no billing.
+- **Real search timing:** Munich or within 50 km, 72 hours ≈ 2.5 minutes. About 25 Adzuna API
+  requests, about 20 job pages at 3 s each, and about 30,000 AI tokens.
+
+---
+
 | Phase | What it delivers | Status |
 |---|---|---|
 | 0. Foundations | Project set-up; Jobcu starts with a double-click | ✅ Done (2026-09-17) |

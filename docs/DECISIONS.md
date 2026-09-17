@@ -194,3 +194,21 @@ has at least 0.3% of its country's total population."*
 | When the scoring limit is reached, the search **asks** before scoring more. Jobs not scored are **still shown** (without a score). | HANDOVER §13: caps never silently reduce coverage. |
 | The last search's results are saved and shown again after Jobcu restarts. Saved and Applied lists include jobs from all searches. "Show hidden" brings back jobs marked Not interested. | HANDOVER §12. |
 | In Phase 1, a job's country is labelled **verified** when the source states it. Places and distances rely on each source's own location filter until Phase 2. | Honest labelling until the smart location filter arrives. |
+
+---
+
+## 2026-09-17 (evening): Owner's guidance on usage and money
+
+| Decision | Reason |
+|---|---|
+| **Expected use: usually 3 searches a day, at most 5.** Limits should fit this real use and must not be so strict that results get worse. | The owner's guidance. Earlier planning assumed 5 a day as the norm. |
+| **Adzuna's request budget per search will adapt** to the remaining free monthly and daily allowance, assuming about 3 searches a day, instead of a fixed 40 per search | 2,500 requests a month ÷ about 90 searches ≈ 27 per search on average. A fixed 40 would run out after about 60 searches, while light days leave allowance unused. |
+| **Money:** up to **€30 a month in total** for everything (AI first, other services if they clearly help). Free is best and cheaper is better; paying is fine only where it really improves results. Before anything that costs money is set up, the owner is told the expected cost. | The owner's guidance. This replaces the earlier "Google Maps only within its free allowance" rule: Maps may use part of the €30 if it clearly helps, though the owner expects the free allowance to be enough. |
+| **Reading full job pages is best effort.** If a site doesn't allow it, Jobcu scores from what it has and carries on; this is never a reason to stop a search. | The owner's guidance: full ads help, but a platform refusing them isn't critical. |
+
+## Working across sessions
+
+| Decision | Reason |
+|---|---|
+| `docs/PROGRESS.md` starts with a **"Right now"** section (where the project stands, what waits on the owner, the next tasks in order). Every AI session reads it first and updates it after each finished step and before the conversation is cleared. | The owner clears long conversations (`/clear`). Everything needed to continue must live in the project, not in one chat. |
+| Hard-won facts about each job source live in **`docs/SOURCES.md`** | Source behaviour (limits, quirks, formats) took real testing to learn and is needed again for Phase 3. |

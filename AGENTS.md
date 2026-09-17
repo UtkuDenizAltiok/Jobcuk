@@ -13,12 +13,24 @@ fresh job ads from as many sources as possible, removes duplicates, applies the 
 scores each job against the user's profile with an AI model the user chose, and shows a ranked
 list with short reasons.
 
-## Read these first
+## Start of every session: read these first
 
-1. [docs/HANDOVER.md](docs/HANDOVER.md): the original concept and **source of truth**. Never edit
+1. **The "Right now" section at the top of [docs/PROGRESS.md](docs/PROGRESS.md)**: where the
+   project stands, what is waiting on the owner, and the next tasks in order. Continue from there.
+2. [docs/DECISIONS.md](docs/DECISIONS.md): every decision so far, with dates and reasons. Newer
+   entries override older ones.
+3. [docs/HANDOVER.md](docs/HANDOVER.md): the original concept and **source of truth**. Never edit
    it. Record changes to the plan in `docs/DECISIONS.md` instead.
-2. [docs/PROGRESS.md](docs/PROGRESS.md): which phase the project is in and what comes next.
-3. [docs/DECISIONS.md](docs/DECISIONS.md): every decision so far, with dates and reasons.
+4. [docs/SOURCES.md](docs/SOURCES.md) before working on job sources.
+
+## Keeping the handover current (conversations get cleared)
+
+The owner clears long conversations. Nothing important may live only in a chat:
+- After every finished step, and **before the conversation is cleared**, update the "Right now"
+  section of `docs/PROGRESS.md` (last finished, waiting on the owner, next tasks with enough detail
+  to continue), record decisions in `docs/DECISIONS.md`, commit and push.
+- When the owner says the context is getting full or they want to clear, do this first, then tell
+  them it's safe to clear.
 
 ## Who you are working with
 
@@ -138,6 +150,21 @@ the browser, and `JOBCU_SELFTEST=1` starts Jobcu, checks that it answers, then s
   failing source must never break a search. Be polite: limit request rates, back off on errors
   and respect `Retry-After`.
 - **Text users see:** friendly, plain English without jargon.
+
+## Lessons learned (avoid repeating these mistakes)
+
+- **Check the test result before committing.** Piping pytest output through `tail` or `grep`
+  hides failures. Use `uv run pytest && git commit …` or `set -o pipefail`.
+- **Wait for GitHub's tests after every push** (`gh run list`, `gh run view <id> --log-failed`).
+  Windows exposes timing and path bugs that macOS doesn't.
+- **Never contact real sites in tests.** Use `httpx.MockTransport` with
+  `PoliteClient(min_intervals={}, sleep=…, transport=…)`, and the scripted AI adapters in the tests.
+- **Real tests use the owner's data carefully.** Preview copies run on port 8799 (the owner's own
+  Jobcu uses 8765): `uv run uvicorn --factory jobcu.app:create_app --port 8799`, with
+  `JOBCU_DATA_DIR` set to a scratch folder unless real data is needed. Stop previews afterwards,
+  and undo any test clicks on the owner's real jobs.
+- The secrets check can flag public identifiers. Only if a value is clearly not a secret, add
+  `# jobcu-guard: allow` with a comment explaining why.
 
 ## Workflow
 
