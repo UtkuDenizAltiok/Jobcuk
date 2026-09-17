@@ -31,4 +31,6 @@ Every decision goes into [docs/DECISIONS.md](docs/DECISIONS.md) with a date and 
 - Start the app: `uv run jobcu` (`JOBCU_NO_BROWSER=1` skips the browser; `JOBCU_SELFTEST=1` starts,
   checks and stops; `JOBCU_DATA_DIR=...` uses another data folder)
 - After cloning, turn on the safety hook: `git config core.hooksPath .githooks`
+- Owner backups: `tools/Back up Jobcu.command` writes a `.bundle` (full history; restore with
+  `git clone "<file>.bundle"`) and a `.zip` to `~/Documents/Jobcu Backups`
 - The screen must never load anything from the internet (CSP plus a test enforce this).

@@ -71,3 +71,10 @@ aren't repeated here unless something about them was clarified.
 | For **his own copy** of Jobcu, the owner chose **Google (Gemini)** after a neutral comparison | His choice. It only affects his settings: Jobcu itself still recommends no provider and has no default, and every user picks their own. |
 | He starts on Google's **free allowance, with no billing set up yet** | Nothing is paid for before real usage is measured in Phase 1. If paid use turns out to be needed, the owner is asked first and shown how to set a monthly spending cap. |
 | The owner's Adzuna, Reed and Gemini keys are kept in Apple's Passwords app until Jobcu's settings screen exists | Keys are never pasted into chat or saved in the code folder. |
+
+### Backups
+
+| Decision | Reason |
+|---|---|
+| The owner backs up the project by double-clicking **`tools/Back up Jobcu.command`**, which saves two files in `Documents > Jobcu Backups` | GitHub's "Download ZIP" leaves out the dated history, which is the record of the owner's work. The `.bundle` file holds the complete history and can be fully restored. The `.zip` holds the current files in a form any computer can open. |
+| The backup tool lives in `tools/`, not next to the Start files, and is Mac-only | Only the owner needs it. Keeping it out of the main folder avoids confusing friends. |
