@@ -682,11 +682,20 @@ function renderCard(card) {
 
   const checks = el("p", { class: "job-checks" });
   for (const check of card.location_checks) {
-    const statusClass = { verified: "check-verified", unclear: "check-unclear" }[check.status] ||
-      "check-estimate";
-    const label = check.status === "verified" && check.source
-      ? `${check.label} (verified: ${check.source})`
-      : check.status === "unclear" ? check.label : `${check.label} (AI estimate — please check)`;
+    const statusClass = {
+      verified: "check-verified",
+      unclear: "check-unclear",
+      fails: "check-fails",
+    }[check.status] || "check-estimate";
+    const label =
+      check.status === "fails"
+        ? `Doesn't fit: ${check.label}`
+        : check.status === "verified" && check.source
+          ? `${check.label} (${check.source === "AI estimate" ? "AI estimate — please check"
+                                                              : `verified: ${check.source}`})`
+          : check.status === "unclear"
+            ? `${check.label} — couldn't be checked for this job`
+            : `${check.label} (AI estimate — please check)`;
     checks.append(el("span", { class: statusClass, text: label }));
   }
   if (card.summary_only && card.score !== null) {

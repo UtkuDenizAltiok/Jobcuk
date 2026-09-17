@@ -840,6 +840,12 @@ dialog::backdrop {
   font-weight: 700;
 }
 
+.check-fails::before {
+  content: "× ";
+  color: var(--problem);
+  font-weight: 700;
+}
+
 .job-actions {
   display: flex;
   flex-wrap: wrap;
