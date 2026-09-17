@@ -6,127 +6,111 @@ tested and shown to the owner before the next one starts. Decisions are in
 
 ## Right now
 
-*Last updated: 2026-09-17, night.*
+*Last updated: 2026-09-17, late night.*
 
-**Where we are:** Phase 1 (usable first version), most of it built, plus a big coverage step:
-Ireland now has sources, and companies' own career sites are read in every search. Everything is
-committed and pushed, and GitHub's tests pass on macOS and Windows.
+**Where we are:** Phase 1 is essentially complete, and the two things the owner cares most about
+moved a long way: **coverage** (Ireland now has sources, company career sites and several new job
+sites are read in every search) and **the location box as a research task for the AI** (the first
+version of Phase 2 works). Everything is committed and pushed; GitHub's tests pass on macOS and
+Windows.
 
-**Last finished (2026-09-17, night): many more job sources.**
-- **JobsIreland.ie** (the Irish public employment service): Ireland's first source.
-- **jobs.ac.uk** (UK and Irish universities and research institutes) and **EURAXESS** (research
-  jobs all over Europe): a kind of job the other sources barely carry.
+**Last finished (2026-09-17, night and late night)**
+
+*More sources (11 now, from 3):*
+- **JobsIreland.ie** (Irish public employment service), **jobs.ac.uk** (UK and Irish universities
+  and research institutes), **EURAXESS** (research jobs all over Europe), **Arbeitnow** (free
+  public API, many German and British jobs from career systems).
 - **Company career sites** in six systems (Greenhouse, Lever, Ashby, Workable, Recruitee,
-  Workday), read through the public job lists those systems publish, with a checked **employer
-  directory of 326 companies** (`src/jobcu/data/employers.json`, refreshed with
-  `tools/check_employers.py`): 135 hire in Ireland, 245 in the UK, 216 in Germany, and every
-  supported country has at least two.
-- **Arbeitnow** (free public API): many German and British jobs from career systems.
-- `placenames.py` tells which country a free-text location is in ("Dublin, Ireland" vs
-  "Dublin, CA"), and `sources/matching.py` matches titles and named places on Jobcu's side.
-- **Adzuna and Reed keys are now optional** (README, guides and the setup checklist say so),
-  because Jobcu finds jobs without any job-site key.
-- Checked and **not** used: **EURES** (its terms allow automated extraction only for EURES partner
-  organisations), **UK Find a Job** (blocks Jobcu), **SmartRecruiters** (robots.txt allows only
-  LinkedIn). Details and every address in [SOURCES.md](SOURCES.md).
+  Workday), with a checked **employer directory of 326 companies**
+  (`src/jobcu/data/employers.json`, refreshed with `tools/check_employers.py`): 135 hire in
+  Ireland, 245 in the UK, 216 in Germany, and every supported country has at least two. The
+  directory also records **which towns** each company hires in, so a search for one city can skip
+  companies that only hire far away.
+- Checked and **not** used, with reasons in [SOURCES.md](SOURCES.md): EURES (its terms allow
+  automated extraction only for EURES partners), UK Find a Job, UK Civil Service Jobs and
+  publicjobs.ie (all answer with bot checks), SmartRecruiters (robots.txt allows only LinkedIn),
+  Personio (its pages need JavaScript; many of its jobs arrive through Arbeitnow anyway).
+- **Adzuna and Reed keys are now optional:** Jobcu finds jobs without any job-site key.
 
-**Real tests (2026-09-17, night, the owner's own documents and keys, on a copy of his data
-folder so his own results were untouched):**
-- *Ireland, 72 hours*: 94 seconds, 0 matching hardware jobs. His search words are narrow
-  ("Power Electronics Engineer", "Hardware Design Engineer", …) and Ireland has few such jobs.
-- *Munich or within 50 km, 24 hours*: 145 seconds, 19 ads, 9 scored and shown (top: Franka
-  Robotics 84, HENSOLDT 84). Career sites added nothing here: their job lists give a place as
-  text, so **"within 50 km" can't be checked yet** and only jobs naming Munich itself are kept.
-- Source test without AI (Germany + UK, 24 hours, broader words): 154 ads, of which career sites
-  19 (Airbus, Octopus Energy, Ramp…) and Arbeitnow 18.
+*The location box (Phase 2, first version):*
+- The AI splits what someone writes into conditions and checks each one: **town-size conditions
+  are computed** from the figures Jobcu ships (town populations, and people per country), and
+  **anything else about a place is looked up live on the web** through the person's own AI
+  provider, which returns the towns that fit or the towns to avoid **with its sources**.
+- Conditions it can't confirm, and conditions about the job itself, are shown as "not checked" and
+  never filter anything. Every job card says what each condition found, and jobs whose place can't
+  be recognised are kept, not dropped.
+- Jobcu also ships a town list (GeoNames, 63,220 towns with local names, coordinates and
+  population) **as a ruler only**: it answers "where is this place and how big is it" once the AI
+  has decided what to measure.
+
+*Other work:* the **Score check** screen (every search keeps a few of its ads and left-out titles
+for the owner to rate), a **usage meter with limits, a price table and on/off switches per source**
+in Settings, **profile reuse** for unchanged documents, **ad texts reused for three days**,
+**Adzuna's monthly allowance shared across the month**, **prompt caching** where a provider needs
+asking, and `tools/coverage_test.py`.
+
+**Real tests (the owner's own documents and keys, on a copy of his data folder):**
+- *"Germany, but no cities where far-right parties polled above the national average, and only
+  cities with at least 0.3% of the country's people", 24 hours*: 4 minutes, 268 ads, 251 different
+  jobs, **139 left out by those conditions**, 56 shown. The far-right condition was researched live
+  (Dresden, Chemnitz, Cottbus, Erfurt, Leipzig… excluded, sources: bundeswahlleiterin.de and
+  others); the 0.3% condition was computed (at least 250,500 people in Germany, 15,930 in Ireland).
+  Top results were real power-electronics jobs (Franka Robotics 96, GE Vernova 95, eMoSys 93).
+- *Munich or within 50 km, 24 hours*: 19 ads, 9 scored, 2.5 minutes (before the new sources).
+- *Ireland, 72 hours*: 94 seconds, no matching hardware jobs — his search words are narrow and
+  Ireland has few such jobs that week.
 
 **Waiting on the owner (Utku):**
-1. **A friend is testing Jobcu.** The owner invites him on GitHub himself. Collect the friend's
-   feedback (installation, confusing steps, results) and fix what it shows.
-2. **Run a real search himself** and give feedback: do the top results look right, is anything
-   scored too high or too low, were titles "left out as clearly unrelated" (Search details)
-   actually relevant?
-3. Optional: a **generic cover letter**. The uploaded one is written for Tesla. The generic one
-   should say he's open to any electronic hardware design field, with power electronics preferred
-   and aerospace and defence also of interest.
-4. **A coverage list, to measure what Jobcu misses.** Open LinkedIn, StepStone, Indeed or any
-   site you like, search the way you normally would, and paste 15–25 jobs you'd want Jobcu to
-   find into a plain text file, one per line:
-   `Company | Job title | Place | link`. Then say where the file is, and
-   `uv run python tools/coverage_test.py that-file.txt` says how many of them Jobcu found and why
-   it missed the rest. That's how we decide with numbers whether Jobcu needs the job boards that
-   are on hold (LinkedIn, Indeed, StepStone…).
-5. **One question about the location research (Phase 2):** may facts that barely change (a
-   town's population, the last election's results) be remembered with their source and date for a
-   while, or should every search look them up again? Everything about the *jobs* stays fresh
-   either way.
-6. **Decide about Jooble and Careerjet** (aggregators covering Ireland, the UK and Germany).
-   Their free keys are meant for websites that show their jobs, and Jobcu has no website, so the
-   owner should decide whether to sign up. Ask him before doing anything.
+1. **A friend is testing Jobcu.** Collect his feedback (installation, confusing steps, results).
+2. **Run a real search yourself** and say whether the top results look right, whether any score is
+   clearly wrong, and whether any title in "left out as clearly unrelated" was actually relevant.
+   The new **Score check** screen is the place to record that: answer good / okay / poor for the
+   jobs it kept from your searches.
+3. Optional: a **generic cover letter** (the uploaded one is written for Tesla).
+4. **A coverage list, to measure what Jobcu misses:** paste 15–25 jobs you'd want Jobcu to find
+   (from LinkedIn, StepStone, Indeed, anywhere) into a text file, one per line:
+   `Company | Job title | Place | link`. Then `uv run python tools/coverage_test.py that-file.txt`
+   says how many Jobcu found and why it missed the rest. That's how we decide with numbers whether
+   Jobcu needs the job boards that are on hold.
+5. **Travel times need a Google Maps key** (your own choice earlier). Conditions like "at most 50
+   minutes by public transport from a city centre" are answered as a clearly labelled **AI
+   estimate** today. Real times need a Maps key with billing switched on, kept inside the free
+   allowance. Say the word and I'll write the exact steps, one at a time.
+6. **One question:** may facts that barely change (a town's population, the last election's
+   results) be remembered with their source and date for a while, or should every search look them
+   up again? Everything about the *jobs* stays fresh either way.
+7. **Jooble and Careerjet** (aggregators covering Ireland, the UK and Germany) need free keys meant
+   for websites showing their jobs, and Jobcu has no website. Your call whether to sign up.
 
-**Countries:** 30 European countries (see `countries.py` and DECISIONS.md). Search words use only
-English plus the languages of the places searched.
-**Coverage goal:** as many jobs as possible across **all 30** supported countries, from as
-many platforms and routes as possible (not only APIs), without legal risk. **Ireland, UK and
-Germany are worked on and tested first**; that's the order of work, not a limit.
+**Countries:** 30 European countries (see `countries.py`). Search words use English plus the
+languages of the places searched.
+**Coverage goal:** as many jobs as possible across all 30, through every legally safe route.
+Ireland, the UK and Germany are worked on and tested first.
 
 **Next tasks for the assistant, in this order:**
-1. **Places within a distance, for sources that give only a place name** (career sites,
-   Arbeitnow). Today a job is kept only if its location text names the place, so "Munich or
-   within 50 km" misses a career-site job in Garching. This needs coordinates for places and
-   towns, which is Phase 2 work (HANDOVER §6 datasets) but costs coverage now.
-2. **More employers in the directory**, especially Ireland, the UK and Germany, and more career
-   systems: SAP SuccessFactors, Personio (its job pages need JavaScript), Softgarden, Teamtailor,
-   JOIN, Oracle and iCIMS. `tools/check_employers.py` adds and checks candidates in one run;
-   `find_workday.py` style discovery (a Workday site's robots.txt names its career sites) works
-   well. Also consider reading employer career pages through `jobposting.py`.
-3. **Optimise API use without losing quality** (DECISIONS.md, "Countries, reusing AI work,
-   optimising requests"):
-   - ~~**Profile reuse**~~ **done (2026-09-17)**: what the AI understood from the documents is
-     kept in the data folder, keyed by the CV text, cover letter text, prompt, model and answer
-     format, and reused while nothing changes. "What Jobcu understood" uses it too. Everything
-     about the job search itself still runs fresh in every search.
-   - ~~**Remember job ad texts**~~ **done (2026-09-17)**: a full ad downloaded in the last three
-     days is reused by source and job ID instead of being fetched again ("Search details" says how
-     many were already known). Scores are never reused.
-   - ~~**Provider-side prompt caching**~~ **done (2026-09-17)**: Anthropic is asked to keep the
-     step's instructions ready (`cache_control`), which is what needs asking; OpenAI and Google
-     do the same by themselves for long prompts. Usage already counts cached tokens separately.
-   - ~~**Adaptive Adzuna budget**~~ **done (2026-09-17)**: each search gets a share of what's
-     left of the free month, spread over the days still to come at about 3 searches a day,
-     between 25 and 60 requests, and never more than today's allowance has left
-     (`budget.share_of_month`).
-   - Workday costs about 3–5 requests per company per search (robots.txt, the filter list, then a
-     page per country). Caching the country filter IDs in the directory would save one request per
-     company, but risks missing jobs when an ID changes, so it wasn't done.
-4. ~~**Usage meter and limits in Settings**~~ **done (2026-09-17)**: Settings shows tokens for
-   this month and the last search, an estimated cost from the user's own price table, editable
-   limits (scoring cap, monthly token and cost limits) and an on/off switch per job source with
-   the requests it sent today and this month.
-5. **Score check / quality test set** (HANDOVER §13). **The page is built (2026-09-17):** every
-   search quietly keeps a few of its real ads (spread across the score range) and a few of the
-   titles the quick check left out, and the **Score check** screen lets the owner answer "good /
-   okay / poor" (plus what blocked it) and "was that title really unrelated?". Everything stays in
-   his data folder. **Still to do:** `tools/score_check.py` to measure Jobcu's scores against his
-   answers, and then check:
-   - the quick relevance check
-   - batch size 4 vs 1
-   - summary vs full ad
-   - reasoning effort
-   - **how wide the search words should be** (the Ireland test found nothing with narrow titles)
-
-   Tune the prompt and record the results.
-6. Keep `docs/guides/` short and in step with the screens; fix what the tester's feedback shows.
-7. Confirm Phase 1 "Done when" with the owner, then plan Phase 2 (design choices already in
-   DECISIONS.md).
+1. **Finish the score-check loop:** `tools/score_check.py` to measure Jobcu's scores against the
+   owner's answers on the Score check screen, then tune with the quality test set (HANDOVER §13):
+   the quick relevance check, batch size 4 vs 1, summary vs full ad, reasoning effort, and how wide
+   the search words should be.
+2. **More of Phase 2:** an Edit option for the interpretation, real travel times when the owner
+   agrees to a Maps key, and remembering researched facts if he allows it.
+3. **More coverage:** more employers in the directory, more career systems (SuccessFactors,
+   Teamtailor, BambooHR, Comeet, Oracle), national public employment services with open APIs
+   (Sweden's works and needs no key; Norway, France, Belgium and others need a free key or
+   registration), and the decision about the job boards on hold once the coverage list exists.
+4. Keep `docs/guides/` in step with the screens; fix what the tester's feedback shows.
+5. Confirm Phase 1 "Done when" with the owner, then agree what Phase 2 must still deliver.
 
 **Useful facts:** source behaviour and limits are in [SOURCES.md](SOURCES.md).
-- **Owner's data folder:** `~/Library/Application Support/Jobcu`, with keys `adzuna_app_id`,
-  `adzuna_app_key`, `ai_gemini` and `reed_api_key`. He uses Google Gemini, model
-  `gemini-3.8-flash`, on the free allowance with no billing.
-- **Real search timing now:** Munich 50 km, 24 hours ≈ 2.5 minutes (sources alone about 2
-  minutes: Workday 331 requests, Greenhouse 49, Adzuna 28, Bundesagentur 36).
-- **Checking the employer directory** takes about 10 minutes for 300 companies:
+- **Owner's data folder:** `~/Library/Application Support/Jobcu`, keys `adzuna_app_id`,
+  `adzuna_app_key`, `ai_gemini`, `reed_api_key`. Google Gemini, model `gemini-3.8-flash`, free
+  allowance, no billing. **Web search works on that free allowance** (checked live).
+- **Timing now:** a German 24-hour search takes about 4 minutes (sources about 2, of which Workday
+  is the slowest at ~400 requests when no place is named).
+- **Never run searches against his real data folder:** copy it to a scratch folder first
+  (`cp -R "$HOME/Library/Application Support/Jobcu" /tmp/…`) and point `JOBCU_DATA_DIR` at the copy.
+- **Checking the employer directory** takes about 15 minutes for 350 companies:
   `uv run python tools/check_employers.py candidates.json --write`.
 
 ---
