@@ -13,6 +13,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from jobcu import COPYRIGHT, __version__
 from jobcu.paths import data_dir
+from jobcu.settings_api import router as settings_router
 
 WEB_DIR = Path(__file__).resolve().parent / "web"
 
@@ -79,6 +80,8 @@ def create_app() -> FastAPI:
             "copyright": COPYRIGHT,
             "data_folder": str(data_dir()),
         }
+
+    app.include_router(settings_router)
 
     @app.get("/", include_in_schema=False)
     def index() -> FileResponse:

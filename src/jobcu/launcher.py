@@ -19,6 +19,7 @@ import uvicorn
 
 from jobcu import __version__
 from jobcu.app import create_app
+from jobcu.logs import setup_logging
 from jobcu.paths import ensure_data_dir
 
 HOST = "127.0.0.1"
@@ -71,6 +72,7 @@ def main() -> int:
     open_browser = not selftest and os.environ.get("JOBCU_NO_BROWSER") != "1"
 
     ensure_data_dir()
+    setup_logging()
 
     if not selftest and running_jobcu_version(PREFERRED_PORT):
         _say("Jobcu is already running. Opening it in your browser.")

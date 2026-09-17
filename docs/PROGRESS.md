@@ -7,7 +7,7 @@ tested and shown to the owner before the next one starts. Decisions are in
 | Phase | What it delivers | Status |
 |---|---|---|
 | 0. Foundations | Project set-up; Jobcu starts with a double-click | ✅ Done (2026-09-17) |
-| 1. Usable first version | A real search with ranked, deduplicated results and reasons | ⏭️ Next |
+| 1. Usable first version | A real search with ranked, deduplicated results and reasons | 🔨 In progress |
 | 2. Smart location filter | Understands sentences like "a city by the seaside" | Planned |
 | 3. Maximum coverage | Many more job sources in every supported country | Planned |
 | 4. Ready for friends | Complete guides, first-run setup, tested on real Mac and Windows computers | Planned |
@@ -31,11 +31,13 @@ tested and shown to the owner before the next one starts. Decisions are in
       screen. Confirmed by the owner on 2026-09-17.
 - Backups: the owner decided GitHub is enough (see DECISIONS.md)
 
-## Phase 1: Usable first version ⏭️
+## Phase 1: Usable first version 🔨
 
-- [ ] Universal AI provider layer: native Google Gemini, OpenAI and Anthropic, plus a generic
+- [x] Universal AI provider layer: native Anthropic, Google Gemini and OpenAI, plus a generic
       OpenAI-compatible option; rate-limit handling; setup check (HANDOVER §13)
-- [ ] Settings screen: choose provider and model, enter keys (saved only on the computer)
+- [x] Settings screen: choose provider and model, enter keys (saved only on the computer),
+      test the AI connection and the Adzuna and Reed keys
+- [ ] Owner enters his keys in Jobcu and all three tests pass
 - [ ] CV and cover letter upload, read fresh at every search (§3, §4)
 - [ ] Simple location input: explicit places and countries (§6)
 - [ ] Time filter (6 h / 24 h / 72 h / 1 week) and job type filter (§7, §8)

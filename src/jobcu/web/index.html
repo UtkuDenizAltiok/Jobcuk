@@ -10,25 +10,132 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">
+    <a class="brand" href="#/search">
       <img src="/static/favicon.svg" alt="" width="28" height="28">
       <span class="brand-name">Jobcu</span>
-    </div>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#/search" data-view-link="search">Search</a>
+      <a href="#/settings" data-view-link="settings">Settings</a>
+    </nav>
   </header>
 
   <main class="page">
-    <section class="welcome" aria-labelledby="welcome-title">
-      <h1 id="welcome-title">Jobcu is running on your computer</h1>
-      <p>Everything is set up correctly. The job search itself will appear on this page in the
-        next stage of building Jobcu.</p>
-      <p class="status" id="engine-status" role="status">Checking Jobcu's engine…</p>
+    <!-- Search -->
+    <section id="view-search" class="view" hidden>
+      <h1>Search</h1>
+      <div class="card">
+        <h2>Getting ready</h2>
+        <p class="muted">The job search is being built. Meanwhile, set up everything Jobcu needs:</p>
+        <ul class="checklist" id="setup-checklist"></ul>
+        <p><a class="button" href="#/settings">Open Settings</a></p>
+      </div>
     </section>
+
+    <!-- Settings -->
+    <section id="view-settings" class="view" hidden>
+      <h1>Settings</h1>
+
+      <div class="card">
+        <h2>AI provider</h2>
+        <p class="muted">Jobcu uses an AI to read your CV and job ads and to score the jobs. Pick
+          any provider you like; Jobcu doesn't recommend one, and you can switch at any time.</p>
+
+        <fieldset class="provider-choice">
+          <legend>Provider</legend>
+          <div id="provider-options" class="provider-options"></div>
+        </fieldset>
+
+        <div id="provider-details" hidden>
+          <p class="muted" id="key-page-line" hidden>Don't have a key yet?
+            <a id="key-page-link" target="_blank" rel="noopener noreferrer">Create one on the
+              provider's website</a>.</p>
+
+          <div class="field" id="base-url-field" hidden>
+            <label for="base-url">Provider address</label>
+            <input id="base-url" type="text" spellcheck="false" autocomplete="off"
+                   placeholder="The address from the provider's documentation">
+          </div>
+
+          <div class="field">
+            <span class="label" id="ai-key-label">API key</span>
+            <div class="key-row" data-key-row id="ai-key-row"></div>
+          </div>
+
+          <div class="field">
+            <label for="model">Model</label>
+            <div class="inline">
+              <input id="model" type="text" list="model-list" spellcheck="false" autocomplete="off"
+                     placeholder="Type or pick a model name">
+              <datalist id="model-list"></datalist>
+              <button type="button" class="secondary" id="load-models">Load model list</button>
+            </div>
+            <small class="muted" id="model-list-status"></small>
+          </div>
+
+          <details class="advanced">
+            <summary>Advanced: a second model for reading documents</summary>
+            <p class="muted">Optional. Jobcu can use a different model for the few steps that need
+              the most careful thinking: reading your CV and cover letter, and understanding where
+              you want to work. Leave empty to use the same model everywhere.</p>
+            <div class="field">
+              <label for="reasoning-model">Second model</label>
+              <input id="reasoning-model" type="text" list="model-list" spellcheck="false"
+                     autocomplete="off" placeholder="Same as above">
+            </div>
+          </details>
+
+          <div class="actions">
+            <button type="button" id="save-ai">Save</button>
+            <button type="button" class="secondary" id="check-ai">Test connection</button>
+          </div>
+          <p class="status" id="ai-status" role="status" hidden></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Job site keys</h2>
+        <p class="muted">Free keys from Adzuna and Reed let Jobcu search their job ads.</p>
+
+        <h3>Adzuna</h3>
+        <div class="field">
+          <span class="label">Application ID</span>
+          <div class="key-row" data-key-row data-key-name="adzuna_app_id"></div>
+        </div>
+        <div class="field">
+          <span class="label">Application Key</span>
+          <div class="key-row" data-key-row data-key-name="adzuna_app_key"></div>
+        </div>
+        <div class="actions">
+          <button type="button" class="secondary" data-check-site="adzuna">Test Adzuna</button>
+        </div>
+        <p class="status" id="adzuna-status" role="status" hidden></p>
+
+        <h3>Reed</h3>
+        <div class="field">
+          <span class="label">API key</span>
+          <div class="key-row" data-key-row data-key-name="reed_api_key"></div>
+        </div>
+        <div class="actions">
+          <button type="button" class="secondary" data-check-site="reed">Test Reed</button>
+        </div>
+        <p class="status" id="reed-status" role="status" hidden></p>
+      </div>
+
+      <div class="card">
+        <h2>About</h2>
+        <p><span id="about-version">Jobcu</span> · <span id="about-copyright"></span></p>
+        <p class="muted">Your data is kept only on this computer, in
+          <code id="about-data-folder"></code></p>
+      </div>
+    </section>
+
+    <p class="status problem" id="engine-problem" role="alert" hidden>Jobcu's engine isn't
+      answering. Close this page, then double-click Start Jobcu again.</p>
   </main>
 
   <footer class="footer">
-    <p><span id="version">Jobcu</span> · <span id="copyright">© Utku Deniz Altiok. All rights reserved.</span></p>
-    <p class="data-folder" id="data-folder" hidden>Your data is kept only on this computer, in
-      <code id="data-folder-path"></code></p>
+    <p id="footer-copyright">© Utku Deniz Altiok. All rights reserved.</p>
   </footer>
 </body>
 </html>

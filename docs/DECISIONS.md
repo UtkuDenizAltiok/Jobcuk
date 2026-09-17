@@ -108,3 +108,15 @@ aren't repeated here unless something about them was clarified.
 | The libraries' own automatic retries are switched off; **Jobcu's AI layer retries** instead | Waiting and the plain messages ("AI limit reached, continuing more slowly") then work the same for every provider, and no progress is lost. |
 | OpenAI requests use `store=False` | The concept keeps user data private; this asks OpenAI not to keep the conversation for later use. |
 | **No copyleft libraries** (GPL, AGPL and similar) | Jobcu is "all rights reserved", and those licences could require publishing its code. |
+
+### AI settings and keys
+
+| Decision | Reason |
+|---|---|
+| Providers are shown **alphabetically**, with "Other (OpenAI-compatible)" last, and **none is pre-selected** | Neutrality: Jobcu never suggests a provider. |
+| Each provider's key is saved separately (`ai_anthropic`, `ai_gemini`, …) | Switching provider doesn't delete the other keys, so switching back is easy. |
+| Model names come from the provider's own model list (the "Load model list" button) or are typed in; **none is built into Jobcu** | Providers rename and retire models often (HANDOVER §13). |
+| Reasoning effort starts at "low" for scoring and "medium" for reading documents and the location; models that don't support a setting are retried without it automatically | HANDOVER §13 asks for the lowest setting that keeps quality. These starting values get checked against the quality test set. |
+| The setup check asks the model for a tiny answer in Jobcu's JSON format, and reports rate limits instead of waiting | The check has to be quick and prove that structured answers work, not just that the key is valid. |
+| Saved keys are shown only as their last four characters | Enough to recognise a key without revealing it. |
+| The log file hides anything that looks like a key, and the Adzuna check never logs its request address (which contains the key) | A safety net against keys ending up in log files. |

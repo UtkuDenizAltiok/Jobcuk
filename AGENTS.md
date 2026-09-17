@@ -70,6 +70,13 @@ src/jobcu/
   app.py                     FastAPI app: screen, internal API, local-only safety checks
   paths.py                   the per-user data folder (never inside the code folder)
   keystore.py                API keys, saved in the data folder, readable only by the user
+  settings.py                all other settings (settings.json in the data folder)
+  settings_api.py            internal API behind the Settings screen
+  db.py                      SQLite database with numbered migrations
+  logs.py                    log file in the data folder, with keys hidden
+  ai/                        the AI layer: client.py is the ONLY way to call an AI;
+                             one adapter per provider; providers.py lists them
+  sources/                   job sources, one module per source
   web/                       the screen: plain HTML, CSS, JS (no build step)
 tests/                       pytest; conftest.py gives every test a throwaway data folder
 tools/check_no_secrets.py    safety check against keys and personal data (Git hook and CI)
