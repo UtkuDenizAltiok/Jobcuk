@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from jobcu import COPYRIGHT, __version__
+from jobcu.build import build_id
 from jobcu.documents_api import router as documents_router
 from jobcu.paths import data_dir
 from jobcu.settings_api import router as settings_router
@@ -70,9 +71,19 @@ def create_app() -> FastAPI:
     # Added last so it runs first.
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=LOCAL_HOSTS)
 
+    # The launcher sets this, so a newer copy of Jobcu can ask this one to stop.
+    app.state.request_shutdown = None
+
     @app.get("/api/health")
     def health() -> dict:
-        return {"app": "jobcu", "version": __version__}
+        return {"app": "jobcu", "version": __version__, "build": build_id()}
+
+    @app.post("/api/shutdown")
+    def shutdown() -> JSONResponse:
+        if app.state.request_shutdown is None:
+            return JSONResponse({"stopping": False}, status_code=409)
+        app.state.request_shutdown()
+        return JSONResponse({"stopping": True})
 
     @app.get("/api/about")
     def about() -> dict:
