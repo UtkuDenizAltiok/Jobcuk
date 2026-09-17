@@ -26,15 +26,15 @@ helper program uv themselves. Before that: full ads from Adzuna's job pages, and
    should say he's open to any electronic hardware design field, with power electronics preferred
    and aerospace and defence also of interest.
 
-**Countries:** the owner's top 20 European countries by GDP per person, with no tiny states (see
-`countries.py`).
-**Coverage goal:** as many jobs as possible across **all 20** supported countries, from as
+**Countries:** 30 European countries (see `countries.py` and DECISIONS.md). Search words use only
+English plus the languages of the places searched.
+**Coverage goal:** as many jobs as possible across **all 30** supported countries, from as
 many platforms and routes as possible (not only APIs), without legal risk. **Ireland, UK and
 Germany are worked on and tested first**; that's the order of work, not a limit.
 
 **Next tasks for the assistant, in this order:**
 1. **Coverage, starting with Ireland (no source today!), then the UK and Germany, and designed for
-   all 20 supported countries.** Plan the routes that reach jobs beyond APIs: public employment
+   all 30 supported countries.** Plan the routes that reach jobs beyond APIs: public employment
    services, EURES, published job feeds, career systems' public job lists, schema.org JobPosting
    pages, an employer directory per country, and AI web search to discover job pages anywhere.
    Verify each route first (terms, robots.txt, limits) and record it in `docs/SOURCES.md`.

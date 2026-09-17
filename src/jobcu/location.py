@@ -11,9 +11,10 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from jobcu.ai.client import AIClient
-from jobcu.countries import COUNTRIES
+from jobcu.countries import COUNTRIES, LANGUAGE_NAMES
 
 CountryCode = Literal[tuple(COUNTRIES)]  # type: ignore[valid-type]
+LanguageCode = Literal[tuple(LANGUAGE_NAMES)]  # type: ignore[valid-type]
 
 
 class Place(BaseModel):
@@ -22,6 +23,11 @@ class Place(BaseModel):
     country: CountryCode
     kind: Literal["city", "region"]
     radius_km: float | None = Field(description="Only if the text gives a distance")
+    languages: list[LanguageCode] = Field(
+        default=[],
+        description="Languages job ads in this place are commonly written in besides English, "
+        "e.g. Zürich: de; Geneva: fr; Brussels: fr and nl",
+    )
 
 
 class LocationUnderstanding(BaseModel):
@@ -66,6 +72,8 @@ with its country. Give its English name and its local-language name.
 2. If the text doesn't limit where to search (for example it's empty, or only describes a kind \
 of place), set limits_countries to false and leave countries and places empty.
 3. radius_km: only when the text gives a distance such as "within 30 km". Otherwise null.
+   languages: the languages (besides English) job ads in and around that place are commonly
+   written in. For countries with several languages, give only the place's own ones.
 4. Anything that isn't simply a named place (for example "by the seaside", "English-speaking", \
 "a big city", or conditions about companies or visas) goes into not_checked_yet, in short \
 plain phrases. Don't guess countries for such conditions.

@@ -15,13 +15,27 @@ def understanding(**changes):
     return LocationUnderstanding.model_validate({**base, **changes})
 
 
-def test_supported_countries_are_the_owners_top_20():
+def test_supported_countries_are_the_owners_30():
     from jobcu.countries import LANGUAGE_NAMES
 
-    assert len(COUNTRIES) == 20
-    assert {"IE", "GB", "DE", "CH", "LU", "ES", "SI", "CZ"} <= set(COUNTRIES)
-    assert not {"LI", "SM", "AD", "MC", "VA", "PL", "PT", "TR"} & set(COUNTRIES)
+    assert len(COUNTRIES) == 30
+    assert {"IE", "GB", "DE", "PL", "PT", "RO", "GR", "HU", "HR", "SK", "EE", "LV", "LT"} <= set(
+        COUNTRIES
+    )
+    assert not {"LI", "SM", "AD", "MC", "VA", "TR", "RU", "UA", "BG"} & set(COUNTRIES)
     assert all(lang in LANGUAGE_NAMES for c in COUNTRIES.values() for lang in c.ad_languages)
+
+
+def test_named_places_limit_languages_to_what_is_spoken_there():
+    zurich = Place(name="Zurich", local_name="Zürich", country="CH", kind="city",
+                   radius_km=None, languages=["de"])
+    assert languages_for(["CH"], [zurich]) == ["en", "de"]
+    assert languages_for(["CH"]) == ["en", "de", "fr", "it"]
+    # A language the country doesn't use for job ads is ignored, falling back to the country's.
+    odd = Place(name="Geneva", local_name="Genève", country="CH", kind="city",
+                radius_km=None, languages=["pl"])
+    assert languages_for(["CH"], [odd]) == ["en", "de", "fr", "it"]
+    assert languages_for(["IE", "DE"], [zurich]) == ["en", "de"]
 
 
 def test_languages_start_with_english_without_repeats():

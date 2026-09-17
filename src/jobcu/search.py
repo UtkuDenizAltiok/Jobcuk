@@ -235,7 +235,7 @@ def run_search(run: SearchRun) -> None:
     checkpoint()
 
     run.update("search_words", "running")
-    languages = languages_for(plan.countries)
+    languages = languages_for(plan.countries, plan.places)
     terms = generate_search_words(client, profile, languages)
     run.set_result("search_words", [term.model_dump() for term in terms])
     run.set_result("languages", [{"code": c, "name": LANGUAGE_NAMES[c]} for c in languages])
