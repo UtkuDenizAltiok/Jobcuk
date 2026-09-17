@@ -30,7 +30,10 @@ they say otherwise.
   worked before the next. Remember that some use a Mac and some use Windows.
 - Do the technical work yourself whenever you can.
 - **Never ask anyone to paste an API key or password into the chat.** Keys are entered only in
-  Jobcu's own settings screen.
+  Jobcu's own settings screen. If a person allows it, an assistant running on their own computer
+  may use the keys saved in Jobcu's data folder **through Jobcu's code** for real tests, without
+  ever printing, logging or copying them. Use free usage only unless they agree to costs, and keep
+  job-site requests modest (their keys have daily limits).
 - Items marked **Decided** in HANDOVER.md belong to the owner. Changing one needs the owner's
   approval (for friends, that happens in the pull request). Also ask before adding any paid
   service or doing anything that affects someone's accounts or costs.

@@ -17,7 +17,8 @@ PROFILE = {
     "field": "Electronics",
     "skills": ["PCB layout"],
     "technical_areas": ["Embedded systems"],
-    "years_of_experience": 5,
+    "years_full_time_experience": 5,
+    "years_student_or_part_time_experience": 1,
     "experience_note": "Five years in one company.",
     "seniority": "mid",
     "education": [
@@ -74,6 +75,7 @@ def test_profile_uses_the_careful_model_and_the_rules(settings):
     assert "Never guess nationality" in system
     assert "one particular job application" in system
     assert "Where the person wants to work is chosen separately" in system
+    assert "full-time work" in system
     assert "<<<CV\nCV TEXT\nCV>>>" in call["prompt"]
     assert "<<<COVER_LETTER\nLETTER TEXT\nCOVER_LETTER>>>" in call["prompt"]
 

@@ -135,3 +135,11 @@ aren't repeated here unless something about them was clarified.
 | The profile keeps languages **as written**, plus a CEFR level marked "estimated" when it comes from words like "fluent" | Honest about what's stated and what's guessed. It helps scoring without claiming certainty. |
 | Document text is marked as data in the prompt, and the AI is told to ignore instructions inside documents | Protects against text in a document that tries to steer the AI. |
 | "What Jobcu understood" can be opened before any search, and **nothing is saved** | People can check the AI understood them before searching. HANDOVER §4 says the profile isn't kept. |
+
+### Real tests with the owner's keys
+
+| Decision | Reason |
+|---|---|
+| **The owner allowed Claude to use his keys for development** (2026-09-17). Claude uses the keys already saved in Jobcu on his Mac, only through Jobcu's own code, and never prints, logs, copies or commits them. | Real tests with the real AI and real job sources give much better development than made-up data. Keys never have to appear in the chat: it's stored outside the owner's computer and adds no benefit, because Claude already works on that computer. |
+| Development tests use **free usage only**. Claude asks before anything that could cost money, and keeps Adzuna and Reed requests modest. | The owner's Gemini account has no billing set up, and the job-site keys have daily limits. |
+| **Experience is split into full-time years and internship / working-student / part-time years** | The first real test counted the owner's part-time student jobs as "3.1 years of experience". Job ads asking for "3+ years" usually mean full-time work, so that would have overstated seniority fit. |

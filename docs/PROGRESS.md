@@ -40,6 +40,7 @@ tested and shown to the owner before the next one starts. Decisions are in
 - [x] Owner entered his keys in Jobcu and all three tests pass (2026-09-17)
 - [x] CV and cover letter upload (PDF, DOCX, TXT) and reading, with a "What Jobcu understood"
       preview of the profile (§3, §4)
+- [x] First real test on the owner's own documents (2026-09-17): 8 seconds, about 5,500 tokens
 - [ ] Owner checks that "What Jobcu understood" is right for his own CV and cover letter
 - [ ] Simple location input: explicit places and countries (§6)
 - [ ] Time filter (6 h / 24 h / 72 h / 1 week) and job type filter (§7, §8)

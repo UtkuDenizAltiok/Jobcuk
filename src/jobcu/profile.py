@@ -41,7 +41,12 @@ class Profile(BaseModel):
     field: str
     skills: list[str]
     technical_areas: list[str]
-    years_of_experience: float | None
+    years_full_time_experience: float | None = Field(
+        description="Full-time jobs only: not internships, working-student jobs or theses"
+    )
+    years_student_or_part_time_experience: float | None = Field(
+        description="Internships, working-student and part-time jobs, and thesis work in a company"
+    )
     experience_note: str = Field(description="How the years of experience were counted")
     seniority: Seniority
     education: list[Education]
@@ -90,9 +95,11 @@ wishes are not locations: put those in work_mode_preference.
 "native" for native or mother-tongue languages (cefr_is_estimate false). For words such as \
 fluent, good, basic or intermediate, estimate the CEFR level and set cefr_is_estimate to true. \
 If no level is given at all, use null.
-6. years_of_experience: count relevant work experience, including internships, working-student \
-jobs and thesis work done inside a company, but not time spent studying. Explain how you \
-counted in experience_note.
+6. Experience: give two separate numbers, because job ads asking for "3+ years" usually mean \
+full-time work. years_full_time_experience counts full-time jobs only. \
+years_student_or_part_time_experience counts internships, working-student jobs, part-time jobs \
+and thesis work done inside a company. Don't count time spent studying. Use 0 when there is \
+none, and explain how you counted in experience_note.
 7. seniority: judge it from the experience and the roles held.
 8. target_roles: include the roles the person says they want, plus common English job titles \
 for the same kind of work. Keep them realistic for the person's background.

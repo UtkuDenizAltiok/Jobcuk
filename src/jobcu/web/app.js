@@ -242,8 +242,11 @@ function renderProfile(profile) {
   const bullets = (items, fallback = "None stated") =>
     items.length ? el("ul", {}, ...items.map((item) => el("li", { text: item }))) : text("", fallback);
 
-  const years =
-    profile.years_of_experience === null ? "Not clear" : `About ${profile.years_of_experience} years`;
+  const yearsText = (value, what) => (value === null ? `${what}: not clear` : `${what}: about ${value} years`);
+  const years = [
+    yearsText(profile.years_full_time_experience, "Full-time work"),
+    yearsText(profile.years_student_or_part_time_experience, "Internships, student and part-time work"),
+  ];
   const languages = profile.languages.map((lang) => {
     let level = lang.level_as_written || "level not stated";
     if (lang.cefr) {
@@ -262,7 +265,8 @@ function renderProfile(profile) {
     section("Field", text(profile.field)),
     section(
       "Experience",
-      text(`${years} · ${SENIORITY[profile.seniority]}`),
+      text(`Level: ${SENIORITY[profile.seniority]}`),
+      bullets(years),
       el("p", { class: "muted", text: profile.experience_note }),
     ),
     section("Skills", chips(profile.skills)),
