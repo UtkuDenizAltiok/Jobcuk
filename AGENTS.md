@@ -150,6 +150,8 @@ the browser, and `JOBCU_SELFTEST=1` starts Jobcu, checks that it answers, then s
   failing source must never break a search. Be polite: limit request rates, back off on errors
   and respect `Retry-After`.
 - **Text users see:** friendly, plain English without jargon.
+- **Guides for everyday users** live in `docs/guides/` (install and start, keys, first search,
+  troubleshooting). When a screen, message or step changes, update the guides in the same commit.
 
 ## Lessons learned (avoid repeating these mistakes)
 

@@ -212,3 +212,12 @@ has at least 0.3% of its country's total population."*
 |---|---|
 | `docs/PROGRESS.md` starts with a **"Right now"** section (where the project stands, what waits on the owner, the next tasks in order). Every AI session reads it first and updates it after each finished step and before the conversation is cleared. | The owner clears long conversations (`/clear`). Everything needed to continue must live in the project, not in one chat. |
 | Hard-won facts about each job source live in **`docs/SOURCES.md`** | Source behaviour (limits, quirks, formats) took real testing to learn and is needed again for Phase 3. |
+
+## 2026-09-17 (evening): First outside tester
+
+| Decision | Reason |
+|---|---|
+| **The Start Jobcu files install the helper program uv themselves**, after asking (Mac: press Return; Windows: press any key), using uv's official installer from astral.sh into the user's own folder, without changing shell settings. GitHub tests the "helper missing" path on both systems. | The owner is sharing Jobcu with a non-technical friend. Before this, a missing uv meant a dead end. This was planned for Phase 4 but is needed now. |
+| **Tester-ready documents now, ahead of Phase 4:** the README first screen for testers, and guides for installing and starting (Mac and Windows, including the Apple "could not verify" and Windows "protected your PC" warnings), the first search, and troubleshooting. Pictures come later. | Someone who has never used GitHub must be able to install and use Jobcu from the repository alone (HANDOVER §2.1). Real tester feedback helps the scoring work. |
+| **A tester gets access by being invited to the private repository as a collaborator.** Before more friends are invited, the repository moves to a free organization, as planned. | For one trusted friend this is the simplest path. Collaborators on a personal repository can technically change files, but every change stays visible in the history and can be undone. |
+| The GitHub "Download ZIP" keeps the Mac start file runnable (checked: `jobcu-main/Start Jobcu.command` keeps its "can be started" setting) | Otherwise the Mac guide wouldn't work. |

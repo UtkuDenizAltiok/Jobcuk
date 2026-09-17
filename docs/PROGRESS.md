@@ -12,11 +12,17 @@ tested and shown to the owner before the next one starts. Decisions are in
 pushed, and GitHub's tests pass on macOS and Windows. A full check-up after an interrupted reply
 found nothing lost or broken.
 
-**Last finished:** reading full ads from Adzuna's job pages (owner approved), employer's own page as
+**Last finished:** tester-ready README and guides (install and start on Mac and Windows, first
+search, troubleshooting), and Start Jobcu files that install the helper program uv themselves.
+Before that: reading full ads from Adzuna's job pages (owner approved), employer's own page as
 the main link, a full project check-up, the owner's guidance on usage and money
 ([DECISIONS.md](DECISIONS.md), "Owner's guidance on usage and money").
 
 **Waiting on the owner (Utku):**
+0. **Invite his friend as a tester:** add the friend's GitHub username under the repository's
+   Settings → Collaborators, then send him the link to the README. The friend follows
+   `docs/guides/install-and-start.md` → `getting-your-keys.md` → `first-search.md`. Collect the
+   friend's feedback (installation problems, confusing steps, results quality).
 1. **Step 4: run a real search himself** (double-click Start Jobcu → Search) and give feedback: do
    the top results look right, is anything scored too high or too low, were any titles "left out
    as clearly unrelated" (in Search details) actually relevant?
@@ -44,7 +50,9 @@ the main link, a full project check-up, the owner's guidance on usage and money
    - scoring reasoning effort
 
    Tune the scoring prompt, and record results and choices in DECISIONS.md.
-4. Confirm Phase 1 "Done when" with the owner, update the README progress line, then plan
+4. Keep the guides in `docs/guides/` in step with every screen change, and fix whatever the
+   friend's feedback shows is unclear.
+5. Confirm Phase 1 "Done when" with the owner, update the README progress line, then plan
    Phase 2 (smart location filter, design choices already in DECISIONS.md).
 
 **Useful facts:** source behaviour and limits are in [SOURCES.md](SOURCES.md).

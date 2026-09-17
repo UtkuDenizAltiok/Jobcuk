@@ -55,9 +55,26 @@ jobs:
           JOBCU_SELFTEST: "1"
         run: ./"Start Jobcu.command"
 
+      - name: Mac launcher offers to install the helper when it's missing
+        if: runner.os == 'macOS'
+        env:
+          JOBCU_SELFTEST: "1"
+          JOBCU_TEST_PRETEND_NO_UV: "1"
+          JOBCU_TEST_SKIP_INSTALL: "1"
+        run: ./"Start Jobcu.command" | tee out.txt && grep -q 'free helper program called "uv"' out.txt
+
       - name: Start Jobcu with the Windows launcher
         if: runner.os == 'Windows'
         env:
           JOBCU_SELFTEST: "1"
         shell: cmd
         run: call "Start Jobcu.bat"
+
+      - name: Windows launcher offers to install the helper when it's missing
+        if: runner.os == 'Windows'
+        env:
+          JOBCU_SELFTEST: "1"
+          JOBCU_TEST_PRETEND_NO_UV: "1"
+          JOBCU_TEST_SKIP_INSTALL: "1"
+        shell: cmd
+        run: call "Start Jobcu.bat" > out.txt & type out.txt & findstr /C:"free helper program" out.txt

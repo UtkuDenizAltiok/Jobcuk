@@ -11,10 +11,8 @@ service on your behalf. You need:
 > ⚠️ **Keep your keys private.** Never send them to anyone, post them, or paste them into an AI
 > chat. Anyone with your AI key can use your account and run up costs.
 >
-> You'll type the keys into Jobcu's own settings screen, which is still being built. Until then,
-> save them in a password manager, as shown at the end of this guide.
-
-*Pictures will be added to this guide once Jobcu is ready for everyday use.*
+> Save each key in a password manager (see the end of this guide). Then enter them in Jobcu's
+> **Settings**, as shown in [Your first search](first-search.md).
 
 ---
 

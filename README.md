@@ -1,75 +1,89 @@
 # Jobcu
 
-**Jobcu finds fresh job ads that fit you, from many job sites at once, and ranks them for you.**
+**Jobcu finds fresh job ads that fit you, from several job sites at once, and ranks them for you.**
 
 You give Jobcu three things:
 
 1. your CV
 2. a cover letter that says who you are and what kind of job you want
-3. a sentence about where you'd like to work, for example *"Munich"* or *"a city by the seaside"*
+3. a sentence about where you'd like to work, for example *"Munich or within 50 km"* or
+   *"Germany, Ireland or the UK"*
 
-When you press **Search**, Jobcu collects recent job ads from many sources across the EU, the UK,
-Switzerland, Norway and Iceland. It removes duplicates, keeps only jobs in places that match your
-sentence, and shows a ranked list with a short reason for each score.
+When you press **Search**, Jobcu collects recent job ads, removes duplicates, leaves out jobs that
+clearly don't fit, and shows a list ranked by how well each job fits you, with short reasons like
+*"Strong PCB design match · Asks for 5+ years · German C1 required"*.
 
-> 🚧 **Jobcu is still being built and isn't ready to use yet.** This page will say when it is.
-> Progress: Phase 0 (Foundations) is done. Next: **Phase 1, a usable first version.**
-> [See progress](docs/PROGRESS.md).
+> 🧪 **This is an early test version for invited testers.** It works, but it's still being built,
+> so some things are missing or may change. Your feedback helps a lot:
+> [how to give feedback](#giving-feedback).
+
+## Start here
+
+Follow these three guides in order. Each one explains every click.
+
+1. **[Install and start Jobcu](docs/guides/install-and-start.md)** on a Mac or on Windows
+2. **[Get your keys](docs/guides/getting-your-keys.md)**: an AI key of your choice, plus free
+   Adzuna and Reed keys
+3. **[Your first search](docs/guides/first-search.md)**: set up Jobcu, search, and understand the
+   results
+
+Stuck? See **[Troubleshooting](docs/guides/troubleshooting.md)**.
+
+## What you need
+
+- **A Mac or a Windows computer** with an internet connection.
+- **An API key from an AI provider of your choice.** An API key is like a password that lets
+  Jobcu use an AI service on your account. Jobcu works with many providers and doesn't recommend
+  any of them.
+- **Free keys from Adzuna and Reed**, two job sites that let apps search their job ads.
+- About 30 minutes for the first setup.
 
 ## Everything stays on your computer
 
-- Jobcu runs on your own Mac or Windows computer. There is no Jobcu website, account or cloud.
+- Jobcu runs on your own computer. There is no Jobcu website, account or cloud.
 - Your CV, cover letter, searches, results and keys are saved only on your computer.
 - Jobcu only connects to job sites and to the AI service you choose. It never sends anything to
   the people who made Jobcu.
 - Jobcu never logs in to job sites, so your accounts on those sites are never at risk.
 
-## What you need
-
-- **A Mac or a Windows computer.**
-- **An API key from an AI provider of your choice.** An API key is like a password that lets
-  Jobcu use an AI service on your account. Jobcu works with many providers, and the guides show
-  how to get a key from several of them.
-- **Free keys from Adzuna and Reed**, two job sites that let apps search their job ads.
-
 ## What it can cost
 
-- **Jobcu itself costs nothing** for people invited to use it.
-- **Your AI provider charges for what Jobcu uses**, such as reading your CV and scoring job ads.
-  The price depends on the provider and model you pick, and some providers include a free
-  allowance. Jobcu will show how much you've used and let you set a monthly limit.
-  Real example costs will be added here after testing Jobcu with real searches.
+- **Jobcu itself costs nothing.**
+- **Your AI provider may charge for what Jobcu uses.** Some providers offer a free allowance,
+  which can be enough for a few searches a day. Paid use depends on the provider and model you pick.
+  In tests, one search used roughly 30,000–100,000 tokens (the pieces of text an AI reads and
+  writes); broad searches use more. You can see the use of every search in **Search details**.
 - **The Adzuna and Reed keys are free.**
 
-## Guides
+## Where jobs come from (in this test version)
 
-Available now:
+| Source | Countries | Notes |
+|---|---|---|
+| Adzuna | UK, Germany, Austria, Switzerland, Netherlands, Belgium, France, Italy, Spain, Poland | Free key. Limited free requests per day and month, so Jobcu uses them carefully. |
+| Reed | UK | Free key. |
+| Bundesagentur für Arbeit | Germany | Germany's public job agency. No key needed. |
 
-- [Getting your keys](docs/guides/getting-your-keys.md): your AI key and the free Adzuna and
-  Reed keys
+More sources, and more countries such as Ireland, are planned.
 
-Coming once Jobcu is ready, with pictures:
+## Giving feedback
 
-- Downloading Jobcu from GitHub (for people who have never used GitHub)
-- Installing and starting Jobcu on a Mac, and on Windows
-- Your first search
-- Understanding your results
-- Costs and limits
-- Updating Jobcu without losing your data, and uninstalling
-- Troubleshooting and common questions
+The most useful things to tell us after a search:
 
-## Helping build Jobcu
+- Do the **top results** look like jobs you'd apply for?
+- Is any job **scored clearly too high or too low**? Which one, and why?
+- In **Search details → "See the titles left out as clearly unrelated"**, was anything actually
+  relevant to you?
+- Was any step **confusing**, or did something **not work**? A screenshot helps (without keys or
+  personal details in it).
 
-Invited friends are welcome to help improve Jobcu, with or without an AI coding assistant.
+Tell Utku directly, or, if you have a GitHub account with access, use the **Issues** tab on this
+page → **New issue**.
 
-- [How to help](CONTRIBUTING.md): setting up your computer and sending changes
-- [Instructions for AI coding assistants](AGENTS.md): read automatically by most AI coding tools
+## For people helping build Jobcu
 
-## Project documents
-
-- [Progress](docs/PROGRESS.md): what's done and what comes next
-- [Decision log](docs/DECISIONS.md): every choice made while building Jobcu, with a short reason
-- [Original concept](docs/HANDOVER.md): the plan Jobcu is built from
+- [How to help](CONTRIBUTING.md) and [instructions for AI coding assistants](AGENTS.md)
+- [Progress](docs/PROGRESS.md), [decision log](docs/DECISIONS.md),
+  [original concept](docs/HANDOVER.md)
 
 ---
 
