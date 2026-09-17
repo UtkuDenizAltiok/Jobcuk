@@ -164,10 +164,18 @@ def finish(score: JobScore) -> dict:
 
 def _background(profile: Profile, plan: LocationPlan) -> str:
     person = profile.model_dump(exclude={"ignored_as_application_specific"})
+    # Conditions about the place are already applied when jobs are filtered. What's left are the
+    # person's own words about the job itself ("no agencies", "needs visa sponsorship") and
+    # anything Jobcu couldn't check, which the scoring should still take into account.
+    other = [
+        condition.understood_as or condition.text
+        for condition in plan.conditions
+        if condition.kind == "about_job" or condition.status == "not_checked"
+    ] or plan.not_checked_yet
     location = {
         "understood_as": plan.understood_as,
         "places": [p.model_dump() for p in plan.places],
-        "other_conditions": plan.not_checked_yet,
+        "other_conditions": other,
     }
     return f"THE PERSON'S PROFILE:\n{person}\n\nWHERE THE PERSON WANTS TO WORK:\n{location}"
 

@@ -223,3 +223,30 @@ def test_the_owners_example_thresholds(country, expected):
     condition = Condition(text="0.3%", understood_as="0.3%", status="applied", kind="town_size",
                           min_share_of_country=0.003)
     assert smallest_town(condition, country) == expected
+
+
+def test_scoring_still_hears_about_conditions_jobcu_could_not_apply():
+    from jobcu.scoring import _background
+
+    plan = plan_with(Condition(text="no staffing agencies", understood_as="No staffing agencies",
+                               status="not_checked", kind="about_job"))
+    plan.conditions.append(Condition(
+        text="towns with Turkish supermarkets", understood_as="Towns with Turkish supermarkets",
+        status="not_checked", kind="could_not_check"))
+    plan.conditions.append(Condition(
+        text="big cities", understood_as="Towns with at least 250,000 people", status="applied",
+        kind="town_size", min_people=250_000))
+    from jobcu.profile import Profile
+    profile = Profile.model_validate({
+        "summary": "x", "current_or_last_role": None, "field": "Electronics", "skills": [],
+        "technical_areas": [], "years_full_time_experience": 0,
+        "years_student_or_part_time_experience": 0, "experience_note": "", "seniority": "junior",
+        "education": [], "languages": [], "target_roles": [], "target_fields": [],
+        "preferences": [], "work_mode_preference": "not_stated", "dealbreakers": [],
+        "work_authorisation": None, "ignored_as_application_specific": [],
+    })
+    background = _background(profile, plan)
+    assert "No staffing agencies" in background
+    assert "Towns with Turkish supermarkets" in background
+    # The size condition is already applied when filtering, so scoring isn't asked to judge it.
+    assert "250,000" not in background
