@@ -14,6 +14,8 @@ committed and pushed, and GitHub's tests pass on macOS and Windows.
 
 **Last finished (2026-09-17, night): many more job sources.**
 - **JobsIreland.ie** (the Irish public employment service): Ireland's first source.
+- **jobs.ac.uk** (UK and Irish universities and research institutes) and **EURAXESS** (research
+  jobs all over Europe): a kind of job the other sources barely carry.
 - **Company career sites** in six systems (Greenhouse, Lever, Ashby, Workable, Recruitee,
   Workday), read through the public job lists those systems publish, with a checked **employer
   directory of 326 companies** (`src/jobcu/data/employers.json`, refreshed with
@@ -47,11 +49,18 @@ folder so his own results were untouched):**
 3. Optional: a **generic cover letter**. The uploaded one is written for Tesla. The generic one
    should say he's open to any electronic hardware design field, with power electronics preferred
    and aerospace and defence also of interest.
-4. **One question about the location research (Phase 2):** may facts that barely change (a
+4. **A coverage list, to measure what Jobcu misses.** Open LinkedIn, StepStone, Indeed or any
+   site you like, search the way you normally would, and paste 15–25 jobs you'd want Jobcu to
+   find into a plain text file, one per line:
+   `Company | Job title | Place | link`. Then say where the file is, and
+   `uv run python tools/coverage_test.py that-file.txt` says how many of them Jobcu found and why
+   it missed the rest. That's how we decide with numbers whether Jobcu needs the job boards that
+   are on hold (LinkedIn, Indeed, StepStone…).
+5. **One question about the location research (Phase 2):** may facts that barely change (a
    town's population, the last election's results) be remembered with their source and date for a
    while, or should every search look them up again? Everything about the *jobs* stays fresh
    either way.
-5. **Decide about Jooble and Careerjet** (aggregators covering Ireland, the UK and Germany).
+6. **Decide about Jooble and Careerjet** (aggregators covering Ireland, the UK and Germany).
    Their free keys are meant for websites that show their jobs, and Jobcu has no website, so the
    owner should decide whether to sign up. Ask him before doing anything.
 

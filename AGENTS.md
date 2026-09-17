@@ -121,6 +121,7 @@ tests/                       pytest; conftest.py gives every test a throwaway da
 tools/check_no_secrets.py    safety check against keys and personal data (Git hook and CI)
 tools/check_employers.py     checks and refreshes the employer directory
 tools/update_places.py       rebuilds the shipped town list from GeoNames
+tools/coverage_test.py       how many jobs a person found by hand did Jobcu find, and why not
 .githooks/pre-commit         runs the safety check before every commit
 .github/workflows/tests.yml  CI: safety check, then tests on macOS and Windows
 docs/                        HANDOVER, DECISIONS, PROGRESS, guides/
