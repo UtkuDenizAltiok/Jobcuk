@@ -15,9 +15,13 @@ def understanding(**changes):
     return LocationUnderstanding.model_validate({**base, **changes})
 
 
-def test_supported_countries_are_eu_plus_uk_switzerland_norway_iceland():
-    assert len(COUNTRIES) == 31
-    assert {"GB", "CH", "NO", "IS", "IE", "DE"} <= set(COUNTRIES)
+def test_supported_countries_are_those_fully_or_mostly_in_europe():
+    assert len(COUNTRIES) == 45
+    assert {"GB", "CH", "NO", "IS", "IE", "DE", "UA", "RS", "AL", "CY", "VA"} <= set(COUNTRIES)
+    assert not {"TR", "RU", "KZ", "GE", "AM", "AZ"} & set(COUNTRIES)
+    from jobcu.countries import LANGUAGE_NAMES
+
+    assert all(lang in LANGUAGE_NAMES for c in COUNTRIES.values() for lang in c.ad_languages)
 
 
 def test_languages_start_with_english_without_repeats():
@@ -30,7 +34,7 @@ def test_empty_location_searches_everywhere_without_asking_the_ai():
             raise AssertionError("the AI should not be asked")
 
     plan = interpret_location(NoAI(), "   ")
-    assert plan.broad and len(plan.countries) == 31
+    assert plan.broad and len(plan.countries) == len(COUNTRIES)
 
 
 def test_named_place_adds_its_country():

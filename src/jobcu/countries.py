@@ -1,5 +1,7 @@
-"""The countries Jobcu searches (EU, UK, Switzerland, Norway, Iceland) and the languages
-job ads there are commonly written in. English is always searched in addition."""
+"""The countries Jobcu searches: every country that lies fully or mostly in Europe (the owner's
+decision, 2026-09-17), and the languages job ads there are commonly written in. English is always
+searched in addition. Countries mostly in Asia (Turkey, Russia, Kazakhstan, Georgia, Armenia,
+Azerbaijan) are not included; Cyprus is, as an EU member."""
 
 from dataclasses import dataclass
 
@@ -14,8 +16,12 @@ class Country:
 COUNTRIES: dict[str, Country] = {
     country.code: country
     for country in (
+        Country("AL", "Albania", ("sq",)),
+        Country("AD", "Andorra", ("ca", "es", "fr")),
         Country("AT", "Austria", ("de",)),
+        Country("BY", "Belarus", ("ru", "be")),
         Country("BE", "Belgium", ("nl", "fr")),
+        Country("BA", "Bosnia and Herzegovina", ("bs", "hr", "sr")),
         Country("BG", "Bulgaria", ("bg",)),
         Country("HR", "Croatia", ("hr",)),
         Country("CY", "Cyprus", ("el",)),
@@ -30,26 +36,39 @@ COUNTRIES: dict[str, Country] = {
         Country("IS", "Iceland", ("is",)),
         Country("IE", "Ireland", ()),
         Country("IT", "Italy", ("it",)),
+        Country("XK", "Kosovo", ("sq", "sr")),
         Country("LV", "Latvia", ("lv",)),
+        Country("LI", "Liechtenstein", ("de",)),
         Country("LT", "Lithuania", ("lt",)),
         Country("LU", "Luxembourg", ("fr", "de")),
         Country("MT", "Malta", ()),
+        Country("MD", "Moldova", ("ro", "ru")),
+        Country("MC", "Monaco", ("fr",)),
+        Country("ME", "Montenegro", ("sr",)),
         Country("NL", "Netherlands", ("nl",)),
+        Country("MK", "North Macedonia", ("mk", "sq")),
         Country("NO", "Norway", ("no",)),
         Country("PL", "Poland", ("pl",)),
         Country("PT", "Portugal", ("pt",)),
         Country("RO", "Romania", ("ro",)),
+        Country("SM", "San Marino", ("it",)),
+        Country("RS", "Serbia", ("sr",)),
         Country("SK", "Slovakia", ("sk",)),
         Country("SI", "Slovenia", ("sl",)),
         Country("ES", "Spain", ("es",)),
         Country("SE", "Sweden", ("sv",)),
         Country("CH", "Switzerland", ("de", "fr", "it")),
+        Country("UA", "Ukraine", ("uk",)),
         Country("GB", "United Kingdom", ()),
+        Country("VA", "Vatican City", ("it",)),
     )
 }
 
 LANGUAGE_NAMES: dict[str, str] = {
+    "be": "Belarusian",
     "bg": "Bulgarian",
+    "bs": "Bosnian",
+    "ca": "Catalan",
     "cs": "Czech",
     "da": "Danish",
     "de": "German",
@@ -65,14 +84,19 @@ LANGUAGE_NAMES: dict[str, str] = {
     "it": "Italian",
     "lt": "Lithuanian",
     "lv": "Latvian",
+    "mk": "Macedonian",
     "nl": "Dutch",
     "no": "Norwegian",
     "pl": "Polish",
     "pt": "Portuguese",
     "ro": "Romanian",
+    "ru": "Russian",
     "sk": "Slovak",
     "sl": "Slovenian",
+    "sq": "Albanian",
+    "sr": "Serbian",
     "sv": "Swedish",
+    "uk": "Ukrainian",
 }
 
 

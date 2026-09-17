@@ -26,6 +26,7 @@ helper program uv themselves. Before that: full ads from Adzuna's job pages, and
    should say he's open to any electronic hardware design field, with power electronics preferred
    and aerospace and defence also of interest.
 
+**Countries:** every country fully or mostly in Europe (45; see `countries.py`).
 **Coverage goal:** as many jobs as possible across **every** supported European country, from as
 many platforms and routes as possible (not only APIs), without legal risk. **Ireland, UK and
 Germany are worked on and tested first**; that's the order of work, not a limit.
@@ -48,7 +49,16 @@ Germany are worked on and tested first**; that's the order of work, not a limit.
    - UK: Find a Job (DWP)
    - Job boards such as IrishJobs.ie, Jobs.ie, Indeed, LinkedIn and StepStone stay on hold (owner:
      permitted sources first, decide with coverage numbers).
-2. **Adaptive Adzuna budget** (`sources/adzuna.py`, `sources/budget.py`): instead of a fixed 40
+2. **Optimise API use without losing quality** (DECISIONS.md, "Countries, reusing AI work,
+   optimising requests"):
+   - **Profile reuse:** keyed by a hash of the CV text, cover letter text, profile prompt and model,
+     stored in the data folder. The quick check, search words and scores always stay fresh.
+   - **Remember job ad texts** by source and job ID for a few days, so the same ad isn't downloaded
+     again.
+   - **Provider-side prompt caching** where supported.
+   - **Adaptive Adzuna budget** (`sources/adzuna.py`, `sources/budget.py`): replace the fixed 40
+     requests per search with a share of what's left this month over the remaining days at about 3
+     searches a day, never above what's left today (roughly 25–60 per search). (`sources/adzuna.py`, `sources/budget.py`): instead of a fixed 40
    requests per search, share what's left this month over the remaining days at about 3 searches a
    day. Never above what's left today, and roughly 25–60 per search.
 3. **Usage meter and limits in Settings** (HANDOVER §13): AI tokens for the last search and this

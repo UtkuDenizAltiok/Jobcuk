@@ -6,7 +6,7 @@ People should start with [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## What Jobcu is
 
-Jobcu is a private job search app for the EU, the UK, Switzerland, Norway and Iceland. It runs
+Jobcu is a private job search app for every country that lies fully or mostly in Europe. It runs
 on the user's own Mac or Windows computer and is used through a browser. The user gives it a CV,
 a cover letter and a free-text description of where they want to work. On **Search**, it collects
 fresh job ads from as many sources as possible, removes duplicates, applies the location criteria,
@@ -65,7 +65,7 @@ they say otherwise.
 6. **The repository is private and its history is permanent:** never make it public, force-push,
    rewrite or squash shared history, or delete commits. Commit dates are the record of the
    owner's work.
-7. English UI only. Supported countries only: EU countries, UK, Switzerland, Norway, Iceland.
+7. English UI only. Supported countries only: those fully or mostly in Europe (`countries.py`).
 
 ## When goals conflict, decide in this order
 
@@ -73,7 +73,9 @@ they say otherwise.
 2. Don't miss relevant fresh jobs. Coverage and freshness are Jobcu's main purpose.
 3. Accurate filtering and scoring.
 4. Simplicity for non-technical users.
-5. Reasonable AI cost (the owner's budget is up to €30 a month), but never by lowering 2 or 3.
+5. Reasonable cost (up to €30 a month in total, AI first; free is best), but never by lowering 2 or
+   3. Optimise requests cleverly: never fewer fresh jobs or worse scores. Only the profile may be
+   reused when the documents are identical.
 6. Speed matters least. A search may take minutes, but not hours.
 
 ## Project layout
