@@ -41,7 +41,9 @@ tested and shown to the owner before the next one starts. Decisions are in
 - [x] CV and cover letter upload (PDF, DOCX, TXT) and reading, with a "What Jobcu understood"
       preview of the profile (§3, §4)
 - [x] First real test on the owner's own documents (2026-09-17): 8 seconds, about 5,500 tokens
-- [ ] Owner checks that "What Jobcu understood" is right for his own CV and cover letter
+- [x] Owner confirmed "What Jobcu understood" is right (2026-09-17). He is open to any field of
+      electronic hardware design (power electronics preferred, aerospace and defence also of
+      interest) and will put this in his generic cover letter
 - [x] Search screen: location box, "Posted within", job types, "Don't include remote jobs",
       live progress, "What Jobcu understood" and "Search details" (§3)
 - [x] Simple location input: explicit places and countries; other conditions shown as "not
@@ -75,8 +77,8 @@ tested and shown to the owner before the next one starts. Decisions are in
 ## Phase 3: Maximum coverage
 
 - [ ] Source registry for every supported country (§9.0)
-- [ ] All source types from §9.2–9.6: generic `JobPosting` reader, more career systems, employer
-      directory
+- [ ] All source types from §9.2–9.6: more career systems and the employer directory (the generic
+      `JobPosting` reader already exists since Phase 1 and reads Adzuna's job pages)
 - [ ] General live AI web search
 - [ ] Per-source status, unique-job counts and on/off settings
 - [ ] **Done when:** the coverage test shows no large avoidable gaps, and the remaining gaps are
