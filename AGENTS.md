@@ -93,7 +93,10 @@ src/jobcu/
   documents_api.py           internal API for documents and the profile preview
   profile.py                 the AI prompt that reads documents into a profile
   countries.py               supported countries and their job-ad languages
-  location.py                understands "Where do you want to work?"
+  location.py                understands "Where do you want to work?": splits it into conditions,
+                             computes size rules, researches the rest on the web with sources
+  quality.py                 the score check: ads kept from real searches and the owner's answers
+  quality_api.py             internal API behind the Score check screen
   keywords.py                the hidden multilingual search words
   search.py                  runs a search step by step in the background, with progress
   pipeline.py                collecting from sources, full ads, result cards
@@ -122,6 +125,7 @@ tools/check_no_secrets.py    safety check against keys and personal data (Git ho
 tools/check_employers.py     checks and refreshes the employer directory
 tools/update_places.py       rebuilds the shipped town list from GeoNames
 tools/coverage_test.py       how many jobs a person found by hand did Jobcu find, and why not
+tools/score_check.py         Jobcu's scores against the owner's own answers, and prompt variants
 .githooks/pre-commit         runs the safety check before every commit
 .github/workflows/tests.yml  CI: safety check, then tests on macOS and Windows
 docs/                        HANDOVER, DECISIONS, PROGRESS, guides/

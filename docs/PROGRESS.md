@@ -89,10 +89,11 @@ languages of the places searched.
 Ireland, the UK and Germany are worked on and tested first.
 
 **Next tasks for the assistant, in this order:**
-1. **Finish the score-check loop:** `tools/score_check.py` to measure Jobcu's scores against the
-   owner's answers on the Score check screen, then tune with the quality test set (HANDOVER §13):
-   the quick relevance check, batch size 4 vs 1, summary vs full ad, reasoning effort, and how wide
-   the search words should be.
+1. **Use the score-check loop once the owner has answered a few jobs.** The screen and
+   `tools/score_check.py` are built: the tool compares his answers with the scores Jobcu gave
+   (free), or re-scores the same ads with different settings (`--rescore --batch 1 --effort medium
+   --summary`) to tune the quick relevance check, batch size, summary vs full ad, reasoning effort,
+   and how wide the search words should be (HANDOVER §13).
 2. **More of Phase 2:** an Edit option for the interpretation, real travel times when the owner
    agrees to a Maps key, and remembering researched facts if he allows it.
 3. **More coverage:** more employers in the directory, more career systems (SuccessFactors,
