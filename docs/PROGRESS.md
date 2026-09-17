@@ -86,11 +86,10 @@ Germany are worked on and tested first**; that's the order of work, not a limit.
    - Workday costs about 3–5 requests per company per search (robots.txt, the filter list, then a
      page per country). Caching the country filter IDs in the directory would save one request per
      company, but risks missing jobs when an ID changes, so it wasn't done.
-4. **Usage meter and limits in Settings** (HANDOVER §13): AI tokens for the last search and this
-   month, estimated cost from an editable price table (no prices built in), optional monthly limit
-   (already enforced in `ai/client.py`), scoring limit, source on/off switches
-   (`settings.sources_disabled` exists, but there is no screen for it yet, and there are 11
-   sources now), and Adzuna requests used today and this month.
+4. ~~**Usage meter and limits in Settings**~~ **done (2026-09-17)**: Settings shows tokens for
+   this month and the last search, an estimated cost from the user's own price table, editable
+   limits (scoring cap, monthly token and cost limits) and an on/off switch per job source with
+   the requests it sent today and this month.
 5. **Score check / quality test set** (HANDOVER §13, "quick review"): about 40 real ads with
    Claude's pre-filled ratings (good / okay / poor, plus blockers); a review page in Jobcu where
    the owner corrects them (stored in the data folder, never in the repository). Then measure
@@ -178,7 +177,8 @@ Germany are worked on and tested first**; that's the order of work, not a limit.
 - [x] Owner decided Jobcu may read Adzuna's job pages for full ads; now 18+ of 22 jobs are scored
       from full ads in a real search
 - [x] Scoring limit that asks before scoring more (§13)
-- [ ] Usage meter (per search and per month), monthly limits and price table in Settings (§13)
+- [x] Usage meter (per search and per month), monthly limits, price table and job source
+      switches in Settings (§13)
 - [ ] **Done when:** the owner can run a real search on his Mac and get a ranked, deduplicated list
       with reasons.
 

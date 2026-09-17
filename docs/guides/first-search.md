@@ -29,6 +29,12 @@ saying what work you want works best. **What Jobcu understood** shows how your d
   "Not interested" hides a job for good (**Show hidden** undoes it).
 - **Search details:** which sites were searched and why some jobs were left out.
 
-## 5. Feedback
+## 5. Keeping an eye on cost
+
+**Settings → Usage and limits** shows what Jobcu used this month and in your last search. Add
+what your provider charges per million tokens and Jobcu estimates the cost. You can set a monthly
+limit, and switch off any job source you don't want searched.
+
+## 6. Feedback
 
 Tell Utku: do the top jobs fit you? Is any score clearly wrong? Was anything confusing?
