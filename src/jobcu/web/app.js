@@ -59,8 +59,8 @@ const $ = (id) => document.getElementById(id);
 // Views
 // ---------------------------------------------------------------------------
 
-const VIEWS = ["search", "settings"];
-const state = { settings: null, provider: null, search: null, usage: null };
+const VIEWS = ["search", "score-check", "settings"];
+const state = { settings: null, provider: null, search: null, usage: null, quality: null };
 
 function showView() {
   const requested = location.hash.replace("#/", "");
@@ -71,6 +71,7 @@ function showView() {
     else link.removeAttribute("aria-current");
   }
   if (view === "search") renderChecklist();
+  if (view === "score-check") loadQuality();
 }
 
 // ---------------------------------------------------------------------------
@@ -1011,6 +1012,107 @@ async function saveAiChoice() {
   // Only the AI part is replaced, so the key rows keep their live status objects.
   state.settings.ai = (await api("/api/settings/ai", { method: "PUT", body })).ai;
   renderChecklist();
+}
+
+// ---------------------------------------------------------------------------
+// Score check
+// ---------------------------------------------------------------------------
+
+const SCORED_CHOICES = [
+  ["good", "Good fit"],
+  ["okay", "Okay"],
+  ["poor", "Poor"],
+];
+const TITLE_CHOICES = [
+  ["unrelated", "Right, not for me"],
+  ["worth_a_look", "No, worth a look"],
+];
+
+async function loadQuality() {
+  state.quality = await api("/api/quality");
+  renderQuality();
+}
+
+function renderQuality() {
+  const { ads, progress, blockers } = state.quality;
+  $("quality-progress").textContent =
+    `Jobs: ${progress.scored.rated} of ${progress.scored.collected} answered ` +
+    `(Jobcu keeps up to ${progress.scored.wanted}). ` +
+    `Titles: ${progress.title_only.rated} of ${progress.title_only.collected} answered.`;
+  fillQuality($("quality-scored"), ads.filter((ad) => ad.kind === "scored"), blockers,
+              "Run a search first: Jobcu keeps a few of its jobs here.");
+  fillQuality($("quality-titles"), ads.filter((ad) => ad.kind === "title_only"), blockers,
+              "Nothing left out yet.");
+}
+
+function fillQuality(container, ads, blockers, emptyText) {
+  if (!ads.length) {
+    container.replaceChildren(el("p", { class: "muted", text: emptyText }));
+    return;
+  }
+  container.replaceChildren(...ads.map((ad) => qualityRow(ad, blockers)));
+}
+
+function qualityRow(ad, blockers) {
+  const choices = ad.kind === "scored" ? SCORED_CHOICES : TITLE_CHOICES;
+  const where = [ad.company, ad.location].filter(Boolean).join(" · ");
+  const head = el(
+    "div",
+    { class: "quality-head" },
+    el("strong", { text: ad.title }),
+    el("span", { class: "muted", text: where }),
+  );
+  const parts = [head];
+  if (ad.url) {
+    parts.push(el("p", {}, el("a", { href: safeUrl(ad.url), target: "_blank",
+                                     rel: "noopener noreferrer", text: "Open the ad" })));
+  }
+  if (ad.text) {
+    parts.push(el("details", {},
+      el("summary", { text: "Read the ad" }),
+      el("pre", { class: "quality-text", text: ad.text })));
+  }
+  const buttons = choices.map(([value, label]) =>
+    el("button", {
+      type: "button",
+      class: ad.rating === value ? "" : "secondary",
+      text: label,
+      onclick: () => rateAd(ad, { rating: ad.rating === value ? null : value }),
+    }),
+  );
+  parts.push(el("div", { class: "actions" }, ...buttons,
+    ad.rating && ad.score !== null
+      ? el("span", { class: "muted", text: `Jobcu gave ${ad.score}` })
+      : el("span", {}),
+  ));
+  if (ad.kind === "scored" && ad.rating && ad.rating !== "good") {
+    parts.push(el("div", { class: "checks" }, ...blockers.map((blocker) => {
+      const box = el("input", {
+        type: "checkbox",
+        ...(ad.blockers.includes(blocker.id) ? { checked: "" } : {}),
+        onchange: (event) => {
+          const chosen = event.target.checked
+            ? [...ad.blockers, blocker.id]
+            : ad.blockers.filter((id) => id !== blocker.id);
+          rateAd(ad, { blockers: chosen });
+        },
+      });
+      return el("label", { class: "check" }, box, el("span", { text: blocker.label }));
+    })));
+  }
+  return el("div", { class: "quality-row" }, ...parts);
+}
+
+async function rateAd(ad, changes) {
+  const body = {
+    rating: changes.rating !== undefined ? changes.rating : ad.rating,
+    blockers: changes.blockers !== undefined ? changes.blockers : ad.blockers,
+    note: ad.note || "",
+  };
+  const result = await api(`/api/quality/${ad.id}`, { method: "PUT", body });
+  Object.assign(ad, result.ad);
+  state.quality.progress = result.progress;
+  renderQuality();
 }
 
 // ---------------------------------------------------------------------------

@@ -18,20 +18,22 @@ import re
 from collections import Counter
 from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from functools import cache
 from pathlib import Path
 
 import httpx
 
+from jobcu import places as place_list
 from jobcu.countries import COUNTRIES
 from jobcu.freshness import freshness, window_start
+from jobcu.location import Place
 from jobcu.placenames import OTHER, countries_in, is_europe_wide
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget
 from jobcu.sources.http import Blocked
-from jobcu.sources.matching import matches_places, matches_terms
+from jobcu.sources.matching import DEFAULT_RADIUS_KM, matches_places, matches_terms
 from jobcu.text import normalise
 
 log = logging.getLogger(__name__)
@@ -47,6 +49,20 @@ class Employer:
     board: str  # the company's name or address in its career system
     countries: tuple[str, ...]  # supported countries it had jobs in when last checked
     elsewhere: bool = False  # it also hires outside the supported countries
+    towns: dict[str, tuple[str, ...]] = field(default_factory=dict)  # per country, when known
+
+
+@dataclass
+class Survey:
+    """What the directory check learns about one employer."""
+
+    counts: Counter = field(default_factory=Counter)
+    towns: dict[str, set[str]] = field(default_factory=dict)
+
+    def add(self, country: str, town: str | None = None) -> None:
+        self.counts[country] += 1
+        if town:
+            self.towns.setdefault(country, set()).add(town)
 
 
 @cache
@@ -59,6 +75,8 @@ def load_directory(path: Path = DIRECTORY) -> tuple[Employer, ...]:
             board=entry["board"],
             countries=tuple(entry.get("countries") or ()),
             elsewhere=bool(entry.get("elsewhere")),
+            towns={country: tuple(towns)
+                   for country, towns in (entry.get("towns") or {}).items()},
         )
         for entry in data["employers"]
     )
@@ -75,13 +93,15 @@ class CareerSystemSource(JobSource):
     system: str
     countries = None
 
-    def employers(self, countries: list[str]) -> list[Employer]:
+    def employers(self, countries: list[str], places: list[Place] | None = None
+                  ) -> list[Employer]:
         wanted = set(countries)
-        return [e for e in load_directory() if e.system == self.system
-                and wanted & set(e.countries)]
+        return [e for e in load_directory()
+                if e.system == self.system and wanted & set(e.countries)
+                and hires_near(e, countries, places or [])]
 
     def covers(self, query: JobQuery) -> bool:
-        return bool(self.employers(query.countries))
+        return bool(self.employers(query.countries, query.places))
 
     # Companies read at the same time. Systems where every company has its own server (Workday,
     # Recruitee) can read several at once; the polite pace per server still applies.
@@ -90,7 +110,7 @@ class CareerSystemSource(JobSource):
     def search(self, query: JobQuery, ctx: SourceContext) -> Iterator[FoundJob]:
         self._budget = RequestBudget(self.id, self.name, LIMITS)
         start = window_start(query.started_at, query.posted_within_hours)
-        employers = self.employers(query.countries)
+        employers = self.employers(query.countries, query.places)
         failed: list[str] = []
         stop: list[BaseException] = []  # a problem that ends reading for every company
 
@@ -141,14 +161,14 @@ class CareerSystemSource(JobSource):
         without them, every job is listed (used by the directory check)."""
         raise NotImplementedError
 
-    def country_counts(self, employer: Employer, ctx: SourceContext) -> Counter:
-        """How many jobs the employer has per supported country (and OTHER), for the directory
-        check."""
-        counts: Counter = Counter()
+    def survey(self, employer: Employer, ctx: SourceContext) -> Survey:
+        """Which countries and towns the employer hires in, for the directory check."""
+        survey = Survey()
         for job in self.list_jobs(employer, ctx):
             for code in job_countries(job) or {"unknown"}:
-                counts[code] += 1
-        return counts
+                town = place_list.locate(job.location_text, code) if code in COUNTRIES else None
+                survey.add(code, town.name if town else None)
+        return survey
 
     def get(self, url: str, ctx: SourceContext, **kwargs) -> httpx.Response:
         """One request, counted and checked. 404 means the company's list doesn't exist."""
@@ -175,6 +195,39 @@ class CareerSystemSource(JobSource):
             return response.json()
         except ValueError as exc:
             raise SourceError(f"{self.name} didn't answer with a job list.") from exc
+
+
+# How much further than the person asked an employer's known town may be before the company is
+# skipped: enough to cover a site just outside town, or an office opened since the last check.
+TOWN_MARGIN_KM = 25
+
+
+def hires_near(employer: Employer, countries: list[str], places: list[Place]) -> bool:
+    """False only when the company's known towns in the searched countries are all too far.
+
+    Big employers have hundreds of jobs everywhere, and asking every one of them costs a lot of
+    requests. When the directory knows where a company hires and none of those towns is anywhere
+    near the place someone asked for, the company is skipped. Companies whose towns aren't known
+    are always asked.
+    """
+    for country in countries:
+        if country not in employer.countries:
+            continue
+        wanted = [p for p in places if p.country == country]
+        known = employer.towns.get(country)
+        if not wanted or not known:
+            return True
+        for place in wanted:
+            home = (place_list.find(place.local_name, country)
+                    or place_list.find(place.name, country))
+            if home is None or place.kind != "city":
+                return True
+            limit = (place.radius_km or DEFAULT_RADIUS_KM) + TOWN_MARGIN_KM
+            for name in known:
+                town = place_list.find(name, country)
+                if town is None or place_list.distance_km(home, town) <= limit:
+                    return True
+    return False
 
 
 def job_countries(job: FoundJob) -> set[str]:

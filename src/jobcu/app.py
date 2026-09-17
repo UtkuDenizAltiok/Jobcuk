@@ -15,6 +15,7 @@ from jobcu import COPYRIGHT, __version__
 from jobcu.build import build_id
 from jobcu.documents_api import router as documents_router
 from jobcu.paths import data_dir
+from jobcu.quality_api import router as quality_router
 from jobcu.search_api import router as search_router
 from jobcu.settings_api import router as settings_router
 
@@ -97,6 +98,7 @@ def create_app() -> FastAPI:
     app.include_router(settings_router)
     app.include_router(documents_router)
     app.include_router(search_router)
+    app.include_router(quality_router)
 
     @app.get("/", include_in_schema=False)
     def index() -> FileResponse:

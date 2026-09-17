@@ -273,7 +273,11 @@ def workday_handler(pages, robots="User-agent: *\nAllow: /External/\n", seen=Non
     facets = [{"facetParameter": "locationMainGroup", "values": [
         {"facetParameter": "locationCountry", "values": [
             {"descriptor": "Ireland", "id": "ie-id", "count": 30},
-            {"descriptor": "United States of America", "id": "us-id", "count": 70}]}]}]
+            {"descriptor": "United States of America", "id": "us-id", "count": 70}]},
+        {"facetParameter": "locations", "values": [
+            {"descriptor": "Ireland, Limerick", "id": "ie-lim", "count": 25},
+            {"descriptor": "Ireland, Cork", "id": "ie-cork", "count": 5},
+            {"descriptor": "United States of America, Austin", "id": "us-aus", "count": 70}]}]}]
 
     def handler(request):
         if request.url.path == "/robots.txt":
@@ -320,8 +324,8 @@ def test_workday_reads_the_searched_countries_newest_first_and_stops_at_old_jobs
     assert full.posted_at.date() == date(2026, 9, 15)
     assert full.work_mode == "hybrid" and full.job_types == ["full_time_permanent", "fixed_term"]
 
-    counts = wd.WorkdaySource().country_counts(board, context(workday_handler([])))
-    assert counts == {"IE": 30, "other": 70}
+    survey = wd.WorkdaySource().survey(board, context(workday_handler([])))
+    assert survey.counts == {"IE": 30, "other": 70}
 
 
 def test_workday_respects_robots_txt():
@@ -358,3 +362,30 @@ def test_workday_finds_the_country_filter_whatever_it_is_called():
     assert wd.country_facets({"facets": only_sites}) == {"de-muc": {"DE"}, "de-ber": {"DE"}}
     assert wd._country_facet([{"facetParameter": "timeType", "values": [
         {"descriptor": "Full time", "id": "ft", "count": 3}]}]) == ("", [])
+
+
+def test_the_directory_knows_where_a_company_hires_and_far_away_ones_are_skipped(monkeypatch):
+    """Asking hundreds of big employers costs requests, so companies with no site anywhere near
+    the place someone asked for are left out (unless the directory doesn't know their towns)."""
+    munich = Place(name="Munich", local_name="München", country="DE", kind="city", radius_km=50)
+    near = Employer("Near", "greenhouse", "near", ("DE",), towns={"DE": ("Garching",)})
+    far = Employer("Far", "greenhouse", "far", ("DE",), towns={"DE": ("Hamburg", "Berlin")})
+    unknown = Employer("Unknown", "greenhouse", "unknown", ("DE",))
+    monkeypatch.setattr(careers, "load_directory", lambda: (near, far, unknown))
+    source = greenhouse.GreenhouseSource()
+    assert [e.name for e in source.employers(["DE"], [munich])] == ["Near", "Unknown"]
+    # Without a named place every company is asked, and so is a company in another searched
+    # country.
+    assert len(source.employers(["DE"], [])) == 3
+    dublin = Place(name="Dublin", local_name="Dublin", country="IE", kind="city", radius_km=None)
+    assert [e.name for e in source.employers(["DE", "IE"], [munich, dublin])] == ["Near", "Unknown"]
+
+
+def test_the_shipped_directory_towns_are_real_places():
+    from jobcu import places
+
+    for entry in careers.load_directory():
+        for country, towns in entry.towns.items():
+            assert country in entry.countries
+            for town in towns:
+                assert places.find(town, country) is not None, f"{entry.name}: {town}"

@@ -13,7 +13,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from typing import Literal
 
-from jobcu import db, documents, jobstore, pipeline
+from jobcu import db, documents, jobstore, pipeline, quality
 from jobcu.ai.base import AIError
 from jobcu.ai.client import AIClient
 from jobcu.ai.usage import UsageLog
@@ -395,6 +395,32 @@ def _find_and_score(run, settings, client, keys, http, profile, plan, query, che
             {**asdict(r), "unique": unique.get(r.source, 0)} for r in collected.reports
         ],
     })
+    _keep_for_the_score_check(groups, shown, scored, unrelated)
+
+
+def _keep_for_the_score_check(groups, shown, scored, unrelated) -> None:
+    """Keeps a few of this search's real ads and left-out titles for the score check
+    (HANDOVER section 13). It costs nothing: everything is already in hand."""
+    ads = []
+    for index in shown:
+        best = groups[index].best_description_copy
+        if not best.description_is_complete:
+            continue
+        ads.append({
+            "source": best.source, "source_job_id": best.source_job_id, "title": best.title,
+            "company": best.company, "location": best.location_text, "url": best.url,
+            "score": (scored.get(index) or {}).get("score"), "text": best.description,
+        })
+    titles = [
+        {"source": groups[i].main.source, "source_job_id": groups[i].main.source_job_id,
+         "title": groups[i].main.title, "company": groups[i].main.company,
+         "location": groups[i].main.location_text, "url": groups[i].main.url}
+        for i in sorted(unrelated)
+    ]
+    try:
+        quality.collect_from_search(ads, titles)
+    except Exception:  # the score check is a helper, never a reason for a search to fail
+        log.exception("Keeping ads for the score check failed")
 
 
 manager = SearchManager()

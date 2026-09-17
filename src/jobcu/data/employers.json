@@ -20,7 +20,47 @@
     "PT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Rome"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Alan",
@@ -32,7 +72,26 @@
     "FR",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels",
+     "On"
+    ],
+    "ES": [
+     "Cañada del Hoyo",
+     "Madrid"
+    ],
+    "FR": [
+     "Bordeaux",
+     "Lyon",
+     "Marseille",
+     "Paris"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Ankorstore",
@@ -41,7 +100,12 @@
    "countries": [
     "FR"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "FR": [
+     "Paris"
+    ]
+   }
   },
   {
    "name": "Attio",
@@ -54,7 +118,12 @@
     "PL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Baseten",
@@ -63,7 +132,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Black Forest Labs",
@@ -75,7 +149,22 @@
     "GB",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Freiburg"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "ClickHouse",
@@ -90,7 +179,8 @@
     "PT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "ClickUp",
@@ -103,7 +193,15 @@
     "IE",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Cohere",
@@ -117,7 +215,29 @@
     "GB",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London",
+     "York"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Crusoe",
@@ -127,7 +247,15 @@
     "IE",
     "IS"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "IE": [
+     "Dublin"
+    ],
+    "IS": [
+     "Reykjanesbær"
+    ]
+   }
   },
   {
    "name": "Cursor",
@@ -137,7 +265,13 @@
     "DE",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London",
+     "York"
+    ]
+   }
   },
   {
    "name": "DeepL",
@@ -149,7 +283,23 @@
     "GB",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "DE": [
+     "Berlin",
+     "Köln",
+     "Munich"
+    ],
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Dust",
@@ -159,7 +309,15 @@
     "FR",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "ElevenLabs",
@@ -184,7 +342,38 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Cañada del Hoyo",
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London",
+     "York"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Enpal",
@@ -194,7 +383,41 @@
     "DE",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Bonn",
+     "Bremen",
+     "Dortmund",
+     "Dresden",
+     "Düsseldorf",
+     "Erfurt",
+     "Essen",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Hamburg",
+     "Hannover",
+     "Ingolstadt",
+     "Karlsruhe",
+     "Kiel",
+     "Konstanz",
+     "Köln",
+     "Magdeburg",
+     "Mainz",
+     "Munich",
+     "Nuremberg",
+     "Potsdam",
+     "Saarbrücken",
+     "Schwerin",
+     "Stuttgart",
+     "Troisdorf",
+     "Ulm"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "Flink",
@@ -203,7 +426,12 @@
    "countries": [
     "CH"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ]
+   }
   },
   {
    "name": "Granola",
@@ -212,7 +440,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Harvey",
@@ -227,7 +460,30 @@
     "IT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "LangChain",
@@ -238,7 +494,15 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Langdock",
@@ -247,7 +511,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ]
+   }
   },
   {
    "name": "Langfuse",
@@ -259,7 +528,21 @@
     "FR",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Ledger",
@@ -268,7 +551,13 @@
    "countries": [
     "FR"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "FR": [
+     "Montpellier",
+     "Paris"
+    ]
+   }
   },
   {
    "name": "Linear",
@@ -277,7 +566,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Lovable",
@@ -287,7 +581,15 @@
     "GB",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Luminovo",
@@ -297,7 +599,13 @@
     "DE",
     "ES"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Munich"
+    ]
+   }
   },
   {
    "name": "Marshmallow",
@@ -307,7 +615,15 @@
     "GB",
     "HU"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "HU": [
+     "Budapest"
+    ]
+   }
   },
   {
    "name": "Mistral AI",
@@ -325,7 +641,41 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Linz"
+    ],
+    "CH": [
+     "Lausanne",
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Modal",
@@ -335,7 +685,15 @@
     "GB",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Multiverse",
@@ -344,7 +702,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "n8n",
@@ -377,7 +740,22 @@
     "SI",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Florida de Liébana",
+     "Montenegro de Cameros"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Virginia"
+    ]
+   }
   },
   {
    "name": "Notion",
@@ -389,7 +767,21 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Omni",
@@ -399,7 +791,15 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "OpenAI",
@@ -415,7 +815,30 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Munich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Oyster",
@@ -436,7 +859,15 @@
     "RO",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "ES": [
+     "Cañada del Hoyo"
+    ],
+    "NL": [
+     "America"
+    ]
+   }
   },
   {
    "name": "Paddle",
@@ -448,7 +879,19 @@
     "NL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Boston",
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "PT": [
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "Parloa",
@@ -459,7 +902,18 @@
     "ES",
     "GB"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Pennylane",
@@ -474,7 +928,58 @@
     "IT",
     "PT"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Aix-en-Provence",
+     "Amiens",
+     "Angers",
+     "Annecy",
+     "Antibes",
+     "Avignon",
+     "Bayonne",
+     "Beauvais",
+     "Bordeaux",
+     "Boulogne-sur-Mer",
+     "Bourg-en-Bresse",
+     "Brest",
+     "Caen",
+     "Challans",
+     "Chambéry",
+     "Cholet",
+     "Colmar",
+     "Dunkirk",
+     "Grenoble",
+     "La Roche-sur-Yon",
+     "La Rochelle",
+     "Lamballe",
+     "Lannion",
+     "Laval",
+     "Le Havre",
+     "Le Mans",
+     "Lens",
+     "Les Sables-d'Olonne",
+     "Lille",
+     "Limoges",
+     "Lorient",
+     "Loudéac",
+     "Lyon",
+     "Marseille",
+     "Metz",
+     "Montpellier",
+     "Morlaix",
+     "Mulhouse",
+     "Nancy",
+     "Nantes"
+    ]
+   }
   },
   {
    "name": "Perplexity",
@@ -484,7 +989,15 @@
     "DE",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Photoroom",
@@ -493,7 +1006,12 @@
    "countries": [
     "FR"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "FR": [
+     "Paris"
+    ]
+   }
   },
   {
    "name": "Poolside",
@@ -502,7 +1020,8 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "PostHog",
@@ -511,7 +1030,8 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Qonto",
@@ -524,7 +1044,24 @@
     "IT",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Ramp",
@@ -534,7 +1071,12 @@
     "GB",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Sardine",
@@ -547,7 +1089,8 @@
     "IE",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Snowflake",
@@ -568,7 +1111,40 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Sorare",
@@ -577,7 +1153,12 @@
    "countries": [
     "FR"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "FR": [
+     "Paris"
+    ]
+   }
   },
   {
    "name": "Supabase",
@@ -586,7 +1167,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Synthesia",
@@ -598,7 +1184,22 @@
     "FR",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Tacto",
@@ -607,7 +1208,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Munich"
+    ]
+   }
   },
   {
    "name": "Temporal",
@@ -618,7 +1224,18 @@
     "FR",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Vanta",
@@ -628,7 +1245,15 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Wayflyer",
@@ -638,7 +1263,15 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Wayve",
@@ -648,7 +1281,15 @@
     "DE",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Leonberg"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Adyen",
@@ -665,7 +1306,37 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Affirm",
@@ -676,7 +1347,8 @@
     "GB",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Airbnb",
@@ -690,7 +1362,25 @@
     "IE",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "FR": [
+     "Orléans",
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "Algolia",
@@ -701,7 +1391,15 @@
     "FR",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Alpine Eagle",
@@ -711,7 +1409,14 @@
     "DE",
     "GB"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Aschheim",
+     "Karlsruhe",
+     "Munich"
+    ]
+   }
   },
   {
    "name": "Amplitude",
@@ -721,7 +1426,15 @@
     "GB",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Anduril",
@@ -732,7 +1445,19 @@
     "IE",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London",
+     "Wales"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Anthropic",
@@ -747,7 +1472,30 @@
     "IE",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Munich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "Asana",
@@ -761,7 +1509,27 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IS": [
+     "Reykjavík"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Bitpanda",
@@ -774,7 +1542,24 @@
     "FR",
     "RO"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "Blockchain.com",
@@ -785,7 +1570,15 @@
     "GB",
     "MT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Brunswick Group",
@@ -798,7 +1591,25 @@
     "GB",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "DE": [
+     "Berlin",
+     "Frankfurt am Main"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "Celonis",
@@ -815,7 +1626,36 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Cloudflare",
@@ -825,7 +1665,12 @@
     "FR",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "PT": [
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "Cockroach Labs",
@@ -834,7 +1679,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Cognism",
@@ -846,7 +1696,18 @@
     "HR",
     "PL"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Köln"
+    ],
+    "GB": [
+     "London"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Coinbase",
@@ -858,7 +1719,18 @@
     "IE",
     "LU"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "LU": [
+     "Luxembourg"
+    ]
+   }
   },
   {
    "name": "commercetools",
@@ -869,7 +1741,19 @@
     "ES",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "ES": [
+     "Valencia"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Contentful",
@@ -878,7 +1762,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Coursera",
@@ -888,7 +1777,12 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Databricks",
@@ -907,7 +1801,37 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "DK": [
+     "Århus"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Datadog",
@@ -928,7 +1852,40 @@
     "PT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris",
+     "Sophia Antipolis"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Rome"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Dropbox",
@@ -939,7 +1896,8 @@
     "IE",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Duolingo",
@@ -948,7 +1906,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Ebury",
@@ -974,7 +1937,73 @@
     "PT",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Antwerp"
+    ],
+    "CH": [
+     "Zürich"
+    ],
+    "CY": [
+     "Nicosia"
+    ],
+    "DE": [
+     "Düsseldorf",
+     "Frankfurt am Main",
+     "Hamburg"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid",
+     "Málaga",
+     "Valencia"
+    ],
+    "FR": [
+     "Lyon",
+     "Paris"
+    ],
+    "GB": [
+     "Birmingham",
+     "London"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IT": [
+     "Milan",
+     "Naples"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Katowice",
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon",
+     "Porto"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "Elastic",
@@ -998,7 +2027,18 @@
     "PT",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "ES": [
+     "Barcelona"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Epic Games",
@@ -1007,7 +2047,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Figma",
@@ -1018,7 +2063,18 @@
     "FR",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Flipdish",
@@ -1028,7 +2084,17 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Brighton",
+     "Cardiff",
+     "Glasgow",
+     "London",
+     "Newcastle upon Tyne",
+     "Pool"
+    ]
+   }
   },
   {
    "name": "Flix",
@@ -1044,7 +2110,41 @@
     "PL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Leipzig",
+     "Munich",
+     "Stuttgart"
+    ],
+    "GB": [
+     "Leeds",
+     "London"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Kraków",
+     "Warsaw",
+     "Wrocław"
+    ],
+    "PT": [
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "Form3",
@@ -1053,7 +2153,8 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "GetYourGuide",
@@ -1067,7 +2168,27 @@
     "GB",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "GitLab",
@@ -1084,7 +2205,8 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "GoCardless",
@@ -1095,7 +2217,19 @@
     "LV",
     "PT"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GB": [
+     "Leeds",
+     "London"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "PT": [
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "Grafana Labs",
@@ -1112,7 +2246,8 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Graphcore",
@@ -1122,7 +2257,17 @@
     "GB",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Bristol",
+     "Cambridge",
+     "London"
+    ],
+    "PL": [
+     "Gdańsk"
+    ]
+   }
   },
   {
    "name": "HEADBORNE.AI",
@@ -1131,7 +2276,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Jena"
+    ]
+   }
   },
   {
    "name": "HelloFresh",
@@ -1148,7 +2298,48 @@
     "NO",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Gent"
+    ],
+    "DE": [
+     "Barleben",
+     "Berlin",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Hannover",
+     "Magdeburg",
+     "Munich",
+     "Saarbrücken",
+     "Verden"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "FR": [
+     "Lisses",
+     "Paris"
+    ],
+    "GB": [
+     "Derby",
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Bleiswijk"
+    ],
+    "NO": [
+     "Moss",
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Helsing",
@@ -1162,7 +2353,28 @@
     "GB",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "EE": [
+     "Tallinn"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "HubSpot",
@@ -1175,7 +2387,21 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "IDnow",
@@ -1185,7 +2411,16 @@
     "DE",
     "FR"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "FR": [
+     "Rennes"
+    ]
+   }
   },
   {
    "name": "Intercom",
@@ -1196,7 +2431,18 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Isar Aerospace",
@@ -1207,7 +2453,18 @@
     "NO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Ottobrunn bei München"
+    ],
+    "NO": [
+     "Andenes"
+    ],
+    "SE": [
+     "Kiruna"
+    ]
+   }
   },
   {
    "name": "Isomorphic Labs",
@@ -1217,7 +2474,15 @@
     "CH",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Lausanne"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "JetBrains",
@@ -1232,7 +2497,32 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CY": [
+     "Limassol",
+     "Paphos"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "JFrog",
@@ -1244,7 +2534,18 @@
     "FR",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Kayzen",
@@ -1254,7 +2555,15 @@
     "DE",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Kirby Group Engineering",
@@ -1268,7 +2577,20 @@
     "IT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Glasgow"
+    ],
+    "IE": [
+     "Dublin",
+     "Galway",
+     "Limerick"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "KONUX",
@@ -1277,7 +2599,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Munich"
+    ]
+   }
   },
   {
    "name": "Marvel Fusion",
@@ -1286,7 +2613,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Munich"
+    ]
+   }
   },
   {
    "name": "MOIA",
@@ -1295,7 +2627,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ]
+   }
   },
   {
    "name": "MongoDB",
@@ -1314,7 +2651,45 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Frankfurt am Main",
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin"
+    ],
+    "IT": [
+     "Rome"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Monzo",
@@ -1325,7 +2700,19 @@
     "GB",
     "IE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Mozilla",
@@ -1341,7 +2728,8 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "N26",
@@ -1353,7 +2741,22 @@
     "ES",
     "FR"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ]
+   }
   },
   {
    "name": "Neo4j",
@@ -1365,7 +2768,15 @@
     "IT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "SE": [
+     "Malmö"
+    ]
+   }
   },
   {
    "name": "New Relic",
@@ -1377,7 +2788,21 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Okta",
@@ -1391,7 +2816,28 @@
     "IE",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Overstory",
@@ -1408,7 +2854,8 @@
     "PT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "OVO Energy",
@@ -1417,7 +2864,13 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GB": [
+     "Bristol",
+     "London"
+    ]
+   }
   },
   {
    "name": "PagerDuty",
@@ -1427,7 +2880,15 @@
     "GB",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "PT": [
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "Parloa",
@@ -1439,7 +2900,21 @@
     "GB",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "Pinterest",
@@ -1450,7 +2925,18 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Hamburg"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Planet",
@@ -1465,7 +2951,24 @@
     "SE",
     "SI"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Haarlem"
+    ],
+    "SE": [
+     "Stockholm"
+    ],
+    "SI": [
+     "Ljubljana"
+    ]
+   }
   },
   {
    "name": "PQShield",
@@ -1479,7 +2982,8 @@
     "GB",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Qualtrics",
@@ -1491,7 +2995,21 @@
     "IT",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "PL": [
+     "Kraków"
+    ]
+   }
   },
   {
    "name": "Raisin",
@@ -1502,7 +3020,19 @@
     "ES",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "London",
+     "Manchester"
+    ]
+   }
   },
   {
    "name": "Reddit",
@@ -1514,7 +3044,15 @@
     "IE",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Riot Games",
@@ -1525,7 +3063,18 @@
     "ES",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Riverlane",
@@ -1534,7 +3083,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Cambridge"
+    ]
+   }
   },
   {
    "name": "Robinhood",
@@ -1546,7 +3100,21 @@
     "LU",
     "SI"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "SI": [
+     "Ljubljana"
+    ]
+   }
   },
   {
    "name": "Roblox",
@@ -1556,7 +3124,15 @@
     "GB",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Rockstar Games",
@@ -1565,7 +3141,15 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Dundee",
+     "Edinburgh",
+     "Leeds",
+     "London"
+    ]
+   }
   },
   {
    "name": "Samsara",
@@ -1577,7 +3161,12 @@
     "GB",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Scale AI",
@@ -1587,7 +3176,15 @@
     "GB",
     "HU"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "HU": [
+     "Budapest"
+    ]
+   }
   },
   {
    "name": "Scout24",
@@ -1597,7 +3194,16 @@
     "AT",
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "DE": [
+     "Berlin",
+     "Hamburg"
+    ]
+   }
   },
   {
    "name": "Solaris",
@@ -1606,7 +3212,13 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Frankfurt am Main"
+    ]
+   }
   },
   {
    "name": "Speechify",
@@ -1633,7 +3245,102 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Gent"
+    ],
+    "CH": [
+     "Geneva",
+     "Lausanne",
+     "Zürich"
+    ],
+    "CZ": [
+     "Brno"
+    ],
+    "DE": [
+     "Berlin",
+     "Düsseldorf",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Köln",
+     "Munich"
+    ],
+    "ES": [
+     "Barcelona",
+     "Bilbao",
+     "Madrid",
+     "Málaga"
+    ],
+    "FI": [
+     "Helsinki",
+     "Tampere"
+    ],
+    "FR": [
+     "Lille",
+     "Lyon",
+     "Nantes",
+     "Paris",
+     "Toulouse"
+    ],
+    "GB": [
+     "Brighton",
+     "Bristol",
+     "Cambridge",
+     "Edinburgh",
+     "Glasgow",
+     "Leeds",
+     "London",
+     "Manchester",
+     "Newcastle upon Tyne",
+     "Nottingham",
+     "Oxford"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin",
+     "Galway"
+    ],
+    "IS": [
+     "Reykjavík"
+    ],
+    "IT": [
+     "Bologna",
+     "Milan",
+     "Turin"
+    ],
+    "LT": [
+     "Kaunas",
+     "Vilnius"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Eindhoven",
+     "The Hague",
+     "Utrecht"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PT": [
+     "Braga",
+     "Porto"
+    ],
+    "RO": [
+     "Iaşi"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Malmö",
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Squarespace",
@@ -1643,7 +3350,15 @@
     "IE",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "IE": [
+     "Dublin"
+    ],
+    "PT": [
+     "Aveiro"
+    ]
+   }
   },
   {
    "name": "Staffbase",
@@ -1653,7 +3368,17 @@
     "DE",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Chemnitz",
+     "Dresden"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Starburst",
@@ -1663,7 +3388,15 @@
     "GB",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Stripe",
@@ -1681,7 +3414,37 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "SumUp",
@@ -1705,7 +3468,186 @@
     "PL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels"
+    ],
+    "DE": [
+     "Berlin",
+     "Dortmund",
+     "Duisburg",
+     "Düsseldorf",
+     "Hamburg",
+     "Köln",
+     "Münster"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FI": [
+     "Helsinki",
+     "Tampere"
+    ],
+    "FR": [
+     "Agde",
+     "Albi",
+     "Amiens",
+     "Andernos-les-Bains",
+     "Avignon",
+     "Bayonne",
+     "Bergerac",
+     "Biarritz",
+     "Bordeaux",
+     "Boulogne-Billancourt",
+     "Brest",
+     "Béziers",
+     "Caen",
+     "Calais",
+     "Carcassonne",
+     "Castres",
+     "Cergy",
+     "Cherbourg",
+     "Courbevoie",
+     "Créteil",
+     "Deauville",
+     "Dijon",
+     "Dunkirk",
+     "Fontainebleau",
+     "Grenoble",
+     "Guyancourt",
+     "La Rochelle",
+     "Lacanau",
+     "Le Havre",
+     "Le Mans",
+     "Levallois-Perret",
+     "Limoges",
+     "Massy",
+     "Meaux",
+     "Melun",
+     "Metz",
+     "Mont-de-Marsan",
+     "Nanterre",
+     "Nantes",
+     "Narbonne"
+    ],
+    "GB": [
+     "Belfast",
+     "Blackpool",
+     "Bradford",
+     "Brighton",
+     "Cambridge",
+     "Canterbury",
+     "Cardiff",
+     "Carlisle",
+     "Chelmsford",
+     "Colchester",
+     "Coventry",
+     "Crewe",
+     "Darlington",
+     "Dartford",
+     "Derby",
+     "Derry",
+     "Edinburgh",
+     "Enfield Town",
+     "Glasgow",
+     "Guildford",
+     "Hemel Hempstead",
+     "Ipswich",
+     "Kingston upon Hull",
+     "Lancaster",
+     "Leeds",
+     "Leicester",
+     "Liverpool",
+     "London",
+     "Luton",
+     "Maidstone",
+     "Newcastle upon Tyne",
+     "Newry",
+     "Northampton",
+     "Norwich",
+     "Nottingham",
+     "Oxford",
+     "Peterborough",
+     "Portsmouth",
+     "Redhill",
+     "Sheffield"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "IE": [
+     "Carlow",
+     "Cork",
+     "Dublin",
+     "Kilkenny"
+    ],
+    "IT": [
+     "Alessandria",
+     "Andria",
+     "Aosta",
+     "Avellino",
+     "Bari",
+     "Benevento",
+     "Bergamo",
+     "Bologna",
+     "Bolzano",
+     "Catania",
+     "Chieti",
+     "Cosenza",
+     "Cuneo",
+     "Cusio",
+     "Frosinone",
+     "Genoa",
+     "Imperia",
+     "La Spezia",
+     "Latina",
+     "Lecce",
+     "Livorno",
+     "Lodi",
+     "Mazara del Vallo",
+     "Milan",
+     "Modena",
+     "Novara",
+     "Padua",
+     "Pavia",
+     "Perugia",
+     "Pescara",
+     "Potenza",
+     "Prato",
+     "Reggio Calabria",
+     "Rimini",
+     "Rome",
+     "Salerno",
+     "Savona",
+     "Siena",
+     "Trento",
+     "Trieste"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Rotterdam"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "Telnyx",
@@ -1722,7 +3664,37 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Kraków",
+     "Warsaw"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "The Trade Desk",
@@ -1731,7 +3703,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Tide",
@@ -1743,7 +3720,15 @@
     "GB",
     "LT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "FR": [
+     "Paris"
+    ]
+   }
   },
   {
    "name": "Tines",
@@ -1752,7 +3737,12 @@
    "countries": [
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Toast",
@@ -1762,7 +3752,16 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Birmingham",
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Trade Republic",
@@ -1771,7 +3770,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ]
+   }
   },
   {
    "name": "TrueLayer",
@@ -1781,7 +3785,15 @@
     "GB",
     "IE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Twilio",
@@ -1793,7 +3805,8 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Udemy",
@@ -1803,7 +3816,12 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Vercel",
@@ -1813,7 +3831,15 @@
     "DE",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Wayve",
@@ -1823,7 +3849,12 @@
     "DE",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "xAI",
@@ -1833,7 +3864,15 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Ajax Systems",
@@ -1856,7 +3895,69 @@
     "RO",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Geneva"
+    ],
+    "CY": [
+     "Nicosia"
+    ],
+    "DE": [
+     "Baden-Baden",
+     "Berlin",
+     "Köln",
+     "Stuttgart"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Marseille",
+     "Paris",
+     "Strasbourg",
+     "Toulouse"
+    ],
+    "GB": [
+     "Bristol",
+     "Cardiff",
+     "London",
+     "Manchester"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Bologna",
+     "Florence",
+     "Milan",
+     "Palermo",
+     "Rome",
+     "Verona"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Kraków",
+     "Warsaw",
+     "Łódź"
+    ],
+    "RO": [
+     "Târgu Jiu"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "Alimentiv",
@@ -1876,7 +3977,47 @@
     "PT",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels"
+    ],
+    "DE": [
+     "Berlin",
+     "Frankfurt am Main",
+     "Munich"
+    ],
+    "GB": [
+     "London"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "Binance",
@@ -1893,7 +4034,36 @@
     "PT",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "CarTrawler",
@@ -1903,7 +4073,15 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "FINN",
@@ -1912,7 +4090,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Munich"
+    ]
+   }
   },
   {
    "name": "Foxit",
@@ -1923,7 +4106,18 @@
     "IE",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "NL": [
+     "Rotterdam"
+    ]
+   }
   },
   {
    "name": "Insider One",
@@ -1939,7 +4133,27 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Match Group",
@@ -1951,7 +4165,21 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Mendix",
@@ -1966,7 +4194,31 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "NL": [
+     "Rotterdam"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Netlight",
@@ -1982,7 +4234,37 @@
     "NO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "DE": [
+     "Berlin",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Köln",
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Octopus Energy",
@@ -1995,7 +4277,68 @@
     "GB",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Braunschweig",
+     "Düsseldorf",
+     "Köln",
+     "Mannheim",
+     "Munich",
+     "Osnabrück",
+     "Pforzheim",
+     "Reutlingen",
+     "Rüsselsheim am Main",
+     "Ulm"
+    ],
+    "ES": [
+     "Barcelona",
+     "Bilbao",
+     "Granada",
+     "Madrid",
+     "Valencia"
+    ],
+    "FR": [
+     "Paris",
+     "Rennes"
+    ],
+    "GB": [
+     "Brighton",
+     "Bristol",
+     "Cardiff",
+     "Coventry",
+     "Croydon",
+     "Derby",
+     "Edinburgh",
+     "Enfield Town",
+     "Glasgow",
+     "Guildford",
+     "Hinckley",
+     "Leeds",
+     "Leicester",
+     "Liverpool",
+     "London",
+     "Manchester",
+     "Milton Keynes",
+     "Newcastle upon Tyne",
+     "Plymouth",
+     "Portadown",
+     "Reading",
+     "Slough",
+     "Southampton",
+     "Swansea",
+     "Walsall",
+     "Weybridge"
+    ],
+    "IT": [
+     "Ascoli Piceno",
+     "Cagliari",
+     "Milan",
+     "Rome",
+     "Verona"
+    ]
+   }
   },
   {
    "name": "Palantir",
@@ -2013,7 +4356,39 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Rover",
@@ -2024,7 +4399,19 @@
     "ES",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Spotify",
@@ -2036,7 +4423,21 @@
     "GB",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Thiga",
@@ -2045,7 +4446,12 @@
    "countries": [
     "FR"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "FR": [
+     "Paris"
+    ]
+   }
   },
   {
    "name": "WalkMe",
@@ -2056,7 +4462,18 @@
     "GB",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "GB": [
+     "London"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Zopa",
@@ -2065,7 +4482,13 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GB": [
+     "London",
+     "Manchester"
+    ]
+   }
   },
   {
    "name": "Aikido Security",
@@ -2081,7 +4504,34 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Gent"
+    ],
+    "DE": [
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "RO": [
+     "Bucharest",
+     "Iaşi"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "BCN Group",
@@ -2091,7 +4541,13 @@
     "GB",
     "IE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GB": [
+     "Manchester",
+     "Reading"
+    ]
+   }
   },
   {
    "name": "bunq",
@@ -2101,7 +4557,15 @@
     "BE",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Channable",
@@ -2112,7 +4576,18 @@
     "DK",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "DK": [
+     "Århus"
+    ],
+    "NL": [
+     "Utrecht"
+    ]
+   }
   },
   {
    "name": "Customs Support",
@@ -2130,7 +4605,47 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Antwerp",
+     "Gent"
+    ],
+    "CH": [
+     "Thayngen"
+    ],
+    "DE": [
+     "Bisingen",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Raunheim",
+     "Unterföhring"
+    ],
+    "ES": [
+     "Algeciras",
+     "Madrid"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Lyon"
+    ],
+    "GB": [
+     "Felixstowe"
+    ],
+    "IT": [
+     "La Spezia"
+    ],
+    "NL": [
+     "Rotterdam",
+     "Utrecht"
+    ],
+    "PL": [
+     "Kraków",
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Famly",
@@ -2141,7 +4656,18 @@
     "DK",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Alcemy",
@@ -2150,7 +4676,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ]
+   }
   },
   {
    "name": "BJAK",
@@ -2159,7 +4690,8 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Blueground",
@@ -2169,7 +4701,15 @@
     "AT",
     "GR"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "GR": [
+     "Athens"
+    ]
+   }
   },
   {
    "name": "Enjins",
@@ -2178,7 +4718,12 @@
    "countries": [
     "NL"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "NL": [
+     "Utrecht"
+    ]
+   }
   },
   {
    "name": "European Dynamics",
@@ -2197,7 +4742,36 @@
     "LU",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Geneva"
+    ],
+    "ES": [
+     "Valencia"
+    ],
+    "FR": [
+     "Strasbourg"
+    ],
+    "GR": [
+     "Athens",
+     "Irákleion",
+     "Maroúsi",
+     "Thessaloníki"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Hugging Face",
@@ -2206,7 +4780,12 @@
    "countries": [
     "FR"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "FR": [
+     "Paris"
+    ]
+   }
   },
   {
    "name": "Intuition Machines",
@@ -2222,7 +4801,20 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "GB": [
+     "London"
+    ],
+    "PL": [
+     "Kraków",
+     "Warsaw",
+     "Wrocław"
+    ]
+   }
   },
   {
    "name": "Nua Manufacturing",
@@ -2231,7 +4823,12 @@
    "countries": [
     "IE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "IE": [
+     "Carlow"
+    ]
+   }
   },
   {
    "name": "Nuada",
@@ -2240,7 +4837,12 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GB": [
+     "Belfast"
+    ]
+   }
   },
   {
    "name": "pubGENIUS",
@@ -2257,7 +4859,36 @@
     "PT",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "EE": [
+     "Tallinn"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "SHIELD",
@@ -2267,7 +4898,8 @@
     "DE",
     "ES"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Skroutz",
@@ -2276,7 +4908,13 @@
    "countries": [
     "GR"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GR": [
+     "Asprópyrgos",
+     "Athens"
+    ]
+   }
   },
   {
    "name": "Sky Handling Partner",
@@ -2285,7 +4923,12 @@
    "countries": [
     "IE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Starling Bank",
@@ -2295,7 +4938,18 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Cardiff",
+     "London",
+     "Manchester",
+     "Southampton"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Statom Group",
@@ -2304,7 +4958,21 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Bellshill",
+     "Dagenham",
+     "Edinburgh",
+     "Glasgow",
+     "Grays",
+     "Hertford",
+     "Immingham",
+     "London",
+     "Milton Keynes",
+     "Stansted Mountfitchet"
+    ]
+   }
   },
   {
    "name": "Tyk",
@@ -2318,7 +4986,12 @@
     "PL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Abbott",
@@ -2345,7 +5018,178 @@
     "SE",
     "SI"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Linz",
+     "Salzburg",
+     "Vienna"
+    ],
+    "BE": [
+     "Diegem",
+     "Machelen",
+     "Wavre",
+     "Zaventem"
+    ],
+    "CH": [
+     "Baar",
+     "Basel",
+     "Bern",
+     "Sankt Gallen",
+     "Zürich"
+    ],
+    "CZ": [
+     "Havířov",
+     "Prague",
+     "Ústí nad Labem"
+    ],
+    "DE": [
+     "Aachen",
+     "Berlin",
+     "Bremen",
+     "Dresden",
+     "Düsseldorf",
+     "Erfurt",
+     "Eschborn",
+     "Essen",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Halle (Saale)",
+     "Hamburg",
+     "Hannover",
+     "Jena",
+     "Karlsruhe",
+     "Kiel",
+     "Koblenz",
+     "Köln",
+     "Leipzig",
+     "Lübeck",
+     "Magdeburg",
+     "Mannheim",
+     "Munich",
+     "Münster",
+     "Neustadt am Rübenberge",
+     "Nuremberg",
+     "Stuttgart",
+     "Trier",
+     "Ulm",
+     "Wetzlar",
+     "Wiesbaden",
+     "Würzburg"
+    ],
+    "DK": [
+     "Copenhagen",
+     "Glostrup"
+    ],
+    "ES": [
+     "Barcelona",
+     "Granada",
+     "L'Hospitalet de Llobregat",
+     "Madrid",
+     "Quintanavides"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Angers",
+     "Bordeaux",
+     "Dijon",
+     "Issy-les-Moulineaux",
+     "Limoges",
+     "Lyon",
+     "Marseille",
+     "Nantes",
+     "Paris",
+     "Rennes",
+     "Rungis",
+     "Toulouse"
+    ],
+    "GB": [
+     "Abingdon",
+     "Bath",
+     "Birmingham",
+     "Bournemouth",
+     "Bristol",
+     "Dundee",
+     "Edinburgh",
+     "Exeter",
+     "Glasgow",
+     "Guildford",
+     "High Wycombe",
+     "Leeds",
+     "Liverpool",
+     "London",
+     "Loughton",
+     "Maidenhead",
+     "Manchester",
+     "Nottingham",
+     "Plymouth",
+     "Sittingbourne",
+     "Solihull",
+     "Swindon",
+     "Wales",
+     "Walsall",
+     "Witney"
+    ],
+    "GR": [
+     "Álimos"
+    ],
+    "IE": [
+     "Cluain Meala",
+     "Cootehill",
+     "Cork",
+     "Donegal",
+     "Dublin",
+     "Galway",
+     "Kilkenny",
+     "Longford",
+     "Sligo",
+     "Tipperary"
+    ],
+    "IT": [
+     "Bari",
+     "Bologna",
+     "Brescia",
+     "Catania",
+     "Florence",
+     "Milan",
+     "Naples",
+     "Novara",
+     "Palermo",
+     "Parma",
+     "Pescara",
+     "Prato",
+     "Rome",
+     "Salerno",
+     "Taranto",
+     "Turin"
+    ],
+    "NL": [
+     "Breda",
+     "Heerlen",
+     "Hoofddorp",
+     "Olst",
+     "Weesp",
+     "Zwolle"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Porto"
+    ],
+    "SE": [
+     "Solna",
+     "Stockholm"
+    ],
+    "SI": [
+     "Ljubljana"
+    ]
+   }
   },
   {
    "name": "Accenture",
@@ -2377,7 +5221,177 @@
     "SE",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Innsbruck",
+     "Linz",
+     "Vienna"
+    ],
+    "BE": [
+     "Antwerp",
+     "Brussels"
+    ],
+    "CH": [
+     "Basel",
+     "Bern",
+     "Geneva",
+     "Lausanne",
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Aachen",
+     "Augsburg",
+     "Berlin",
+     "Bonn",
+     "Braunschweig",
+     "Bremen",
+     "Böblingen",
+     "Dresden",
+     "Düsseldorf",
+     "Essen",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Hannover",
+     "Jena",
+     "Kaiserslautern",
+     "Mannheim",
+     "Munich",
+     "Stuttgart",
+     "Wolfsburg",
+     "Würzburg"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "A Coruña",
+     "Alicante",
+     "Almería",
+     "Barcelona",
+     "Bilbao",
+     "Córdoba",
+     "Gasteiz / Vitoria",
+     "Gijón",
+     "Girona",
+     "La Fuente de San Esteban",
+     "Madrid",
+     "Murcia",
+     "Málaga",
+     "Pamplona",
+     "Santander",
+     "Sevilla",
+     "Tarragona",
+     "Valencia",
+     "Zaragoza"
+    ],
+    "FI": [
+     "Helsinki",
+     "Tampere"
+    ],
+    "FR": [
+     "Brest",
+     "Clermont-Ferrand",
+     "Lyon",
+     "Montoir-de-Bretagne",
+     "Paris",
+     "Sophia Antipolis",
+     "Toulouse"
+    ],
+    "GB": [
+     "Bath",
+     "Birmingham",
+     "Bristol",
+     "Cheltenham",
+     "Edinburgh",
+     "Glasgow",
+     "Leeds",
+     "London",
+     "Manchester",
+     "Newcastle upon Tyne",
+     "Portsmouth"
+    ],
+    "GR": [
+     "Athens",
+     "Thessaloníki"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Bari",
+     "Bologna",
+     "Cagliari",
+     "Milan",
+     "Modena",
+     "Naples",
+     "Padua",
+     "Palermo",
+     "Rome",
+     "Trieste",
+     "Turin",
+     "Venice",
+     "Verona"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Eindhoven"
+    ],
+    "NO": [
+     "Oslo",
+     "Stavanger",
+     "Trondheim"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Katowice",
+     "Kraków",
+     "Szczecin",
+     "Warsaw",
+     "Wrocław",
+     "Łódź"
+    ],
+    "PT": [
+     "Aveiro",
+     "Braga",
+     "Coimbra",
+     "Lisbon",
+     "Matosinhos",
+     "Porto"
+    ],
+    "RO": [
+     "Braşov",
+     "Bucharest",
+     "Cluj-Napoca",
+     "Iaşi",
+     "Timişoara",
+     "Târgu Mureş"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Malmö",
+     "Stockholm"
+    ],
+    "SK": [
+     "Bratislava",
+     "Košice"
+    ]
+   }
   },
   {
    "name": "Accenture (AvanadeCareers)",
@@ -2397,7 +5411,80 @@
     "PT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Innsbruck",
+     "Linz",
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels",
+     "Gent"
+    ],
+    "CH": [
+     "Geneva",
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Düsseldorf",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Munich",
+     "Stuttgart",
+     "Ulm"
+    ],
+    "ES": [
+     "Alicante",
+     "Barcelona",
+     "La Fuente de San Esteban",
+     "Madrid",
+     "Málaga",
+     "Sevilla"
+    ],
+    "FR": [
+     "Clermont-Ferrand",
+     "Issy-les-Moulineaux",
+     "Lyon",
+     "Nantes",
+     "Paris"
+    ],
+    "GB": [
+     "Birmingham",
+     "Bristol",
+     "Durham",
+     "Edinburgh",
+     "London",
+     "Manchester",
+     "Newcastle upon Tyne"
+    ],
+    "IT": [
+     "Bologna",
+     "Cagliari",
+     "Florence",
+     "Milan",
+     "Naples",
+     "Padua",
+     "Perugia",
+     "Rome",
+     "Turin"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Kraków",
+     "Wrocław"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Agilent (Agilent_Careers)",
@@ -2417,7 +5504,35 @@
     "NO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DK": [
+     "Glostrup"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "FR": [
+     "Amiens",
+     "Les Ulis",
+     "Lyon",
+     "Toulouse"
+    ],
+    "GB": [
+     "Cheadle",
+     "Church Stretton",
+     "Craven Arms",
+     "Harwell"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin"
+    ],
+    "IT": [
+     "Milan",
+     "Turin"
+    ]
+   }
   },
   {
    "name": "Agilent (Agilent_Student_Careers)",
@@ -2430,7 +5545,23 @@
     "IT",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DK": [
+     "Glostrup"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "IT": [
+     "Bologna",
+     "Milan",
+     "Turin"
+    ],
+    "NL": [
+     "Middelburg"
+    ]
+   }
   },
   {
    "name": "AIG",
@@ -2451,7 +5582,47 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Glattbrugg",
+     "Zürich"
+    ],
+    "DE": [
+     "Frankfurt am Main",
+     "Hamburg",
+     "Heilbronn",
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Courbevoie"
+    ],
+    "GB": [
+     "Birmingham",
+     "Church Street",
+     "Glasgow",
+     "London",
+     "Manchester"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Airbus",
@@ -2475,7 +5646,97 @@
     "SE",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels",
+     "Diegem"
+    ],
+    "DE": [
+     "Augsburg",
+     "Berlin",
+     "Bremen",
+     "Donauwörth",
+     "Hamburg",
+     "Hannover",
+     "Immenstaad am Bodensee",
+     "Jena",
+     "Kassel",
+     "Kiel",
+     "Manching",
+     "Munich",
+     "Ottobrunn bei München",
+     "Potsdam",
+     "Stuttgart",
+     "Ulm"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Barcelona",
+     "Getafe",
+     "Madrid",
+     "San Pablo de la Moraleja",
+     "Sevilla"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Bordeaux",
+     "Clermont-Ferrand",
+     "Marseille",
+     "Montoir-de-Bretagne",
+     "Nantes",
+     "Paris",
+     "Rennes",
+     "Toulouse",
+     "Tremblay-en-France"
+    ],
+    "GB": [
+     "Belfast",
+     "Bristol",
+     "Chippenham",
+     "Guildford",
+     "London",
+     "Newcastle upon Tyne",
+     "Newport",
+     "Oxford",
+     "Portsmouth",
+     "Shrewsbury",
+     "Stevenage"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Rome",
+     "Trento",
+     "Villafranca di Verona"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Kraków",
+     "Łódź"
+    ],
+    "PT": [
+     "Coimbra",
+     "Lisbon"
+    ],
+    "RO": [
+     "Braşov",
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "Amgen",
@@ -2497,7 +5758,57 @@
     "RO",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Diegem"
+    ],
+    "CH": [
+     "Rotkreuz"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Munich"
+    ],
+    "ES": [
+     "Barcelona",
+     "Valencia"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Cambridge",
+     "Edinburgh",
+     "London",
+     "Manchester",
+     "Uxbridge"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "IE": [
+     "Dublin",
+     "Dún Laoghaire"
+    ],
+    "IS": [
+     "Reykjavík"
+    ],
+    "NL": [
+     "Breda"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "Analog Devices",
@@ -2515,7 +5826,45 @@
     "NL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Hamburg",
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Valencia"
+    ],
+    "FR": [
+     "Sophia Antipolis",
+     "Wissous"
+    ],
+    "GB": [
+     "Cambridge",
+     "Glasgow",
+     "Hayes",
+     "Newbury"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin",
+     "Limerick"
+    ],
+    "IT": [
+     "Bari",
+     "Catania",
+     "Milan"
+    ],
+    "NL": [
+     "Eindhoven"
+    ],
+    "RO": [
+     "Cluj-Napoca"
+    ]
+   }
   },
   {
    "name": "Applied Materials",
@@ -2536,7 +5885,36 @@
     "NO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Graz",
+     "Villach"
+    ],
+    "BE": [
+     "Leuven"
+    ],
+    "DE": [
+     "Berlin",
+     "Dresden"
+    ],
+    "IE": [
+     "Dublin",
+     "Leixlip"
+    ],
+    "IT": [
+     "Catania",
+     "Milan"
+    ],
+    "NL": [
+     "Eindhoven",
+     "Hoofddorp",
+     "Nijmegen"
+    ],
+    "NO": [
+     "Oslo"
+    ]
+   }
   },
   {
    "name": "Aptiv",
@@ -2554,7 +5932,32 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich",
+     "Neumarkt in der Oberpfalz",
+     "Unterschleißheim",
+     "Wuppertal"
+    ],
+    "FR": [
+     "Épernon"
+    ],
+    "HU": [
+     "Tatabánya"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Kraków"
+    ],
+    "PT": [
+     "Braga",
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "ASML",
@@ -2563,7 +5966,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ]
+   }
   },
   {
    "name": "AstraZeneca",
@@ -2591,7 +5999,86 @@
     "SI",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "CH": [
+     "Baar"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Brandenburg an der Havel",
+     "Bremen",
+     "Hamburg",
+     "Munich",
+     "Sachsen bei Ansbach",
+     "Schleswig"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Dunkirk",
+     "La Defense",
+     "Levallois-Perret"
+    ],
+    "GB": [
+     "Cambridge",
+     "Leeds",
+     "Liverpool",
+     "London",
+     "Luton",
+     "Macclesfield"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Athlone",
+     "Dublin"
+    ],
+    "IT": [
+     "Catania"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Nijmegen"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Stockholm"
+    ],
+    "SI": [
+     "Ljubljana"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "AVEVA (AVEVA_careers)",
@@ -2608,7 +6095,37 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Frankfurt am Main"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "La Defense",
+     "Paris"
+    ],
+    "GB": [
+     "Cambridge",
+     "Derry",
+     "London"
+    ],
+    "IT": [
+     "Gallarate",
+     "Milan"
+    ],
+    "NO": [
+     "Stavanger"
+    ],
+    "SE": [
+     "Malmö"
+    ]
+   }
   },
   {
    "name": "AVEVA (ETAP_Careers)",
@@ -2623,7 +6140,31 @@
     "IT",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "DE": [
+     "Mönchengladbach",
+     "Viernheim"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Grenoble"
+    ],
+    "IT": [
+     "Bergamo"
+    ],
+    "PL": [
+     "Kraków"
+    ]
+   }
   },
   {
    "name": "AVEVA (RIB_Careers)",
@@ -2635,7 +6176,25 @@
     "ES",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Freiburg",
+     "Mannheim",
+     "Stuttgart",
+     "Villingen-Schwenningen"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Aviva (Aviva_Investors_External)",
@@ -2646,7 +6205,18 @@
     "LU",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Aviva (External)",
@@ -2658,7 +6228,29 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Birmingham",
+     "Bristol",
+     "Glasgow",
+     "Leeds",
+     "London",
+     "Manchester",
+     "Norwich",
+     "Sheffield",
+     "York"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Barclays",
@@ -2675,7 +6267,58 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Geneva",
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Frankfurt am Main",
+     "Hamburg"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Birmingham",
+     "Bournemouth",
+     "Canary Wharf",
+     "Church Street",
+     "Derby",
+     "Edinburgh",
+     "Glasgow",
+     "Guildford",
+     "Inverness",
+     "Ipswich",
+     "Leeds",
+     "Liverpool",
+     "Manchester",
+     "Newport",
+     "Northampton",
+     "Norwich",
+     "Nottingham",
+     "Oxford",
+     "Saint Andrews",
+     "Southampton",
+     "Sunderland"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Baxter",
@@ -2695,7 +6338,56 @@
     "PL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Essen",
+     "Munich",
+     "Saalfeld"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Montpellier"
+    ],
+    "GB": [
+     "Gloucester",
+     "Leicester",
+     "London",
+     "Newbury",
+     "Northampton",
+     "Oxford",
+     "Reading",
+     "Stockport",
+     "Thetford"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Castel Maggiore",
+     "Rome"
+    ],
+    "MT": [
+     "Marsa",
+     "San Ġwann"
+    ],
+    "NL": [
+     "Tilburg",
+     "Utrecht"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Porto",
+     "Porto Salvo"
+    ]
+   }
   },
   {
    "name": "BBVA",
@@ -2709,7 +6401,22 @@
     "GB",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "ES": [
+     "Madrid",
+     "Santander"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "Benchmark Electronics (PGH_Careers)",
@@ -2721,7 +6428,22 @@
     "GR",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Hannover"
+    ],
+    "GB": [
+     "Manchester",
+     "Newport"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "IT": [
+     "Naples"
+    ]
+   }
   },
   {
    "name": "Biogen",
@@ -2738,7 +6460,38 @@
     "PL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Baar",
+     "Solothurn"
+    ],
+    "DE": [
+     "Munich"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Maidenhead"
+    ],
+    "IE": [
+     "Athlone"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "BlackRock",
@@ -2755,7 +6508,34 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DK": [
+     "Copenhagen"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Edinburgh",
+     "London"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Bristol Myers Squibb",
@@ -2770,7 +6550,41 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "DE": [
+     "Augsburg",
+     "Berlin",
+     "Braunschweig",
+     "Dortmund",
+     "Dresden",
+     "Erlangen",
+     "Hannover",
+     "Heidelberg",
+     "Munich",
+     "Nuremberg",
+     "Regensburg",
+     "Stuttgart",
+     "Würzburg"
+    ],
+    "GB": [
+     "Cambridge",
+     "Chester",
+     "Uxbridge"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "NL": [
+     "Leiden"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Broadcom",
@@ -2781,7 +6595,15 @@
     "DE",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "DE": [
+     "Regensburg"
+    ]
+   }
   },
   {
    "name": "Cadence",
@@ -2799,7 +6621,48 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels",
+     "Mont-Saint-Guibert"
+    ],
+    "DE": [
+     "Braunschweig",
+     "Hamburg",
+     "Munich"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Paris",
+     "Toulouse",
+     "Valbonne"
+    ],
+    "GB": [
+     "Bracknell",
+     "Cambridge",
+     "Edinburgh",
+     "Newcastle upon Tyne",
+     "Nottingham"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin",
+     "Galway"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "PL": [
+     "Katowice",
+     "Warsaw"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Capita",
@@ -2809,7 +6672,46 @@
     "GB",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Belfast",
+     "Bolton",
+     "Brighton",
+     "Cardiff",
+     "Chelmsford",
+     "Chippenham",
+     "Colchester",
+     "Coventry",
+     "Derby",
+     "Edinburgh",
+     "Exeter",
+     "Glasgow",
+     "Ipswich",
+     "Leeds",
+     "Leicester",
+     "Lincoln",
+     "London",
+     "Manchester",
+     "Northampton",
+     "Nottingham",
+     "Peterborough",
+     "Plymouth",
+     "Portsmouth",
+     "Preston",
+     "Reading",
+     "Royal Tunbridge Wells",
+     "Stevenage",
+     "Stoke-on-Trent",
+     "Winchester",
+     "Woking",
+     "Yeovil"
+    ],
+    "PL": [
+     "Kraków",
+     "Opole"
+    ]
+   }
   },
   {
    "name": "Centrica",
@@ -2821,7 +6723,39 @@
     "GB",
     "IE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "BE": [
+     "Antwerp"
+    ],
+    "DK": [
+     "Aalborg",
+     "Copenhagen"
+    ],
+    "GB": [
+     "Aberdeen",
+     "Birmingham",
+     "Brighton",
+     "Bristol",
+     "Cardiff",
+     "Edinburgh",
+     "Leicester",
+     "London",
+     "Manchester",
+     "Newcastle upon Tyne",
+     "Oxford",
+     "Peterborough",
+     "Portsmouth",
+     "Slough",
+     "Stockport",
+     "Swansea",
+     "Uxbridge",
+     "Windsor"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Citi",
@@ -2843,7 +6777,56 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Geneva",
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Belfast",
+     "Edinburgh",
+     "London"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Bydgoszcz",
+     "Gdańsk",
+     "Kraków",
+     "Olsztyn",
+     "Warsaw",
+     "Łódź"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Coca-Cola",
@@ -2861,7 +6844,8 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Danaher",
@@ -2887,7 +6871,59 @@
     "PT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Salzburg",
+     "Vienna"
+    ],
+    "BE": [
+     "Antwerp",
+     "Brussels"
+    ],
+    "DE": [
+     "Berlin",
+     "Bremen",
+     "Hamburg"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid",
+     "Málaga",
+     "Sevilla"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IT": [
+     "Bari",
+     "Bergamo",
+     "Bologna",
+     "Brescia",
+     "Catania",
+     "Florence",
+     "Genoa",
+     "Messina",
+     "Milan",
+     "Modena",
+     "Naples",
+     "Padua",
+     "Palermo",
+     "Parma",
+     "Pavia",
+     "Perugia",
+     "Prato",
+     "Reggio nell'Emilia",
+     "Rome",
+     "Trieste",
+     "Turin",
+     "Venice",
+     "Verona"
+    ],
+    "PT": [
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "DATEV (Datev_Careers)",
@@ -2896,7 +6932,20 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Bremen",
+     "Essen",
+     "Frankfurt am Main",
+     "Hannover",
+     "Kassel",
+     "Köln",
+     "Mannheim",
+     "Nuremberg"
+    ]
+   }
   },
   {
    "name": "DATEV (ENG_DATEV)",
@@ -2905,7 +6954,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Nuremberg"
+    ]
+   }
   },
   {
    "name": "Deloitte Ireland",
@@ -2915,7 +6969,18 @@
     "GB",
     "IE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "GB": [
+     "Belfast"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin",
+     "Galway",
+     "Limerick"
+    ]
+   }
   },
   {
    "name": "Deutsche Bank (DBWebsite)",
@@ -2935,7 +7000,46 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Geneva",
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Essen",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Hannover",
+     "Köln",
+     "Mainz",
+     "Mannheim",
+     "Munich",
+     "Nuremberg",
+     "Stuttgart"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Birmingham",
+     "London"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "Deutsche Bank (DWSWebsite)",
@@ -2948,7 +7052,25 @@
     "IT",
     "LU"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Frankfurt am Main"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "LU": [
+     "Luxembourg"
+    ]
+   }
   },
   {
    "name": "Deutsche Bank (PBWebsite)",
@@ -2957,7 +7079,51 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Aachen",
+     "Aalen",
+     "Bad Homburg vor der Höhe",
+     "Baden-Baden",
+     "Berlin",
+     "Bielefeld",
+     "Bochum",
+     "Bonn",
+     "Braunschweig",
+     "Bremen",
+     "Chemnitz",
+     "Darmstadt",
+     "Dresden",
+     "Duisburg",
+     "Erfurt",
+     "Essen",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Friedrichshafen",
+     "Göttingen",
+     "Gütersloh",
+     "Hamburg",
+     "Hamm",
+     "Hannover",
+     "Harburg",
+     "Heidelberg",
+     "Heilbronn",
+     "Kaiserslautern",
+     "Karlsruhe",
+     "Kiel",
+     "Konstanz",
+     "Köln",
+     "Leverkusen",
+     "Lörrach",
+     "Lübeck",
+     "Lüneburg",
+     "Magdeburg",
+     "Mainz",
+     "Mannheim",
+     "Marburg an der Lahn"
+    ]
+   }
   },
   {
    "name": "Diageo",
@@ -2973,7 +7139,41 @@
     "PT",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Hamburg"
+    ],
+    "GB": [
+     "Alloa",
+     "Belfast",
+     "Edinburgh",
+     "Elgin",
+     "Glasgow",
+     "Leven",
+     "London",
+     "Menstrie",
+     "Runcorn"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "Dyson (dyson_careers)",
@@ -2989,7 +7189,42 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Pasching",
+     "Vienna"
+    ],
+    "DE": [
+     "Berlin",
+     "Brandenburg an der Havel",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Köln",
+     "Metzingen",
+     "Munich",
+     "Schleswig"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Marseille",
+     "Paris"
+    ],
+    "GB": [
+     "Malmesbury"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Roermond",
+     "Rotterdam",
+     "Utrecht"
+    ],
+    "PL": [
+     "Kraków"
+    ]
+   }
   },
   {
    "name": "Edwards Lifesciences",
@@ -3009,7 +7244,46 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Nyon"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Garching",
+     "Munich"
+    ],
+    "ES": [
+     "Valencia"
+    ],
+    "FR": [
+     "Guyancourt",
+     "Roussillon"
+    ],
+    "IE": [
+     "Limerick",
+     "Shannon"
+    ],
+    "IT": [
+     "Florence",
+     "Milan",
+     "Naples",
+     "Rome"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Breda"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Emerson (Emerson_College_Affiliated_Faculty)",
@@ -3018,7 +7292,8 @@
    "countries": [
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Equinor (EQNR)",
@@ -3029,7 +7304,20 @@
     "NO",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Aberdeen",
+     "Great Yarmouth",
+     "London"
+    ],
+    "NO": [
+     "Stavanger"
+    ],
+    "PL": [
+     "Łeba"
+    ]
+   }
   },
   {
    "name": "Finnair (finnair)",
@@ -3039,7 +7327,15 @@
     "EE",
     "FI"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "EE": [
+     "Tartu"
+    ],
+    "FI": [
+     "Vantaa"
+    ]
+   }
   },
   {
    "name": "Finnair (finnair1)",
@@ -3048,7 +7344,12 @@
    "countries": [
     "FI"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "FI": [
+     "Vantaa"
+    ]
+   }
   },
   {
    "name": "Fiserv (EXT)",
@@ -3061,7 +7362,24 @@
     "IT",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Bad Homburg vor der Höhe",
+     "Frankfurt am Main",
+     "Nuremberg"
+    ],
+    "IE": [
+     "Dublin",
+     "Nenagh"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "FNZ",
@@ -3077,7 +7395,37 @@
     "LU",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Chiasso"
+    ],
+    "CZ": [
+     "Brno"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "GB": [
+     "Birmingham",
+     "Bolton",
+     "Bristol",
+     "Edinburgh",
+     "Ipswich",
+     "London",
+     "Newcastle upon Tyne",
+     "Salisbury"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Fresenius Medical Care",
@@ -3101,7 +7449,227 @@
     "SI",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Krems an der Donau"
+    ],
+    "BE": [
+     "Willebroek"
+    ],
+    "CH": [
+     "Basel",
+     "Horgen / Oberdorf",
+     "Münchenstein",
+     "Zürich"
+    ],
+    "CZ": [
+     "Benešov",
+     "Hlinsko",
+     "Kladno",
+     "Nymburk",
+     "Prague",
+     "Sokolov"
+    ],
+    "DE": [
+     "Aalen",
+     "Ahrensburg",
+     "Augsburg",
+     "Bad Homburg vor der Höhe",
+     "Berlin",
+     "Betzdorf",
+     "Bielefeld",
+     "Buchholz in der Nordheide",
+     "Buxtehude",
+     "Böhl-Iggelheim",
+     "Daun",
+     "Dortmund",
+     "Döbeln",
+     "Friedberg",
+     "Fürth",
+     "Gelsenkirchen",
+     "Gerolstein",
+     "Göttingen",
+     "Haan",
+     "Hagen",
+     "Hamburg",
+     "Heilbronn",
+     "Hilden",
+     "Ingolstadt",
+     "Kaufering",
+     "Krefeld",
+     "Lahr",
+     "Leverkusen",
+     "Ludwigshafen am Rhein",
+     "Mettmann",
+     "Munich",
+     "Mutlangen",
+     "Mönchengladbach",
+     "Mühlhausen",
+     "Münster",
+     "Oberhausen",
+     "Papenburg",
+     "Pirmasens",
+     "Püttlingen",
+     "Recklinghausen"
+    ],
+    "ES": [
+     "Almería",
+     "Aranda de Duero",
+     "Badajoz",
+     "Barcelona",
+     "Bilbao",
+     "Cadiz",
+     "Cáceres",
+     "Córdoba",
+     "L'Hospitalet de Llobregat",
+     "Las Palmas de Gran Canaria",
+     "León",
+     "Madrid",
+     "Murcia",
+     "Málaga",
+     "Palma",
+     "Rioja",
+     "Sant Boi de Llobregat",
+     "Santa Cruz de Tenerife",
+     "Sevilla",
+     "Tarragona",
+     "Teruel",
+     "Tres Cantos",
+     "Valencia"
+    ],
+    "FR": [
+     "Champigny-sur-Marne",
+     "L'Arbresle",
+     "Montpellier",
+     "Sainte-Foy-lès-Lyon"
+    ],
+    "GB": [
+     "Aberystwyth",
+     "Barnstaple",
+     "Birmingham",
+     "Bodmin",
+     "Bridgend",
+     "Bridlington",
+     "Bristol",
+     "Cardiff",
+     "Carmarthen",
+     "Chelmsford",
+     "Crewe",
+     "Haverfordwest",
+     "Kingston upon Hull",
+     "Lancaster",
+     "Liverpool",
+     "Llandrindod Wells",
+     "London",
+     "Macclesfield",
+     "Merthyr Tydfil",
+     "Milton Keynes",
+     "Newcastle upon Tyne",
+     "Newport",
+     "Norwich",
+     "Oxford",
+     "Port Talbot",
+     "Portsmouth",
+     "Reading",
+     "Rochdale",
+     "Stockport",
+     "Stratford-upon-Avon",
+     "Taunton",
+     "Worksop",
+     "Yeovil"
+    ],
+    "IE": [
+     "Dublin",
+     "Ennis",
+     "Kilkenny",
+     "Limerick"
+    ],
+    "IT": [
+     "Bergamo",
+     "Cremona",
+     "Messina",
+     "Milan",
+     "Naples",
+     "Padua",
+     "Rome"
+    ],
+    "NL": [
+     "'s-Hertogenbosch",
+     "Amsterdam"
+    ],
+    "PL": [
+     "Chełm",
+     "Częstochowa",
+     "Drawsko Pomorskie",
+     "Dąbrowa Tarnowska",
+     "Gniezno",
+     "Gorlice",
+     "Gryfice",
+     "Jasło",
+     "Jędrzejów",
+     "Kostrzyn nad Odrą",
+     "Koszalin",
+     "Kościan",
+     "Kłodzko",
+     "Lubań",
+     "Lubin",
+     "Mrągowo",
+     "Myślenice",
+     "Mława",
+     "Nowy Sącz",
+     "Nowy Targ",
+     "Ostróda",
+     "Ostrów",
+     "Oświęcim",
+     "Poznań",
+     "Puławy",
+     "Radom",
+     "Rawicz",
+     "Resko",
+     "Stargard",
+     "Szamotuły",
+     "Szczecin",
+     "Toruń",
+     "Wodzisław Śląski",
+     "Wołomin",
+     "Wrocław",
+     "Zabrze",
+     "Zawiercie",
+     "Świdnica",
+     "Żywiec"
+    ],
+    "PT": [
+     "Almada",
+     "Amadora",
+     "Barreiro",
+     "Faro",
+     "Funchal",
+     "Grândola",
+     "Lisbon",
+     "Lumiar",
+     "Portimão",
+     "Porto",
+     "Santiago do Cacém",
+     "Setúbal",
+     "Tomar",
+     "Évora"
+    ],
+    "RO": [
+     "Drobeta-Turnu Severin",
+     "Sighetu Marmaţiei",
+     "Suceava",
+     "Târgovişte"
+    ],
+    "SI": [
+     "Celje"
+    ],
+    "SK": [
+     "Košice",
+     "Nové Zámky",
+     "Trnava"
+    ]
+   }
   },
   {
    "name": "GE Aerospace",
@@ -3114,7 +7682,29 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CZ": [
+     "Prague"
+    ],
+    "GB": [
+     "Cardiff",
+     "Cheltenham",
+     "Chester",
+     "Durham",
+     "Gloucester",
+     "Norwich"
+    ],
+    "IT": [
+     "Rivalta di Torino"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "GE Aerospace (Only_Confidential_Executive_Recruiting)",
@@ -3123,7 +7713,12 @@
    "countries": [
     "CZ"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "CZ": [
+     "Prague"
+    ]
+   }
   },
   {
    "name": "GE Vernova",
@@ -3140,7 +7735,48 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Barcelona",
+     "Castelló de la Plana",
+     "Madrid"
+    ],
+    "FI": [
+     "Tampere"
+    ],
+    "FR": [
+     "Grenoble",
+     "Issy-les-Moulineaux",
+     "Massy",
+     "Montpellier"
+    ],
+    "GB": [
+     "Edinburgh",
+     "Inverness",
+     "Leicester",
+     "Lisburn",
+     "Livingston",
+     "London"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Birr"
+    ],
+    "PL": [
+     "Katowice",
+     "Warsaw",
+     "Wrocław"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "GEA (equest)",
@@ -3149,7 +7785,14 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Düsseldorf",
+     "Osnabrück"
+    ]
+   }
   },
   {
    "name": "GEA (GEACareers)",
@@ -3168,7 +7811,53 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Düsseldorf",
+     "Osnabrück"
+    ],
+    "ES": [
+     "A Coruña",
+     "Valladolid"
+    ],
+    "FR": [
+     "Angers"
+    ],
+    "GB": [
+     "Belfast",
+     "Glasgow",
+     "Milton Keynes",
+     "Warrington",
+     "York"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "IE": [
+     "Naas"
+    ],
+    "IT": [
+     "Parma"
+    ],
+    "NL": [
+     "'s-Hertogenbosch",
+     "Deventer"
+    ],
+    "PL": [
+     "Bydgoszcz",
+     "Gdynia",
+     "Warsaw",
+     "Łódź"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "General Motors",
@@ -3179,7 +7868,13 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "IE": [
+     "Dublin",
+     "Limerick"
+    ]
+   }
   },
   {
    "name": "GlobalFoundries",
@@ -3191,7 +7886,16 @@
     "NL",
     "NO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Leuven"
+    ],
+    "DE": [
+     "Dresden",
+     "Munich"
+    ]
+   }
   },
   {
    "name": "GSK",
@@ -3214,7 +7918,70 @@
     "PT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels",
+     "Rixensart",
+     "Wavre"
+    ],
+    "CH": [
+     "Baar",
+     "Zug"
+    ],
+    "DE": [
+     "Dresden",
+     "Heidelberg",
+     "Marburg an der Lahn",
+     "Munich"
+    ],
+    "ES": [
+     "Madrid",
+     "Tres Cantos"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Mayenne",
+     "Paris",
+     "Rueil-Malmaison",
+     "Saint-Amand-les-Eaux",
+     "Évreux"
+    ],
+    "GB": [
+     "Barnard Castle",
+     "Cambridge",
+     "Durham",
+     "London",
+     "Montrose",
+     "Stevenage",
+     "Ware"
+    ],
+    "HU": [
+     "Gödöllő"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Parma",
+     "Rosia",
+     "Siena",
+     "Verona"
+    ],
+    "NL": [
+     "Amersfoort"
+    ],
+    "PL": [
+     "Poznań",
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon",
+     "Porto"
+    ]
+   }
   },
   {
    "name": "HP",
@@ -3239,7 +8006,70 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Diegem"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Böblingen",
+     "Eschborn",
+     "Ratingen"
+    ],
+    "DK": [
+     "Allerød"
+    ],
+    "ES": [
+     "Barcelona",
+     "Las Rozas de Madrid",
+     "Madrid",
+     "Sant Cugat del Vallès"
+    ],
+    "FI": [
+     "Espoo"
+    ],
+    "FR": [
+     "Meudon"
+    ],
+    "GB": [
+     "Bristol",
+     "Cambridge",
+     "Glasgow",
+     "London",
+     "Reading"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amstelveen"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw",
+     "Wrocław"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "ICON",
@@ -3272,7 +8102,97 @@
     "SE",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Mechelen"
+    ],
+    "CH": [
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Frankfurt am Main",
+     "Mannheim"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "EE": [
+     "Tallinn"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Lyon",
+     "Paris"
+    ],
+    "GB": [
+     "Livingston",
+     "London",
+     "Reading",
+     "Swansea"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin",
+     "Limerick"
+    ],
+    "IT": [
+     "Florence",
+     "Milan",
+     "Rome"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "Assen",
+     "Groningen",
+     "Utrecht"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Poznań",
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Lund"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "Illumina",
@@ -3289,7 +8209,18 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "GB": [
+     "Cambridge"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "ING (ICSFRADIR)",
@@ -3298,7 +8229,12 @@
    "countries": [
     "FR"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "FR": [
+     "Paris"
+    ]
+   }
   },
   {
    "name": "ING (ICSGBLCOR)",
@@ -3318,7 +8254,55 @@
     "RO",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels",
+     "Gent",
+     "Hasselt",
+     "Leuven"
+    ],
+    "DE": [
+     "Frankfurt am Main",
+     "Munich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Eindhoven",
+     "Nijmegen",
+     "The Hague",
+     "Utrecht",
+     "Zwolle"
+    ],
+    "PL": [
+     "Katowice",
+     "Warsaw"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "ING (ICSNLDGEN)",
@@ -3327,7 +8311,13 @@
    "countries": [
     "NL"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "NL": [
+     "Amsterdam",
+     "Eindhoven"
+    ]
+   }
   },
   {
    "name": "Integer",
@@ -3336,7 +8326,13 @@
    "countries": [
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "IE": [
+     "Galway",
+     "New Ross"
+    ]
+   }
   },
   {
    "name": "Intel",
@@ -3348,7 +8344,18 @@
     "IE",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "IE": [
+     "Leixlip"
+    ],
+    "PL": [
+     "Gdańsk"
+    ]
+   }
   },
   {
    "name": "IQVIA",
@@ -3383,7 +8390,242 @@
     "SI",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Antwerp",
+     "Berchem",
+     "Brasschaat",
+     "Brussels",
+     "Charleroi",
+     "Genk",
+     "Gent",
+     "Gentbrugge",
+     "Gozée",
+     "Hasselt",
+     "Kampenhout",
+     "Liège",
+     "Maaseik",
+     "Sint-Truiden",
+     "Vilvoorde",
+     "Zaventem"
+    ],
+    "CH": [
+     "Basel",
+     "Geneva",
+     "Morges",
+     "Zug",
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Arnsberg",
+     "Augsburg",
+     "Bayreuth",
+     "Berlin",
+     "Bochum",
+     "Bonn",
+     "Brandenburg an der Havel",
+     "Braunschweig",
+     "Bremen",
+     "Chemnitz",
+     "Dortmund",
+     "Dresden",
+     "Duisburg",
+     "Düsseldorf",
+     "Erfurt",
+     "Essen",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Fulda",
+     "Gelsenkirchen",
+     "Gießen",
+     "Goslar",
+     "Görlitz",
+     "Göttingen",
+     "Halle (Saale)",
+     "Hamburg",
+     "Hamm",
+     "Hannover",
+     "Heidelberg",
+     "Heilbronn",
+     "Kaiserslautern",
+     "Kempten (Allgäu)",
+     "Kiel",
+     "Koblenz",
+     "Konstanz",
+     "Köln",
+     "Leipzig",
+     "Lüneburg",
+     "Magdeburg",
+     "Mainz"
+    ],
+    "DK": [
+     "Copenhagen",
+     "Gandrup",
+     "Odense",
+     "Vejle",
+     "Århus"
+    ],
+    "EE": [
+     "Tallinn",
+     "Tartu"
+    ],
+    "ES": [
+     "Barcelona",
+     "León",
+     "Madrid",
+     "Murcia",
+     "Málaga",
+     "Sevilla",
+     "Toledo",
+     "Valencia"
+    ],
+    "FI": [
+     "Espoo",
+     "Kuopio",
+     "Turku"
+    ],
+    "FR": [
+     "Bordeaux",
+     "Boulogne-Billancourt",
+     "Champagné",
+     "Illkirch-Graffenstaden",
+     "Lyon",
+     "Marseille",
+     "Nice",
+     "Paris",
+     "Poitiers",
+     "Saint-Cloud",
+     "Saint-Leu",
+     "Strasbourg",
+     "Toulouse"
+    ],
+    "GB": [
+     "Barnsley",
+     "Bath",
+     "Birmingham",
+     "Blackpool",
+     "Bolton",
+     "Bournemouth",
+     "Brighton",
+     "Bristol",
+     "Cambridge",
+     "Cardiff",
+     "Chester",
+     "Chesterfield",
+     "Coventry",
+     "Derby",
+     "Dorchester",
+     "Dumbarton",
+     "Edinburgh",
+     "Exeter",
+     "Glasgow",
+     "Ipswich",
+     "Leeds",
+     "Liverpool",
+     "Livingston",
+     "London",
+     "Manchester",
+     "Norwich",
+     "Nottingham",
+     "Oxford",
+     "Plymouth",
+     "Portishead",
+     "Portsmouth",
+     "Reading",
+     "Salford",
+     "Sheffield",
+     "Solihull",
+     "Southampton",
+     "Stafford",
+     "Stoke-on-Trent",
+     "Swindon",
+     "Warrington"
+    ],
+    "GR": [
+     "Athens",
+     "Irákleion",
+     "Évosmos"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin"
+    ],
+    "IT": [
+     "Bari",
+     "Bologna",
+     "Cagliari",
+     "Catania",
+     "Milan",
+     "Modena",
+     "Rome",
+     "San Benedetto del Tronto"
+    ],
+    "LT": [
+     "Kaunas"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "'s-Hertogenbosch",
+     "Amsterdam",
+     "Eindhoven",
+     "Heerlen",
+     "Leiden",
+     "Maastricht",
+     "Tilburg",
+     "Utrecht",
+     "Venlo"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Bełchatów",
+     "Gdańsk",
+     "Katowice",
+     "Kraków",
+     "Szczecin",
+     "Warsaw",
+     "Wrocław"
+    ],
+    "PT": [
+     "Coimbra",
+     "Lisbon",
+     "Porto Salvo"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Solna",
+     "Stockholm",
+     "Umeå"
+    ],
+    "SI": [
+     "Ljubljana"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "Jabil",
@@ -3402,7 +8644,34 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Neuchâtel",
+     "Solothurn"
+    ],
+    "DE": [
+     "Augsburg",
+     "Jena"
+    ],
+    "HR": [
+     "Osijek"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Bray",
+     "Dublin",
+     "Waterford"
+    ],
+    "NL": [
+     "Hoofddorp"
+    ],
+    "PL": [
+     "Wrocław"
+    ]
+   }
   },
   {
    "name": "JLL",
@@ -3431,7 +8700,118 @@
     "SE",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Aalst",
+     "Antwerp",
+     "Brussels"
+    ],
+    "CH": [
+     "Geneva",
+     "Zürich"
+    ],
+    "CZ": [
+     "Ostrava",
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Brandenburg an der Havel",
+     "Düsseldorf",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Hamburg",
+     "Heidelberg",
+     "Köln",
+     "Mannheim",
+     "Munich",
+     "Norderstedt",
+     "Nuremberg",
+     "Offenbach",
+     "Stuttgart",
+     "Taufkirchen"
+    ],
+    "DK": [
+     "Århus"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Les Ulis",
+     "Lille",
+     "Lyon",
+     "Marseille",
+     "Paris"
+    ],
+    "GB": [
+     "Birmingham",
+     "Bristol",
+     "Cambridge",
+     "Cardiff",
+     "Derby",
+     "Durham",
+     "Edinburgh",
+     "Glasgow",
+     "Leeds",
+     "London",
+     "Maidenhead",
+     "Manchester",
+     "Milton Keynes",
+     "Reading",
+     "Sheffield",
+     "Slough",
+     "Swansea"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "LU": [
+     "Bertrange",
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Leiden",
+     "The Hague"
+    ],
+    "NO": [
+     "Horten",
+     "Oslo"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Kraków",
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "Johnson & Johnson",
@@ -3463,7 +8843,169 @@
     "SI",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Graz",
+     "Salzburg",
+     "Vienna"
+    ],
+    "BE": [
+     "Antwerp",
+     "Brussels",
+     "Courcelles",
+     "Diegem",
+     "Gent",
+     "La Louvière"
+    ],
+    "CH": [
+     "Basel",
+     "Schaffhausen",
+     "Selzach",
+     "Villmergen",
+     "Zuchwil",
+     "Zug"
+    ],
+    "CZ": [
+     "Brno",
+     "Olomouc",
+     "Ostrava",
+     "Prague"
+    ],
+    "DE": [
+     "Aachen",
+     "Augsburg",
+     "Bayreuth",
+     "Berlin",
+     "Bochum",
+     "Brandenburg an der Havel",
+     "Braunschweig",
+     "Bremen",
+     "Dessau",
+     "Dortmund",
+     "Dresden",
+     "Düsseldorf",
+     "Erfurt",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Hamburg",
+     "Hannover",
+     "Heidelberg",
+     "Jena",
+     "Karlsruhe",
+     "Leipzig",
+     "Magdeburg",
+     "Munich",
+     "Neuss",
+     "Norderstedt",
+     "Osnabrück",
+     "Potsdam",
+     "Stuttgart",
+     "Ulm",
+     "Umkirch",
+     "Würselen"
+    ],
+    "DK": [
+     "Birkerød",
+     "Copenhagen",
+     "Odense",
+     "Århus"
+    ],
+    "ES": [
+     "Alicante",
+     "Almería",
+     "Barcelona",
+     "Cornellà de Llobregat",
+     "Córdoba",
+     "Granada",
+     "Madrid",
+     "Murcia",
+     "Málaga",
+     "Sevilla",
+     "Valencia"
+    ],
+    "FI": [
+     "Espoo",
+     "Helsinki",
+     "Tampere"
+    ],
+    "FR": [
+     "Gières",
+     "Issy-les-Moulineaux",
+     "Lyon",
+     "Paris"
+    ],
+    "GB": [
+     "Belfast",
+     "Blackpool",
+     "High Wycombe",
+     "Leeds",
+     "London",
+     "Maidenhead",
+     "Southampton",
+     "Stoke-on-Trent",
+     "Wokingham"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin",
+     "Galway",
+     "Limerick"
+    ],
+    "IT": [
+     "Latina",
+     "Milan",
+     "Rome"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Breda",
+     "Groningen",
+     "Leiden",
+     "Nijmegen",
+     "Sassenheim",
+     "Utrecht"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Katowice",
+     "Kraków",
+     "Lublin",
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon",
+     "Porto Salvo"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Helsingborg",
+     "Jönköping",
+     "Kristianstad",
+     "Stockholm",
+     "Uppsala",
+     "Växjö"
+    ],
+    "SI": [
+     "Ljubljana"
+    ]
+   }
   },
   {
    "name": "Johnson Controls",
@@ -3490,7 +9032,208 @@
     "SE",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Graz",
+     "Innsbruck",
+     "Klagenfurt am Wörthersee",
+     "Linz",
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels",
+     "Groot-Bijgaarden"
+    ],
+    "CH": [
+     "Basel",
+     "Bern",
+     "Brig",
+     "Geneva",
+     "Glarus",
+     "Hergiswil",
+     "Lausanne",
+     "Le Mont-sur-Lausanne",
+     "Schaffhausen",
+     "Schwyz",
+     "Solothurn",
+     "Zürich"
+    ],
+    "CZ": [
+     "Brno",
+     "Pilsen",
+     "Prague",
+     "Ráječko"
+    ],
+    "DE": [
+     "Augsburg",
+     "Bergisch Gladbach",
+     "Berlin",
+     "Bonn",
+     "Brandenburg an der Havel",
+     "Bremen",
+     "Celle",
+     "Cottbus",
+     "Dingolfing",
+     "Donaueschingen",
+     "Dresden",
+     "Düsseldorf",
+     "Erfurt",
+     "Essen",
+     "Ettlingen",
+     "Flensburg",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Gera",
+     "Germering",
+     "Hamburg",
+     "Hannover",
+     "Heilbronn",
+     "Holzgerlingen",
+     "Isernhagen-Süd",
+     "Ismaning",
+     "Jena",
+     "Kaiserslautern",
+     "Karlsruhe",
+     "Kassel",
+     "Kiel",
+     "Koblenz",
+     "Köln",
+     "Ladenburg",
+     "Leipzig",
+     "Lüneburg",
+     "Mannheim",
+     "Merseburg",
+     "Munich",
+     "Münster"
+    ],
+    "DK": [
+     "Ballerup",
+     "Roskilde",
+     "Århus"
+    ],
+    "ES": [
+     "A Coruña",
+     "Las Rozas de Madrid",
+     "Madrid",
+     "Sant Boi de Llobregat",
+     "Valencia",
+     "Zaragoza"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Calais",
+     "Carquefou",
+     "Caudan",
+     "Chassieu",
+     "Colombes",
+     "Dieppe",
+     "Duppigheim",
+     "Floirac",
+     "Indre",
+     "Meyzieu",
+     "Montigny-le-Bretonneux",
+     "Orléans",
+     "Paris",
+     "Reims",
+     "Saint-Martin-Boulogne",
+     "Soissons",
+     "Toulouse",
+     "Vitrolles"
+    ],
+    "GB": [
+     "Aberdeen",
+     "Basildon",
+     "Basingstoke",
+     "Belfast",
+     "Bellshill",
+     "Birmingham",
+     "Bristol",
+     "Cambridge",
+     "Chester",
+     "Coventry",
+     "Craigavon",
+     "Crawley",
+     "Cumbernauld",
+     "Didcot",
+     "Droitwich",
+     "Exeter",
+     "Glasgow",
+     "Great Yarmouth",
+     "Guildford",
+     "Hounslow",
+     "Leeds",
+     "Letchworth Garden City",
+     "Liverpool",
+     "London",
+     "Manchester",
+     "Milton Keynes",
+     "Newbury",
+     "Newcastle upon Tyne",
+     "Nottingham",
+     "Peterborough",
+     "Plymouth",
+     "Reading",
+     "Salisbury",
+     "Sheffield",
+     "Slough",
+     "Solihull",
+     "Southampton",
+     "Stockport",
+     "Sunbury-on-Thames",
+     "Thetford"
+    ],
+    "HU": [
+     "Budapest",
+     "Püspökladány"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin"
+    ],
+    "IT": [
+     "Cinisello Balsamo",
+     "Cologno al Serio"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Capelle aan den IJssel",
+     "Echt",
+     "Enschede",
+     "Gorinchem",
+     "Oosterwolde",
+     "Oss",
+     "Rotterdam"
+    ],
+    "NO": [
+     "Oslo",
+     "Trondheim",
+     "Ålesund"
+    ],
+    "PL": [
+     "Dębica",
+     "Kraków",
+     "Warsaw",
+     "Zabierzów"
+    ],
+    "PT": [
+     "Aveiro",
+     "Braga",
+     "Lisbon",
+     "São João da Madeira"
+    ],
+    "SE": [
+     "Norrköping"
+    ],
+    "SK": [
+     "Bratislava",
+     "Košice",
+     "Nitra",
+     "Trnava"
+    ]
+   }
   },
   {
    "name": "Julius Bär (External)",
@@ -3504,7 +9247,28 @@
     "IT",
     "LU"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Geneva",
+     "Zürich"
+    ],
+    "DE": [
+     "Frankfurt am Main"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "LU": [
+     "Luxembourg"
+    ]
+   }
   },
   {
    "name": "KLA",
@@ -3519,7 +9283,8 @@
     "IE",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Kyndryl (ISMCareers)",
@@ -3528,7 +9293,12 @@
    "countries": [
     "GR"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GR": [
+     "Athens"
+    ]
+   }
   },
   {
    "name": "Kyndryl (KyndrylEarlyCareers)",
@@ -3539,7 +9309,22 @@
     "HU",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "ES": [
+     "Granada",
+     "Madrid"
+    ],
+    "HU": [
+     "Budapest",
+     "Székesfehérvár"
+    ],
+    "PT": [
+     "Lisbon",
+     "Porto",
+     "Porto Salvo"
+    ]
+   }
   },
   {
    "name": "Kyndryl (KyndrylProfessionalCareers)",
@@ -3562,7 +9347,72 @@
     "PT",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels"
+    ],
+    "CZ": [
+     "Brno",
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Chemnitz",
+     "Düsseldorf",
+     "Hamburg",
+     "Munich",
+     "Stuttgart"
+    ],
+    "ES": [
+     "Barcelona",
+     "Bilbao",
+     "Granada",
+     "Madrid",
+     "Sant Cugat del Vallès",
+     "Sevilla",
+     "Tres Cantos",
+     "Valencia"
+    ],
+    "FR": [
+     "Courbevoie"
+    ],
+    "GB": [
+     "Liverpool",
+     "London",
+     "Wales",
+     "Warwick"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HU": [
+     "Budapest",
+     "Székesfehérvár"
+    ],
+    "IT": [
+     "Milan",
+     "Rome"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "NL": [
+     "Hoofddorp"
+    ],
+    "PL": [
+     "Katowice",
+     "Wrocław"
+    ],
+    "PT": [
+     "Lisbon",
+     "Porto",
+     "Porto Salvo"
+    ]
+   }
   },
   {
    "name": "LSEG",
@@ -3582,7 +9432,41 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Frankfurt am Main"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Edinburgh",
+     "London",
+     "Nottingham"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Gdynia"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Maersk (APMT_Careers)",
@@ -3597,7 +9481,32 @@
     "NL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Bremerhaven"
+    ],
+    "DK": [
+     "Århus"
+    ],
+    "ES": [
+     "Algeciras",
+     "Barcelona"
+    ],
+    "HR": [
+     "Rijeka"
+    ],
+    "IT": [
+     "Savona"
+    ],
+    "NL": [
+     "Rotterdam",
+     "The Hague"
+    ],
+    "SE": [
+     "Gothenburg"
+    ]
+   }
   },
   {
    "name": "Maersk (Damco_FFW)",
@@ -3606,7 +9515,12 @@
    "countries": [
     "HU"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "HU": [
+     "Budapest"
+    ]
+   }
   },
   {
    "name": "Maersk (Maersk_Careers)",
@@ -3635,7 +9549,113 @@
     "SI",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Antwerp"
+    ],
+    "CH": [
+     "Pratteln"
+    ],
+    "CZ": [
+     "Hostomice",
+     "Prague"
+    ],
+    "DE": [
+     "Bremerhaven",
+     "Dornstadt",
+     "Duisburg",
+     "Hamburg",
+     "Herleshausen",
+     "Ladbergen",
+     "Langenhagen",
+     "Philippsburg",
+     "Raunheim",
+     "Stuttgart",
+     "Witten"
+    ],
+    "DK": [
+     "Copenhagen",
+     "Esbjerg",
+     "Fredericia",
+     "Århus"
+    ],
+    "ES": [
+     "Barcelona",
+     "Bilbao",
+     "Cartagena",
+     "Madrid",
+     "Valencia"
+    ],
+    "FR": [
+     "Denain",
+     "Le Havre",
+     "Marseille",
+     "Paris",
+     "Villeneuve-d'Ascq"
+    ],
+    "GB": [
+     "Derby",
+     "Doncaster",
+     "Felixstowe",
+     "Grimsby",
+     "Liverpool",
+     "Maidenhead",
+     "Tamworth"
+    ],
+    "GR": [
+     "Néa Smýrni",
+     "Thessaloníki"
+    ],
+    "HR": [
+     "Rijeka"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Savona"
+    ],
+    "NL": [
+     "Almere Stad",
+     "Amsterdam",
+     "Emmen",
+     "Rotterdam",
+     "The Hague"
+    ],
+    "NO": [
+     "Bergen",
+     "Oslo",
+     "Stavanger"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Gdynia",
+     "Warsaw",
+     "Wrocław"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest",
+     "Constanţa"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Strömstad"
+    ],
+    "SI": [
+     "Koper",
+     "Ljubljana"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "Marvell",
@@ -3646,7 +9666,18 @@
     "IT",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "ES": [
+     "Madrid"
+    ],
+    "IT": [
+     "Pavia"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "Mastercard",
@@ -3673,7 +9704,70 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Waterloo"
+    ],
+    "DE": [
+     "Frankfurt am Main"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Dunstable",
+     "Harrogate",
+     "London",
+     "Peterborough"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "MBDA",
@@ -3683,7 +9777,17 @@
     "ES",
     "GB"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "Bolton",
+     "Bristol",
+     "Stevenage"
+    ]
+   }
   },
   {
    "name": "Medtronic",
@@ -3716,7 +9820,161 @@
     "SI",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Graz",
+     "Innsbruck",
+     "Linz",
+     "Salzburg",
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Bern",
+     "Lausanne",
+     "Luzern",
+     "Neuchâtel",
+     "Sankt Gallen",
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Bielefeld",
+     "Brandenburg an der Havel",
+     "Bremen",
+     "Deggendorf",
+     "Dortmund",
+     "Dresden",
+     "Duisburg",
+     "Düsseldorf",
+     "Erfurt",
+     "Frankfurt (Oder)",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Göttingen",
+     "Hamburg",
+     "Hannover",
+     "Heidelberg",
+     "Kassel",
+     "Koblenz",
+     "Köln",
+     "Leipzig",
+     "Magdeburg",
+     "Meerbusch",
+     "Munich",
+     "Neustadt an der Donau",
+     "Nuremberg",
+     "Regensburg",
+     "Rostock",
+     "Saarbrücken",
+     "Stuttgart",
+     "Weßling"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Alcalá de Henares",
+     "Barcelona",
+     "Bilbao",
+     "Donostia / San Sebastián",
+     "Gasteiz / Vitoria",
+     "Gijón",
+     "León",
+     "Madrid",
+     "Oviedo",
+     "Pamplona",
+     "Salamanca",
+     "Santander",
+     "Valencia",
+     "Valladolid"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Claix",
+     "Lille",
+     "Paris",
+     "Rillieux-la-Pape",
+     "Tours",
+     "Trévoux"
+    ],
+    "GB": [
+     "Canterbury",
+     "Edinburgh",
+     "London",
+     "Manchester",
+     "Newcastle upon Tyne",
+     "Watford",
+     "York"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Athlone",
+     "Dublin",
+     "Galway"
+    ],
+    "IT": [
+     "Milan",
+     "Verona"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Eindhoven",
+     "Geleen",
+     "Heerlen",
+     "Kerkrade",
+     "Maastricht"
+    ],
+    "NO": [
+     "Bergen",
+     "Oslo"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Poznań",
+     "Szczecin",
+     "Warsaw",
+     "Wrocław",
+     "Łódź"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ],
+    "SI": [
+     "Ljubljana"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "Micron",
@@ -3726,7 +9984,17 @@
     "DE",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "IT": [
+     "Arzano",
+     "Avezzano",
+     "Vimercate"
+    ]
+   }
   },
   {
    "name": "Morgan Stanley",
@@ -3741,7 +10009,31 @@
     "IT",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Frankfurt am Main"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Glasgow",
+     "London"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Motorola Solutions",
@@ -3767,7 +10059,55 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "DE": [
+     "Berlin",
+     "Braunschweig"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "Cambridge",
+     "Edinburgh",
+     "Glasgow",
+     "Hemel Hempstead",
+     "Leicester",
+     "London",
+     "Rugby",
+     "Sandy",
+     "Uxbridge",
+     "Ware"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin"
+    ],
+    "IT": [
+     "Milan",
+     "Schio"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Kraków",
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "MSD",
@@ -3793,7 +10133,88 @@
     "PT",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Krems an der Donau",
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Luzern",
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Brandenburg an der Havel",
+     "Friesoythe",
+     "Hamburg",
+     "Munich",
+     "Sachsen bei Ansbach",
+     "Schwabenheim",
+     "Unterschleißheim"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid",
+     "Salamanca"
+    ],
+    "FR": [
+     "Albi",
+     "Igoville",
+     "Paris",
+     "Vitré"
+    ],
+    "GB": [
+     "Cambridge",
+     "Durham",
+     "London",
+     "Milton Keynes"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Carlow",
+     "Cork",
+     "Dublin",
+     "Dunboyne",
+     "Dundalk",
+     "Tipperary"
+    ],
+    "IT": [
+     "Milan",
+     "Rome"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "Boxmeer",
+     "De Bilt",
+     "Haarlem"
+    ],
+    "PL": [
+     "Warsaw",
+     "Września"
+    ],
+    "PT": [
+     "Paço de Arcos"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "Northern Trust",
@@ -3806,7 +10227,22 @@
     "LU",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin",
+     "Limerick"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Novartis",
@@ -3831,7 +10267,8 @@
     "SI",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "NVIDIA",
@@ -3854,7 +10291,45 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Munich",
+     "Stuttgart",
+     "Würselen"
+    ],
+    "DK": [
+     "Roskilde"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Courbevoie"
+    ],
+    "GB": [
+     "Bristol",
+     "Cambridge",
+     "Reading"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Lund"
+    ]
+   }
   },
   {
    "name": "NXP Semiconductors",
@@ -3874,7 +10349,57 @@
     "NL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Leuven"
+    ],
+    "CZ": [
+     "Brno"
+    ],
+    "DE": [
+     "Dresden",
+     "Hamburg",
+     "Ingolstadt",
+     "Munich",
+     "Sindelfingen"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Caen",
+     "Grenoble",
+     "Saclay",
+     "Sophia Antipolis",
+     "Toulouse"
+    ],
+    "GB": [
+     "Glasgow"
+    ],
+    "HR": [
+     "Osijek"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IT": [
+     "Catania",
+     "Milan"
+    ],
+    "NL": [
+     "Eindhoven",
+     "Nijmegen"
+    ],
+    "RO": [
+     "Bucharest",
+     "Sibiu"
+    ]
+   }
   },
   {
    "name": "Orange",
@@ -3883,7 +10408,8 @@
    "countries": [
     "BE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {}
   },
   {
    "name": "PayPal",
@@ -3898,7 +10424,31 @@
     "IT",
     "LU"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Brandenburg an der Havel"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "LU": [
+     "Luxembourg"
+    ]
+   }
   },
   {
    "name": "Pfizer",
@@ -3920,7 +10470,61 @@
     "PL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Orth an der Donau"
+    ],
+    "BE": [
+     "Anderlecht",
+     "Ixelles",
+     "Puurs"
+    ],
+    "CH": [
+     "Zug"
+    ],
+    "DE": [
+     "Berlin",
+     "Freiburg"
+    ],
+    "EE": [
+     "Tallinn"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Cambridge",
+     "London",
+     "Marlow",
+     "Sandwich",
+     "Walton"
+    ],
+    "GR": [
+     "Athens",
+     "Thessaloníki"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin",
+     "Kildare"
+    ],
+    "IT": [
+     "Ascoli Piceno"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ]
+   }
   },
   {
    "name": "Philips",
@@ -3945,7 +10549,80 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Klagenfurt am Wörthersee"
+    ],
+    "BE": [
+     "Antwerp",
+     "Brussels",
+     "Zaventem"
+    ],
+    "CH": [
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Aachen",
+     "Böblingen",
+     "Hamburg",
+     "Kassel",
+     "Unterschleißheim"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid",
+     "Valencia"
+    ],
+    "FI": [
+     "Espoo"
+    ],
+    "FR": [
+     "Bordeaux",
+     "Paris"
+    ],
+    "GB": [
+     "Aberdeen",
+     "City of London",
+     "Edinburgh",
+     "Farnborough",
+     "London"
+    ],
+    "IT": [
+     "Genoa",
+     "Milan",
+     "Naples"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Eindhoven",
+     "Noord"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Kraków",
+     "Poznań",
+     "Rzeszów",
+     "Warsaw",
+     "Łódź"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "POLITICO Europe",
@@ -3956,7 +10633,18 @@
     "DE",
     "GB"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "DE": [
+     "Berlin"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Procter & Gamble",
@@ -3980,7 +10668,77 @@
     "RO",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Antwerp",
+     "Brussels",
+     "Mechelen"
+    ],
+    "CH": [
+     "Geneva",
+     "Schlieren",
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Crailsheim"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Alicante",
+     "Barcelona",
+     "Madrid",
+     "Zaragoza"
+    ],
+    "FR": [
+     "Amiens",
+     "Asnières-sur-Seine",
+     "Dijon",
+     "Grenoble",
+     "Metz",
+     "Paris"
+    ],
+    "GB": [
+     "Liverpool",
+     "London",
+     "Manchester"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IT": [
+     "Reggio nell'Emilia",
+     "Rome"
+    ],
+    "NL": [
+     "Rotterdam"
+    ],
+    "PL": [
+     "Białystok",
+     "Kraków",
+     "Szczecin",
+     "Warsaw",
+     "Łódź"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
   },
   {
    "name": "Red Hat",
@@ -3994,7 +10752,19 @@
     "IE",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "ES": [
+     "Madrid"
+    ],
+    "IE": [
+     "Dublin",
+     "Waterford"
+    ],
+    "NL": [
+     "Amsterdam"
+    ]
+   }
   },
   {
    "name": "Regeneron",
@@ -4011,7 +10781,28 @@
     "IT",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Munich"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Cambridge"
+    ],
+    "IE": [
+     "Dublin",
+     "Limerick"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "Regeneron (IrelandPrivate)",
@@ -4020,7 +10811,12 @@
    "countries": [
     "IE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "IE": [
+     "Limerick"
+    ]
+   }
   },
   {
    "name": "ReliaQuest",
@@ -4030,7 +10826,15 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "RELX (ReedExhibitions)",
@@ -4042,7 +10846,18 @@
     "GB",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Richmond"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "RELX (relx)",
@@ -4061,7 +10876,55 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels",
+     "Gent"
+    ],
+    "DE": [
+     "Berlin",
+     "Bonn",
+     "Braunschweig",
+     "Düsseldorf",
+     "Frankfurt am Main",
+     "Karlsruhe",
+     "Munich"
+    ],
+    "DK": [
+     "Aalborg"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Cambridge",
+     "Cardiff",
+     "Leeds",
+     "London",
+     "Nottingham",
+     "Oxford",
+     "Richmond",
+     "Sutton"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw",
+     "Wrocław"
+    ]
+   }
   },
   {
    "name": "RELX (RiskSolutions)",
@@ -4077,7 +10940,39 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Frankfurt am Main",
+     "Karlsruhe"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Cardiff",
+     "Leeds",
+     "London",
+     "Nottingham",
+     "Sutton"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw",
+     "Wrocław"
+    ]
+   }
   },
   {
    "name": "Roche (mysugr-ext)",
@@ -4086,7 +10981,12 @@
    "countries": [
     "AT"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ]
+   }
   },
   {
    "name": "Roche (roche-ext)",
@@ -4109,7 +11009,46 @@
     "PL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "CH": [
+     "Basel",
+     "Rotkreuz"
+    ],
+    "DE": [
+     "Berlin",
+     "Ludwigsburg",
+     "Mannheim",
+     "Penzberg"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Rolls-Royce (Apprentice)",
@@ -4118,7 +11057,8 @@
    "countries": [
     "FR"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {}
   },
   {
    "name": "Rolls-Royce (Intern_Graduate)",
@@ -4128,7 +11068,8 @@
     "DE",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Rolls-Royce (professional)",
@@ -4142,7 +11083,8 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "Roquette",
@@ -4158,7 +11100,21 @@
     "NO",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "IE": [
+     "Cork"
+    ],
+    "LT": [
+     "Panevėžys"
+    ],
+    "NO": [
+     "Haugesund"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "RTX (Collins Aerospace, Pratt & Whitney, Raytheon)",
@@ -4175,7 +11131,54 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Luzern"
+    ],
+    "DE": [
+     "Frankfurt am Main",
+     "Freising",
+     "Hamburg",
+     "Heidelberg",
+     "Landshut",
+     "Lübeck"
+    ],
+    "FR": [
+     "Toulouse"
+    ],
+    "GB": [
+     "Birmingham",
+     "Crawley",
+     "Fareham",
+     "Glenrothes",
+     "Gloucester",
+     "Harlow",
+     "High Wycombe",
+     "Leighton Buzzard",
+     "Livingston",
+     "London",
+     "Manchester",
+     "Plymouth",
+     "Solihull",
+     "Torpoint",
+     "Warminster",
+     "Wokingham",
+     "Wolverhampton"
+    ],
+    "IE": [
+     "Cork",
+     "Shannon"
+    ],
+    "PL": [
+     "Rzeszów",
+     "Warsaw",
+     "Wrocław"
+    ]
+   }
   },
   {
    "name": "Salesforce",
@@ -4199,7 +11202,66 @@
     "PT",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Lausanne",
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Düsseldorf",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Mannheim",
+     "Munich",
+     "Stuttgart"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FI": [
+     "Espoo"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan",
+     "Rome"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Samsung",
@@ -4219,7 +11281,52 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Düsseldorf",
+     "Eschborn",
+     "Munich"
+    ],
+    "FR": [
+     "Le Plessis-Robinson",
+     "Paris",
+     "Saint-Ouen"
+    ],
+    "GB": [
+     "Cambridge",
+     "Chertsey",
+     "London",
+     "Reading"
+    ],
+    "HR": [
+     "Zagreb"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "Sandvik (dormerpramet-jobs)",
@@ -4232,7 +11339,28 @@
     "PL",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CZ": [
+     "Brno",
+     "Chomutov",
+     "Prague",
+     "Šumperk"
+    ],
+    "GB": [
+     "Rotherham"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "PL": [
+     "Sosnowiec"
+    ],
+    "SK": [
+     "Bratislava",
+     "Žilina"
+    ]
+   }
   },
   {
    "name": "Sandvik (seco-jobs)",
@@ -4250,7 +11378,44 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Pasching"
+    ],
+    "CZ": [
+     "Brno",
+     "Chomutov",
+     "Jičín",
+     "Kuřim",
+     "Prague",
+     "Šumperk"
+    ],
+    "DE": [
+     "Erkrath"
+    ],
+    "ES": [
+     "Cornellà de Llobregat"
+    ],
+    "FR": [
+     "Bourges"
+    ],
+    "IE": [
+     "Kildare"
+    ],
+    "IT": [
+     "Guanzate"
+    ],
+    "NL": [
+     "Lottum"
+    ],
+    "PL": [
+     "Katowice"
+    ],
+    "SE": [
+     "Fagersta"
+    ]
+   }
   },
   {
    "name": "Sandvik (walter-jobs)",
@@ -4263,7 +11428,27 @@
     "FR",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Pasching"
+    ],
+    "DE": [
+     "Frankfurt am Main",
+     "Münsingen",
+     "Tübingen",
+     "Zell"
+    ],
+    "ES": [
+     "El Prat de Llobregat"
+    ],
+    "FR": [
+     "Soultz-sous-Forêts"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Sanofi",
@@ -4285,7 +11470,57 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels",
+     "Diegem",
+     "Gent"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Frankfurt am Main"
+    ],
+    "ES": [
+     "Barcelona"
+    ],
+    "FI": [
+     "Espoo"
+    ],
+    "FR": [
+     "Lyon",
+     "Montpellier",
+     "Paris"
+    ],
+    "GB": [
+     "Reading"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Waterford"
+    ],
+    "IT": [
+     "Milan",
+     "Rome"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
   },
   {
    "name": "Santander",
@@ -4304,7 +11539,48 @@
     "PL",
     "PT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "CH": [
+     "Geneva"
+    ],
+    "DE": [
+     "Berlin",
+     "Hamburg",
+     "Schleswig"
+    ],
+    "ES": [
+     "Las Palmas de Gran Canaria",
+     "Madrid",
+     "Málaga"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Antrim",
+     "Armagh",
+     "Bournemouth",
+     "Edinburgh",
+     "Inverness",
+     "London",
+     "Manchester",
+     "Stirling",
+     "Swansea"
+    ],
+    "IT": [
+     "Milan",
+     "Rome"
+    ],
+    "PT": [
+     "Lisbon",
+     "Porto",
+     "Setúbal"
+    ]
+   }
   },
   {
    "name": "Shell",
@@ -4317,7 +11593,28 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Hamburg",
+     "Köln"
+    ],
+    "DK": [
+     "Odense"
+    ],
+    "GB": [
+     "London",
+     "Milton Keynes"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Rotterdam",
+     "The Hague"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "Solenis",
@@ -4345,7 +11642,130 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Brunn am Gebirge",
+     "Schwechat"
+    ],
+    "BE": [
+     "Beringen",
+     "Kampenhout",
+     "Wommelgem"
+    ],
+    "CH": [
+     "Basel",
+     "Bern",
+     "Crissier",
+     "Horw",
+     "Muttenz",
+     "Münchwilen",
+     "Schaffhausen",
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Düsseldorf",
+     "Kirchheimbolanden",
+     "Krefeld",
+     "Mannheim"
+    ],
+    "DK": [
+     "Copenhagen",
+     "Odense"
+    ],
+    "ES": [
+     "Madrid",
+     "Sant Boi de Llobregat",
+     "Tarragona",
+     "Terrassa",
+     "Valdemoro",
+     "Viladecans"
+    ],
+    "FI": [
+     "Helsinki",
+     "Tampere",
+     "Turku",
+     "Valkeakoski"
+    ],
+    "FR": [
+     "Amboise",
+     "Bezons",
+     "Chartres",
+     "Fontenay",
+     "Paris"
+    ],
+    "GB": [
+     "Bradford",
+     "Bridgwater",
+     "Castleford",
+     "Doncaster",
+     "Droitwich",
+     "East Kilbride",
+     "Elland",
+     "Grimsby",
+     "Hertford",
+     "Leeds",
+     "Leigh",
+     "Lisburn",
+     "Manchester",
+     "Northampton",
+     "Swanley",
+     "Warrington",
+     "Welham Green",
+     "Welwyn Garden City"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HU": [
+     "Budaörs"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Bagnolo del Salento",
+     "Busnago",
+     "Monza",
+     "Rome"
+    ],
+    "NL": [
+     "Barendrecht",
+     "Enschede",
+     "Heerhugowaard",
+     "Utrecht"
+    ],
+    "NO": [
+     "Bergen",
+     "Drammen",
+     "Oslo",
+     "Ski",
+     "Stavanger"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Ożarów",
+     "Warsaw",
+     "Łódź"
+    ],
+    "PT": [
+     "Almada",
+     "Cacém",
+     "Paço de Arcos"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Helsingborg",
+     "Stockholm",
+     "Tidaholm"
+    ]
+   }
   },
   {
    "name": "State Street",
@@ -4361,7 +11781,38 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Frankfurt am Main",
+     "Munich"
+    ],
+    "GB": [
+     "Edinburgh",
+     "London"
+    ],
+    "IE": [
+     "Dublin",
+     "Kilkenny"
+    ],
+    "IT": [
+     "Milan",
+     "Turin"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Kraków"
+    ]
+   }
   },
   {
    "name": "Stryker",
@@ -4384,7 +11835,102 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Salzburg"
+    ],
+    "BE": [
+     "Brussels",
+     "Zaventem"
+    ],
+    "CH": [
+     "Bern",
+     "Selzach"
+    ],
+    "DE": [
+     "Augsburg",
+     "Berlin",
+     "Duisburg",
+     "Freiburg",
+     "Hannover",
+     "Heidelberg",
+     "Kiel",
+     "Magdeburg",
+     "Mühlheim am Main",
+     "Schleswig",
+     "Schönkirchen",
+     "Tuttlingen"
+    ],
+    "ES": [
+     "Alcobendas",
+     "Barcelona",
+     "Burgos",
+     "Madrid",
+     "Valencia"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Bastia",
+     "Bordeaux",
+     "Brest",
+     "Dijon",
+     "Décines-Charpieu",
+     "Grenoble",
+     "Lyon",
+     "Nancy",
+     "Nantes",
+     "Nice",
+     "Paris",
+     "Pusignan",
+     "Reims",
+     "Toulouse",
+     "Tours"
+    ],
+    "GB": [
+     "Belfast",
+     "Birmingham",
+     "Bristol",
+     "Edinburgh",
+     "London",
+     "Manchester",
+     "Newbury",
+     "Slough"
+    ],
+    "IE": [
+     "Carrigtwohill",
+     "Cork",
+     "Limerick"
+    ],
+    "IT": [
+     "Bologna",
+     "Milan",
+     "Naples",
+     "Rome"
+    ],
+    "NL": [
+     "Amsterdam",
+     "Utrecht",
+     "Venlo"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Poznań",
+     "Skawina",
+     "Warsaw"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm",
+     "Örebro"
+    ]
+   }
   },
   {
    "name": "Sun Life",
@@ -4393,7 +11939,12 @@
    "countries": [
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "IE": [
+     "Waterford"
+    ]
+   }
   },
   {
    "name": "TD Securities",
@@ -4403,7 +11954,17 @@
     "GB",
     "IE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Belfast",
+     "London",
+     "Portsmouth"
+    ],
+    "IE": [
+     "Dublin"
+    ]
+   }
   },
   {
    "name": "Thales",
@@ -4427,7 +11988,100 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Charleroi"
+    ],
+    "CH": [
+     "Aarau",
+     "Bern",
+     "Thun",
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Kiel",
+     "Koblenz",
+     "Munich",
+     "Stuttgart",
+     "Ulm"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Barcelona",
+     "Gasteiz / Vitoria",
+     "Madrid",
+     "Tres Cantos"
+    ],
+    "FR": [
+     "Aix-en-Provence",
+     "Bordeaux",
+     "Brest",
+     "Châtellerault",
+     "Grenoble",
+     "Issy-les-Moulineaux",
+     "La Defense",
+     "Lille",
+     "Lyon",
+     "Massy",
+     "Nantes",
+     "Orléans",
+     "Paris",
+     "Rennes",
+     "Rouen",
+     "Sophia Antipolis",
+     "Toulouse",
+     "Valbonne",
+     "Vélizy-Villacoublay"
+    ],
+    "GB": [
+     "Belfast",
+     "Bristol",
+     "Crawley",
+     "Dunfermline",
+     "Edinburgh",
+     "Glasgow",
+     "Oxford",
+     "Reading"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "IT": [
+     "Florence",
+     "Milan",
+     "Rome",
+     "Turin"
+    ],
+    "LU": [
+     "Esch-sur-Alzette",
+     "Luxembourg"
+    ],
+    "NL": [
+     "Amersfoort",
+     "Amsterdam",
+     "Eindhoven"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Thermo Fisher",
@@ -4460,7 +12114,172 @@
     "SE",
     "SK"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Linz",
+     "Vienna"
+    ],
+    "BE": [
+     "Brussels",
+     "Geel",
+     "Merelbeke",
+     "Seneffe",
+     "Vilvoorde",
+     "Zaventem"
+    ],
+    "CH": [
+     "Allschwil",
+     "Basel",
+     "Lengnau",
+     "Reinach",
+     "Zürich"
+    ],
+    "CZ": [
+     "Brno",
+     "Pardubice",
+     "Prague"
+    ],
+    "DE": [
+     "Aachen",
+     "Berlin",
+     "Bonn",
+     "Braunschweig",
+     "Bremen",
+     "Darmstadt",
+     "Dortmund",
+     "Dreieich",
+     "Dresden",
+     "Düsseldorf",
+     "Erlangen",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Halle (Saale)",
+     "Hamburg",
+     "Hannover",
+     "Heidelberg",
+     "Karlsruhe",
+     "Langenselbold",
+     "Leipzig",
+     "Munich",
+     "Osterode am Harz",
+     "Regensburg",
+     "Rheinfelden",
+     "Schwerte",
+     "Stuttgart",
+     "Ulm",
+     "Weil am Rhein",
+     "Wuppertal"
+    ],
+    "DK": [
+     "Allerød",
+     "Copenhagen",
+     "Roskilde"
+    ],
+    "ES": [
+     "Alcobendas",
+     "Barcelona",
+     "Madrid"
+    ],
+    "FI": [
+     "Vantaa"
+    ],
+    "FR": [
+     "Coquelles",
+     "Ivry-sur-Seine",
+     "Lyon",
+     "Marseille",
+     "Mazères",
+     "Montpellier",
+     "Nîmes",
+     "Paris",
+     "Saint-Aubin",
+     "Toulouse"
+    ],
+    "GB": [
+     "Basingstoke",
+     "Bellshill",
+     "Birmingham",
+     "Bishops Stortford",
+     "Cambridge",
+     "Cramlington",
+     "Edinburgh",
+     "Glasgow",
+     "Hemel Hempstead",
+     "Heysham",
+     "Horsham",
+     "London",
+     "Loughborough",
+     "Manchester",
+     "Newcastle upon Tyne",
+     "Newport",
+     "Oxford",
+     "Paisley",
+     "Stevenage",
+     "Swindon",
+     "Warrington",
+     "Winsford"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Athlone",
+     "Dublin",
+     "Limerick"
+    ],
+    "IT": [
+     "Bologna",
+     "Ferentino",
+     "Milan",
+     "Monza",
+     "Rome"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "NL": [
+     "Bleiswijk",
+     "Breda",
+     "Eindhoven",
+     "Groningen",
+     "Landsmeer",
+     "Leiden",
+     "Naarden",
+     "Tilburg"
+    ],
+    "NO": [
+     "Lillestrøm",
+     "Oslo"
+    ],
+    "PL": [
+     "Częstochowa",
+     "Katowice",
+     "Poznań",
+     "Warsaw",
+     "Wrocław"
+    ],
+    "PT": [
+     "Lisbon",
+     "Porto Salvo"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Stockholm",
+     "Uppsala",
+     "Ängelholm"
+    ],
+    "SK": [
+     "Bratislava",
+     "Šamorín"
+    ]
+   }
   },
   {
    "name": "TRUMPF (TRUMPF_Apprenticeships)",
@@ -4471,7 +12290,12 @@
     "DE",
     "IT"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Freiburg"
+    ]
+   }
   },
   {
    "name": "TRUMPF (TRUMPF_Graduates_and_Professionals)",
@@ -4487,7 +12311,24 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Freiburg"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Luton"
+    ],
+    "NL": [
+     "Veldhoven"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
   },
   {
    "name": "TRUMPF (TRUMPF_Students)",
@@ -4499,7 +12340,8 @@
     "IT",
     "NL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "TTI (CDA)",
@@ -4508,7 +12350,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Braunschweig"
+    ]
+   }
   },
   {
    "name": "Turck",
@@ -4517,7 +12364,12 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": false
+   "elsewhere": false,
+   "towns": {
+    "DE": [
+     "Mülheim"
+    ]
+   }
   },
   {
    "name": "Unilever",
@@ -4536,7 +12388,49 @@
     "PL",
     "RO"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "CH": [
+     "Thayngen"
+    ],
+    "DE": [
+     "Auerbach",
+     "Buxtehude",
+     "Heilbronn",
+     "Mannheim"
+    ],
+    "DK": [
+     "Odense"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Leeds",
+     "Wales"
+    ],
+    "IT": [
+     "Casalpusterlengo",
+     "Rome"
+    ],
+    "NL": [
+     "Rotterdam"
+    ],
+    "PL": [
+     "Katowice",
+     "Warsaw"
+    ],
+    "RO": [
+     "Iaşi",
+     "Suceava"
+    ]
+   }
   },
   {
    "name": "Uniqlo",
@@ -4548,7 +12442,21 @@
     "FR",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ]
+   }
   },
   {
    "name": "Unisys",
@@ -4565,7 +12473,22 @@
     "NL",
     "PL"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "London",
+     "Manchester"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "NL": [
+     "Utrecht"
+    ]
+   }
   },
   {
    "name": "Visa (Visa)",
@@ -4588,7 +12511,58 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "CH": [
+     "Zürich"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Frankfurt am Main",
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "Basingstoke",
+     "Cardiff",
+     "London",
+     "Reading"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "LV": [
+     "Riga"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Visa (Visa_Early_Careers)",
@@ -4600,7 +12574,21 @@
     "DE",
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Vienna"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Frankfurt am Main"
+    ],
+    "GB": [
+     "Belfast"
+    ]
+   }
   },
   {
    "name": "Vossloh",
@@ -4609,7 +12597,16 @@
    "countries": [
     "DE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Berlin",
+     "Düsseldorf",
+     "Hamburg",
+     "Leipzig",
+     "Nuremberg"
+    ]
+   }
   },
   {
    "name": "Workday",
@@ -4628,7 +12625,45 @@
     "PL",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Frankfurt am Main",
+     "Hamburg",
+     "Munich"
+    ],
+    "DK": [
+     "Copenhagen"
+    ],
+    "ES": [
+     "Madrid"
+    ],
+    "FR": [
+     "Paris"
+    ],
+    "GB": [
+     "London"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Zalando",
@@ -4643,7 +12678,41 @@
     "RO",
     "SE"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Berlin",
+     "Bielefeld",
+     "Dortmund",
+     "Dresden",
+     "Düsseldorf",
+     "Freiburg",
+     "Gießen",
+     "Hamburg",
+     "Hannover",
+     "Köln",
+     "Münster",
+     "Stuttgart"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "PL": [
+     "Bydgoszcz"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
   },
   {
    "name": "Zoetis",
@@ -4652,7 +12721,13 @@
    "countries": [
     "GB"
    ],
-   "elsewhere": true
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Durham",
+     "Lincoln"
+    ]
+   }
   }
  ]
 }

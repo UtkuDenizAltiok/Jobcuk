@@ -106,6 +106,29 @@ MIGRATIONS: list[str] = [
     );
     CREATE INDEX ad_texts_fetched_at ON ad_texts (fetched_at);
     """,
+    # 7: The score check (HANDOVER section 13): real job ads from the user's own searches and
+    # what the user thinks of each, so Jobcu's scores can be measured against their judgement.
+    """
+    CREATE TABLE quality_ads (
+        id INTEGER PRIMARY KEY,
+        kind TEXT NOT NULL,
+        source TEXT NOT NULL,
+        source_job_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        company TEXT,
+        location TEXT,
+        url TEXT NOT NULL,
+        score INTEGER,
+        text TEXT NOT NULL,
+        rating TEXT,
+        blockers_json TEXT,
+        note TEXT,
+        rated_by TEXT,
+        rated_at TEXT,
+        added_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    );
+    CREATE UNIQUE INDEX quality_ads_job ON quality_ads (kind, source, source_job_id, title);
+    """,
 ]
 
 

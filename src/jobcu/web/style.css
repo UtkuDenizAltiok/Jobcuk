@@ -1007,3 +1007,33 @@ dialog::backdrop {
 .price-row .price-model {
   flex: 2 1 200px;
 }
+
+/* ---- Score check ---- */
+
+.quality-row {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.quality-row:last-child {
+  border-bottom: 0;
+}
+
+.quality-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.quality-text {
+  max-height: 320px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: var(--surface-sunken);
+  padding: 12px;
+  border-radius: 8px;
+}

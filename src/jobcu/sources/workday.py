@@ -14,12 +14,12 @@ company if it disallows these addresses.
 
 import dataclasses
 import re
-from collections import Counter
 from collections.abc import Iterator
 from datetime import UTC, date, datetime, timedelta
 from urllib.parse import urlsplit
 from urllib.robotparser import RobotFileParser
 
+from jobcu import places as place_list
 from jobcu.freshness import day_at_utc, freshness
 from jobcu.placenames import OTHER, countries_in
 from jobcu.sources.base import FoundJob, SourceContext, SourceError
@@ -27,6 +27,7 @@ from jobcu.sources.budget import BudgetExhausted
 from jobcu.sources.careers import (
     CareerSystemSource,
     Employer,
+    Survey,
     job_types_from_text,
     work_mode_from_text,
 )
@@ -109,19 +110,28 @@ class WorkdaySource(CareerSystemSource):
                 if len(postings) < PAGE_SIZE or (start and too_old == len(postings)):
                     break
 
-    def country_counts(self, employer: Employer, ctx: SourceContext) -> Counter:
-        """Workday's own country filter already counts jobs per country: one request."""
+    def survey(self, employer: Employer, ctx: SourceContext) -> Survey:
+        """Workday's own filters already say how many jobs are in each country and town."""
         site = parse_board(employer.board)
         self._check_robots(site, ctx)
-        values = _country_facet(self._page(site, {}, 0, ctx).get("facets"))[1]
-        if not values:  # a site without a country filter: count the jobs themselves
-            return super().country_counts(employer, ctx)
-        counts: Counter = Counter()
+        answer = self._page(site, {}, 0, ctx)
+        values = _country_facet(answer.get("facets"))[1]
+        if not values:  # a site without a country filter: look at the jobs themselves
+            return super().survey(employer, ctx)
+        survey = Survey()
         for value in values:
             codes = {c for c in countries_in(value.get("descriptor")) if c != OTHER}
             for code in codes or {OTHER}:
-                counts[code] += int(value.get("count") or 0)
-        return counts
+                survey.counts[code] += int(value.get("count") or 0)
+        for name, entries in _all_facets(answer.get("facets")):
+            if "location" not in name.lower():
+                continue
+            for value in entries:  # "Germany, Munich" and the like
+                for code in countries_in(value.get("descriptor")) - {OTHER}:
+                    town = place_list.locate(value.get("descriptor"), code)
+                    if town is not None:
+                        survey.towns.setdefault(code, set()).add(town.name)
+        return survey
 
     def load_details(self, job: FoundJob, ctx: SourceContext) -> FoundJob:
         try:

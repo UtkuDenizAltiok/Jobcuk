@@ -35,6 +35,8 @@ from jobcu.sources.base import SourceContext, SourceReport  # noqa: E402
 from jobcu.sources.careers import DIRECTORY, Employer, EmployerNotFound  # noqa: E402
 from jobcu.sources.http import PoliteClient  # noqa: E402
 
+MAX_TOWNS = 40  # per country: enough to tell where a company hires without bloating the file
+
 ABOUT = (
     "Employers in Jobcu's supported countries and the career system they use. General "
     "reference data from public career sites, never built from anyone's searches. Checked "
@@ -84,7 +86,8 @@ def main() -> int:
             report = SourceReport(source.id, source.name)
             ctx = SourceContext(http, KeyStore(), report, lambda: False, lambda message: None)
             try:
-                counts: Counter = source.country_counts(employer, ctx)
+                survey = source.survey(employer, ctx)
+                counts: Counter = survey.counts
             except Exception as exc:  # noqa: BLE001 - a problem with one employer never stops the rest
                 with lock:
                     if key in existing and not isinstance(exc, EmployerNotFound):
@@ -101,7 +104,9 @@ def main() -> int:
                 if countries:
                     kept.append({"name": entry["name"], "system": system,
                                  "board": entry["board"], "countries": countries,
-                                 "elsewhere": bool(counts[OTHER])})
+                                 "elsewhere": bool(counts[OTHER]),
+                                 "towns": {code: sorted(survey.towns.get(code, ()))[:MAX_TOWNS]
+                                           for code in countries if survey.towns.get(code)}})
                     print(line, flush=True)
                 else:
                     dropped.append(f"{system:10} {entry['name']}: no jobs in supported countries "

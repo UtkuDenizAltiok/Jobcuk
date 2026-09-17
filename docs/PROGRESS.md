@@ -90,10 +90,12 @@ Germany are worked on and tested first**; that's the order of work, not a limit.
    this month and the last search, an estimated cost from the user's own price table, editable
    limits (scoring cap, monthly token and cost limits) and an on/off switch per job source with
    the requests it sent today and this month.
-5. **Score check / quality test set** (HANDOVER §13, "quick review"): about 40 real ads with
-   Claude's pre-filled ratings (good / okay / poor, plus blockers); a review page in Jobcu where
-   the owner corrects them (stored in the data folder, never in the repository). Then measure
-   scores against ratings and check:
+5. **Score check / quality test set** (HANDOVER §13). **The page is built (2026-09-17):** every
+   search quietly keeps a few of its real ads (spread across the score range) and a few of the
+   titles the quick check left out, and the **Score check** screen lets the owner answer "good /
+   okay / poor" (plus what blocked it) and "was that title really unrelated?". Everything stays in
+   his data folder. **Still to do:** `tools/score_check.py` to measure Jobcu's scores against his
+   answers, and then check:
    - the quick relevance check
    - batch size 4 vs 1
    - summary vs full ad
