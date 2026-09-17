@@ -13,7 +13,8 @@ Switzerland, Norway and Iceland. It removes duplicates, keeps only jobs in place
 sentence, and shows a ranked list with a short reason for each score.
 
 > 🚧 **Jobcu is still being built and isn't ready to use yet.** This page will say when it is.
-> Progress: **Phase 0 of 4, Foundations.**
+> Progress: Phase 0 (Foundations) is done. Next: **Phase 1, a usable first version.**
+> [See progress](docs/PROGRESS.md).
 
 ## Everything stays on your computer
 
@@ -42,19 +43,31 @@ sentence, and shows a ranked list with a short reason for each score.
 
 ## Guides
 
-Step-by-step guides with pictures will appear here once Jobcu is ready:
+Available now:
+
+- [Getting your keys](docs/guides/getting-your-keys.md): your AI key and the free Adzuna and
+  Reed keys
+
+Coming once Jobcu is ready, with pictures:
 
 - Downloading Jobcu from GitHub (for people who have never used GitHub)
 - Installing and starting Jobcu on a Mac, and on Windows
-- Getting your AI key and the free Adzuna and Reed keys
 - Your first search
 - Understanding your results
 - Costs and limits
 - Updating Jobcu without losing your data, and uninstalling
 - Troubleshooting and common questions
 
+## Helping build Jobcu
+
+Invited friends are welcome to help improve Jobcu, with or without an AI coding assistant.
+
+- [How to help](CONTRIBUTING.md): setting up your computer and sending changes
+- [Instructions for AI coding assistants](AGENTS.md): read automatically by most AI coding tools
+
 ## Project documents
 
+- [Progress](docs/PROGRESS.md): what's done and what comes next
 - [Decision log](docs/DECISIONS.md): every choice made while building Jobcu, with a short reason
 - [Original concept](docs/HANDOVER.md): the plan Jobcu is built from
 

@@ -48,7 +48,12 @@ dist/
 Thumbs.db
 desktop.ini
 
-# Editors and local tool settings
+# Editors and AI tools: personal settings and chat histories stay private.
+# (Shared AI instructions such as AGENTS.md, .gemini/settings.json and
+# .aider.conf.yml ARE shared.)
 .vscode/
 .idea/
 .claude/settings.local.json
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache.v*/

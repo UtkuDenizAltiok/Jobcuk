@@ -61,7 +61,7 @@ aren't repeated here unless something about them was clarified.
 | **Automatic tests on GitHub on both macOS and Windows** after every upload, including starting Jobcu with the real launcher files | The concept requires Windows support from the start. |
 | Tests always use a throwaway data folder | Tests can never touch anyone's real data or keys. |
 | The GitHub tests use the account's **free monthly allowance of test minutes** | No cost. Without a payment method on file, GitHub simply pauses the tests when the allowance runs out. |
-| The repository starts on the owner's personal GitHub account. **Before friends are invited (Phase 4), it moves to a free GitHub "organization"** (a shared space on GitHub) | On a personal account, anyone given access can also change the code. Only an organization can give friends download-only access. Moving keeps all history and dates. |
+| The repository starts on the owner's personal GitHub account. **Before friends are invited (Phase 4), it moves to a free GitHub "organization"** (a shared space on GitHub) | On a personal account, anyone given access can also change the code. An organization lets the owner choose per friend: download-only (the original plan) or allowed to propose changes that the owner approves. The owner mentioned that friends may contribute later, so this choice is made with him in Phase 4. Moving keeps all history and dates. |
 | The concept document is kept unchanged at `docs/HANDOVER.md` from the first commit | The concept requires this as a dated record of the owner's work. |
 
 ### The owner's own AI provider
@@ -72,9 +72,18 @@ aren't repeated here unless something about them was clarified.
 | He starts on Google's **free allowance, with no billing set up yet** | Nothing is paid for before real usage is measured in Phase 1. If paid use turns out to be needed, the owner is asked first and shown how to set a monthly spending cap. |
 | The owner's Adzuna, Reed and Gemini keys are kept in Apple's Passwords app until Jobcu's settings screen exists | Keys are never pasted into chat or saved in the code folder. |
 
-### Backups
+### Backups and sharing
 
 | Decision | Reason |
 |---|---|
-| The owner backs up the project by double-clicking **`tools/Back up Jobcu.command`**, which saves two files in `Documents > Jobcu Backups` | GitHub's "Download ZIP" leaves out the dated history, which is the record of the owner's work. The `.bundle` file holds the complete history and can be fully restored. The `.zip` holds the current files in a form any computer can open. |
-| The backup tool lives in `tools/`, not next to the Start files, and is Mac-only | Only the owner needs it. Keeping it out of the main folder avoids confusing friends. |
+| **No separate backup copies. GitHub is the backup.** This replaces the backup suggestion in HANDOVER section 14.1. A backup tool was built, tested, then removed on the owner's request. | The owner's decision: GitHub already keeps the full dated history. |
+| **Everything that isn't private goes to GitHub:** code, the concept document, the decision log, progress, setup and contributor instructions, and the guides | The owner wants the repository to be complete and up to date, so friends can understand the project and possibly contribute later. Private things (keys, CVs, personal data, the owner's own settings) never go there, and the safety check enforces this. |
+| **Friends may improve Jobcu, possibly with their own AI coding assistants.** The repository stays private: invited friends only, never public. | The owner's decision (2026-09-17). It updates HANDOVER 14.1, which planned download-only access. Friends still can't change the main code directly: they propose changes as pull requests, and the owner approves them. |
+| **`AGENTS.md` holds the instructions for all AI coding assistants.** `CLAUDE.md` just imports it, `.gemini/settings.json` points Gemini CLI to it, and `.aider.conf.yml` points Aider to it. | AGENTS.md is the shared standard read by most AI coding tools (Codex, Cursor, Copilot, Gemini CLI, Windsurf, Junie, Aider and more). One file means no copies drifting apart, whichever tool a friend uses. |
+| **`CONTRIBUTING.md` explains setup and sending changes in plain words**, for Mac and Windows | Friends may not be programmers. |
+| Friends contribute from **their own private copy (a fork) through pull requests** | Branch protection isn't available for private repositories on free GitHub plans. Forks with pull requests keep the owner's main code and its history safe at no cost. |
+| `CONTRIBUTING.md` says contributions become part of Jobcu under its LICENSE | Keeps Jobcu clearly the owner's work, in friendly wording with nothing to sign. |
+| GitHub forms for pull requests, problem reports and ideas | Helps non-programmers describe changes and problems clearly, and reminds everyone not to share keys or personal data. |
+| **`.editorconfig`** sets shared text settings (UTF-8, line endings, indentation) | Understood by most editors and AI tools, so files stay consistent on Mac and Windows. |
+| The keys guide (`docs/guides/getting-your-keys.md`) is written now, from the steps the owner actually followed, with neutral instructions for several AI providers | Keeps the verified steps instead of losing them in a chat. Screenshots follow in Phase 4. |
+| A test checks that links between the project's documents still work | Friends and AI tools will edit the docs, and broken links would confuse readers. |
