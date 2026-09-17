@@ -45,6 +45,7 @@ SITE_INTERVALS = {
     "rest.arbeitsagentur.de": 0.7,
     "jobsireland.ie": 2.0,
     "www.jobs.ac.uk": 1.5,
+    "euraxess.ec.europa.eu": 2.0,
     # Company career systems' public job lists (Lever's robots.txt asks for 1 s).
     "boards-api.greenhouse.io": 0.5,
     "api.lever.co": 1.0,

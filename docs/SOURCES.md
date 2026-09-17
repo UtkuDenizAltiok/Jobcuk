@@ -142,6 +142,22 @@ company had jobs in, and whether it also hires outside them).
 - Some ads are outside the supported countries (Dubai, Hong Kong); the country comes from the
   location text through `placenames.py`.
 
+## EURAXESS (`src/jobcu/sources/euraxess.py`), checked 2026-09-17
+
+- The European Commission's researcher portal: research jobs, PhD and postdoc positions at
+  universities, institutes and research-heavy companies in every supported country (about 6,900
+  open offers).
+- **No API.** `GET /jobs/search?keywords=…&sort[name]=created&sort[direction]=DESC&page=N` gives
+  HTML, 10 results a page, newest first. Each result has the country as a label, the organisation,
+  "Posted on: 17 September 2026", the title with `/jobs/{id}`, a summary and the work locations.
+- Job pages carry **no** schema.org JobPosting, so the full ad is read with `trafilatura`; the
+  page also states "Type of Contract" and "Job Status", which give the job type.
+- **robots.txt allows `/jobs/search`.** No rule against automated reading was found, and the
+  Commission's legal notice allows reuse of its content with the source named. (This is different
+  from EURES, whose "Find a job" terms allow extraction only for EURES partner organisations.)
+  Jobcu pauses 2 s and stops as soon as a page has nothing inside the time window.
+- A real check (Ireland, UK and Germany, 72 hours, 3 search words): 5 jobs in 9 requests, 18 s.
+
 ## Checked and not used
 
 - **EURES** (europa.eu/eures), checked 2026-09-17. Technically ideal: `POST
@@ -157,6 +173,12 @@ company had jobs in, and whether it also hires outside them).
 - **EURES-style aggregators needing a publisher website** (Jooble, Careerjet) are still open
   questions: their free keys are meant for websites showing their jobs, and Jobcu has no website.
   The owner decides whether to sign up.
+- **publicjobs.ie** (Ireland's public service recruiter) and **UK Civil Service Jobs**, checked
+  2026-09-17: both answer automated requests with a bot check instead of the page
+  (publicjobs.ie serves an obfuscated JavaScript challenge, Civil Service Jobs a "Quick Check
+  Needed" page). Jobcu never works around bot protection, so neither is used.
+- **The Muse API**: public and documented, but registration is expected for real use and the jobs
+  are mostly American. Kept as an option.
 - **UK Find a Job (DWP)**, findajob.dwp.gov.uk, checked 2026-09-17. Requests with Jobcu's
   User-Agent time out, and a browser-like request gets a web-application-firewall page ("Something
   went wrong"). That's bot protection, so Jobcu doesn't use it.
