@@ -123,6 +123,25 @@ company had jobs in, and whether it also hires outside them).
 - Locations are free text ("Berlin", "London, Greater London, United Kingdom", "Remote - EMEA"),
   so the country comes from `placenames.py`.
 
+## jobs.ac.uk (`src/jobcu/sources/jobsacuk.py`), checked 2026-09-17
+
+- Universities, research institutes and related employers, mostly in the UK and Ireland: a kind of
+  job Jobcu's other sources barely carry (research, technical and academic posts).
+- **No API.** `GET /search/?keywords=…&sortOrder=1&pageSize=25&startIndex=N` gives HTML with the
+  jobs **newest first** (`sortOrder=1`; 0 is relevance, 2 is closing date). Each result has the
+  job's link (`/job/{ID}/{slug}`), title, department, employer, location, salary and
+  "Date Placed: 27 Aug" (day and month, no year).
+- Each job's own page carries **schema.org JobPosting**, so `jobposting.py` gives the full ad,
+  the exact date, the employment type and remote status.
+- **robots.txt** allows everything except `/job/feedback/` and `/enhanced/fp/`. The terms say
+  material may be downloaded, printed and copied "for your own personal use" and not re-published,
+  which is what Jobcu does.
+- Jobcu pauses 1.5 s, reads at most 4 pages per search word, and stops when a page has only jobs
+  older than the window. A real check (UK and Ireland, 72 hours, 4 search words): **156 jobs in 11
+  requests, 16 seconds**.
+- Some ads are outside the supported countries (Dubai, Hong Kong); the country comes from the
+  location text through `placenames.py`.
+
 ## Checked and not used
 
 - **EURES** (europa.eu/eures), checked 2026-09-17. Technically ideal: `POST
