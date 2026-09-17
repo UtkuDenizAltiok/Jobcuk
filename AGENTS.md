@@ -112,10 +112,15 @@ src/jobcu/
   ai/                        the AI layer: client.py is the ONLY way to call an AI;
                              one adapter per provider; providers.py lists them
   sources/                   job sources: base.py (common interface), http.py (polite
-                             requests), budget.py (free usage limits), one module per source
+                             requests), budget.py (free usage limits), matching.py (titles and
+                             places matched on Jobcu's side), careers.py (company career systems
+                             and the employer directory), one module per source
+  data/                      shipped reference data: employers.json, places.csv.gz
   web/                       the screen: plain HTML, CSS, JS (no build step)
 tests/                       pytest; conftest.py gives every test a throwaway data folder
 tools/check_no_secrets.py    safety check against keys and personal data (Git hook and CI)
+tools/check_employers.py     checks and refreshes the employer directory
+tools/update_places.py       rebuilds the shipped town list from GeoNames
 .githooks/pre-commit         runs the safety check before every commit
 .github/workflows/tests.yml  CI: safety check, then tests on macOS and Windows
 docs/                        HANDOVER, DECISIONS, PROGRESS, guides/

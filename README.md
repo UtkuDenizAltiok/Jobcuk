@@ -27,4 +27,5 @@ Something not working? [Troubleshooting](docs/guides/troubleshooting.md)
 ---
 
 Developers: see [CONTRIBUTING.md](CONTRIBUTING.md). © 2026 Utku Deniz Altiok. All rights reserved
-([LICENSE](LICENSE)).
+([LICENSE](LICENSE)). Town names and coordinates: © [GeoNames](https://www.geonames.org/),
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
