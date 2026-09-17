@@ -7,8 +7,14 @@ queried economically:
 - multi-word phrases ("power electronics") need a request each, so field words come
   first, then job titles, until this search's share of requests is used;
 - results come newest first, so paging stops as soon as jobs are older than the window.
+
+The API gives only the start of each ad. With the owner's approval, the full ad is read
+from the job's page (the page a person sees when clicking the job), but only for jobs that
+passed the quick relevance check, one page at a time, and never again in that search once
+Adzuna refuses.
 """
 
+import dataclasses
 import logging
 from collections.abc import Iterator
 
@@ -16,11 +22,12 @@ import httpx
 
 from jobcu.countries import COUNTRIES
 from jobcu.freshness import days_back, parse_iso, window_start
+from jobcu.jobposting import find_job_posting
 from jobcu.keystore import KeyStore
 from jobcu.keywords import SearchTerm
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget
-from jobcu.sources.http import KeyCheck, client
+from jobcu.sources.http import Blocked, KeyCheck, client
 
 log = logging.getLogger(__name__)
 
@@ -40,10 +47,59 @@ class AdzunaSource(JobSource):
     kind = "aggregator"
     countries = COUNTRIES_COVERED
 
+    # Stop reading job pages after this many refusals in a row (one refused ad is normal).
+    MAX_REFUSALS_IN_A_ROW = 3
+
+    def __init__(self) -> None:
+        self.pages_refused = False
+        self._refusals_in_a_row = 0
+
     def unavailable_reason(self, keys: KeyStore) -> str | None:
         if not keys.get(KEY_APP_ID) or not keys.get(KEY_APP_KEY):
             return "Adzuna: no keys saved in Settings."
         return None
+
+    def load_details(self, job: FoundJob, ctx: SourceContext) -> FoundJob:
+        if self.pages_refused or not job.url:
+            return job
+        try:
+            response = ctx.http.get(job.url)
+        except Blocked:
+            return self._stop_reading_pages(job, ctx)
+        except httpx.HTTPError:
+            return job
+        if response.status_code == 429:
+            return self._stop_reading_pages(job, ctx)
+        if response.status_code == 403:
+            # This ad's page is refused: skip it, never retry it.
+            self._refusals_in_a_row += 1
+            if self._refusals_in_a_row >= self.MAX_REFUSALS_IN_A_ROW:
+                return self._stop_reading_pages(job, ctx)
+            return job
+        if response.status_code != 200:
+            return job
+        self._refusals_in_a_row = 0
+        posting = find_job_posting(response.text)
+        if posting is None or len(posting.description) <= len(job.description):
+            return job
+        final_host = response.url.host or ""
+        return dataclasses.replace(
+            job,
+            description=posting.description,
+            description_is_complete=True,
+            job_types=job.job_types or posting.job_types,
+            work_mode="remote" if posting.remote else job.work_mode,
+            # When the link leads to the employer's own site, that becomes the main link.
+            employer_url=None if "adzuna." in final_host else str(response.url),
+        )
+
+    def _stop_reading_pages(self, job: FoundJob, ctx: SourceContext) -> FoundJob:
+        self.pages_refused = True
+        ctx.note(
+            "Adzuna didn't allow reading more full ads right now, so some of its jobs were "
+            "scored from a short summary."
+        )
+        return job
 
     def search(self, query: JobQuery, ctx: SourceContext) -> Iterator[FoundJob]:
         budget = RequestBudget(self.id, self.name, LIMITS)

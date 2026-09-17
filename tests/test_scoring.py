@@ -90,3 +90,24 @@ def test_quick_pass_only_accepts_ids_it_was_given():
     adapter = Scripted(lambda r: {"clearly_unrelated": ["J1", "J99", "nonsense"]})
     found = groups("Hardware Engineer", "Nurse")
     assert quick_pass(client(adapter), PROFILE, found, [0, 1]) == [1]
+
+
+def test_employer_page_becomes_the_main_link_unless_it_is_an_agency():
+    from datetime import UTC, datetime
+
+    from jobcu.pipeline import build_card
+
+    def card_for(company):
+        job = FoundJob(source="s", source_job_id="1", url="https://board.test/1",
+                       title="Hardware Engineer", company=company,
+                       employer_url="https://careers.example/1")
+        group = group_duplicates([job], {"s": "job_board"})[0]
+        return build_card(group, job_id=1, is_new=True, state=None, scored=None, plan=PLAN,
+                          source_names={"s": "Board"}, possible_duplicate_of=None,
+                          started_at=datetime.now(UTC), posted_within_hours=24)
+
+    employer = card_for("Acme GmbH")
+    assert employer["main_link"] == {"source": "Employer's site", "url": "https://careers.example/1"}
+    assert employer["also_on"] == [{"source": "Board", "url": "https://board.test/1"}]
+    agency = card_for("Brunel GmbH")
+    assert agency["main_link"]["source"] == "Board"

@@ -43,6 +43,9 @@ SITE_INTERVALS = {
     "api.adzuna.com": 2.6,
     "www.reed.co.uk": 0.5,
     "rest.arbeitsagentur.de": 0.7,
+    # Adzuna's job pages are read at a relaxed, human-like pace.
+    **{f"www.adzuna.{ending}": 3.0
+       for ending in ("de", "co.uk", "at", "be", "ch", "es", "fr", "it", "nl", "pl")},
 }
 
 
@@ -118,7 +121,7 @@ class PoliteClient:
                 self._sleep(min(wait, MAX_WAIT))
                 continue
             break
-        if response.status_code in (401, 403) and _looks_like_bot_protection(response):
+        if response.status_code in (401, 403, 429) and _looks_like_bot_protection(response):
             raise Blocked(host)
         if cache and response.status_code == 200:
             self._cache[key] = response

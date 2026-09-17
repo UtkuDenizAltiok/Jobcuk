@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 
 from jobcu.countries import COUNTRIES
-from jobcu.dedupe import JobGroup, group_duplicates
+from jobcu.dedupe import JobGroup, group_duplicates, is_agency
 from jobcu.freshness import freshness, window_start
 from jobcu.jobstore import JobState
 from jobcu.location import LocationPlan
@@ -157,8 +157,17 @@ def build_card(
     work_mode = next((c.work_mode for c in group.copies if c.work_mode), None) or (
         scored or {}
     ).get("work_mode")
-    # "Also on" lists other sites; repeats of the ad on the main link's own site are left out.
+    # The employer's own page comes first (HANDOVER section 10), when a source led to it and
+    # the ad isn't from a staffing agency.
+    employer_copy = next(
+        (c for c in group.copies if c.employer_url and not is_agency(c.company)), None
+    )
+    main_link = {"source": source_names.get(main.source, main.source), "url": main.url}
     also_on, seen = [], {main.source}
+    if employer_copy is not None:
+        main_link = {"source": "Employer's site", "url": employer_copy.employer_url}
+        seen = set()
+    # "Also on" lists other sites; repeats of the ad on the same site are left out.
     for copy in group.copies:
         if copy.source not in seen and copy.url:
             seen.add(copy.source)
@@ -193,7 +202,7 @@ def build_card(
         "parts": scored["parts"] if scored else None,
         "reasons": scored["reasons"] if scored else [],
         "required_languages": scored["required_languages"] if scored else [],
-        "main_link": {"source": source_names.get(main.source, main.source), "url": main.url},
+        "main_link": main_link,
         "also_on": also_on,
         "possible_duplicate_of": possible_duplicate_of,
         "summary_only": not best.description_is_complete,

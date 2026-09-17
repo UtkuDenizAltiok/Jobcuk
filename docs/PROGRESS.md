@@ -58,7 +58,8 @@ tested and shown to the owner before the next one starts. Decisions are in
       41 different jobs, 22 scored, under 2 minutes
 - [x] Results screen with Save / Applied / Not interested, "New" badge, Saved and Applied lists,
       "Show hidden", sorting, "Posting date unknown" section (§12)
-- [ ] Owner decides whether Jobcu may read Adzuna's job pages for full ads
+- [x] Owner decided Jobcu may read Adzuna's job pages for full ads; now 18+ of 22 jobs are scored
+      from full ads in a real search
 - [x] Scoring limit that asks before scoring more (§13)
 - [ ] Usage meter (per search and per month), monthly limits and price table in Settings (§13)
 - [ ] **Done when:** the owner can run a real search on his Mac and get a ranked, deduplicated list

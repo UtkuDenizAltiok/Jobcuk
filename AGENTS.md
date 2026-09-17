@@ -90,6 +90,7 @@ src/jobcu/
   freshness.py               posting dates and "Posted within"
   jobstore.py                jobs remembered between searches, job states, saved results
   text.py                    job ad HTML to plain text
+  jobposting.py              reads schema.org JobPosting data from job pages
   search_api.py              internal API for starting and following a search
   build.py                   code fingerprint, so a new Jobcu replaces an older running one
   db.py                      SQLite database with numbered migrations
