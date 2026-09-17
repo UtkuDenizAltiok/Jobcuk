@@ -87,3 +87,24 @@ aren't repeated here unless something about them was clarified.
 | **`.editorconfig`** sets shared text settings (UTF-8, line endings, indentation) | Understood by most editors and AI tools, so files stay consistent on Mac and Windows. |
 | The keys guide (`docs/guides/getting-your-keys.md`) is written now, from the steps the owner actually followed, with neutral instructions for several AI providers | Keeps the verified steps instead of losing them in a chat. Screenshots follow in Phase 4. |
 | A test checks that links between the project's documents still work | Friends and AI tools will edit the docs, and broken links would confuse readers. |
+
+---
+
+## 2026-09-17: Phase 1, Usable first version
+
+### Confirmed with the owner
+
+| Decision | Reason |
+|---|---|
+| **Job sources: clearly permitted sources first.** Official job APIs, government job agencies, company career systems and AI web search are built. Reading LinkedIn, Indeed, StepStone, Glassdoor etc. pages directly is **on hold** until the coverage test (Phase 3) shows how many jobs would really be missed. | The owner wants to avoid legal risk. This updates HANDOVER 9.4, which had accepted that grey area. |
+| **Score check: "quick review".** Claude collects about 40 real job ads and pre-fills a rating for each; the owner only corrects the ones he disagrees with. | The AI still scores every job automatically in every search. This one-time answer key checks that the scores match the owner's own judgement, with less work for him than rating everything. |
+| **Cover letters may be written for one specific application.** When reading a cover letter, Jobcu ignores everything specific to that one application (the company, that job title, that company's country or city, plans to move there) and keeps only what's generally true about the person and what they want. **Where to work comes only from the location box.** | The owner's instruction. HANDOVER assumes a generic cover letter, but real ones are often tailored. |
+
+### Technology
+
+| Decision | Reason |
+|---|---|
+| Each native AI provider is reached through **its official Python library** (`google-genai`, `openai`, `anthropic`), wrapped in Jobcu's own AI layer. "Other (OpenAI-compatible)" providers use the `openai` library with the provider's address. | The providers maintain these libraries and keep them current, which matters because AI APIs change often. Jobcu's layer makes every provider behave the same for the rest of the app. |
+| The libraries' own automatic retries are switched off; **Jobcu's AI layer retries** instead | Waiting and the plain messages ("AI limit reached, continuing more slowly") then work the same for every provider, and no progress is lost. |
+| OpenAI requests use `store=False` | The concept keeps user data private; this asks OpenAI not to keep the conversation for later use. |
+| **No copyleft libraries** (GPL, AGPL and similar) | Jobcu is "all rights reserved", and those licences could require publishing its code. |
