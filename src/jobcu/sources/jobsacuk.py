@@ -42,6 +42,9 @@ class JobsAcUkSource(JobSource):
     id = "jobsacuk"
     name = "jobs.ac.uk"
     kind = "job_board"
+    # It carries a few jobs elsewhere in Europe, but almost all are in these two countries, so
+    # other searches don't spend requests on it.
+    countries = frozenset({"GB", "IE"})
 
     def search(self, query: JobQuery, ctx: SourceContext) -> Iterator[FoundJob]:
         self._budget = RequestBudget(self.id, self.name, LIMITS)

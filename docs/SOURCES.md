@@ -140,7 +140,8 @@ company had jobs in, and whether it also hires outside them).
   older than the window. A real check (UK and Ireland, 72 hours, 4 search words): **156 jobs in 11
   requests, 16 seconds**.
 - Some ads are outside the supported countries (Dubai, Hong Kong); the country comes from the
-  location text through `placenames.py`.
+  location text through `placenames.py`. Jobcu only asks jobs.ac.uk when the UK or Ireland is
+  searched: it lists a few jobs elsewhere in Europe, but not enough to spend requests on.
 
 ## EURAXESS (`src/jobcu/sources/euraxess.py`), checked 2026-09-17
 
@@ -157,6 +158,10 @@ company had jobs in, and whether it also hires outside them).
   from EURES, whose "Find a job" terms allow extraction only for EURES partner organisations.)
   Jobcu pauses 2 s and stops as soon as a page has nothing inside the time window.
 - A real check (Ireland, UK and Germany, 72 hours, 3 search words): 5 jobs in 9 requests, 18 s.
+- **It asks Jobcu to slow down** when a search uses many words (a German search with 20 words got
+  "429" after about 50 requests). Jobcu now pauses 4 s, uses the field words first (research ads
+  are described by field, not job title), reads at most 12 words and 2 pages each, and stops at
+  25 requests per search.
 
 ## Checked and not used
 

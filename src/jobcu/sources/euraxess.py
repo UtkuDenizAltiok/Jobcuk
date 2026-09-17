@@ -35,8 +35,11 @@ log = logging.getLogger(__name__)
 
 SITE = "https://euraxess.ec.europa.eu"
 RESULTS_PER_PAGE = 10
-MAX_PAGES_PER_WORD = 3
-LIMITS = Limits(per_search=80)
+MAX_PAGES_PER_WORD = 2
+# EURAXESS asks Jobcu to slow down when a search uses many words, so field words come first
+# (research ads are described by field, not by job title) and the whole source stays modest.
+MAX_WORDS = 12
+LIMITS = Limits(per_search=25)
 _POSTED = re.compile(r"Posted on:\s*(\d{1,2}\s+\w+\s+\d{4})")
 
 
@@ -48,7 +51,9 @@ class EuraxessSource(JobSource):
     def search(self, query: JobQuery, ctx: SourceContext) -> Iterator[FoundJob]:
         self._budget = RequestBudget(self.id, self.name, LIMITS)
         start = window_start(query.started_at, query.posted_within_hours)
-        words = list(dict.fromkeys(t.text for t in query.terms if t.language == "en"))
+        terms = sorted((t for t in query.terms if t.language == "en"),
+                       key=lambda t: t.kind != "field_or_skill")
+        words = list(dict.fromkeys(t.text for t in terms))[:MAX_WORDS]
         seen: set[str] = set()
         try:
             for word in words:

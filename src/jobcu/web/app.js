@@ -378,12 +378,18 @@ function conditionLine(condition) {
     towns_that_fit: "only the places found",
     towns_to_avoid: "the places found are left out",
   }[condition.kind] || "checked";
+  const how_checked =
+    condition.status === "estimate"
+      ? "AI estimate — please check"
+      : condition.kind === "town_size"
+        ? "worked out by Jobcu"
+        : "checked on the web";
   const parts = [
     el("strong", { text: `"${condition.text}"` }),
-    el("span", { text: ` — ${condition.understood_as}` }),
+    el("span", { text: ` — ${condition.understood_as} ` }),
     el("span", {
       class: condition.status === "estimate" ? "check-estimate" : "check-verified",
-      text: condition.status === "estimate" ? "AI estimate — please check" : "checked on the web",
+      text: how_checked,
     }),
   ];
   if (condition.note) parts.push(el("p", { class: "muted", text: condition.note }));
