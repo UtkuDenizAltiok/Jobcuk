@@ -56,3 +56,49 @@ def test_job_site_check_without_keys_explains_what_to_do(client):
 
 def test_unknown_job_site_is_refused(client):
     assert client.post("/api/job-sites/nowhere/check", headers=HEADERS).status_code == 404
+
+
+def test_usage_shows_the_month_the_last_search_and_the_sources(client):
+    from datetime import UTC, datetime
+
+    from jobcu import db
+    from jobcu.ai.base import Usage
+    from jobcu.ai.usage import UsageLog
+
+    with db.connect() as conn:
+        conn.execute("INSERT INTO searches (id, status, form_json) VALUES (7, 'finished', '{}')")
+        conn.execute(
+            "INSERT INTO source_requests (day, source, count) VALUES (?, 'adzuna', 12)",
+            (datetime.now(UTC).strftime("%Y-%m-%d"),),
+        )
+    UsageLog().record(step="scoring", provider="openai", model="a-model",
+                      usage=Usage(input_tokens=1_000_000, output_tokens=500_000), search_id=7)
+
+    data = client.get("/api/usage", headers=HEADERS).json()
+    assert data["this_month"]["tokens"] == 1_500_000
+    assert data["this_month"]["cost_is_complete"] is False  # no prices saved yet
+    assert data["last_search"]["tokens"] == 1_500_000
+    adzuna = next(s for s in data["sources"] if s["id"] == "adzuna")
+    assert adzuna["requests_today"] == 12 and adzuna["enabled"]
+    assert {s["id"] for s in data["sources"]} >= {"jobsireland", "workday", "arbeitnow"}
+
+    # The user's own price table turns tokens into money.
+    prices = [{"provider": "openai", "model": "a-model", "input_per_million": 2,
+               "output_per_million": 8, "currency": "EUR"}]
+    data = client.put("/api/settings/prices", json={"prices": prices}, headers=HEADERS).json()
+    assert data["this_month"]["cost"] == 6.0 and data["this_month"]["cost_is_complete"]
+    assert data["last_search"]["cost"] == 6.0 and data["this_month"]["currency"] == "EUR"
+
+
+def test_limits_and_source_switches_are_saved(client):
+    data = client.put("/api/settings/limits", headers=HEADERS, json={
+        "scoring_cap": 40, "monthly_token_limit": 2_000_000, "monthly_cost_limit": 25.0,
+    }).json()
+    assert data["limits"]["scoring_cap"] == 40
+    assert data["limits"]["monthly_token_limit"] == 2_000_000
+
+    data = client.put("/api/settings/sources", headers=HEADERS,
+                      json={"disabled": ["workday", "not-a-source"]}).json()
+    switched_off = {s["id"] for s in data["sources"] if not s["enabled"]}
+    assert switched_off == {"workday"}
+    assert load_settings().sources_disabled == ["workday"]

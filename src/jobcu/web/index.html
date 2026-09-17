@@ -240,6 +240,53 @@
       </div>
 
       <div class="card">
+        <h2>Usage and limits</h2>
+        <p class="muted">What Jobcu has used from your AI provider. Prices are yours to fill in,
+          so the cost is an estimate; Jobcu has no prices built in.</p>
+        <p id="usage-month" class="usage-total">—</p>
+        <ul class="usage-list" id="usage-models"></ul>
+        <p class="muted" id="usage-last"></p>
+
+        <h3>Limits</h3>
+        <div class="field">
+          <label for="scoring-cap">Jobs scored in one search before Jobcu asks</label>
+          <input id="scoring-cap" type="number" min="1" step="10" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="token-limit">Monthly token limit</label>
+          <input id="token-limit" type="number" min="1" step="10000" inputmode="numeric"
+                 placeholder="No limit">
+        </div>
+        <div class="field">
+          <label for="cost-limit">Monthly cost limit</label>
+          <input id="cost-limit" type="number" min="0" step="1" inputmode="decimal"
+                 placeholder="No limit">
+        </div>
+        <div class="actions">
+          <button type="button" id="save-limits">Save limits</button>
+        </div>
+        <p class="status" id="limits-status" role="status" hidden></p>
+
+        <h3>Prices</h3>
+        <p class="muted">What your provider charges per million tokens. You find these on the
+          provider's pricing page.</p>
+        <div id="price-rows"></div>
+        <div class="actions">
+          <button type="button" class="secondary" id="add-price">Add a model</button>
+          <button type="button" id="save-prices">Save prices</button>
+        </div>
+        <p class="status" id="prices-status" role="status" hidden></p>
+      </div>
+
+      <div class="card">
+        <h2>Job sources</h2>
+        <p class="muted">Every source is searched unless you switch it off. The counts are
+          requests Jobcu has sent to sites that limit them.</p>
+        <ul class="usage-list" id="source-list"></ul>
+        <p class="status" id="sources-status" role="status" hidden></p>
+      </div>
+
+      <div class="card">
         <h2>About</h2>
         <p><span id="about-version">Jobcu</span> · <span id="about-copyright"></span></p>
         <p class="muted">Your data is kept only on this computer, in

@@ -60,7 +60,7 @@ const $ = (id) => document.getElementById(id);
 // ---------------------------------------------------------------------------
 
 const VIEWS = ["search", "settings"];
-const state = { settings: null, provider: null, search: null };
+const state = { settings: null, provider: null, search: null, usage: null };
 
 function showView() {
   const requested = location.hash.replace("#/", "");
@@ -1013,7 +1013,172 @@ async function saveAiChoice() {
   renderChecklist();
 }
 
+// ---------------------------------------------------------------------------
+// Usage, limits, prices and job sources
+// ---------------------------------------------------------------------------
+
+const PROVIDER_NAMES = {
+  anthropic: "Anthropic",
+  gemini: "Google",
+  openai: "OpenAI",
+  openai_compatible: "Other",
+};
+
+function money(part) {
+  if (!part.cost && !part.cost_is_complete) return "cost unknown (no prices saved)";
+  const amount = `${part.cost.toFixed(2)} ${part.currency || ""}`.trim();
+  return part.cost_is_complete ? `about ${amount}` : `at least ${amount}`;
+}
+
+function tokens(count) {
+  return `${count.toLocaleString()} tokens`;
+}
+
+async function loadUsage() {
+  state.usage = await api("/api/usage");
+  renderUsage();
+}
+
+function renderUsage() {
+  const usage = state.usage;
+  $("usage-month").textContent = `This month: ${tokens(usage.this_month.tokens)}, ${money(usage.this_month)}`;
+  $("usage-models").replaceChildren(
+    ...usage.this_month.by_model.map((row) =>
+      el(
+        "li",
+        {},
+        el("span", { text: `${PROVIDER_NAMES[row.provider] || row.provider} · ${row.model}` }),
+        el("span", { class: "used", text: `${tokens(row.tokens)}, ${money(row)}` }),
+      ),
+    ),
+  );
+  $("usage-last").textContent = usage.last_search
+    ? `Last search: ${tokens(usage.last_search.tokens)}, ${money(usage.last_search)}.`
+    : "No search yet.";
+
+  $("scoring-cap").value = usage.limits.scoring_cap;
+  $("token-limit").value = usage.limits.monthly_token_limit ?? "";
+  $("cost-limit").value = usage.limits.monthly_cost_limit ?? "";
+  renderPrices(usage.prices);
+  renderSources(usage.sources);
+}
+
+function priceRow(price = {}) {
+  const provider = el("select", { class: "price-provider" },
+    ...Object.entries(PROVIDER_NAMES).map(([id, name]) =>
+      el("option", { value: id, text: name, ...(price.provider === id ? { selected: "" } : {}) }),
+    ),
+  );
+  return el(
+    "div",
+    { class: "price-row" },
+    provider,
+    el("input", { class: "price-model", type: "text", placeholder: "Model name",
+                  value: price.model || "", spellcheck: "false" }),
+    el("input", { class: "price-in", type: "number", min: "0", step: "0.01",
+                  placeholder: "In, per million", value: price.input_per_million ?? "" }),
+    el("input", { class: "price-out", type: "number", min: "0", step: "0.01",
+                  placeholder: "Out, per million", value: price.output_per_million ?? "" }),
+    el("input", { class: "price-currency", type: "text", placeholder: "USD",
+                  value: price.currency || "USD", size: "5" }),
+    el("button", { type: "button", class: "secondary", text: "Remove",
+                   onclick: (event) => event.target.closest(".price-row").remove() }),
+  );
+}
+
+function renderPrices(prices) {
+  $("price-rows").replaceChildren(...prices.map(priceRow));
+}
+
+function readPrices() {
+  return [...document.querySelectorAll(".price-row")]
+    .map((row) => ({
+      provider: row.querySelector(".price-provider").value,
+      model: row.querySelector(".price-model").value.trim(),
+      input_per_million: Number(row.querySelector(".price-in").value || 0),
+      output_per_million: Number(row.querySelector(".price-out").value || 0),
+      currency: row.querySelector(".price-currency").value.trim().toUpperCase() || "USD",
+    }))
+    .filter((price) => price.model);
+}
+
+function renderSources(sources) {
+  $("source-list").replaceChildren(
+    ...sources.map((source) => {
+      const box = el("input", {
+        type: "checkbox",
+        ...(source.enabled ? { checked: "" } : {}),
+        onchange: () => saveSources(),
+      });
+      box.dataset.sourceId = source.id;
+      const used = source.requests_this_month
+        ? `${source.requests_today} requests today, ${source.requests_this_month} this month`
+        : source.needs_key
+          ? "needs a key in Settings"
+          : "";
+      return el(
+        "li",
+        {},
+        el("label", { class: "check" }, box, el("span", { text: source.name })),
+        el("span", { class: "used", text: used }),
+      );
+    }),
+  );
+}
+
+async function saveSources() {
+  const disabled = [...document.querySelectorAll("#source-list input[type=checkbox]")]
+    .filter((box) => !box.checked)
+    .map((box) => box.dataset.sourceId);
+  try {
+    state.usage = await api("/api/settings/sources", { method: "PUT", body: { disabled } });
+    setStatus($("sources-status"), "ok", "Saved.");
+  } catch (error) {
+    setStatus($("sources-status"), "problem", error.message);
+  }
+}
+
+function setUpUsageActions() {
+  $("save-limits").addEventListener("click", (event) =>
+    busy(event.target, async () => {
+      const value = (id) => ($(id).value.trim() === "" ? null : Number($(id).value));
+      try {
+        state.usage = await api("/api/settings/limits", {
+          method: "PUT",
+          body: {
+            scoring_cap: Number($("scoring-cap").value || 150),
+            monthly_token_limit: value("token-limit"),
+            monthly_cost_limit: value("cost-limit"),
+          },
+        });
+        renderUsage();
+        setStatus($("limits-status"), "ok", "Saved.");
+      } catch (error) {
+        setStatus($("limits-status"), "problem", error.message);
+      }
+    }),
+  );
+
+  $("add-price").addEventListener("click", () => $("price-rows").append(priceRow()));
+
+  $("save-prices").addEventListener("click", (event) =>
+    busy(event.target, async () => {
+      try {
+        state.usage = await api("/api/settings/prices", {
+          method: "PUT",
+          body: { prices: readPrices() },
+        });
+        renderUsage();
+        setStatus($("prices-status"), "ok", "Saved.");
+      } catch (error) {
+        setStatus($("prices-status"), "problem", error.message);
+      }
+    }),
+  );
+}
+
 function setUpSettingsActions() {
+  setUpUsageActions();
   $("save-ai").addEventListener("click", (event) =>
     busy(event.target, async () => {
       try {
@@ -1093,7 +1258,7 @@ async function start() {
     $("about-copyright").textContent = about.copyright;
     $("footer-copyright").textContent = about.copyright;
     $("about-data-folder").textContent = about.data_folder;
-    await Promise.all([loadSettings(), loadDocuments(), loadSearchForm()]);
+    await Promise.all([loadSettings(), loadDocuments(), loadSearchForm(), loadUsage()]);
   } catch {
     // The engine problem message is already visible.
   }

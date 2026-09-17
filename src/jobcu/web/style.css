@@ -957,3 +957,53 @@ dialog::backdrop {
     padding: 18px;
   }
 }
+
+/* ---- Usage, limits and job sources ---- */
+
+.usage-total {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.usage-list {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.usage-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.usage-list li:last-child {
+  border-bottom: 0;
+}
+
+.usage-list .used {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.price-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.price-row input {
+  flex: 1 1 120px;
+  min-width: 90px;
+}
+
+.price-row .price-model {
+  flex: 2 1 200px;
+}

@@ -48,6 +48,10 @@ class UsageLog:
             ).fetchall()
         return {row[0]: Usage(*row[1:]) for row in rows}
 
+    def for_search_by_model(self, search_id: int) -> list[ModelUsage]:
+        """One search's usage per model, so its cost can be estimated."""
+        return self._by_model("search_id = ?", (search_id,))
+
     def _by_model(self, where: str, params: tuple) -> list[ModelUsage]:
         with db.connect(self.folder) as conn:
             rows = conn.execute(
