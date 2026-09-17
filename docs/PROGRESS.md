@@ -75,7 +75,9 @@ Germany are worked on and tested first**; that's the order of work, not a limit.
    - ~~**Remember job ad texts**~~ **done (2026-09-17)**: a full ad downloaded in the last three
      days is reused by source and job ID instead of being fetched again ("Search details" says how
      many were already known). Scores are never reused.
-   - **Provider-side prompt caching** where supported.
+   - ~~**Provider-side prompt caching**~~ **done (2026-09-17)**: Anthropic is asked to keep the
+     step's instructions ready (`cache_control`), which is what needs asking; OpenAI and Google
+     do the same by themselves for long prompts. Usage already counts cached tokens separately.
    - ~~**Adaptive Adzuna budget**~~ **done (2026-09-17)**: each search gets a share of what's
      left of the free month, spread over the days still to come at about 3 searches a day,
      between 25 and 60 requests, and never more than today's allowance has left

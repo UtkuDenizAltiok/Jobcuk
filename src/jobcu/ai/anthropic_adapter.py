@@ -51,6 +51,10 @@ class AnthropicAdapter(ProviderAdapter):
         max_output_tokens: int,
     ) -> RawReply:
         output_config: dict = {"format": {"type": "json_schema", "schema": schema}}
+        # The instructions are the same in every request of a step (scoring asks about several
+        # batches of jobs), so Anthropic is asked to keep them ready and charge less for them.
+        system_blocks = [{"type": "text", "text": system,
+                          "cache_control": {"type": "ephemeral"}}]
         if effort:
             # Anthropic has no "minimal" level; "low" is its lowest.
             output_config["effort"] = "low" if effort == "minimal" else effort
@@ -58,7 +62,7 @@ class AnthropicAdapter(ProviderAdapter):
             response = self._client().messages.create(
                 model=model,
                 max_tokens=max_output_tokens,
-                system=system,
+                system=system_blocks,
                 messages=[{"role": "user", "content": prompt}],
                 output_config=output_config,
             )

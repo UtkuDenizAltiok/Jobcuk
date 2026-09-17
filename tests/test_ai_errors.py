@@ -113,3 +113,26 @@ def test_gemini_per_minute_limit_keeps_suggested_wait():
     )
     result = gemini_adapter._translate(error)
     assert isinstance(result, AIRateLimited) and result.retry_after == 31
+
+
+def test_anthropic_asks_to_keep_the_instructions_ready():
+    """Provider-side prompt caching: the same instructions cost less in later requests."""
+    sent = {}
+
+    class FakeMessages:
+        def create(self, **request):
+            sent.update(request)
+            raise anthropic.APIStatusError("busy", response=_response(529), body=None)
+
+    class FakeClient:
+        messages = FakeMessages()
+        models = None
+
+    adapter = anthropic_adapter.AnthropicAdapter("fake-key")
+    adapter._sdk_client = FakeClient()
+    with pytest.raises(AIUnavailable):
+        adapter.complete_json(model="m", system="Rules", prompt="Jobs", schema={}, schema_name="s",
+                              effort=None, max_output_tokens=100)
+    assert sent["system"] == [
+        {"type": "text", "text": "Rules", "cache_control": {"type": "ephemeral"}}
+    ]
