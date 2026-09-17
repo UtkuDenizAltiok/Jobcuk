@@ -1,0 +1,63 @@
+# Runs Jobcu's automatic checks on GitHub after every upload:
+# a safety check for keys and personal data, and the tests on macOS and Windows.
+
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  safety-check:
+    name: No keys or personal data
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - run: python3 tools/check_no_secrets.py --all
+
+  tests:
+    name: Tests on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.1.0
+        with:
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --locked
+
+      - name: Code style
+        run: uv run ruff check .
+
+      - name: Unit tests
+        run: uv run pytest
+
+      - name: Start Jobcu with the Mac launcher
+        if: runner.os == 'macOS'
+        env:
+          JOBCU_SELFTEST: "1"
+        run: ./"Start Jobcu.command"
+
+      - name: Start Jobcu with the Windows launcher
+        if: runner.os == 'Windows'
+        env:
+          JOBCU_SELFTEST: "1"
+        shell: cmd
+        run: call "Start Jobcu.bat"
