@@ -63,3 +63,11 @@ aren't repeated here unless something about them was clarified.
 | The GitHub tests use the account's **free monthly allowance of test minutes** | No cost. Without a payment method on file, GitHub simply pauses the tests when the allowance runs out. |
 | The repository starts on the owner's personal GitHub account. **Before friends are invited (Phase 4), it moves to a free GitHub "organization"** (a shared space on GitHub) | On a personal account, anyone given access can also change the code. Only an organization can give friends download-only access. Moving keeps all history and dates. |
 | The concept document is kept unchanged at `docs/HANDOVER.md` from the first commit | The concept requires this as a dated record of the owner's work. |
+
+### The owner's own AI provider
+
+| Decision | Reason |
+|---|---|
+| For **his own copy** of Jobcu, the owner chose **Google (Gemini)** after a neutral comparison | His choice. It only affects his settings: Jobcu itself still recommends no provider and has no default, and every user picks their own. |
+| He starts on Google's **free allowance, with no billing set up yet** | Nothing is paid for before real usage is measured in Phase 1. If paid use turns out to be needed, the owner is asked first and shown how to set a monthly spending cap. |
+| The owner's Adzuna, Reed and Gemini keys are kept in Apple's Passwords app until Jobcu's settings screen exists | Keys are never pasted into chat or saved in the code folder. |
