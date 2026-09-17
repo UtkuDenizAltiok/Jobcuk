@@ -416,6 +416,103 @@ legend {
   color: var(--ok);
 }
 
+/* ---- Documents ---- */
+
+.document-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.document-row .doc-label {
+  flex: 0 0 110px;
+  font-weight: 600;
+}
+
+.document-row .doc-name {
+  flex: 1 1 200px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.document-row .doc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.document-row .doc-message {
+  flex: 1 1 100%;
+  color: var(--problem);
+}
+
+/* ---- Dialog ---- */
+
+dialog {
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 20px 60px rgb(0 0 0 / 25%);
+}
+
+dialog::backdrop {
+  background: rgb(10 15 12 / 45%);
+}
+
+.dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.profile-section {
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.profile-section h3 {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.profile-section p,
+.profile-section ul {
+  margin: 0;
+}
+
+.profile-section ul {
+  padding-left: 1.2em;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 !important;
+  list-style: none;
+}
+
+.chips li {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
 /* ---- Footer ---- */
 
 .footer {
@@ -449,5 +546,13 @@ legend {
   .inline {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .document-row .doc-label {
+    flex-basis: 100%;
+  }
+
+  dialog {
+    padding: 18px;
   }
 }

@@ -120,3 +120,18 @@ aren't repeated here unless something about them was clarified.
 | The setup check asks the model for a tiny answer in Jobcu's JSON format, and reports rate limits instead of waiting | The check has to be quick and prove that structured answers work, not just that the key is valid. |
 | Saved keys are shown only as their last four characters | Enough to recognise a key without revealing it. |
 | The log file hides anything that looks like a key, and the Adzuna check never logs its request address (which contains the key) | A safety net against keys ending up in log files. |
+
+### CV, cover letter and profile
+
+| Decision | Reason |
+|---|---|
+| Documents are read with **pypdf** (PDF) and **python-docx** (Word), both permissive licences | Well maintained and install on Mac and Windows without extra tools. |
+| **PDFs are read two ways** (plain and layout-aware) and the cleaner result is kept | Different PDF programs store text very differently. The owner's own CV reads best one way and his cover letter the other. |
+| A file is **read when it's uploaded**, so problems (scanned image, password, damaged file) show up right away with advice | Better than finding out in the middle of a search. |
+| **Text is never cut.** Documents longer than 60,000 characters are refused with a message | Silently cutting a document could leave out important details. No real CV or cover letter is that long. |
+| Uploaded documents are stored in the data folder, readable only by the user | They're personal data. |
+| The AI reads the documents with the **"careful" model and reasoning setting** (the optional second model) | HANDOVER §13 names reading the CV and cover letter as a reasoning-heavy step. |
+| The profile lists **what was left out because it was about one specific application** | People can see that company names, job titles and countries from a tailored cover letter weren't used. |
+| The profile keeps languages **as written**, plus a CEFR level marked "estimated" when it comes from words like "fluent" | Honest about what's stated and what's guessed. It helps scoring without claiming certainty. |
+| Document text is marked as data in the prompt, and the AI is told to ignore instructions inside documents | Protects against text in a document that tries to steer the AI. |
+| "What Jobcu understood" can be opened before any search, and **nothing is saved** | People can check the AI understood them before searching. HANDOVER §4 says the profile isn't kept. |

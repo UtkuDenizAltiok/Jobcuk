@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from jobcu import COPYRIGHT, __version__
+from jobcu.documents_api import router as documents_router
 from jobcu.paths import data_dir
 from jobcu.settings_api import router as settings_router
 
@@ -82,6 +83,7 @@ def create_app() -> FastAPI:
         }
 
     app.include_router(settings_router)
+    app.include_router(documents_router)
 
     @app.get("/", include_in_schema=False)
     def index() -> FileResponse:

@@ -24,12 +24,41 @@
     <!-- Search -->
     <section id="view-search" class="view" hidden>
       <h1>Search</h1>
-      <div class="card">
+
+      <div class="card" id="setup-card" hidden>
         <h2>Getting ready</h2>
-        <p class="muted">The job search is being built. Meanwhile, set up everything Jobcu needs:</p>
+        <p class="muted">Finish these steps in Settings before your first search:</p>
         <ul class="checklist" id="setup-checklist"></ul>
         <p><a class="button" href="#/settings">Open Settings</a></p>
       </div>
+
+      <div class="card">
+        <h2>Your documents</h2>
+        <p class="muted">Jobcu reads your CV and cover letter again at the start of every search.
+          They stay on this computer.</p>
+        <div class="document-row" data-document="cv"></div>
+        <div class="document-row" data-document="cover_letter"></div>
+        <div class="actions">
+          <button type="button" class="secondary" id="show-profile">What Jobcu understood</button>
+        </div>
+        <p class="status" id="profile-status" role="status" hidden></p>
+      </div>
+
+      <div class="card">
+        <h2>Find jobs</h2>
+        <p class="muted">The job search itself is being built next.</p>
+      </div>
+
+      <dialog id="profile-dialog" aria-labelledby="profile-title">
+        <div class="dialog-head">
+          <h2 id="profile-title">What Jobcu understood</h2>
+          <button type="button" class="secondary" id="close-profile">Close</button>
+        </div>
+        <p class="muted">This is how the AI read your CV and cover letter just now. Jobcu doesn't
+          judge or change your documents; it only uses this to find and score jobs. Nothing here
+          is saved.</p>
+        <div id="profile-content"></div>
+      </dialog>
     </section>
 
     <!-- Settings -->

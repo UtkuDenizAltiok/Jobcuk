@@ -72,6 +72,9 @@ src/jobcu/
   keystore.py                API keys, saved in the data folder, readable only by the user
   settings.py                all other settings (settings.json in the data folder)
   settings_api.py            internal API behind the Settings screen
+  documents.py               CV and cover letter: saving uploads and reading their text
+  documents_api.py           internal API for documents and the profile preview
+  profile.py                 the AI prompt that reads documents into a profile
   db.py                      SQLite database with numbered migrations
   logs.py                    log file in the data folder, with keys hidden
   ai/                        the AI layer: client.py is the ONLY way to call an AI;
