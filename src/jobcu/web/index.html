@@ -84,16 +84,49 @@
         </div>
         <ol class="steps" id="search-steps"></ol>
         <ul class="notes" id="search-notes"></ul>
+        <div class="question" id="search-question" role="alertdialog" hidden>
+          <p id="question-text"></p>
+          <div class="actions">
+            <button type="button" id="question-yes"></button>
+            <button type="button" class="secondary" id="question-no"></button>
+          </div>
+        </div>
         <p class="status problem" id="search-error" role="alert" hidden></p>
       </div>
 
-      <div class="card" id="results-card" hidden>
-        <p class="understood" id="understood-as"></p>
-        <ul class="notes" id="location-notes"></ul>
-        <p class="muted" id="results-placeholder">Jobcu doesn't search job sites yet: they're being
-          connected in the next part of Phase 1. Everything up to this point worked, and you can
-          see the search words in "Search details".</p>
-      </div>
+      <section id="results" hidden aria-labelledby="results-summary">
+        <div class="card results-head">
+          <p class="results-summary" id="results-summary"></p>
+          <p class="understood" id="understood-as"></p>
+          <ul class="notes" id="location-notes"></ul>
+          <div class="toolbar">
+            <div class="segmented" role="group" aria-label="Show">
+              <button type="button" data-list="results" aria-pressed="true">Results</button>
+              <button type="button" data-list="saved" aria-pressed="false">Saved</button>
+              <button type="button" data-list="applied" aria-pressed="false">Applied</button>
+            </div>
+            <div class="toolbar-right">
+              <label class="check small" for="sort-order">Sort
+                <select id="sort-order">
+                  <option value="score">Best match</option>
+                  <option value="newest">Newest</option>
+                </select>
+              </label>
+              <label class="check small">
+                <input type="checkbox" id="show-hidden">
+                <span id="show-hidden-label">Show hidden</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div id="job-list" class="job-list"></div>
+        <div id="date-unknown-section" hidden>
+          <h2 class="section-title">Posting date unknown</h2>
+          <p class="muted">Jobcu couldn't find when these were posted, so they may be older than
+            your "Posted within" choice.</p>
+          <div id="date-unknown-list" class="job-list"></div>
+        </div>
+      </section>
 
       <dialog id="details-dialog" aria-labelledby="details-title">
         <div class="dialog-head">

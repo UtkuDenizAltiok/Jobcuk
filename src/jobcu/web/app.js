@@ -461,8 +461,15 @@ function showSearch(search) {
   $("search-notes").replaceChildren(...search.notes.map((note) => el("li", { text: note })));
   setStatus($("search-error"), "problem", search.error || "");
 
+  const question = search.question;
+  $("search-question").hidden = !question;
+  if (question) {
+    $("question-text").textContent = question.message;
+    $("question-yes").textContent = question.yes;
+    $("question-no").textContent = question.no;
+  }
+
   const location = search.result.location;
-  $("results-card").hidden = !location || running;
   if (location) {
     $("understood-as").replaceChildren(
       el("strong", { text: "Understood as: " }),
@@ -473,14 +480,22 @@ function showSearch(search) {
       notes.push("This searches every supported country, so it takes longer and uses more AI.");
     }
     if (location.outside_supported_area.length) {
-      notes.push(`Not searched (outside the supported countries): ${location.outside_supported_area.join(", ")}`);
+      notes.push(
+        `Not searched (outside the supported countries): ${location.outside_supported_area.join(", ")}`,
+      );
     }
     if (location.not_checked_yet.length) {
-      notes.push(`Not checked yet: ${location.not_checked_yet.join("; ")}. This comes with the smart location filter.`);
+      notes.push(
+        `Not checked yet: ${location.not_checked_yet.join("; ")}. This comes with the smart location filter.`,
+      );
     }
     $("location-notes").replaceChildren(...notes.map((note) => el("li", { text: note })));
   }
   $("show-details").hidden = !search.result.search_words;
+
+  const jobs = search.result.jobs;
+  $("results").hidden = !jobs;
+  if (jobs) renderResults();
 
   clearTimeout(pollTimer);
   if (running) pollTimer = setTimeout(pollSearch, 1000);
@@ -495,16 +510,256 @@ async function pollSearch() {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Results: job cards
+// ---------------------------------------------------------------------------
+
+const view = { list: "results", sort: "score", showHidden: false, marked: [] };
+const WORK_MODES = { remote: "Remote", hybrid: "Hybrid", on_site: "On-site" };
+
+function renderResults() {
+  const jobs = state.search.result.jobs;
+  const shown = jobs.cards.length + jobs.date_unknown.length;
+  const newCount = jobs.new_count;
+  $("results-summary").textContent =
+    `${shown} ${shown === 1 ? "job" : "jobs"} found` +
+    (newCount ? `, ${newCount} new since your last search` : "");
+
+  const dismissedNow = [...jobs.cards, ...jobs.date_unknown].filter((c) => c.state.dismissed);
+  const hiddenCount = jobs.hidden.length + dismissedNow.length;
+  $("show-hidden-label").textContent = hiddenCount ? `Show hidden (${hiddenCount})` : "Show hidden";
+
+  if (view.list !== "results") {
+    $("date-unknown-section").hidden = true;
+    const cards = view.marked.filter((c) => view.showHidden || !c.state.dismissed);
+    fillList($("job-list"), cards, `No ${view.list} jobs yet.`);
+    return;
+  }
+  const visible = (cards) => cards.filter((c) => view.showHidden || !c.state.dismissed);
+  let main = visible(jobs.cards);
+  if (view.showHidden) main = main.concat(jobs.hidden);
+  fillList($("job-list"), sortCards(main), "No jobs to show for this search.");
+  const unknown = visible(jobs.date_unknown);
+  $("date-unknown-section").hidden = !unknown.length;
+  fillList($("date-unknown-list"), sortCards(unknown), "");
+}
+
+function sortCards(cards) {
+  const time = (c) => (c.posted_at ? Date.parse(c.posted_at) : 0);
+  const copy = [...cards];
+  if (view.sort === "newest") return copy.sort((a, b) => time(b) - time(a));
+  return copy.sort((a, b) => (b.score ?? -1) - (a.score ?? -1) || time(b) - time(a));
+}
+
+function fillList(container, cards, emptyText) {
+  if (!cards.length) {
+    container.replaceChildren(emptyText ? el("div", { class: "card empty", text: emptyText }) : "");
+    return;
+  }
+  container.replaceChildren(...cards.map(renderCard));
+}
+
+function safeUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function postedLabel(card) {
+  if (!card.posted_at) return "posting date unknown";
+  const posted = new Date(card.posted_at);
+  const now = new Date();
+  if (card.date_precision === "day") {
+    const days = Math.round(
+      (Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) -
+        Date.UTC(posted.getUTCFullYear(), posted.getUTCMonth(), posted.getUTCDate())) /
+        86400000,
+    );
+    if (days <= 0) return "posted today";
+    if (days === 1) return "posted yesterday";
+    return `posted ${days} days ago`;
+  }
+  const hours = Math.max(0, Math.round((now - posted) / 3600000));
+  if (hours < 1) return "posted within the last hour";
+  if (hours < 48) return `posted ${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+  return `posted ${Math.round(hours / 24)} days ago`;
+}
+
+function renderCard(card) {
+  const band = card.score === null ? "" : card.score >= 75 ? "high" : card.score >= 50 ? "mid" : "";
+  const title = el("h3", { class: "job-title" }, document.createTextNode(card.title));
+  if (card.is_new && view.list === "results") title.append(el("span", { class: "badge new", text: "New" }));
+  if (card.state.applied) title.append(el("span", { class: "badge applied", text: "Applied" }));
+  else if (card.state.saved) title.append(el("span", { class: "badge saved", text: "Saved" }));
+  if (card.possible_duplicate_of) {
+    title.append(el("span", { class: "badge", text: "Possible duplicate" }));
+  }
+
+  const types = card.job_types.length
+    ? card.job_types.map((t) => JOB_TYPE_LABELS[t]).join(" or ")
+    : "Type unclear";
+  const meta = [card.location || "Location not stated", WORK_MODES[card.work_mode], types,
+    postedLabel(card), card.salary].filter(Boolean).join(" · ");
+
+  const checks = el("p", { class: "job-checks" });
+  for (const check of card.location_checks) {
+    const statusClass = { verified: "check-verified", unclear: "check-unclear" }[check.status] ||
+      "check-estimate";
+    const label = check.status === "verified" && check.source
+      ? `${check.label} (verified: ${check.source})`
+      : check.status === "unclear" ? check.label : `${check.label} (AI estimate — please check)`;
+    checks.append(el("span", { class: statusClass, text: label }));
+  }
+  if (card.summary_only && card.score !== null) {
+    checks.append(el("span", { class: "check-estimate", text: "Scored from a short summary of the ad" }));
+  }
+
+  const link = safeUrl(card.main_link.url);
+  const actions = el(
+    "div",
+    { class: "job-actions" },
+    link
+      ? el("a", {
+          class: "button",
+          href: link,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          text: `Open job (${card.main_link.source})`,
+        })
+      : null,
+  );
+  const also = card.also_on
+    .map((copy) => ({ ...copy, url: safeUrl(copy.url) }))
+    .filter((copy) => copy.url);
+  if (also.length) {
+    const span = el("span", { class: "also-on", text: "Also on: " });
+    also.forEach((copy, i) => {
+      if (i) span.append(", ");
+      span.append(el("a", { href: copy.url, target: "_blank", rel: "noopener noreferrer", text: copy.source }));
+    });
+    actions.append(span);
+  }
+  actions.append(el("span", { class: "spacer" }));
+  actions.append(
+    stateButton(card, "saved", card.state.saved ? "Saved" : "Save"),
+    stateButton(card, "applied", "Applied"),
+    stateButton(card, "dismissed", card.state.dismissed ? "Undo Not interested" : "Not interested"),
+  );
+
+  return el(
+    "article",
+    { class: `job-card${card.state.dismissed ? " is-hidden" : ""}` },
+    el(
+      "div",
+      { class: `score ${band}`, title: scoreTooltip(card) },
+      document.createTextNode(card.score === null ? "–" : String(card.score)),
+      el("small", { text: card.score === null ? "not scored" : "match" }),
+    ),
+    title,
+    el("p", { class: "job-company", text: card.company || "Company not stated" }),
+    el("p", { class: "job-meta", text: meta }),
+    card.reasons.length ? el("p", { class: "job-reasons", text: card.reasons.join(" · ") }) : null,
+    checks.childNodes.length ? checks : null,
+    actions,
+  );
+}
+
+function scoreTooltip(card) {
+  if (!card.parts) return "Not scored";
+  const names = {
+    role_and_skills: "Role and skills (40)",
+    seniority: "Seniority (20)",
+    languages: "Languages (15)",
+    hard_requirements: "Hard requirements (15)",
+    location_and_preferences: "Location and preferences (10)",
+  };
+  return Object.entries(card.parts).map(([k, v]) => `${names[k]}: ${v}`).join("\n");
+}
+
+function stateButton(card, name, label) {
+  return el("button", {
+    type: "button",
+    class: "secondary",
+    "aria-pressed": String(Boolean(card.state[name])),
+    text: label,
+    onclick: async (event) => {
+      await busy(event.target, async () => {
+        const body = { [name]: !card.state[name] };
+        const result = await api(`/api/jobs/${card.job_id}/state`, { method: "POST", body });
+        updateCardState(card.job_id, result.state);
+        renderResults();
+      });
+    },
+  });
+}
+
+function updateCardState(jobId, newState) {
+  const jobs = state.search?.result?.jobs;
+  const lists = jobs ? [jobs.cards, jobs.date_unknown, jobs.hidden] : [];
+  for (const list of [...lists, view.marked]) {
+    for (const card of list) if (card.job_id === jobId) card.state = newState;
+  }
+}
+
+async function switchList(list) {
+  view.list = list;
+  for (const button of document.querySelectorAll("[data-list]")) {
+    button.setAttribute("aria-pressed", String(button.dataset.list === list));
+  }
+  view.marked = list === "results" ? [] : (await api(`/api/jobs/marked/${list}`)).cards;
+  renderResults();
+}
+
+// ---------------------------------------------------------------------------
+// Search details
+// ---------------------------------------------------------------------------
+
 function renderDetails(search) {
   const result = search.result;
   const section = (title, ...content) =>
     el("section", { class: "profile-section" }, el("h3", { text: title }), ...content);
-  const parts = [
-    section(
-      "Countries searched",
-      el("p", { text: (result.country_names || []).join(", ") }),
-    ),
-  ];
+  const parts = [];
+  const jobs = result.jobs;
+  if (jobs) {
+    const row = (cells, header = false) =>
+      el("tr", {}, ...cells.map((cell, i) =>
+        el(header ? "th" : "td", { class: i > 1 ? "number" : "", text: String(cell) })));
+    const statusText = { ok: "Worked", partial: "Partly", failed: "Failed", unavailable: "Unavailable", skipped: "Not used" };
+    parts.push(
+      section(
+        "Job sources",
+        el(
+          "table",
+          { class: "data-table" },
+          row(["Source", "Status", "Ads found", "Only here", "Requests"], true),
+          ...jobs.sources.map((s) =>
+            row([s.name, statusText[s.status] + (s.message ? ` — ${s.message}` : ""), s.jobs_found, s.unique, s.requests]),
+          ),
+        ),
+      ),
+    );
+    const c = jobs.counts;
+    const funnel = [
+      `${c.ads_found} job ads found`,
+      `${c.different_jobs} different jobs after removing duplicates`,
+      ...c.left_out.map((item) => `${item.count} left out: ${item.reason}`),
+      `${c.unrelated} left out as clearly unrelated to what you're looking for`,
+      c.not_scored ? `${c.not_scored} not scored (scoring limit)` : null,
+      `${c.shown} shown`,
+    ].filter(Boolean);
+    const unrelated = el(
+      "details",
+      { class: "advanced" },
+      el("summary", { text: "See the titles left out as clearly unrelated" }),
+      el("ul", {}, ...c.unrelated_titles.map((t) => el("li", { text: t }))),
+    );
+    parts.push(section("What happened to the jobs", el("ul", {}, ...funnel.map((t) => el("li", { text: t }))),
+      c.unrelated ? unrelated : null));
+  }
+  parts.push(section("Countries searched", el("p", { text: (result.country_names || []).join(", ") })));
   for (const language of result.languages || []) {
     const words = result.search_words.filter((w) => w.language === language.code);
     const titles = words.filter((w) => w.kind === "job_title").map((w) => w.text);
@@ -524,6 +779,8 @@ function renderDetails(search) {
     profile: "Understanding your profile",
     location: "Understanding the location",
     search_words: "Preparing search words",
+    quick_pass: "Quick relevance check",
+    scoring: "Scoring jobs",
   };
   const rows = Object.entries(usage).map(([step, used]) =>
     el("li", {
@@ -556,6 +813,7 @@ function setUpSearchActions() {
     setStatus($("search-form-status"), "", "");
     await busy($("start-search"), async () => {
       try {
+        if (view.list !== "results") await switchList("results");
         showSearch(await api("/api/search", { method: "POST", body: form }));
       } catch (error) {
         setStatus($("search-form-status"), "problem", error.message);
@@ -565,12 +823,30 @@ function setUpSearchActions() {
   $("stop-search").addEventListener("click", async () => {
     if (state.search) await api(`/api/search/${state.search.id}/stop`, { method: "POST" });
   });
+  for (const [id, yes] of [["question-yes", true], ["question-no", false]]) {
+    $(id).addEventListener("click", async () => {
+      if (!state.search) return;
+      $("search-question").hidden = true;
+      await api(`/api/search/${state.search.id}/answer`, { method: "POST", body: { yes } });
+    });
+  }
   $("show-details").addEventListener("click", () => {
     if (!state.search) return;
     $("details-content").replaceChildren(...renderDetails(state.search));
     $("details-dialog").showModal();
   });
   $("close-details").addEventListener("click", () => $("details-dialog").close());
+  $("sort-order").addEventListener("change", (event) => {
+    view.sort = event.target.value;
+    renderResults();
+  });
+  $("show-hidden").addEventListener("change", (event) => {
+    view.showHidden = event.target.checked;
+    renderResults();
+  });
+  for (const button of document.querySelectorAll("[data-list]")) {
+    button.addEventListener("click", () => switchList(button.dataset.list));
+  }
 }
 
 // ---------------------------------------------------------------------------

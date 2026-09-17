@@ -13,17 +13,22 @@ from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from typing import Literal
 
-from jobcu import db, documents
+from jobcu import db, documents, jobstore, pipeline
 from jobcu.ai.base import AIError
 from jobcu.ai.client import AIClient
 from jobcu.ai.usage import UsageLog
 from jobcu.countries import COUNTRIES, LANGUAGE_NAMES, languages_for
 from jobcu.documents import DocumentError
+from jobcu.filters import REASONS, apply_rules
 from jobcu.keystore import KeyStore
 from jobcu.keywords import generate_search_words
 from jobcu.location import interpret_location
 from jobcu.profile import read_profile
+from jobcu.relevance import quick_pass
+from jobcu.scoring import score_groups
 from jobcu.settings import SearchForm, load_settings
+from jobcu.sources.base import JobQuery
+from jobcu.sources.http import PoliteClient
 
 log = logging.getLogger(__name__)
 
@@ -36,7 +41,14 @@ STEPS: list[tuple[str, str]] = [
     ("location", "Understanding where you want to work"),
     ("search_words", "Preparing search words"),
     ("sources", "Searching job sources"),
+    ("filtering", "Removing duplicates and jobs that don't fit"),
+    ("details", "Reading the full job ads"),
+    ("scoring", "Scoring jobs"),
 ]
+
+# How long a search waits for an answer to a question (e.g. the scoring limit) before
+# carrying on without the extra work.
+QUESTION_TIMEOUT_SECONDS = 3600
 
 
 @dataclass
@@ -58,6 +70,9 @@ class SearchRun:
     error: str | None = None
     result: dict = field(default_factory=dict)
     stop_requested: bool = False
+    question: dict | None = None
+    _answer: bool = False
+    _answered: threading.Event = field(default_factory=threading.Event, repr=False)
     _lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
     def step(self, step_id: str) -> Step:
@@ -78,6 +93,24 @@ class SearchRun:
             if not self.notes or self.notes[-1] != message:
                 self.notes.append(message)
 
+    def ask(self, question: dict) -> bool:
+        """Show a yes/no question on the screen and wait for the answer."""
+        with self._lock:
+            self.question = question
+            self._answered.clear()
+        answered = self._answered.wait(QUESTION_TIMEOUT_SECONDS)
+        with self._lock:
+            self.question = None
+            return answered and self._answer and not self.stop_requested
+
+    def answer(self, value: bool) -> bool:
+        with self._lock:
+            if self.question is None:
+                return False
+            self._answer = value
+        self._answered.set()
+        return True
+
     def snapshot(self) -> dict:
         with self._lock:
             return {
@@ -88,6 +121,7 @@ class SearchRun:
                 "steps": [asdict(s) for s in self.steps],
                 "notes": list(self.notes),
                 "error": self.error,
+                "question": self.question,
                 "result": json.loads(json.dumps(self.result)),
             }
 
@@ -142,6 +176,9 @@ class SearchManager:
             run.error = "Something went wrong in Jobcu. Please try again."
         finally:
             _mark_remaining(run, "failed" if run.status == "failed" else "skipped")
+            if "jobs" in run.result:
+                # Kept so the results are still there after Jobcu restarts.
+                jobstore.save_results(run.id, json.dumps(run.snapshot()))
             with db.connect() as conn:
                 conn.execute(
                     "UPDATE searches SET status = ?, finished_at = ? WHERE id = ?",
@@ -154,6 +191,7 @@ class SearchManager:
             return False
         run.stop_requested = True
         run.note("Stopping after the current step…")
+        run.answer(False)
         return True
 
 
@@ -205,9 +243,156 @@ def run_search(run: SearchRun) -> None:
     run.update("search_words", "done", f"{len(terms)} search words in {len(languages)} languages")
     checkpoint()
 
-    run.update("sources", "skipped", "Job sources are being connected in the next part of Phase 1")
-    usage = UsageLog().for_search(run.id)
-    run.set_result("usage", {step: asdict(used) for step, used in usage.items()})
+    keys = KeyStore()
+    started_at = datetime.fromisoformat(run.started_at)
+    query = JobQuery(
+        countries=plan.countries,
+        places=plan.places,
+        terms=terms,
+        posted_within_hours=run.form.posted_within_hours,
+        started_at=started_at,
+    )
+    http = PoliteClient()
+    try:
+        _find_and_score(run, settings, client, keys, http, profile, plan, query, checkpoint)
+    finally:
+        http.close()
+        usage = UsageLog().for_search(run.id)
+        run.set_result("usage", {step: asdict(used) for step, used in usage.items()})
+
+
+def _find_and_score(run, settings, client, keys, http, profile, plan, query, checkpoint) -> None:
+    form = run.form
+    run.update("sources", "running")
+    collected = pipeline.collect(query, http, keys, settings.sources_disabled, run)
+    names = {source_id: source.name for source_id, source in collected.sources.items()}
+    working = [r for r in collected.reports if r.status in ("ok", "partial")]
+    run.update("sources", "done" if working else "failed", f"{len(collected.jobs)} job ads found")
+    for report in collected.reports:
+        if report.message and report.status in ("partial", "failed", "unavailable"):
+            run.note(report.message if report.message.startswith(report.name)
+                     else f"{report.name}: {report.message}")
+    checkpoint()
+
+    run.update("filtering", "running")
+    groups = pipeline.make_groups(collected)
+    remembered = jobstore.find_job_ids(groups)
+    states = jobstore.states([job_id for job_id in remembered if job_id])
+    remembered_states = [states.get(job_id) if job_id else None for job_id in remembered]
+    outcome = apply_rules(
+        groups,
+        remembered_states,
+        started_at=query.started_at,
+        posted_within_hours=form.posted_within_hours,
+        job_types=form.job_types,
+        exclude_remote=form.exclude_remote,
+        countries=plan.countries,
+    )
+    left_out = dict(outcome.left_out)
+    unrelated = set(quick_pass(client, profile, groups, outcome.kept)) if outcome.kept else set()
+    candidates = [i for i in outcome.kept if i not in unrelated]
+    run.update(
+        "filtering",
+        "done",
+        f"{len(groups)} different jobs, {len(candidates)} worth a closer look",
+    )
+    checkpoint()
+
+    run.update("details", "running")
+    pipeline.load_full_ads(groups, candidates, collected, http, keys, run)
+    run.update("details", "done", "Full ads read where available")
+    checkpoint()
+
+    run.update("scoring", "running")
+    order = pipeline.newest_first(groups, candidates)
+    cap = settings.limits.scoring_cap
+    scored: dict[int, dict] = {}
+    position = 0
+    while position < len(order):
+        chunk = order[position : position + cap] if position == 0 else order[position:]
+        if position > 0:
+            remaining = len(order) - position
+            wants_more = run.ask({
+                "kind": "scoring_cap",
+                "message": (
+                    f"Jobcu has scored {position} jobs, the limit you set for one search. "
+                    f"{remaining} more jobs are waiting. Score them too? This uses more AI."
+                ),
+                "yes": f"Score {remaining} more",
+                "no": "Show results now",
+            })
+            if not wants_more:
+                break
+            chunk = order[position : position + cap]
+
+        def progress(done, total, base=position):
+            run.update("scoring", "running", f"{base + done} of {len(order)} jobs")
+
+        scored.update(score_groups(client, profile, plan, groups, chunk, on_progress=progress))
+        position += len(chunk)
+        checkpoint()
+
+    # Facts only the ad text revealed can still rule a job out.
+    shown: list[int] = []
+    for index in candidates:
+        result = scored.get(index)
+        stated_types = any(copy.job_types for copy in groups[index].copies)
+        if result and form.exclude_remote and result["fully_remote"]:
+            left_out["remote_text"] = left_out.get("remote_text", 0) + 1
+        elif (
+            result and not stated_types and result["job_type"]
+            and result["job_type"] not in form.job_types
+        ):
+            left_out["job_type_text"] = left_out.get("job_type_text", 0) + 1
+        else:
+            shown.append(index)
+    run.update("scoring", "done", f"{len(scored)} jobs scored")
+
+    hidden = [i for i, s in enumerate(remembered_states) if s is not None and s.dismissed]
+    to_remember = shown + hidden
+    job_ids, new_flags = jobstore.remember([groups[i] for i in to_remember], run.id)
+    id_of = dict(zip(to_remember, job_ids, strict=True))
+    new_of = dict(zip(to_remember, new_flags, strict=True))
+    states = jobstore.states(job_ids)
+
+    def card(index: int) -> dict:
+        duplicate = groups[index].possible_duplicate_of
+        return pipeline.build_card(
+            groups[index],
+            job_id=id_of[index],
+            is_new=new_of[index],
+            state=states.get(id_of[index]),
+            scored=scored.get(index),
+            plan=plan,
+            source_names=names,
+            possible_duplicate_of=id_of.get(duplicate) if duplicate is not None else None,
+            started_at=query.started_at,
+            posted_within_hours=form.posted_within_hours,
+        )
+
+    cards = [card(i) for i in shown]
+    jobstore.save_cards(cards)
+    unique = pipeline.unique_counts(groups, shown)
+    reasons = {**REASONS, "remote_text": "Fully remote, according to the ad text",
+               "job_type_text": "A job type you didn't tick, according to the ad text"}
+    run.set_result("jobs", {
+        "cards": pipeline.sort_cards([c for c in cards if c["date_known"]]),
+        "date_unknown": pipeline.sort_cards([c for c in cards if not c["date_known"]]),
+        "hidden": [card(i) for i in hidden],
+        "new_count": sum(1 for c in cards if c["is_new"]),
+        "counts": {
+            "ads_found": len(collected.jobs),
+            "different_jobs": len(groups),
+            "left_out": [{"reason": reasons[k], "count": v} for k, v in left_out.items()],
+            "unrelated": len(unrelated),
+            "unrelated_titles": sorted({groups[i].main.title for i in unrelated})[:200],
+            "not_scored": len(candidates) - len(scored),
+            "shown": len(cards),
+        },
+        "sources": [
+            {**asdict(r), "unique": unique.get(r.source, 0)} for r in collected.reports
+        ],
+    })
 
 
 manager = SearchManager()

@@ -48,14 +48,19 @@ tested and shown to the owner before the next one starts. Decisions are in
       checked yet" until Phase 2 (§6)
 - [x] Hidden multilingual search words: English plus the job-ad languages of the countries
       searched (§5). First real run: 73 search words in 4 languages, about 10 seconds
-- [ ] Time filter and job type filter applied to the jobs found (§7, §8)
-- [ ] Starter sources: Adzuna, Bundesagentur für Arbeit, Reed, and a starter set of company career
-      systems (§9)
-- [ ] Duplicate detection with main-link priority (§10)
+- [x] Time filter and job type filter applied to the jobs found (§7, §8)
+- [x] Starter sources: Adzuna, Bundesagentur für Arbeit, Reed (§9). Company career systems moved to
+      Phase 3 (see DECISIONS.md)
+- [x] Duplicate detection with main-link priority, "Also on" and "possible duplicate" (§10)
+- [x] Rules filter and quick relevance check, with counts and left-out titles in Search details
 - [ ] Quality test set of 30–50 real job ads judged by the owner, and a tuned scoring prompt (§13)
-- [ ] Scoring with 1–3 reasons per job (§11)
-- [ ] Results screen with Save / Applied / Not interested (§12)
-- [ ] Usage meter and caps (§13)
+- [x] Scoring with 1–3 reasons per job (§11). First real search (Munich, 72 hours): 46 ads,
+      41 different jobs, 22 scored, under 2 minutes
+- [x] Results screen with Save / Applied / Not interested, "New" badge, Saved and Applied lists,
+      "Show hidden", sorting, "Posting date unknown" section (§12)
+- [ ] Owner decides whether Jobcu may read Adzuna's job pages for full ads
+- [x] Scoring limit that asks before scoring more (§13)
+- [ ] Usage meter (per search and per month), monthly limits and price table in Settings (§13)
 - [ ] **Done when:** the owner can run a real search on his Mac and get a ranked, deduplicated list
       with reasons.
 

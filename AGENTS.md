@@ -82,13 +82,22 @@ src/jobcu/
   location.py                understands "Where do you want to work?"
   keywords.py                the hidden multilingual search words
   search.py                  runs a search step by step in the background, with progress
+  pipeline.py                collecting from sources, full ads, result cards
+  dedupe.py                  duplicates, main link, "possible duplicate"
+  filters.py                 the free rules filter (dates, types, remote, country, dismissed)
+  relevance.py               the quick AI relevance check
+  scoring.py                 the scoring rubric and prompt
+  freshness.py               posting dates and "Posted within"
+  jobstore.py                jobs remembered between searches, job states, saved results
+  text.py                    job ad HTML to plain text
   search_api.py              internal API for starting and following a search
   build.py                   code fingerprint, so a new Jobcu replaces an older running one
   db.py                      SQLite database with numbered migrations
   logs.py                    log file in the data folder, with keys hidden
   ai/                        the AI layer: client.py is the ONLY way to call an AI;
                              one adapter per provider; providers.py lists them
-  sources/                   job sources, one module per source
+  sources/                   job sources: base.py (common interface), http.py (polite
+                             requests), budget.py (free usage limits), one module per source
   web/                       the screen: plain HTML, CSS, JS (no build step)
 tests/                       pytest; conftest.py gives every test a throwaway data folder
 tools/check_no_secrets.py    safety check against keys and personal data (Git hook and CI)

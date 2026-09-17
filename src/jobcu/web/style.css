@@ -17,6 +17,8 @@
   --ok-soft: #e3f1ec;
   --problem: #a23b2a;
   --problem-soft: #fbeae6;
+  --warn: #8a5a00;
+  --warn-soft: #fbf1dc;
   --focus: #2f7fd1;
 
   --radius: 12px;
@@ -44,6 +46,8 @@
     --ok-soft: #1f3a31;
     --problem: #f08a78;
     --problem-soft: #3a2320;
+    --warn: #e5b45a;
+    --warn-soft: #3a2f1a;
     --focus: #7ab4f0;
     --shadow: none;
   }
@@ -630,6 +634,270 @@ dialog::backdrop {
   font-size: 0.9rem;
 }
 
+/* ---- Search question ---- */
+
+.question {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-small);
+  background: var(--accent-soft);
+}
+
+.question p {
+  margin: 0;
+}
+
+/* ---- Results ---- */
+
+.results-head {
+  padding-bottom: 16px;
+}
+
+.results-summary {
+  margin-bottom: 6px;
+  font-size: 1.2rem;
+  font-weight: 650;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.toolbar-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.check.small {
+  gap: 6px;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.check.small select {
+  width: auto;
+  min-height: 34px;
+  padding: 4px 8px;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+}
+
+.segmented button {
+  min-height: 32px;
+  padding: 4px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 550;
+}
+
+.segmented button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.job-card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 4px 16px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.job-card.is-hidden {
+  opacity: 0.6;
+}
+
+.score {
+  grid-row: span 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: var(--surface-sunken);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.score small {
+  margin-top: 3px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.score.high {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+.score.mid {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.job-title {
+  margin: 0;
+  font-size: 1.08rem;
+  line-height: 1.3;
+}
+
+.job-title .badge {
+  margin-left: 6px;
+  vertical-align: 2px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.badge.new {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.badge.saved,
+.badge.applied {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.job-company {
+  margin: 0;
+  font-weight: 550;
+}
+
+.job-meta,
+.job-reasons,
+.job-checks {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.job-reasons {
+  color: var(--text);
+}
+
+.job-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 0.85rem;
+}
+
+.check-verified::before {
+  content: "✓ ";
+  color: var(--ok);
+  font-weight: 700;
+}
+
+.check-estimate::before,
+.check-unclear::before {
+  content: "? ";
+  color: var(--warn);
+  font-weight: 700;
+}
+
+.job-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 8px;
+}
+
+.job-actions .spacer {
+  flex: 1;
+}
+
+.job-actions button,
+.job-actions .button {
+  min-height: 36px;
+  padding: 5px 14px;
+  font-size: 0.92rem;
+}
+
+.job-actions button[aria-pressed="true"] {
+  background: var(--accent-soft);
+}
+
+.also-on {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.section-title {
+  margin: 28px 0 4px;
+}
+
+.empty {
+  padding: 28px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.data-table td.number,
+.data-table th.number {
+  text-align: right;
+  white-space: nowrap;
+}
+
 /* ---- Footer ---- */
 
 .footer {
@@ -671,6 +939,18 @@ dialog::backdrop {
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .job-card {
+    grid-template-columns: 52px 1fr;
+    gap: 4px 12px;
+    padding: 14px;
+  }
+
+  .score {
+    width: 52px;
+    height: 52px;
+    font-size: 1.2rem;
   }
 
   dialog {

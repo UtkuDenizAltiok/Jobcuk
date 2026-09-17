@@ -42,6 +42,49 @@ MIGRATIONS: list[str] = [
         form_json TEXT NOT NULL
     );
     """,
+    # 3: Requests sent to job sources per day, so free daily and monthly limits are kept.
+    """
+    CREATE TABLE source_requests (
+        day TEXT NOT NULL,
+        source TEXT NOT NULL,
+        count INTEGER NOT NULL,
+        PRIMARY KEY (day, source)
+    );
+    """,
+    # 4: Jobs remembered between searches (HANDOVER section 12): which jobs were shown
+    # before (for the "New" badge), their Saved / Applied / Not interested state, and
+    # each search's results so they can be shown again.
+    """
+    CREATE TABLE jobs (
+        id INTEGER PRIMARY KEY,
+        first_seen_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        first_seen_search_id INTEGER,
+        title TEXT NOT NULL,
+        company TEXT
+    );
+    CREATE TABLE job_keys (
+        key TEXT PRIMARY KEY,
+        job_id INTEGER NOT NULL REFERENCES jobs (id)
+    );
+    CREATE INDEX job_keys_job_id ON job_keys (job_id);
+    CREATE TABLE job_states (
+        job_id INTEGER PRIMARY KEY REFERENCES jobs (id),
+        saved INTEGER NOT NULL DEFAULT 0,
+        applied INTEGER NOT NULL DEFAULT 0,
+        dismissed INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    );
+    CREATE TABLE search_results (
+        search_id INTEGER PRIMARY KEY REFERENCES searches (id),
+        result_json TEXT NOT NULL
+    );
+    -- The latest card of each job, so Saved and Applied jobs can be listed any time.
+    CREATE TABLE job_cards (
+        job_id INTEGER PRIMARY KEY REFERENCES jobs (id),
+        card_json TEXT NOT NULL,
+        updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    );
+    """,
 ]
 
 
