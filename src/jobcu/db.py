@@ -94,6 +94,18 @@ MIGRATIONS: list[str] = [
         profile_json TEXT NOT NULL
     );
     """,
+    # 6: Job ad texts already downloaded, kept for a few days so the same ad isn't fetched
+    # again in the next search (DECISIONS.md). Scores are never reused.
+    """
+    CREATE TABLE ad_texts (
+        source TEXT NOT NULL,
+        source_job_id TEXT NOT NULL,
+        fetched_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        details_json TEXT NOT NULL,
+        PRIMARY KEY (source, source_job_id)
+    );
+    CREATE INDEX ad_texts_fetched_at ON ad_texts (fetched_at);
+    """,
 ]
 
 

@@ -72,8 +72,9 @@ Germany are worked on and tested first**; that's the order of work, not a limit.
      kept in the data folder, keyed by the CV text, cover letter text, prompt, model and answer
      format, and reused while nothing changes. "What Jobcu understood" uses it too. Everything
      about the job search itself still runs fresh in every search.
-   - **Remember job ad texts** by source and job ID for a few days, so the same ad isn't downloaded
-     again.
+   - ~~**Remember job ad texts**~~ **done (2026-09-17)**: a full ad downloaded in the last three
+     days is reused by source and job ID instead of being fetched again ("Search details" says how
+     many were already known). Scores are never reused.
    - **Provider-side prompt caching** where supported.
    - **Adaptive Adzuna budget** (`sources/adzuna.py`, `sources/budget.py`): replace the fixed 40
      requests per search with a share of what's left this month over the remaining days at about 3

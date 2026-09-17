@@ -1,15 +1,27 @@
 """What Jobcu remembers about jobs between searches (HANDOVER section 12).
 
-Only this is remembered: which jobs were shown before (for the "New" badge), and which
-the user marked Saved, Applied or Not interested. A job is recognised again through any
-of its copies, so if one copy was marked Not interested, every copy stays hidden.
+Only this is remembered: which jobs were shown before (for the "New" badge), which the user
+marked Saved, Applied or Not interested, and the **text of ads already downloaded**, for a few
+days, so the same ad isn't fetched again (DECISIONS.md). A job is recognised again through any
+of its copies, so if one copy was marked Not interested, every copy stays hidden. Scores and
+everything else about a search are always made fresh.
 """
 
+import dataclasses
 import json
 from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 
 from jobcu import db
 from jobcu.dedupe import JobGroup, normal_city, normal_company, normal_title
+from jobcu.freshness import parse_iso
+from jobcu.sources.base import FoundJob
+
+# How long a downloaded ad text is trusted. Job ads barely change while they are open.
+AD_TEXT_DAYS = 3
+# What reading the full ad adds to what a source's job list already gave.
+AD_DETAIL_FIELDS = ("description", "description_is_complete", "job_types", "work_mode",
+                    "employer_url", "salary_text", "company", "posted_at")
 
 
 @dataclass
@@ -142,3 +154,47 @@ def marked_cards(kind: str) -> list[dict]:
         card["state"] = {"saved": bool(row[1]), "applied": bool(row[2]), "dismissed": bool(row[3])}
         cards.append(card)
     return cards
+
+
+def remember_ad(job: FoundJob) -> None:
+    """Keeps the text of a full ad, so the next search doesn't download it again."""
+    if not job.description_is_complete or not job.source_job_id:
+        return
+    details = {field: getattr(job, field) for field in AD_DETAIL_FIELDS}
+    details["posted_at"] = job.posted_at.isoformat() if job.posted_at else None
+    with db.connect() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO ad_texts (source, source_job_id, fetched_at, details_json) "
+            "VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'), ?)",
+            (job.source, job.source_job_id, json.dumps(details)),
+        )
+        conn.execute(
+            "DELETE FROM ad_texts WHERE fetched_at < ?",
+            ((datetime.now(UTC) - timedelta(days=AD_TEXT_DAYS)).isoformat(),),
+        )
+
+
+def remembered_ad(job: FoundJob) -> FoundJob | None:
+    """The same ad's text from an earlier search, if it was downloaded in the last few days."""
+    if not job.source_job_id:
+        return None
+    since = (datetime.now(UTC) - timedelta(days=AD_TEXT_DAYS)).isoformat()
+    with db.connect() as conn:
+        row = conn.execute(
+            "SELECT details_json FROM ad_texts WHERE source = ? AND source_job_id = ? "
+            "AND fetched_at >= ?",
+            (job.source, job.source_job_id, since),
+        ).fetchone()
+    if row is None:
+        return None
+    try:
+        details = json.loads(row["details_json"])
+    except ValueError:
+        return None
+    details = {field: value for field, value in details.items()
+               if field in AD_DETAIL_FIELDS and value not in (None, "", [])}
+    if not details.get("description"):
+        return None
+    if "posted_at" in details:
+        details["posted_at"] = parse_iso(details["posted_at"]) or job.posted_at
+    return dataclasses.replace(job, **details)

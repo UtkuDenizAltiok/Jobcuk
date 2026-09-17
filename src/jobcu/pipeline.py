@@ -7,6 +7,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 
+from jobcu import jobstore
 from jobcu.countries import COUNTRIES
 from jobcu.dedupe import JobGroup, group_duplicates, is_agency
 from jobcu.freshness import freshness, window_start
@@ -89,21 +90,33 @@ def make_groups(collected: Collected) -> list[JobGroup]:
 
 
 def load_full_ads(groups, indexes, collected: Collected, http, keys, run) -> None:
-    """Fetch the full ad for jobs still in the running, where only a short version is known."""
+    """Fetch the full ad for jobs still in the running, where only a short version is known.
+
+    An ad downloaded in the last few days is taken from what Jobcu remembers instead
+    (DECISIONS.md), which saves time and requests without ever reusing a score.
+    """
     reports = {r.source: r for r in collected.reports}
     work: dict[str, list[tuple[int, int]]] = {}
+    remembered = 0
     for index in indexes:
         group = groups[index]
         if group.best_description_copy.description_is_complete:
             continue
         for copy_index, copy in enumerate(group.copies):
             source = collected.sources.get(copy.source)
-            if source and type(source).load_details is not JobSource.load_details:
+            if source is None or type(source).load_details is JobSource.load_details:
+                continue
+            known = jobstore.remembered_ad(copy)
+            if known is not None:
+                group.copies[copy_index] = known
+                remembered += 1
+            else:
                 work.setdefault(copy.source, []).append((index, copy_index))
-                break
+            break
     total = sum(len(items) for items in work.values())
+    known_note = f", {remembered} already known" if remembered else ""
     if not total:
-        run.update("details", "done", "Nothing more to read")
+        run.update("details", "done", f"Nothing more to read{known_note}")
         return
     lock = threading.Lock()
     done = [0]
@@ -115,15 +128,15 @@ def load_full_ads(groups, indexes, collected: Collected, http, keys, run) -> Non
             if run.stop_requested:
                 return
             try:
-                groups[index].copies[copy_index] = source.load_details(
-                    groups[index].copies[copy_index], ctx
-                )
+                full = source.load_details(groups[index].copies[copy_index], ctx)
+                groups[index].copies[copy_index] = full
+                jobstore.remember_ad(full)
             except Exception:
                 log.exception("Reading a full ad from %s failed", source_id)
             with lock:
                 done[0] += 1
                 if done[0] % 5 == 0 or done[0] == total:
-                    run.update("details", "running", f"{done[0]} of {total} ads")
+                    run.update("details", "running", f"{done[0]} of {total} ads{known_note}")
 
     with ThreadPoolExecutor(max_workers=len(work), thread_name_prefix="details") as pool:
         list(pool.map(lambda pair: run_source(*pair), work.items()))

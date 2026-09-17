@@ -1,3 +1,4 @@
+import dataclasses
 import json
 
 import pytest
@@ -51,3 +52,29 @@ def test_latest_results_are_kept():
     search_id = new_search()
     jobstore.save_results(search_id, json.dumps({"id": search_id}))
     assert jobstore.latest_results() == (search_id, json.dumps({"id": search_id}))
+
+
+def test_ad_texts_are_remembered_for_a_few_days_then_forgotten():
+    from datetime import UTC, datetime, timedelta
+
+    short = FoundJob(source="greenhouse", source_job_id="acme/1", url="https://x.test/1",
+                     title="Hardware Engineer", description="Short summary")
+    assert jobstore.remembered_ad(short) is None
+
+    full = dataclasses.replace(short, description="The whole ad", description_is_complete=True,
+                               job_types=["full_time_permanent"], salary_text="€60,000")
+    jobstore.remember_ad(full)
+    known = jobstore.remembered_ad(short)
+    assert known is not None
+    assert known.description == "The whole ad" and known.description_is_complete
+    assert known.job_types == ["full_time_permanent"] and known.salary_text == "€60,000"
+    assert known.title == "Hardware Engineer"  # the job list's own fields stay
+
+    # A summary is never kept, and another job's id is never mixed up.
+    jobstore.remember_ad(short)
+    assert jobstore.remembered_ad(dataclasses.replace(short, source_job_id="acme/2")) is None
+
+    old = (datetime.now(UTC) - timedelta(days=jobstore.AD_TEXT_DAYS + 1)).isoformat()
+    with db.connect() as conn:
+        conn.execute("UPDATE ad_texts SET fetched_at = ?", (old,))
+    assert jobstore.remembered_ad(short) is None
