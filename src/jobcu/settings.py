@@ -53,8 +53,28 @@ class ModelPrice(BaseModel):
     currency: str = "USD"
 
 
+JobType = Literal[
+    "full_time_permanent",
+    "fixed_term",
+    "part_time",
+    "internship_or_working_student",
+    "freelance_or_contract",
+]
+JOB_TYPES: tuple[str, ...] = JobType.__args__  # type: ignore[attr-defined]
+
+
+class SearchForm(BaseModel):
+    """What the user filled in on the search screen, kept for their next visit."""
+
+    location_text: str = Field(default="", max_length=2000)
+    posted_within_hours: Literal[6, 24, 72, 168] = 24
+    job_types: list[JobType] = list(JOB_TYPES)
+    exclude_remote: bool = False
+
+
 class Settings(BaseModel):
     ai: AISettings = AISettings()
+    search_form: SearchForm = SearchForm()
     limits: LimitSettings = LimitSettings()
     prices: list[ModelPrice] = []
     use_web_search: bool = True

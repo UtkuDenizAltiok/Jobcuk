@@ -143,3 +143,16 @@ aren't repeated here unless something about them was clarified.
 | **The owner allowed Claude to use his keys for development** (2026-09-17). Claude uses the keys already saved in Jobcu on his Mac, only through Jobcu's own code, and never prints, logs, copies or commits them. | Real tests with the real AI and real job sources give much better development than made-up data. Keys never have to appear in the chat: it's stored outside the owner's computer and adds no benefit, because Claude already works on that computer. |
 | Development tests use **free usage only**. Claude asks before anything that could cost money, and keeps Adzuna and Reed requests modest. | The owner's Gemini account has no billing set up, and the job-site keys have daily limits. |
 | **Experience is split into full-time years and internship / working-student / part-time years** | The first real test counted the owner's part-time student jobs as "3.1 years of experience". Job ads asking for "3+ years" usually mean full-time work, so that would have overstated seniority fit. |
+
+### Location, search words and running a search
+
+| Decision | Reason |
+|---|---|
+| **A newer Jobcu automatically replaces an older copy that's still running** (the code has a fingerprint; the new copy asks the old one to stop) | The owner double-clicked Start Jobcu after an update and still saw the old screens, because the old copy was running. |
+| Phase 1 location understanding handles **named countries, regions and places**. Any other condition is shown as "Not checked yet" until the smart filter in Phase 2. An empty box means all 31 countries, with a note that this takes longer. | Matches the phased plan (HANDOVER §16). Nothing is silently ignored. |
+| The AI doesn't guess countries for descriptions like "by the seaside" | Guesses about places belong in Phase 2, where they'll be checked against real data or clearly labelled "AI estimate". |
+| **Search words:** up to 16 job titles and 8 field or skill words per language, in English plus the job-ad languages of the countries searched (a small table in `countries.py`). At most 5 languages per AI request. | Covers the common title variants employers use (HANDOVER §5) while keeping requests reliable and affordable. |
+| Search progress is shown by the screen **asking Jobcu once a second** | Simpler and sturdier than a live connection, and plenty fast for a search that takes minutes. |
+| **One search at a time** | Keeps usage predictable and avoids two searches competing for the same free AI allowance. |
+| The search form (location text and filters) is **remembered for the next visit** | Convenience only. Every search still reads the documents and the location text again from scratch. |
+| After a search, "What Jobcu understood" shows **exactly what that search used**. Before any search, it reads the documents on the spot. | The user sees what the search really worked with. |

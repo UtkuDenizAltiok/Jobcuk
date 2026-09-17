@@ -78,6 +78,12 @@ src/jobcu/
   documents.py               CV and cover letter: saving uploads and reading their text
   documents_api.py           internal API for documents and the profile preview
   profile.py                 the AI prompt that reads documents into a profile
+  countries.py               supported countries and their job-ad languages
+  location.py                understands "Where do you want to work?"
+  keywords.py                the hidden multilingual search words
+  search.py                  runs a search step by step in the background, with progress
+  search_api.py              internal API for starting and following a search
+  build.py                   code fingerprint, so a new Jobcu replaces an older running one
   db.py                      SQLite database with numbered migrations
   logs.py                    log file in the data folder, with keys hidden
   ai/                        the AI layer: client.py is the ONLY way to call an AI;

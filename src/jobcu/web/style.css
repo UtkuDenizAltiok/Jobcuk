@@ -198,7 +198,9 @@ code {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+textarea,
+select {
   width: 100%;
   min-height: 42px;
   padding: 8px 12px;
@@ -207,6 +209,121 @@ input[type="password"] {
   background: var(--surface);
   color: var(--text);
   font: inherit;
+}
+
+textarea {
+  resize: vertical;
+  line-height: 1.4;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) 1fr;
+  gap: 0 24px;
+  align-items: start;
+}
+
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.search-panel form {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.steps {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 1.6em 1fr;
+  gap: 2px 8px;
+  padding: 7px 0;
+}
+
+.steps .icon {
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.steps li[data-status="done"] .icon {
+  color: var(--ok);
+}
+
+.steps li[data-status="failed"] .icon {
+  color: var(--problem);
+}
+
+.steps li[data-status="running"] .label {
+  font-weight: 600;
+}
+
+.steps li[data-status="waiting"] .label,
+.steps li[data-status="skipped"] .label {
+  color: var(--text-muted);
+}
+
+.steps .step-detail {
+  grid-column: 2;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.steps li[data-status="running"] .icon {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.notes {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+  color: var(--text-muted);
+}
+
+.understood {
+  font-size: 1.05rem;
+}
+
+.understood strong {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.term-group {
+  margin: 10px 0;
 }
 
 .inline {
@@ -550,6 +667,10 @@ dialog::backdrop {
 
   .document-row .doc-label {
     flex-basis: 100%;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 
   dialog {

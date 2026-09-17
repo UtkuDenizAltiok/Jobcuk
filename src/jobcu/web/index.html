@@ -32,31 +32,85 @@
         <p><a class="button" href="#/settings">Open Settings</a></p>
       </div>
 
-      <div class="card">
+      <div class="card search-panel">
         <h2>Your documents</h2>
         <p class="muted">Jobcu reads your CV and cover letter again at the start of every search.
           They stay on this computer.</p>
         <div class="document-row" data-document="cv"></div>
         <div class="document-row" data-document="cover_letter"></div>
-        <div class="actions">
-          <button type="button" class="secondary" id="show-profile">What Jobcu understood</button>
-        </div>
-        <p class="status" id="profile-status" role="status" hidden></p>
+
+        <form id="search-form">
+          <div class="field">
+            <label for="location-text">Where do you want to work?</label>
+            <textarea id="location-text" rows="2" maxlength="2000"
+              placeholder="For example: Munich or within 50 km · Germany, Ireland or the UK · leave empty for everywhere"></textarea>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="posted-within">Posted within</label>
+              <select id="posted-within">
+                <option value="6">6 hours</option>
+                <option value="24">24 hours</option>
+                <option value="72">72 hours</option>
+                <option value="168">1 week</option>
+              </select>
+            </div>
+
+            <fieldset class="field">
+              <legend>Job types</legend>
+              <div class="checks" id="job-types"></div>
+            </fieldset>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" id="exclude-remote">
+            <span>Don't include remote jobs</span>
+          </label>
+
+          <div class="actions">
+            <button type="submit" id="start-search">Search</button>
+            <button type="button" class="link" id="show-profile">What Jobcu understood</button>
+            <button type="button" class="link" id="show-details" hidden>Search details</button>
+          </div>
+          <p class="status" id="search-form-status" role="status" hidden></p>
+        </form>
       </div>
 
-      <div class="card">
-        <h2>Find jobs</h2>
-        <p class="muted">The job search itself is being built next.</p>
+      <div class="card" id="progress-card" hidden>
+        <div class="card-head">
+          <h2 id="progress-title">Searching…</h2>
+          <button type="button" class="secondary" id="stop-search" hidden>Stop</button>
+        </div>
+        <ol class="steps" id="search-steps"></ol>
+        <ul class="notes" id="search-notes"></ul>
+        <p class="status problem" id="search-error" role="alert" hidden></p>
       </div>
+
+      <div class="card" id="results-card" hidden>
+        <p class="understood" id="understood-as"></p>
+        <ul class="notes" id="location-notes"></ul>
+        <p class="muted" id="results-placeholder">Jobcu doesn't search job sites yet: they're being
+          connected in the next part of Phase 1. Everything up to this point worked, and you can
+          see the search words in "Search details".</p>
+      </div>
+
+      <dialog id="details-dialog" aria-labelledby="details-title">
+        <div class="dialog-head">
+          <h2 id="details-title">Search details</h2>
+          <button type="button" class="secondary" id="close-details">Close</button>
+        </div>
+        <div id="details-content"></div>
+      </dialog>
 
       <dialog id="profile-dialog" aria-labelledby="profile-title">
         <div class="dialog-head">
           <h2 id="profile-title">What Jobcu understood</h2>
           <button type="button" class="secondary" id="close-profile">Close</button>
         </div>
-        <p class="muted">This is how the AI read your CV and cover letter just now. Jobcu doesn't
-          judge or change your documents; it only uses this to find and score jobs. Nothing here
-          is saved.</p>
+        <p class="muted" id="profile-intro">This is how the AI read your CV and cover letter.
+          Jobcu doesn't judge or change your documents; it only uses this to find and score jobs.
+          Nothing here is saved.</p>
         <div id="profile-content"></div>
       </dialog>
     </section>

@@ -32,6 +32,16 @@ MIGRATIONS: list[str] = [
     CREATE INDEX ai_usage_created_at ON ai_usage (created_at);
     CREATE INDEX ai_usage_search_id ON ai_usage (search_id);
     """,
+    # 2: Searches, so usage and results can be linked to the search they belong to.
+    """
+    CREATE TABLE searches (
+        id INTEGER PRIMARY KEY,
+        started_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        finished_at TEXT,
+        status TEXT NOT NULL,
+        form_json TEXT NOT NULL
+    );
+    """,
 ]
 
 

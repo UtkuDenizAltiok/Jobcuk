@@ -42,9 +42,13 @@ tested and shown to the owner before the next one starts. Decisions are in
       preview of the profile (§3, §4)
 - [x] First real test on the owner's own documents (2026-09-17): 8 seconds, about 5,500 tokens
 - [ ] Owner checks that "What Jobcu understood" is right for his own CV and cover letter
-- [ ] Simple location input: explicit places and countries (§6)
-- [ ] Time filter (6 h / 24 h / 72 h / 1 week) and job type filter (§7, §8)
-- [ ] Hidden multilingual search words (§5)
+- [x] Search screen: location box, "Posted within", job types, "Don't include remote jobs",
+      live progress, "What Jobcu understood" and "Search details" (§3)
+- [x] Simple location input: explicit places and countries; other conditions shown as "not
+      checked yet" until Phase 2 (§6)
+- [x] Hidden multilingual search words: English plus the job-ad languages of the countries
+      searched (§5). First real run: 73 search words in 4 languages, about 10 seconds
+- [ ] Time filter and job type filter applied to the jobs found (§7, §8)
 - [ ] Starter sources: Adzuna, Bundesagentur für Arbeit, Reed, and a starter set of company career
       systems (§9)
 - [ ] Duplicate detection with main-link priority (§10)

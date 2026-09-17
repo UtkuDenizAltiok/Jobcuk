@@ -60,7 +60,7 @@ const $ = (id) => document.getElementById(id);
 // ---------------------------------------------------------------------------
 
 const VIEWS = ["search", "settings"];
-const state = { settings: null, provider: null };
+const state = { settings: null, provider: null, search: null };
 
 function showView() {
   const requested = location.hash.replace("#/", "");
@@ -289,25 +289,261 @@ function renderProfile(profile) {
   ];
 }
 
+function renderLocation(location) {
+  const section = (title, ...content) =>
+    el("section", { class: "profile-section" }, el("h3", { text: title }), ...content);
+  const items = [section("Where you want to work", el("p", { text: location.understood_as }))];
+  if (location.places.length) {
+    items.push(
+      section(
+        "Places",
+        el(
+          "ul",
+          {},
+          ...location.places.map((place) =>
+            el("li", {
+              text:
+                `${place.name}${place.local_name !== place.name ? ` (${place.local_name})` : ""}` +
+                (place.radius_km ? `, within ${place.radius_km} km` : ""),
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+  if (location.not_checked_yet.length) {
+    items.push(
+      section(
+        "Not checked yet",
+        el("p", {
+          class: "muted",
+          text:
+            "Jobcu can't check these conditions yet. The smart location filter comes in the next " +
+            "phase: " + location.not_checked_yet.join("; "),
+        }),
+      ),
+    );
+  }
+  return items;
+}
+
 function setUpDocumentActions() {
   $("close-profile").addEventListener("click", () => $("profile-dialog").close());
   $("show-profile").addEventListener("click", (event) =>
     busy(event.target, async () => {
-      setStatus($("profile-status"), "", "Reading your documents. This can take up to a minute…");
+      // After a search, show exactly what that search used. Before one, read the documents now.
+      const result = state.search?.result;
+      if (result?.profile) {
+        $("profile-intro").textContent =
+          "This is how the AI read your CV, cover letter and location in your last search. " +
+          "Jobcu doesn't judge or change your documents; it only uses this to find and score jobs.";
+        const parts = renderProfile(result.profile);
+        if (result.location) parts.unshift(...renderLocation(result.location));
+        $("profile-content").replaceChildren(...parts);
+        $("profile-dialog").showModal();
+        return;
+      }
+      setStatus($("search-form-status"), "", "Reading your documents. This can take up to a minute…");
       try {
-        const result = await api("/api/profile/preview", { method: "POST" });
-        if (result.error) {
-          setStatus($("profile-status"), "problem", result.error);
+        const preview = await api("/api/profile/preview", { method: "POST" });
+        if (preview.error) {
+          setStatus($("search-form-status"), "problem", preview.error);
           return;
         }
-        setStatus($("profile-status"), "", "");
-        $("profile-content").replaceChildren(...renderProfile(result.profile));
+        setStatus($("search-form-status"), "", "");
+        $("profile-content").replaceChildren(...renderProfile(preview.profile));
         $("profile-dialog").showModal();
       } catch (error) {
-        setStatus($("profile-status"), "problem", error.message);
+        setStatus($("search-form-status"), "problem", error.message);
       }
     }),
   );
+}
+
+// ---------------------------------------------------------------------------
+// Search view: the search form, progress and results
+// ---------------------------------------------------------------------------
+
+const JOB_TYPE_LABELS = {
+  full_time_permanent: "Full-time permanent",
+  fixed_term: "Fixed-term",
+  part_time: "Part-time",
+  internship_or_working_student: "Internship or working student",
+  freelance_or_contract: "Freelance or contract",
+};
+const STEP_ICONS = { waiting: "○", running: "●", done: "✓", failed: "!", skipped: "–" };
+let pollTimer = null;
+
+async function loadSearchForm() {
+  const form = await api("/api/search/form");
+  $("location-text").value = form.location_text;
+  $("posted-within").value = String(form.posted_within_hours);
+  $("exclude-remote").checked = form.exclude_remote;
+  $("job-types").replaceChildren(
+    ...Object.entries(JOB_TYPE_LABELS).map(([value, label]) =>
+      el(
+        "label",
+        { class: "check" },
+        el("input", {
+          type: "checkbox",
+          name: "job-type",
+          value,
+          checked: form.job_types.includes(value),
+        }),
+        el("span", { text: label }),
+      ),
+    ),
+  );
+  const current = await api("/api/search/current");
+  if (current.search) showSearch(current.search);
+}
+
+function readSearchForm() {
+  return {
+    location_text: $("location-text").value,
+    posted_within_hours: Number($("posted-within").value),
+    job_types: [...document.querySelectorAll('input[name="job-type"]:checked')].map((i) => i.value),
+    exclude_remote: $("exclude-remote").checked,
+  };
+}
+
+function showSearch(search) {
+  state.search = search;
+  const running = search.status === "running";
+  $("progress-card").hidden = false;
+  $("progress-title").textContent = {
+    running: "Searching…",
+    finished: "Search finished",
+    failed: "The search stopped because of a problem",
+    stopped: "Search stopped",
+  }[search.status];
+  $("stop-search").hidden = !running;
+  $("start-search").disabled = running;
+
+  $("search-steps").replaceChildren(
+    ...search.steps.map((step) =>
+      el(
+        "li",
+        { "data-status": step.status },
+        el("span", { class: "icon", "aria-hidden": "true", text: STEP_ICONS[step.status] }),
+        el("span", { class: "label", text: step.label }),
+        step.detail ? el("span", { class: "step-detail", text: step.detail }) : null,
+      ),
+    ),
+  );
+  $("search-notes").replaceChildren(...search.notes.map((note) => el("li", { text: note })));
+  setStatus($("search-error"), "problem", search.error || "");
+
+  const location = search.result.location;
+  $("results-card").hidden = !location || running;
+  if (location) {
+    $("understood-as").replaceChildren(
+      el("strong", { text: "Understood as: " }),
+      document.createTextNode(location.understood_as),
+    );
+    const notes = [];
+    if (location.broad) {
+      notes.push("This searches every supported country, so it takes longer and uses more AI.");
+    }
+    if (location.outside_supported_area.length) {
+      notes.push(`Not searched (outside the supported countries): ${location.outside_supported_area.join(", ")}`);
+    }
+    if (location.not_checked_yet.length) {
+      notes.push(`Not checked yet: ${location.not_checked_yet.join("; ")}. This comes with the smart location filter.`);
+    }
+    $("location-notes").replaceChildren(...notes.map((note) => el("li", { text: note })));
+  }
+  $("show-details").hidden = !search.result.search_words;
+
+  clearTimeout(pollTimer);
+  if (running) pollTimer = setTimeout(pollSearch, 1000);
+}
+
+async function pollSearch() {
+  try {
+    const current = await api("/api/search/current");
+    if (current.search) showSearch(current.search);
+  } catch {
+    pollTimer = setTimeout(pollSearch, 3000);
+  }
+}
+
+function renderDetails(search) {
+  const result = search.result;
+  const section = (title, ...content) =>
+    el("section", { class: "profile-section" }, el("h3", { text: title }), ...content);
+  const parts = [
+    section(
+      "Countries searched",
+      el("p", { text: (result.country_names || []).join(", ") }),
+    ),
+  ];
+  for (const language of result.languages || []) {
+    const words = result.search_words.filter((w) => w.language === language.code);
+    const titles = words.filter((w) => w.kind === "job_title").map((w) => w.text);
+    const fields = words.filter((w) => w.kind === "field_or_skill").map((w) => w.text);
+    parts.push(
+      section(
+        `Search words in ${language.name}`,
+        el("p", { class: "muted", text: "Job titles" }),
+        el("ul", { class: "chips" }, ...titles.map((t) => el("li", { text: t }))),
+        el("p", { class: "muted term-group", text: "Fields and skills" }),
+        el("ul", { class: "chips" }, ...fields.map((t) => el("li", { text: t }))),
+      ),
+    );
+  }
+  const usage = result.usage || {};
+  const stepNames = {
+    profile: "Understanding your profile",
+    location: "Understanding the location",
+    search_words: "Preparing search words",
+  };
+  const rows = Object.entries(usage).map(([step, used]) =>
+    el("li", {
+      text: `${stepNames[step] || step}: ${used.input_tokens.toLocaleString()} tokens in, ${used.output_tokens.toLocaleString()} tokens out`,
+    }),
+  );
+  if (rows.length) {
+    parts.push(
+      section(
+        "AI use in this search",
+        el("p", {
+          class: "muted",
+          text: "Tokens are the pieces of text the AI reads and writes. Providers charge by tokens.",
+        }),
+        el("ul", {}, ...rows),
+      ),
+    );
+  }
+  return parts;
+}
+
+function setUpSearchActions() {
+  $("search-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = readSearchForm();
+    if (!form.job_types.length) {
+      setStatus($("search-form-status"), "problem", "Please tick at least one job type.");
+      return;
+    }
+    setStatus($("search-form-status"), "", "");
+    await busy($("start-search"), async () => {
+      try {
+        showSearch(await api("/api/search", { method: "POST", body: form }));
+      } catch (error) {
+        setStatus($("search-form-status"), "problem", error.message);
+      }
+    });
+  });
+  $("stop-search").addEventListener("click", async () => {
+    if (state.search) await api(`/api/search/${state.search.id}/stop`, { method: "POST" });
+  });
+  $("show-details").addEventListener("click", () => {
+    if (!state.search) return;
+    $("details-content").replaceChildren(...renderDetails(state.search));
+    $("details-dialog").showModal();
+  });
+  $("close-details").addEventListener("click", () => $("details-dialog").close());
 }
 
 // ---------------------------------------------------------------------------
@@ -538,6 +774,7 @@ async function start() {
   window.addEventListener("hashchange", showView);
   setUpSettingsActions();
   setUpDocumentActions();
+  setUpSearchActions();
   showView();
   try {
     const about = await api("/api/about");
@@ -545,7 +782,7 @@ async function start() {
     $("about-copyright").textContent = about.copyright;
     $("footer-copyright").textContent = about.copyright;
     $("about-data-folder").textContent = about.data_folder;
-    await Promise.all([loadSettings(), loadDocuments()]);
+    await Promise.all([loadSettings(), loadDocuments(), loadSearchForm()]);
   } catch {
     // The engine problem message is already visible.
   }
