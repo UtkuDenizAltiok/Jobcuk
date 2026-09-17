@@ -49,6 +49,8 @@ STEPS: list[tuple[str, str]] = [
 # How long a search waits for an answer to a question (e.g. the scoring limit) before
 # carrying on without the extra work.
 QUESTION_TIMEOUT_SECONDS = 3600
+# How many jobs ruled out by a condition the person wrote are listed back to them.
+MAX_RULED_OUT_SHOWN = 60
 
 
 @dataclass
@@ -380,6 +382,17 @@ def _find_and_score(run, settings, client, keys, http, profile, plan, query, che
         )
 
     cards = [card(i) for i in shown]
+    # Jobs a condition the person wrote ruled out are listed (without scores), so they can see
+    # what the condition did and judge whether the AI read it right.
+    ruled_out = outcome.by_reason.get("location_condition", [])[:MAX_RULED_OUT_SHOWN]
+    ruled_out_cards = [
+        pipeline.build_card(
+            groups[index], job_id=0, is_new=False, state=None, scored=None, plan=plan,
+            source_names=names, possible_duplicate_of=None, started_at=query.started_at,
+            posted_within_hours=form.posted_within_hours,
+        )
+        for index in ruled_out
+    ]
     jobstore.save_cards(cards)
     unique = pipeline.unique_counts(groups, shown)
     reasons = {**REASONS, "remote_text": "Fully remote, according to the ad text",
@@ -388,6 +401,7 @@ def _find_and_score(run, settings, client, keys, http, profile, plan, query, che
         "cards": pipeline.sort_cards([c for c in cards if c["date_known"]]),
         "date_unknown": pipeline.sort_cards([c for c in cards if not c["date_known"]]),
         "hidden": [card(i) for i in hidden],
+        "ruled_out_by_conditions": ruled_out_cards,
         "new_count": sum(1 for c in cards if c["is_new"]),
         "counts": {
             "ads_found": len(collected.jobs),

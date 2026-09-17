@@ -127,6 +127,13 @@
             your "Posted within" choice.</p>
           <div id="date-unknown-list" class="job-list"></div>
         </div>
+        <details id="ruled-out-section" hidden>
+          <summary id="ruled-out-summary">Left out by your conditions</summary>
+          <p class="muted">These fit your search words but not a condition you wrote about the
+            place. Jobcu didn't score them. If one of them should have been kept, change the
+            wording and search again.</p>
+          <div id="ruled-out-list" class="job-list"></div>
+        </details>
       </section>
 
       <dialog id="details-dialog" aria-labelledby="details-title">
@@ -149,7 +156,6 @@
       </dialog>
     </section>
 
-    <!-- Settings -->
     <!-- Score check -->
     <section id="view-score-check" class="view" hidden>
       <h1>Score check</h1>
@@ -175,6 +181,7 @@
       </div>
     </section>
 
+    <!-- Settings -->
     <section id="view-settings" class="view" hidden>
       <h1>Settings</h1>
 

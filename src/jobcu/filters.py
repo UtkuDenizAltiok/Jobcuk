@@ -36,6 +36,8 @@ REASONS = {
 class FilterOutcome:
     kept: list[int] = field(default_factory=list)  # indexes into the groups
     left_out: Counter = field(default_factory=Counter)
+    # Which jobs each reason left out, so the screen can show them if it wants to.
+    by_reason: dict[str, list[int]] = field(default_factory=dict)
 
 
 def apply_rules(
@@ -57,6 +59,7 @@ def apply_rules(
                          set(countries), conditions or [])
         if reason:
             outcome.left_out[reason] += 1
+            outcome.by_reason.setdefault(reason, []).append(index)
         else:
             outcome.kept.append(index)
     return outcome

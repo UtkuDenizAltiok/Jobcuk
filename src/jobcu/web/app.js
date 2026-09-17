@@ -609,6 +609,15 @@ function renderResults() {
   const unknown = visible(jobs.date_unknown);
   $("date-unknown-section").hidden = !unknown.length;
   fillList($("date-unknown-list"), sortCards(unknown), "");
+
+  const ruledOut = jobs.ruled_out_by_conditions || [];
+  $("ruled-out-section").hidden = !ruledOut.length;
+  const counts = state.search.result.jobs.counts || {};
+  const total = (counts.left_out || []).find((r) =>
+    r.reason.startsWith("The place doesn't fit"))?.count || ruledOut.length;
+  $("ruled-out-summary").textContent =
+    `Left out by your conditions (${total}${ruledOut.length < total ? `, showing ${ruledOut.length}` : ""})`;
+  fillList($("ruled-out-list"), ruledOut, "");
 }
 
 function sortCards(cards) {

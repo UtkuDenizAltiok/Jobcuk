@@ -196,6 +196,8 @@ def test_jobs_that_fail_a_condition_are_left_out_and_counted():
                           exclude_remote=False, countries=["DE"], conditions=[condition])
     assert outcome.kept == [0, 2]  # the unknown place is kept, not silently dropped
     assert outcome.left_out["location_condition"] == 1
+    # The jobs a condition ruled out are remembered, so the screen can show them back.
+    assert outcome.by_reason["location_condition"] == [1]
     assert condition_fit(condition, groups[1]) == "no"
     assert condition_fit(condition, groups[2]) == "unknown"
 
