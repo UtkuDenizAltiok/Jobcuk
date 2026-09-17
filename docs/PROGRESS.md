@@ -47,7 +47,11 @@ folder so his own results were untouched):**
 3. Optional: a **generic cover letter**. The uploaded one is written for Tesla. The generic one
    should say he's open to any electronic hardware design field, with power electronics preferred
    and aerospace and defence also of interest.
-4. **Decide about Jooble and Careerjet** (aggregators covering Ireland, the UK and Germany).
+4. **One question about the location research (Phase 2):** may facts that barely change (a
+   town's population, the last election's results) be remembered with their source and date for a
+   while, or should every search look them up again? Everything about the *jobs* stays fresh
+   either way.
+5. **Decide about Jooble and Careerjet** (aggregators covering Ireland, the UK and Germany).
    Their free keys are meant for websites that show their jobs, and Jobcu has no website, so the
    owner should decide whether to sign up. Ask him before doing anything.
 
@@ -186,10 +190,20 @@ Germany are worked on and tested first**; that's the order of work, not a limit.
 
 ## Phase 2: Smart location filter
 
-- [ ] Location interpretation shown with the results, with an Edit option
-- [ ] Reference datasets from HANDOVER §6 (places, boundaries, coastlines, UK sponsor register,
-      German election results, country facts)
-- [ ] **Done when:** all example sentences in HANDOVER §6 behave as described.
+The location box is a research task for the AI, not a filter (DECISIONS.md, 2026-09-17 night).
+
+- [ ] The AI splits the location text into conditions and picks a way to check each one
+- [ ] **Live web search** for conditions that need facts (elections, shops, students, anything
+      else), with the sources kept and shown
+- [ ] **Real travel times** (Google Maps, weekday working hours, within the free allowance),
+      one request per place and not per job
+- [ ] Location interpretation shown with the results, with an Edit option, sources and clearly
+      marked estimates
+- [ ] Reference data from HANDOVER §6 as *rulers* only: the town list already ships (coordinates,
+      population, local names); boundaries, coastlines, the UK sponsor register and election
+      results as needed
+- [ ] **Done when:** the example sentences in HANDOVER §6, in README.md and the owner's own
+      examples behave as described, each with its working shown.
 
 ## Phase 3: Maximum coverage
 

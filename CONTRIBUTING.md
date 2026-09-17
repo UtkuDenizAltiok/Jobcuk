@@ -48,6 +48,32 @@ documents → profile (`profile.py`) → location plan (`location.py`) → searc
 (`filters.py`) → quick relevance check (`relevance.py`) → full ads (`load_details`) → scoring
 (`scoring.py`) → cards and job memory (`pipeline.build_card`, `jobstore.py`).
 
+## What "where do you want to work?" has to handle
+
+People write a sentence, not a filter. The app's job is to understand it, check it against real
+information, and show its working. Real examples to design against:
+
+| What someone writes | What Jobcu has to do |
+|---|---|
+| *Dublin or Cork* | Search those places directly. |
+| *Germany or Ireland, at most 50 minutes by public transport from a city centre with at least 0.3% of the country's people* | Work out what 0.3% means per country, find those cities, and get real weekday travel times (Google Maps, within its free allowance). |
+| *Cities where far-right parties polled below the national average* | Research with live web search which parties count and what the latest election results were, per place, and list the sources used. |
+| *Somewhere with shops open on Sunday and several Turkish supermarkets* | Research it live, per candidate place, and show what it found and where. |
+| *A town where over 20% of the people are students* | Find and check the figures, then apply them. |
+
+Rules that follow from this:
+
+- **Every search is different.** Nothing about a person's wording may be hard-coded or carried over
+  from another search or another user: the AI reads the text fresh every time.
+- **Research, then verify.** For anything not simply a named place, the AI searches the web,
+  names the sources it used, and Jobcu shows them. A fact it can't confirm is labelled as an
+  estimate or shown as "not checked" — never quietly assumed.
+- **Show the working.** "Understood as" lists every condition, how it was checked and the source,
+  and the person can edit it.
+- **Reference data is only a ruler.** The shipped town list (coordinates and population) and any
+  similar dataset exist so a condition the AI worked out can be measured. They never decide what
+  someone meant.
+
 ## Workflow
 
 1. Read "Right now" in `docs/PROGRESS.md` and the relevant decisions.
