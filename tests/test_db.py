@@ -18,3 +18,23 @@ def test_connecting_again_keeps_data():
         )
     with db.connect() as conn:
         assert conn.execute("SELECT COUNT(*) FROM ai_usage").fetchone()[0] == 1
+
+
+def test_many_parts_of_jobcu_can_open_a_new_database_at_once():
+    import threading
+
+    errors = []
+
+    def open_database():
+        try:
+            with db.connect() as conn:
+                conn.execute("SELECT COUNT(*) FROM jobs").fetchone()
+        except Exception as exc:  # collected so the test can show them
+            errors.append(exc)
+
+    threads = [threading.Thread(target=open_database) for _ in range(12)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    assert errors == []

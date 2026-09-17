@@ -110,6 +110,38 @@ def connect(folder: Path | None = None) -> Iterator[sqlite3.Connection]:
 
 
 def _migrate(conn: sqlite3.Connection) -> None:
-    current = conn.execute("PRAGMA user_version").fetchone()[0]
-    for number, script in enumerate(MIGRATIONS[current:], start=current + 1):
-        conn.executescript(f"BEGIN; {script}; PRAGMA user_version = {number}; COMMIT;")
+    if conn.execute("PRAGMA user_version").fetchone()[0] >= len(MIGRATIONS):
+        return
+    # Several parts of Jobcu may open the database at the same moment. BEGIN IMMEDIATE lets
+    # only one of them update the tables; the others wait, then see the work is done.
+    previous = conn.isolation_level
+    conn.isolation_level = None
+    try:
+        conn.execute("BEGIN IMMEDIATE")
+        try:
+            current = conn.execute("PRAGMA user_version").fetchone()[0]
+            for number, script in enumerate(MIGRATIONS[current:], start=current + 1):
+                for statement in _statements(script):
+                    conn.execute(statement)
+                conn.execute(f"PRAGMA user_version = {number}")
+            conn.execute("COMMIT")
+        except BaseException:
+            conn.execute("ROLLBACK")
+            raise
+    finally:
+        conn.isolation_level = previous
+
+
+def _statements(script: str) -> list[str]:
+    statements, pending = [], ""
+    for line in script.splitlines(keepends=True):
+        pending += line
+        if sqlite3.complete_statement(pending):
+            if pending.strip():
+                statements.append(pending.strip())
+            pending = ""
+    if pending.strip() and not all(
+        part.strip().startswith("--") or not part.strip() for part in pending.splitlines()
+    ):
+        statements.append(pending.strip())
+    return statements
