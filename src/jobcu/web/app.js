@@ -276,7 +276,10 @@ function renderProfile(profile) {
     section("Roles you're looking for", chips(profile.target_roles)),
     section("Fields you're looking for", chips(profile.target_fields)),
     section("Preferences", bullets(profile.preferences)),
-    section("Remote, hybrid or on-site", text(WORK_MODE[profile.work_mode_preference])),
+    section(
+      "Remote, hybrid or on-site wishes in your documents",
+      text(WORK_MODE[profile.work_mode_preference]),
+    ),
     section("Dealbreakers", bullets(profile.dealbreakers)),
     section(
       "Work permit or visa",
@@ -285,6 +288,29 @@ function renderProfile(profile) {
     section(
       "Left out because it was about one specific application",
       bullets(profile.ignored_as_application_specific, "Nothing"),
+    ),
+  ];
+}
+
+const POSTED_WITHIN = { 6: "6 hours", 24: "24 hours", 72: "72 hours", 168: "1 week" };
+
+/** The choices made on the search screen, which are filters rather than part of the profile. */
+function renderSearchChoices(form) {
+  const section = (title, ...content) =>
+    el("section", { class: "profile-section" }, el("h3", { text: title }), ...content);
+  return [
+    section("Posted within", el("p", { text: POSTED_WITHIN[form.posted_within_hours] })),
+    section(
+      "Job types",
+      el("p", { text: form.job_types.map((type) => JOB_TYPE_LABELS[type]).join(", ") }),
+    ),
+    section(
+      "Remote jobs",
+      el("p", {
+        text: form.exclude_remote
+          ? "Left out: fully remote jobs aren't shown (hybrid and on-site jobs are)."
+          : "Included",
+      }),
     ),
   ];
 }
@@ -339,6 +365,7 @@ function setUpDocumentActions() {
           "Jobcu doesn't judge or change your documents; it only uses this to find and score jobs.";
         const parts = renderProfile(result.profile);
         if (result.location) parts.unshift(...renderLocation(result.location));
+        parts.unshift(...renderSearchChoices(state.search.form));
         $("profile-content").replaceChildren(...parts);
         $("profile-dialog").showModal();
         return;
