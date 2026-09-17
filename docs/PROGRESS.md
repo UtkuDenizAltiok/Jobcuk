@@ -76,9 +76,10 @@ Germany are worked on and tested first**; that's the order of work, not a limit.
      days is reused by source and job ID instead of being fetched again ("Search details" says how
      many were already known). Scores are never reused.
    - **Provider-side prompt caching** where supported.
-   - **Adaptive Adzuna budget** (`sources/adzuna.py`, `sources/budget.py`): replace the fixed 40
-     requests per search with a share of what's left this month over the remaining days at about 3
-     searches a day, never above what's left today (roughly 25–60 per search).
+   - ~~**Adaptive Adzuna budget**~~ **done (2026-09-17)**: each search gets a share of what's
+     left of the free month, spread over the days still to come at about 3 searches a day,
+     between 25 and 60 requests, and never more than today's allowance has left
+     (`budget.share_of_month`).
    - Workday costs about 3–5 requests per company per search (robots.txt, the filter list, then a
      page per country). Caching the country filter IDs in the directory would save one request per
      company, but risks missing jobs when an ID changes, so it wasn't done.

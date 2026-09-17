@@ -26,7 +26,7 @@ from jobcu.jobposting import find_job_posting
 from jobcu.keystore import KeyStore
 from jobcu.keywords import SearchTerm
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
-from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget
+from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget, share_of_month
 from jobcu.sources.http import Blocked, KeyCheck, client
 
 log = logging.getLogger(__name__)
@@ -37,8 +37,9 @@ KEY_APP_KEY = "adzuna_app_key"
 COUNTRIES_COVERED = frozenset({"AT", "BE", "CH", "DE", "ES", "FR", "GB", "IT", "NL", "PL"})
 PAGE_SIZE = 50
 WORDS_PER_REQUEST = 12
-# A little below Adzuna's limits, as a safety margin.
-LIMITS = Limits(per_search=40, per_day=240, per_month=2400)
+# A little below Adzuna's limits (250 a day, 2,500 a month), as a safety margin. How many one
+# search may use is worked out from what is left this month (see budget.share_of_month).
+LIMITS = Limits(per_day=240, per_month=2400)
 
 
 class AdzunaSource(JobSource):
@@ -102,7 +103,8 @@ class AdzunaSource(JobSource):
         return job
 
     def search(self, query: JobQuery, ctx: SourceContext) -> Iterator[FoundJob]:
-        budget = RequestBudget(self.id, self.name, LIMITS)
+        limits = share_of_month(self.id, LIMITS)
+        budget = RequestBudget(self.id, self.name, limits)
         credentials = {"app_id": ctx.keys.get(KEY_APP_ID), "app_key": ctx.keys.get(KEY_APP_KEY)}
         start = window_start(query.started_at, query.posted_within_hours)
         countries = [c for c in query.countries if c in COUNTRIES_COVERED]
@@ -114,7 +116,7 @@ class AdzunaSource(JobSource):
         if not locations:
             return
         # Each country or place gets a fair share, so the first one can't use up everything.
-        share = max(3, (LIMITS.per_search or 40) // len(locations))
+        share = max(3, (limits.per_search or 40) // len(locations))
         seen: set[str] = set()
         skipped = 0
         try:

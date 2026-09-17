@@ -199,3 +199,41 @@ def test_bot_protection_is_never_worked_around():
                         transport=httpx.MockTransport(handler))
     with pytest.raises(Blocked):
         http.get("https://example.test/")
+
+
+# --- Sharing a free monthly allowance -------------------------------------------------
+
+
+def test_adzuna_budget_shares_what_is_left_of_the_month():
+    from datetime import datetime
+
+    from jobcu import db
+    from jobcu.sources.budget import Limits, share_of_month
+
+    limits = Limits(per_day=240, per_month=2400)
+
+    def on(day: str, used_this_month: int = 0, used_today: int = 0) -> int:
+        with db.connect() as conn:
+            conn.execute("DELETE FROM source_requests")
+            if used_this_month:
+                conn.execute(
+                    "INSERT INTO source_requests (day, source, count) VALUES (?, 'adzuna', ?)",
+                    (day[:8] + "01", used_this_month - used_today),
+                )
+            if used_today:
+                conn.execute(
+                    "INSERT INTO source_requests (day, source, count) VALUES (?, 'adzuna', ?)",
+                    (day, used_today),
+                )
+        when = datetime.fromisoformat(day + "T12:00:00+00:00")
+        return share_of_month("adzuna", limits, now=lambda: when).per_search
+
+    # 2,400 requests over 31 days at about 3 searches a day is around 25 per search.
+    assert on("2026-09-01") == 26
+    # Nothing used by the middle of the month: more per search, but never more than 60.
+    assert on("2026-09-20", used_this_month=200) == 60
+    # Almost everything used: down to the smallest useful number, not zero.
+    assert on("2026-09-20", used_this_month=2350) == 25
+    # Never more than today's own allowance has left.
+    assert on("2026-09-20", used_this_month=1000, used_today=230) == 10
+    assert on("2026-09-20", used_this_month=1000, used_today=240) == 0
