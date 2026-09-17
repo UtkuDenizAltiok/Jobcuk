@@ -24,8 +24,11 @@ from jobcu.ai.base import (
     AIUnavailable,
     ProviderAdapter,
     RawReply,
+    ResearchReply,
+    Source,
     Usage,
     parse_retry_after,
+    unique_sources,
 )
 from jobcu.settings import Effort
 
@@ -48,6 +51,7 @@ _NON_TEXT_MODEL_WORDS = (
 
 
 class OpenAIAdapter(ProviderAdapter):
+    can_search_the_web = True
     _sdk_client: openai.OpenAI | None = None
 
     def _client(self) -> openai.OpenAI:
@@ -108,6 +112,42 @@ class OpenAIAdapter(ProviderAdapter):
                 output_tokens=usage.output_tokens,
                 cached_input_tokens=_attr(usage.input_tokens_details, "cached_tokens"),
                 reasoning_tokens=_attr(usage.output_tokens_details, "reasoning_tokens"),
+            ),
+        )
+
+    def research(
+        self, *, model: str, system: str, prompt: str, max_searches: int, max_output_tokens: int
+    ) -> ResearchReply:
+        try:
+            response = self._client().responses.create(
+                model=model,
+                instructions=system,
+                input=prompt,
+                tools=[{"type": "web_search"}],
+                max_output_tokens=max_output_tokens,
+                store=False,
+            )
+        except Exception as exc:
+            raise translate_openai_error(exc) from exc
+        sources, searches = [], 0
+        for item in response.output:
+            if getattr(item, "type", "") == "web_search_call":
+                searches += 1
+            for part in getattr(item, "content", None) or []:
+                for annotation in getattr(part, "annotations", None) or []:
+                    url = getattr(annotation, "url", None)
+                    if url:
+                        sources.append(Source(url, getattr(annotation, "title", "") or ""))
+        usage = response.usage
+        return ResearchReply(
+            text=response.output_text,
+            sources=unique_sources(sources),
+            usage=Usage(
+                input_tokens=usage.input_tokens,
+                output_tokens=usage.output_tokens,
+                cached_input_tokens=_attr(usage.input_tokens_details, "cached_tokens"),
+                reasoning_tokens=_attr(usage.output_tokens_details, "reasoning_tokens"),
+                web_searches=searches,
             ),
         )
 

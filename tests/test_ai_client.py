@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from jobcu.ai.base import (
     AIAuthError,
     AIBadRequest,
+    AIError,
     AIInvalidOutput,
     AILimitReached,
     AIOutputTruncated,
@@ -11,10 +12,12 @@ from jobcu.ai.base import (
     AIUnavailable,
     ProviderAdapter,
     RawReply,
+    ResearchReply,
+    Source,
     Usage,
 )
 from jobcu.ai.client import AIClient, check_setup
-from jobcu.ai.usage import UsageLog
+from jobcu.ai.usage import UsageLog, total_tokens
 from jobcu.keystore import KeyStore
 from jobcu.settings import Settings
 
@@ -196,3 +199,73 @@ def test_setup_check_doesnt_wait_on_rate_limits(settings):
     adapter = ScriptedAdapter(AIRateLimited("limit", retry_after=60))
     result = check_setup(settings, adapter=adapter, sleep=lambda s: pytest.fail("waited"))
     assert not result.ok and "Wait a minute" in result.message
+
+
+# --- Looking things up on the web -----------------------------------------------------
+
+
+class SearchingAdapter(ProviderAdapter):
+    """A provider that can search the web, for tests."""
+
+    can_search_the_web = True
+
+    def __init__(self, reply=None):
+        super().__init__("fake-key")
+        self.calls = []
+        self.reply = reply
+
+    def complete_json(self, **request):
+        raise AssertionError("not used here")
+
+    def research(self, **request):
+        self.calls.append(request)
+        return self.reply or ResearchReply(
+            "Dresden is above the national average.",
+            [Source("https://example.test/results", "Election results")],
+            Usage(input_tokens=500, output_tokens=200, web_searches=3),
+        )
+
+    def list_models(self):
+        return []
+
+
+def research_settings():
+    settings = Settings()
+    settings.ai.provider = "openai"
+    settings.ai.model = "everyday-model"
+    return settings
+
+
+def test_web_research_counts_searches_and_keeps_the_sources():
+    adapter = SearchingAdapter()
+    client = AIClient(research_settings(), adapter=adapter, usage_log=UsageLog())
+    reply = client.research(step="location", system="Rules", prompt="Which cities?")
+    assert [source.url for source in reply.sources] == ["https://example.test/results"]
+    assert client.web_searches_used == 3
+    assert adapter.calls[0]["max_searches"] == 4
+    assert total_tokens(UsageLog().this_month()) == 700
+
+
+def test_web_research_stops_at_the_cap_and_when_switched_off():
+    settings = research_settings()
+    settings.limits.web_search_cap = 2
+    client = AIClient(settings, adapter=SearchingAdapter(), usage_log=UsageLog())
+    client.research(step="location", system="Rules", prompt="Which cities?")
+    with pytest.raises(AILimitReached):
+        client.research(step="location", system="Rules", prompt="And which towns?")
+
+    settings = research_settings()
+    settings.use_web_search = False
+    with pytest.raises(AIError):
+        AIClient(settings, adapter=SearchingAdapter()).research(
+            step="location", system="Rules", prompt="Which cities?")
+
+
+def test_a_provider_that_cannot_search_says_so_plainly():
+    class Plain(SearchingAdapter):
+        can_search_the_web = False
+
+    client = AIClient(research_settings(), adapter=Plain())
+    with pytest.raises(AIError) as problem:
+        client.research(step="location", system="Rules", prompt="Which cities?")
+    assert "can't look things up on the web" in problem.value.message

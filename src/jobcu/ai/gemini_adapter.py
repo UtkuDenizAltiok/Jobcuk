@@ -27,7 +27,10 @@ from jobcu.ai.base import (
     AIUnavailable,
     ProviderAdapter,
     RawReply,
+    ResearchReply,
+    Source,
     Usage,
+    unique_sources,
 )
 from jobcu.settings import Effort
 
@@ -35,6 +38,7 @@ _REFUSAL_REASONS = {"SAFETY", "PROHIBITED_CONTENT", "BLOCKLIST", "SPII", "RECITA
 
 
 class GeminiAdapter(ProviderAdapter):
+    can_search_the_web = True
     _genai_client: genai.Client | None = None
 
     def _client(self) -> genai.Client:
@@ -93,6 +97,47 @@ class GeminiAdapter(ProviderAdapter):
                 output_tokens=((meta.candidates_token_count or 0) + thoughts) if meta else 0,
                 cached_input_tokens=(meta.cached_content_token_count or 0) if meta else 0,
                 reasoning_tokens=thoughts,
+            ),
+        )
+
+    def research(
+        self, *, model: str, system: str, prompt: str, max_searches: int, max_output_tokens: int
+    ) -> ResearchReply:
+        config = types.GenerateContentConfig(
+            system_instruction=system,
+            max_output_tokens=max_output_tokens,
+            tools=[types.Tool(google_search=types.GoogleSearch())],
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+        )
+        try:
+            response = self._client().models.generate_content(
+                model=model, contents=prompt, config=config
+            )
+        except Exception as exc:
+            raise _translate(exc) from exc
+        feedback = response.prompt_feedback
+        if feedback is not None and feedback.block_reason:
+            raise AIRefused(MSG_REFUSED, str(feedback.block_reason))
+        candidate = response.candidates[0] if response.candidates else None
+        sources, searches = [], 0
+        grounding = getattr(candidate, "grounding_metadata", None) if candidate else None
+        if grounding is not None:
+            searches = len(getattr(grounding, "web_search_queries", None) or [])
+            for chunk in getattr(grounding, "grounding_chunks", None) or []:
+                web = getattr(chunk, "web", None)
+                if web is not None and getattr(web, "uri", None):
+                    sources.append(Source(web.uri, getattr(web, "title", "") or ""))
+        meta = response.usage_metadata
+        thoughts = (meta.thoughts_token_count or 0) if meta else 0
+        return ResearchReply(
+            text=response.text or "",
+            sources=unique_sources(sources),
+            usage=Usage(
+                input_tokens=(meta.prompt_token_count or 0) if meta else 0,
+                output_tokens=((meta.candidates_token_count or 0) + thoughts) if meta else 0,
+                cached_input_tokens=(meta.cached_content_token_count or 0) if meta else 0,
+                reasoning_tokens=thoughts,
+                web_searches=searches,
             ),
         )
 

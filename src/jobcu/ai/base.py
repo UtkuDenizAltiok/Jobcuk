@@ -36,6 +36,23 @@ class RawReply:
     usage: Usage
 
 
+@dataclass
+class Source:
+    """A page the AI used, so the person can check it."""
+
+    url: str
+    title: str = ""
+
+
+@dataclass
+class ResearchReply:
+    """An answer the AI looked up on the web, with the pages it used."""
+
+    text: str
+    sources: list[Source]
+    usage: Usage
+
+
 class AIError(Exception):
     """An AI problem, with a message that a non-technical user can understand.
 
@@ -117,12 +134,19 @@ MSG_UNAVAILABLE = (
     "happening, the provider may be having problems."
 )
 MSG_BAD_REQUEST = "The AI provider couldn't handle Jobcu's request."
+MSG_NO_WEB_SEARCH = (
+    "This AI provider can't look things up on the web from Jobcu, so anything that needs "
+    "checking on the web is shown as \"not checked\"."
+)
 MSG_REFUSED = "The AI declined to answer this request."
 MSG_TRUNCATED = "The AI's answer was cut off because it was too long."
 
 
 class ProviderAdapter(ABC):
     """Talks to one AI provider. Created with the user's key for each use."""
+
+    # True when the provider can search the web itself during an answer.
+    can_search_the_web = False
 
     def __init__(self, api_key: str, base_url: str = "", timeout: float = 180.0) -> None:
         self.api_key = api_key
@@ -143,9 +167,29 @@ class ProviderAdapter(ABC):
     ) -> RawReply:
         """Ask for an answer that follows `schema` and return its raw text."""
 
+    def research(
+        self,
+        *,
+        model: str,
+        system: str,
+        prompt: str,
+        max_searches: int,
+        max_output_tokens: int,
+    ) -> ResearchReply:
+        """Answer using live web search, naming the pages used. Providers that can't, say so."""
+        raise AIError(MSG_NO_WEB_SEARCH)
+
     @abstractmethod
     def list_models(self) -> list[str]:
         """Model names this key can use, for the settings screen."""
+
+
+def unique_sources(sources: list[Source]) -> list[Source]:
+    """The same page is often cited several times; keep the first mention of each."""
+    seen: dict[str, Source] = {}
+    for source in sources:
+        seen.setdefault(source.url, source)
+    return list(seen.values())
 
 
 def parse_retry_after(value: str | None) -> float | None:

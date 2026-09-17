@@ -23,13 +23,17 @@ from jobcu.ai.base import (
     AIUnavailable,
     ProviderAdapter,
     RawReply,
+    ResearchReply,
+    Source,
     Usage,
     parse_retry_after,
+    unique_sources,
 )
 from jobcu.settings import Effort
 
 
 class AnthropicAdapter(ProviderAdapter):
+    can_search_the_web = True
     _sdk_client: anthropic.Anthropic | None = None
 
     def _client(self) -> anthropic.Anthropic:
@@ -75,6 +79,35 @@ class AnthropicAdapter(ProviderAdapter):
             raise AIOutputTruncated(MSG_TRUNCATED)
         text = "".join(block.text for block in response.content if block.type == "text")
         return RawReply(text=text, usage=_usage(response.usage))
+
+    def research(
+        self, *, model: str, system: str, prompt: str, max_searches: int, max_output_tokens: int
+    ) -> ResearchReply:
+        try:
+            response = self._client().messages.create(
+                model=model,
+                max_tokens=max_output_tokens,
+                system=system,
+                messages=[{"role": "user", "content": prompt}],
+                tools=[{"type": "web_search_20250305", "name": "web_search",
+                        "max_uses": max_searches}],
+            )
+        except Exception as exc:
+            raise _translate(exc) from exc
+        text, sources = [], []
+        for block in response.content:
+            if block.type == "text":
+                text.append(block.text)
+                for citation in getattr(block, "citations", None) or []:
+                    url = getattr(citation, "url", None)
+                    if url:
+                        sources.append(Source(url, getattr(citation, "title", "") or ""))
+            elif block.type == "web_search_tool_result":
+                for item in getattr(block, "content", None) or []:
+                    url = getattr(item, "url", None)
+                    if url:
+                        sources.append(Source(url, getattr(item, "title", "") or ""))
+        return ResearchReply("".join(text), unique_sources(sources), _usage(response.usage))
 
     def list_models(self) -> list[str]:
         try:

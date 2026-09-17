@@ -19,6 +19,7 @@ from typing import ClassVar, TypeVar
 from pydantic import BaseModel, ValidationError
 
 from jobcu.ai.base import (
+    MSG_NO_WEB_SEARCH,
     MSG_RATE_LIMITED,
     AIAuthError,
     AIBadRequest,
@@ -29,6 +30,7 @@ from jobcu.ai.base import (
     AIRateLimited,
     AIUnavailable,
     ProviderAdapter,
+    ResearchReply,
 )
 from jobcu.ai.providers import PROVIDERS
 from jobcu.ai.schema import extract_json, strict_json_schema
@@ -69,6 +71,8 @@ class AIClient:
         self.patient = patient  # False for quick checks: report limits instead of waiting
         self.sleep = sleep
         self._adapter = adapter
+        # Web look-ups used in this search, against the cap in Settings.
+        self.web_searches_used = 0
 
     @property
     def provider_id(self) -> str:
@@ -172,6 +176,64 @@ class AIClient:
                     f"{prompt}\n\nIMPORTANT: your previous answer did not follow the required "
                     "JSON format. Answer again with only valid JSON in exactly that format."
                 )
+
+    def research(
+        self,
+        *,
+        step: str,
+        system: str,
+        prompt: str,
+        max_searches: int = 4,
+        max_output_tokens: int = 3000,
+    ) -> ResearchReply:
+        """Ask the AI to look something up on the web and say which pages it used.
+
+        Used for conditions Jobcu can only answer by checking current information (HANDOVER
+        section 6 and 9.6). The user's own AI provider does the searching; Jobcu never contacts
+        a search engine itself.
+        """
+        if not self.settings.use_web_search:
+            raise AIError(
+                "Looking things up on the web is switched off in Settings, so anything that "
+                'needs checking is shown as "not checked".'
+            )
+        left = self.settings.limits.web_search_cap - self.web_searches_used
+        if left <= 0:
+            raise AILimitReached(
+                "Jobcu has used this search's allowance of web look-ups. You can raise it in "
+                "Settings."
+            )
+        provider = self.provider_id
+        model = self.model_for(reasoning=True)
+        adapter = self.adapter()
+        if not adapter.can_search_the_web:
+            raise AIError(MSG_NO_WEB_SEARCH)
+        self._check_monthly_limit()
+        waits = outages = 0
+        while True:
+            try:
+                reply = adapter.research(
+                    model=model,
+                    system=system,
+                    prompt=prompt,
+                    max_searches=min(max_searches, left),
+                    max_output_tokens=max_output_tokens,
+                )
+                break
+            except AIRateLimited as exc:
+                waits += 1
+                if not self.patient or waits > MAX_RATE_LIMIT_WAITS:
+                    raise
+                self.notify(MSG_RATE_LIMITED)
+                self._wait(exc.retry_after or min(10 * 2 ** (waits - 1), 120), exc)
+            except AIUnavailable as exc:
+                outages += 1
+                if outages > MAX_OUTAGE_RETRIES:
+                    raise
+                self._wait(min(5 * 2 ** (outages - 1), 60), exc)
+        self.web_searches_used += max(1, reply.usage.web_searches)
+        self._record(step, provider, model, reply.usage)
+        return reply
 
     def _wait(self, seconds: float, reason: AIError) -> None:
         seconds = min(max(seconds, 1.0), MAX_WAIT_SECONDS) + random.uniform(0, 1)
