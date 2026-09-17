@@ -25,7 +25,8 @@ PROFILE = {
 }
 LOCATION = {
     "understood_as": "Jobs in Germany.", "limits_countries": True, "countries": ["DE"],
-    "places": [], "not_checked_yet": [], "outside_supported_area": [],
+    "places": [], "conditions_about_places": [], "conditions_about_the_job": [],
+    "outside_supported_area": [],
 }
 WORDS = {"terms": [{"text": "Hardware Engineer", "language": "en", "kind": "job_title"}]}
 

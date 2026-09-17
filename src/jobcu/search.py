@@ -228,12 +228,18 @@ def run_search(run: SearchRun) -> None:
                if reused else detail)
     checkpoint()
 
-    run.update("location", "running")
+    run.update("location", "running", "Reading what you wrote")
     plan = interpret_location(client, run.form.location_text)
     run.set_result("location", plan.model_dump())
     names = [COUNTRIES[code].name for code in plan.countries]
     detail = f"{len(names)} countries" if plan.broad else ", ".join(names)
+    checked = sum(1 for c in plan.conditions if c.status in ("applied", "estimate"))
+    if checked:
+        detail += f" · {checked} condition{'s' if checked > 1 else ''} checked"
     run.update("location", "done", detail)
+    for condition in plan.conditions:
+        if condition.status == "not_checked" and condition.kind != "about_job":
+            run.note(f"\"{condition.text}\": {condition.note}")
     checkpoint()
 
     run.update("search_words", "running")
@@ -289,6 +295,7 @@ def _find_and_score(run, settings, client, keys, http, profile, plan, query, che
         job_types=form.job_types,
         exclude_remote=form.exclude_remote,
         countries=plan.countries,
+        conditions=plan.conditions,
     )
     left_out = dict(outcome.left_out)
     unrelated = set(quick_pass(client, profile, groups, outcome.kept)) if outcome.kept else set()

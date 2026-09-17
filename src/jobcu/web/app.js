@@ -346,20 +346,72 @@ function renderLocation(location) {
       ),
     );
   }
-  if (location.not_checked_yet.length) {
+  const checked = (location.conditions || []).filter((c) => c.status !== "not_checked");
+  if (checked.length) {
     items.push(
       section(
-        "Not checked yet",
-        el("p", {
-          class: "muted",
-          text:
-            "Jobcu can't check these conditions yet. The smart location filter comes in the next " +
-            "phase: " + location.not_checked_yet.join("; "),
-        }),
+        "Conditions Jobcu checked",
+        el("ul", { class: "conditions" }, ...checked.map(conditionLine)),
+      ),
+    );
+  }
+  const open = (location.conditions || []).filter((c) => c.status === "not_checked");
+  if (open.length || location.not_checked_yet.length) {
+    const lines = open.length
+      ? open.map((c) => el("li", {}, el("strong", { text: `"${c.text}"` }),
+                           el("span", { text: ` — ${c.note || "not checked"}` })))
+      : [el("li", { text: location.not_checked_yet.join("; ") })];
+    items.push(
+      section(
+        "Not checked",
+        el("p", { class: "muted", text: "Jobcu shows these but doesn't filter on them:" }),
+        el("ul", { class: "conditions" }, ...lines),
       ),
     );
   }
   return items;
+}
+
+function conditionLine(condition) {
+  const how = {
+    town_size: "worked out from Jobcu's own town and population figures",
+    towns_that_fit: "only the places found",
+    towns_to_avoid: "the places found are left out",
+  }[condition.kind] || "checked";
+  const parts = [
+    el("strong", { text: `"${condition.text}"` }),
+    el("span", { text: ` — ${condition.understood_as}` }),
+    el("span", {
+      class: condition.status === "estimate" ? "check-estimate" : "check-verified",
+      text: condition.status === "estimate" ? "AI estimate — please check" : "checked on the web",
+    }),
+  ];
+  if (condition.note) parts.push(el("p", { class: "muted", text: condition.note }));
+  if (condition.towns?.length) {
+    const names = condition.towns.slice(0, 12).map((town) => town.name).join(", ");
+    const more = condition.towns.length > 12 ? ` and ${condition.towns.length - 12} more` : "";
+    parts.push(el("p", { class: "muted", text: `${how}: ${names}${more}` }));
+  } else if (condition.kind === "town_size") {
+    const size = condition.min_share_of_country
+      ? `at least ${(condition.min_share_of_country * 100).toFixed(2)}% of the country's people`
+      : `at least ${(condition.min_people || 0).toLocaleString()} people`;
+    parts.push(el("p", { class: "muted", text: `Towns with ${size} (${how}).` }));
+  }
+  if (condition.sources?.length) {
+    parts.push(
+      el(
+        "p",
+        { class: "muted" },
+        el("span", { text: "Sources: " }),
+        ...condition.sources.slice(0, 5).flatMap((source, index) => [
+          index ? el("span", { text: ", " }) : el("span", {}),
+          el("a", { href: safeUrl(source.url), target: "_blank", rel: "noopener noreferrer",
+                    text: source.title || new URL(source.url).hostname }),
+        ]),
+      ),
+    );
+  }
+  return el("li", {}, ...parts);
 }
 
 function setUpDocumentActions() {

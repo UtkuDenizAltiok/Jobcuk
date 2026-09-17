@@ -6,6 +6,9 @@ A job is left out only when a fact proves it doesn't fit:
 - the source states a job type the user didn't tick
 - the source states it's fully remote and remote jobs are excluded
 - the source states a country outside the countries searched
+- a location condition the AI checked says this place doesn't fit (for example a town that is
+  too small, or one the person asked to avoid). A job whose place can't be recognised is kept
+  and shown as "not checked" on its card.
 
 Every left-out job is counted with its reason, for "Search details".
 """
@@ -17,9 +20,11 @@ from datetime import datetime
 from jobcu.dedupe import JobGroup
 from jobcu.freshness import freshness, window_start
 from jobcu.jobstore import JobState
+from jobcu.location import fits
 
 REASONS = {
     "dismissed": "Marked Not interested before",
+    "location_condition": "The place doesn't fit a condition you wrote",
     "too_old": "Older than your \"Posted within\" choice",
     "job_type": "A job type you didn't tick",
     "remote": "Fully remote (you excluded remote jobs)",
@@ -42,13 +47,14 @@ def apply_rules(
     job_types: list[str],
     exclude_remote: bool,
     countries: list[str],
+    conditions: list | None = None,
 ) -> FilterOutcome:
     outcome = FilterOutcome()
     start = window_start(started_at, posted_within_hours)
     wanted_types = set(job_types)
     for index, group in enumerate(groups):
         reason = _reason(group, remembered_states[index], start, wanted_types, exclude_remote,
-                         set(countries))
+                         set(countries), conditions or [])
         if reason:
             outcome.left_out[reason] += 1
         else:
@@ -56,7 +62,8 @@ def apply_rules(
     return outcome
 
 
-def _reason(group, state, start, wanted_types, exclude_remote, countries) -> str | None:
+def _reason(group, state, start, wanted_types, exclude_remote, countries, conditions
+            ) -> str | None:
     if state is not None and state.dismissed:
         return "dismissed"
     if freshness(group.posted_at, group.date_precision, start) == "too_old":
@@ -70,4 +77,15 @@ def _reason(group, state, start, wanted_types, exclude_remote, countries) -> str
     stated_countries = {c.country for c in group.copies if c.country}
     if stated_countries and not (stated_countries & countries):
         return "country"
+    if any(condition_fit(condition, group) == "no" for condition in conditions):
+        return "location_condition"
     return None
+
+
+def condition_fit(condition, group: JobGroup) -> str:
+    """"yes", "no" or "unknown" for a job and one of the conditions the person wrote."""
+    country = next((c.country for c in group.copies if c.country), None)
+    answers = {fits(condition, country, copy.location_text) for copy in group.copies}
+    if "yes" in answers:
+        return "yes"
+    return "no" if "no" in answers else "unknown"

@@ -15,41 +15,44 @@ class Country:
     code: str  # ISO 3166-1 alpha-2 ("GB" for the United Kingdom)
     name: str
     ad_languages: tuple[str, ...]  # besides English
+    people: int = 0  # roughly how many people live there
 
 
+# People per country, rounded (Eurostat and national statistics offices, 2024/2025). Used only
+# for conditions about a town's size, such as "a city with at least 0.3% of the country's people".
 COUNTRIES: dict[str, Country] = {
     country.code: country
     for country in (
-        Country("AT", "Austria", ("de",)),
-        Country("BE", "Belgium", ("nl", "fr")),
-        Country("HR", "Croatia", ("hr",)),
-        Country("CY", "Cyprus", ("el",)),
-        Country("CZ", "Czechia", ("cs",)),
-        Country("DK", "Denmark", ("da",)),
-        Country("EE", "Estonia", ("et",)),
-        Country("FI", "Finland", ("fi", "sv")),
-        Country("FR", "France", ("fr",)),
-        Country("DE", "Germany", ("de",)),
-        Country("GR", "Greece", ("el",)),
-        Country("HU", "Hungary", ("hu",)),
-        Country("IS", "Iceland", ("is",)),
-        Country("IE", "Ireland", ()),
-        Country("IT", "Italy", ("it",)),
-        Country("LV", "Latvia", ("lv",)),
-        Country("LT", "Lithuania", ("lt",)),
-        Country("LU", "Luxembourg", ("fr", "de")),
-        Country("MT", "Malta", ()),
-        Country("NL", "Netherlands", ("nl",)),
-        Country("NO", "Norway", ("no",)),
-        Country("PL", "Poland", ("pl",)),
-        Country("PT", "Portugal", ("pt",)),
-        Country("RO", "Romania", ("ro",)),
-        Country("SK", "Slovakia", ("sk",)),
-        Country("SI", "Slovenia", ("sl",)),
-        Country("ES", "Spain", ("es",)),
-        Country("SE", "Sweden", ("sv",)),
-        Country("CH", "Switzerland", ("de", "fr", "it")),
-        Country("GB", "United Kingdom", ()),
+        Country("AT", "Austria", ("de",), 9_160_000),
+        Country("BE", "Belgium", ("nl", "fr"), 11_830_000),
+        Country("HR", "Croatia", ("hr",), 3_860_000),
+        Country("CY", "Cyprus", ("el",), 940_000),
+        Country("CZ", "Czechia", ("cs",), 10_900_000),
+        Country("DK", "Denmark", ("da",), 5_970_000),
+        Country("EE", "Estonia", ("et",), 1_370_000),
+        Country("FI", "Finland", ("fi", "sv"), 5_600_000),
+        Country("FR", "France", ("fr",), 68_400_000),
+        Country("DE", "Germany", ("de",), 83_500_000),
+        Country("GR", "Greece", ("el",), 10_400_000),
+        Country("HU", "Hungary", ("hu",), 9_580_000),
+        Country("IS", "Iceland", ("is",), 390_000),
+        Country("IE", "Ireland", (), 5_310_000),
+        Country("IT", "Italy", ("it",), 58_990_000),
+        Country("LV", "Latvia", ("lv",), 1_870_000),
+        Country("LT", "Lithuania", ("lt",), 2_890_000),
+        Country("LU", "Luxembourg", ("fr", "de"), 670_000),
+        Country("MT", "Malta", (), 560_000),
+        Country("NL", "Netherlands", ("nl",), 17_940_000),
+        Country("NO", "Norway", ("no",), 5_550_000),
+        Country("PL", "Poland", ("pl",), 36_620_000),
+        Country("PT", "Portugal", ("pt",), 10_640_000),
+        Country("RO", "Romania", ("ro",), 19_060_000),
+        Country("SK", "Slovakia", ("sk",), 5_430_000),
+        Country("SI", "Slovenia", ("sl",), 2_120_000),
+        Country("ES", "Spain", ("es",), 48_590_000),
+        Country("SE", "Sweden", ("sv",), 10_550_000),
+        Country("CH", "Switzerland", ("de", "fr", "it"), 8_960_000),
+        Country("GB", "United Kingdom", (), 68_350_000),
     )
 }
 

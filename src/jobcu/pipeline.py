@@ -10,6 +10,7 @@ from dataclasses import asdict
 from jobcu import jobstore
 from jobcu.countries import COUNTRIES
 from jobcu.dedupe import JobGroup, group_duplicates, is_agency
+from jobcu.filters import condition_fit
 from jobcu.freshness import freshness, window_start
 from jobcu.jobstore import JobState
 from jobcu.location import LocationPlan
@@ -195,6 +196,16 @@ def build_card(
         })
     elif not country:
         checks.append({"label": "Location unclear", "status": "unclear", "source": None})
+    # What the conditions the person wrote say about this job (HANDOVER section 6).
+    for condition in plan.conditions:
+        if condition.kind == "about_job" or condition.status == "not_checked":
+            continue
+        answer = condition_fit(condition, group)
+        checks.append({
+            "label": condition.understood_as,
+            "status": {"yes": "verified", "unknown": "unclear"}.get(answer, "fails"),
+            "source": "Checked on the web" if condition.status == "applied" else "AI estimate",
+        })
     start = window_start(started_at, posted_within_hours)
     state = state or JobState()
     return {

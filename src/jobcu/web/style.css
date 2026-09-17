@@ -1037,3 +1037,18 @@ dialog::backdrop {
   padding: 12px;
   border-radius: 8px;
 }
+
+/* ---- Location conditions in "What Jobcu understood" ---- */
+
+.conditions {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.conditions li {
+  margin-bottom: 12px;
+}
+
+.conditions p {
+  margin: 4px 0 0;
+}

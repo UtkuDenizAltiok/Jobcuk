@@ -9,7 +9,8 @@ def understanding(**changes):
         "limits_countries": True,
         "countries": [],
         "places": [],
-        "not_checked_yet": [],
+        "conditions_about_places": [],
+        "conditions_about_the_job": [],
         "outside_supported_area": [],
     }
     return LocationUnderstanding.model_validate({**base, **changes})
@@ -60,7 +61,7 @@ def test_named_place_adds_its_country():
 def test_unlimited_description_searches_everywhere_and_keeps_notes():
     plan = plan_from(
         "a city by the sea",
-        understanding(limits_countries=False, not_checked_yet=["city by the sea"]),
+        understanding(limits_countries=False, conditions_about_places=["city by the sea"]),
     )
     assert plan.broad and plan.not_checked_yet == ["city by the sea"]
 
