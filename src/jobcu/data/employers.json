@@ -1,0 +1,3605 @@
+{
+ "about": "Employers in Jobcu's supported countries and the career system they use. General reference data from public career sites, never built from anyone's searches. Checked and updated with tools/check_employers.py; 'countries' are the supported countries the employer had jobs in when checked, 'elsewhere' means it also had jobs outside them.",
+ "checked": "2026-09-17",
+ "employers": [
+  {
+   "name": "Air Apps",
+   "system": "ashby",
+   "board": "airapps",
+   "countries": [
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "PT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Alan",
+   "system": "ashby",
+   "board": "alan",
+   "countries": [
+    "BE",
+    "ES",
+    "FR",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Black Forest Labs",
+   "system": "ashby",
+   "board": "black-forest-labs",
+   "countries": [
+    "DE",
+    "FR",
+    "GB",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "ClickHouse",
+   "system": "ashby",
+   "board": "clickhouse",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "NL",
+    "PT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Cohere",
+   "system": "ashby",
+   "board": "cohere",
+   "countries": [
+    "BE",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Cursor",
+   "system": "ashby",
+   "board": "cursor",
+   "countries": [
+    "DE",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "DeepL",
+   "system": "ashby",
+   "board": "DeepL",
+   "countries": [
+    "AT",
+    "DE",
+    "GB",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Dust",
+   "system": "ashby",
+   "board": "dust",
+   "countries": [
+    "FR",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "ElevenLabs",
+   "system": "ashby",
+   "board": "elevenlabs",
+   "countries": [
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Enpal",
+   "system": "ashby",
+   "board": "enpal",
+   "countries": [
+    "DE",
+    "IT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Flink",
+   "system": "ashby",
+   "board": "flink",
+   "countries": [
+    "CH"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Harvey",
+   "system": "ashby",
+   "board": "harvey",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Langfuse",
+   "system": "ashby",
+   "board": "langfuse",
+   "countries": [
+    "CH",
+    "DE",
+    "FR",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Linear",
+   "system": "ashby",
+   "board": "linear",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Lovable",
+   "system": "ashby",
+   "board": "lovable",
+   "countries": [
+    "GB",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Marshmallow",
+   "system": "ashby",
+   "board": "marshmallow",
+   "countries": [
+    "GB",
+    "HU"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Mistral AI",
+   "system": "ashby",
+   "board": "mistral.ai",
+   "countries": [
+    "AT",
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "LU",
+    "NL",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Multiverse",
+   "system": "ashby",
+   "board": "multiverse",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "n8n",
+   "system": "ashby",
+   "board": "n8n",
+   "countries": [
+    "AT",
+    "BE",
+    "CZ",
+    "DE",
+    "DK",
+    "EE",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "LV",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SI",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Notion",
+   "system": "ashby",
+   "board": "notion",
+   "countries": [
+    "DE",
+    "FR",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "OpenAI",
+   "system": "ashby",
+   "board": "openai",
+   "countries": [
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Paddle",
+   "system": "ashby",
+   "board": "paddle",
+   "countries": [
+    "GB",
+    "IE",
+    "NL",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Parloa",
+   "system": "ashby",
+   "board": "parloa",
+   "countries": [
+    "DE",
+    "ES",
+    "GB"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Pennylane",
+   "system": "ashby",
+   "board": "pennylane",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "PT"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Perplexity",
+   "system": "ashby",
+   "board": "perplexity",
+   "countries": [
+    "DE",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Photoroom",
+   "system": "ashby",
+   "board": "photoroom",
+   "countries": [
+    "FR"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Poolside",
+   "system": "ashby",
+   "board": "poolside",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "PostHog",
+   "system": "ashby",
+   "board": "posthog",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Qonto",
+   "system": "ashby",
+   "board": "qonto",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "IT",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Ramp",
+   "system": "ashby",
+   "board": "ramp",
+   "countries": [
+    "GB",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Snowflake",
+   "system": "ashby",
+   "board": "snowflake",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "NL",
+    "NO",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Supabase",
+   "system": "ashby",
+   "board": "supabase",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Synthesia",
+   "system": "ashby",
+   "board": "synthesia",
+   "countries": [
+    "CH",
+    "DE",
+    "FR",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Temporal",
+   "system": "ashby",
+   "board": "temporal",
+   "countries": [
+    "DE",
+    "FR",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Vanta",
+   "system": "ashby",
+   "board": "vanta",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Wayflyer",
+   "system": "ashby",
+   "board": "wayflyer",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Wayve",
+   "system": "ashby",
+   "board": "wayve",
+   "countries": [
+    "DE",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Affirm",
+   "system": "greenhouse",
+   "board": "affirm",
+   "countries": [
+    "ES",
+    "GB",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Airbnb",
+   "system": "greenhouse",
+   "board": "airbnb",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Anduril",
+   "system": "greenhouse",
+   "board": "andurilindustries",
+   "countries": [
+    "GB",
+    "IE",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Anthropic",
+   "system": "greenhouse",
+   "board": "anthropic",
+   "countries": [
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Asana",
+   "system": "greenhouse",
+   "board": "asana",
+   "countries": [
+    "DE",
+    "GB",
+    "IE",
+    "IS",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Bitpanda",
+   "system": "greenhouse",
+   "board": "bitpanda",
+   "countries": [
+    "AT",
+    "DE",
+    "ES",
+    "FR",
+    "RO"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Blockchain.com",
+   "system": "greenhouse",
+   "board": "blockchain",
+   "countries": [
+    "FR",
+    "GB",
+    "MT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Brunswick Group",
+   "system": "greenhouse",
+   "board": "brunswickgroup",
+   "countries": [
+    "BE",
+    "DE",
+    "ES",
+    "GB",
+    "IT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Celonis",
+   "system": "greenhouse",
+   "board": "celonis",
+   "countries": [
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IT",
+    "NL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Cloudflare",
+   "system": "greenhouse",
+   "board": "cloudflare",
+   "countries": [
+    "FR",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Cognism",
+   "system": "greenhouse",
+   "board": "cognism",
+   "countries": [
+    "DE",
+    "GB",
+    "HR",
+    "PL"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Coinbase",
+   "system": "greenhouse",
+   "board": "coinbase",
+   "countries": [
+    "CY",
+    "GB",
+    "IE",
+    "LU"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "commercetools",
+   "system": "greenhouse",
+   "board": "commercetools",
+   "countries": [
+    "DE",
+    "ES",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Contentful",
+   "system": "greenhouse",
+   "board": "contentful",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Databricks",
+   "system": "greenhouse",
+   "board": "databricks",
+   "countries": [
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Datadog",
+   "system": "greenhouse",
+   "board": "datadog",
+   "countries": [
+    "AT",
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "PT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Dropbox",
+   "system": "greenhouse",
+   "board": "dropbox",
+   "countries": [
+    "GB",
+    "IE",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Duolingo",
+   "system": "greenhouse",
+   "board": "duolingo",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Ebury",
+   "system": "greenhouse",
+   "board": "ebury",
+   "countries": [
+    "BE",
+    "CH",
+    "CY",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "HU",
+    "IT",
+    "LT",
+    "LU",
+    "LV",
+    "NL",
+    "PL",
+    "PT",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Elastic",
+   "system": "greenhouse",
+   "board": "elastic",
+   "countries": [
+    "BE",
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Figma",
+   "system": "greenhouse",
+   "board": "figma",
+   "countries": [
+    "DE",
+    "FR",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Flipdish",
+   "system": "greenhouse",
+   "board": "flipdish",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "GetYourGuide",
+   "system": "greenhouse",
+   "board": "getyourguide",
+   "countries": [
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "GitLab",
+   "system": "greenhouse",
+   "board": "gitlab",
+   "countries": [
+    "AT",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "GoCardless",
+   "system": "greenhouse",
+   "board": "gocardless",
+   "countries": [
+    "GB",
+    "LV",
+    "PT"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Grafana Labs",
+   "system": "greenhouse",
+   "board": "grafanalabs",
+   "countries": [
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Graphcore",
+   "system": "greenhouse",
+   "board": "graphcore",
+   "countries": [
+    "GB",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "HelloFresh",
+   "system": "greenhouse",
+   "board": "hellofresh",
+   "countries": [
+    "BE",
+    "DE",
+    "DK",
+    "FR",
+    "GB",
+    "IE",
+    "NL",
+    "NO",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Helsing",
+   "system": "greenhouse",
+   "board": "helsing",
+   "countries": [
+    "DE",
+    "EE",
+    "ES",
+    "FR",
+    "GB",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "HubSpot",
+   "system": "greenhouse",
+   "board": "hubspotjobs",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "IDnow",
+   "system": "greenhouse",
+   "board": "idnow",
+   "countries": [
+    "DE",
+    "FR"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Intercom",
+   "system": "greenhouse",
+   "board": "intercom",
+   "countries": [
+    "DE",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Isar Aerospace",
+   "system": "greenhouse",
+   "board": "isaraerospace",
+   "countries": [
+    "DE",
+    "NO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Isomorphic Labs",
+   "system": "greenhouse",
+   "board": "isomorphiclabs",
+   "countries": [
+    "CH",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "JetBrains",
+   "system": "greenhouse",
+   "board": "jetbrains",
+   "countries": [
+    "CY",
+    "CZ",
+    "DE",
+    "ES",
+    "GB",
+    "NL",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Kayzen",
+   "system": "greenhouse",
+   "board": "kayzen",
+   "countries": [
+    "DE",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Kirby Group Engineering",
+   "system": "greenhouse",
+   "board": "kirbygroupengineering",
+   "countries": [
+    "DE",
+    "DK",
+    "GB",
+    "IE",
+    "IT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "KONUX",
+   "system": "greenhouse",
+   "board": "konux",
+   "countries": [
+    "DE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Marvel Fusion",
+   "system": "greenhouse",
+   "board": "marvelfusion",
+   "countries": [
+    "DE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "MOIA",
+   "system": "greenhouse",
+   "board": "moia",
+   "countries": [
+    "DE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "MongoDB",
+   "system": "greenhouse",
+   "board": "mongodb",
+   "countries": [
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Monzo",
+   "system": "greenhouse",
+   "board": "monzo",
+   "countries": [
+    "ES",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "N26",
+   "system": "greenhouse",
+   "board": "n26",
+   "countries": [
+    "AT",
+    "DE",
+    "ES",
+    "FR"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "New Relic",
+   "system": "greenhouse",
+   "board": "newrelic",
+   "countries": [
+    "DE",
+    "ES",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Okta",
+   "system": "greenhouse",
+   "board": "okta",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Overstory",
+   "system": "greenhouse",
+   "board": "overstory",
+   "countries": [
+    "CH",
+    "DK",
+    "EE",
+    "FR",
+    "GB",
+    "IE",
+    "NL",
+    "PT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "PagerDuty",
+   "system": "greenhouse",
+   "board": "pagerduty",
+   "countries": [
+    "GB",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Parloa",
+   "system": "greenhouse",
+   "board": "parloa",
+   "countries": [
+    "DE",
+    "FR",
+    "GB",
+    "IT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Pinterest",
+   "system": "greenhouse",
+   "board": "pinterest",
+   "countries": [
+    "DE",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "PQShield",
+   "system": "greenhouse",
+   "board": "pqshield",
+   "countries": [
+    "BE",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Qualtrics",
+   "system": "greenhouse",
+   "board": "qualtrics",
+   "countries": [
+    "DE",
+    "DK",
+    "IT",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Raisin",
+   "system": "greenhouse",
+   "board": "raisin",
+   "countries": [
+    "DE",
+    "ES",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Reddit",
+   "system": "greenhouse",
+   "board": "reddit",
+   "countries": [
+    "DE",
+    "GB",
+    "IE",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Riverlane",
+   "system": "greenhouse",
+   "board": "riverlane",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Robinhood",
+   "system": "greenhouse",
+   "board": "robinhood",
+   "countries": [
+    "GB",
+    "LT",
+    "LU",
+    "SI"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Rockstar Games",
+   "system": "greenhouse",
+   "board": "rockstargames",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Samsara",
+   "system": "greenhouse",
+   "board": "samsara",
+   "countries": [
+    "DE",
+    "FR",
+    "GB",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Solaris",
+   "system": "greenhouse",
+   "board": "solarisbank",
+   "countries": [
+    "DE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Speechify",
+   "system": "greenhouse",
+   "board": "speechify",
+   "countries": [
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HU",
+    "IE",
+    "IS",
+    "IT",
+    "LT",
+    "NL",
+    "NO",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Squarespace",
+   "system": "greenhouse",
+   "board": "squarespace",
+   "countries": [
+    "IE",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Staffbase",
+   "system": "greenhouse",
+   "board": "staffbase",
+   "countries": [
+    "DE",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Stripe",
+   "system": "greenhouse",
+   "board": "stripe",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "LU",
+    "PL",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "SumUp",
+   "system": "greenhouse",
+   "board": "sumup",
+   "countries": [
+    "AT",
+    "BE",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HR",
+    "IE",
+    "IT",
+    "LT",
+    "NL",
+    "NO",
+    "PL",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Telnyx",
+   "system": "greenhouse",
+   "board": "telnyx54",
+   "countries": [
+    "DE",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "The Trade Desk",
+   "system": "greenhouse",
+   "board": "thetradedesk",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Tide",
+   "system": "greenhouse",
+   "board": "tide",
+   "countries": [
+    "DE",
+    "FR",
+    "GB",
+    "LT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Tines",
+   "system": "greenhouse",
+   "board": "tines",
+   "countries": [
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Toast",
+   "system": "greenhouse",
+   "board": "toast",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Trade Republic",
+   "system": "greenhouse",
+   "board": "traderepublic",
+   "countries": [
+    "DE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "TrueLayer",
+   "system": "greenhouse",
+   "board": "truelayer",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Twilio",
+   "system": "greenhouse",
+   "board": "twilio",
+   "countries": [
+    "EE",
+    "ES",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Vercel",
+   "system": "greenhouse",
+   "board": "vercel",
+   "countries": [
+    "DE",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Wayve",
+   "system": "greenhouse",
+   "board": "wayve",
+   "countries": [
+    "DE",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Ajax Systems",
+   "system": "lever",
+   "board": "ajax",
+   "countries": [
+    "BE",
+    "CH",
+    "CY",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "PL",
+    "RO",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Binance",
+   "system": "lever",
+   "board": "binance",
+   "countries": [
+    "CH",
+    "ES",
+    "GB",
+    "IE",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "CarTrawler",
+   "system": "lever",
+   "board": "cartrawler",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Foxit",
+   "system": "lever",
+   "board": "foxitsoftware",
+   "countries": [
+    "DE",
+    "IE",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Match Group",
+   "system": "lever",
+   "board": "matchgroup",
+   "countries": [
+    "ES",
+    "FR",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Octopus Energy",
+   "system": "lever",
+   "board": "octoenergy",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Palantir",
+   "system": "lever",
+   "board": "palantir",
+   "countries": [
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "LT",
+    "NL",
+    "NO",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Rover",
+   "system": "lever",
+   "board": "rover",
+   "countries": [
+    "DE",
+    "ES",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Spotify",
+   "system": "lever",
+   "board": "spotify",
+   "countries": [
+    "BE",
+    "FR",
+    "GB",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Zopa",
+   "system": "lever",
+   "board": "zopa",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "bunq",
+   "system": "recruitee",
+   "board": "bunq",
+   "countries": [
+    "BE",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Alcemy",
+   "system": "workable",
+   "board": "alcemy",
+   "countries": [
+    "DE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "BJAK",
+   "system": "workable",
+   "board": "bjak-1",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Blueground",
+   "system": "workable",
+   "board": "blueground",
+   "countries": [
+    "AT",
+    "GR"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Enjins",
+   "system": "workable",
+   "board": "enjins",
+   "countries": [
+    "NL"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "European Dynamics",
+   "system": "workable",
+   "board": "european-dynamics",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CY",
+    "DE",
+    "ES",
+    "FR",
+    "GR",
+    "IT",
+    "LU",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Hugging Face",
+   "system": "workable",
+   "board": "huggingface",
+   "countries": [
+    "FR"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Intuition Machines",
+   "system": "workable",
+   "board": "imachines",
+   "countries": [
+    "AT",
+    "CZ",
+    "DE",
+    "GB",
+    "HR",
+    "IT",
+    "PL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "SHIELD",
+   "system": "workable",
+   "board": "shield-1",
+   "countries": [
+    "DE",
+    "ES"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Skroutz",
+   "system": "workable",
+   "board": "skroutz",
+   "countries": [
+    "GR"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Starling Bank",
+   "system": "workable",
+   "board": "starling-bank",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Statom Group",
+   "system": "workable",
+   "board": "statom",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Tyk",
+   "system": "workable",
+   "board": "tyk-technologies",
+   "countries": [
+    "GB",
+    "GR",
+    "HR",
+    "IT",
+    "PL",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Abbott",
+   "system": "workday",
+   "board": "https://abbott.wd5.myworkdayjobs.com/abbottcareers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "SE",
+    "SI"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Accenture",
+   "system": "workday",
+   "board": "https://accenture.wd103.myworkdayjobs.com/AccentureCareers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "LU",
+    "LV",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Accenture (AvanadeCareers)",
+   "system": "workday",
+   "board": "https://accenture.wd103.myworkdayjobs.com/AvanadeCareers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IT",
+    "NL",
+    "PL",
+    "PT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Agilent (Agilent_Careers)",
+   "system": "workday",
+   "board": "https://agilent.wd5.myworkdayjobs.com/Agilent_Careers",
+   "countries": [
+    "BE",
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Agilent (Agilent_Student_Careers)",
+   "system": "workday",
+   "board": "https://agilent.wd5.myworkdayjobs.com/Agilent_Student_Careers",
+   "countries": [
+    "DE",
+    "DK",
+    "ES",
+    "IT",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "AIG",
+   "system": "workday",
+   "board": "https://aig.wd1.myworkdayjobs.com/aig",
+   "countries": [
+    "BE",
+    "CH",
+    "CY",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "IE",
+    "IT",
+    "NL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Airbus",
+   "system": "workday",
+   "board": "https://ag.wd3.myworkdayjobs.com/Airbus",
+   "countries": [
+    "BE",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Amgen",
+   "system": "workday",
+   "board": "https://amgen.wd1.myworkdayjobs.com/Careers",
+   "countries": [
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "IE",
+    "IS",
+    "NL",
+    "PT",
+    "RO",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Analog Devices",
+   "system": "workday",
+   "board": "https://analogdevices.wd1.myworkdayjobs.com/External",
+   "countries": [
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Applied Materials",
+   "system": "workday",
+   "board": "https://amat.wd1.myworkdayjobs.com/External",
+   "countries": [
+    "AT",
+    "BE",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Aptiv",
+   "system": "workday",
+   "board": "https://aptiv.wd5.myworkdayjobs.com/APTIV_CAREERS",
+   "countries": [
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "HU",
+    "IE",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "ASML",
+   "system": "workday",
+   "board": "https://asml.wd3.myworkdayjobs.com/ASMLBERLIN",
+   "countries": [
+    "DE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "AstraZeneca",
+   "system": "workday",
+   "board": "https://astrazeneca.wd3.myworkdayjobs.com/Careers",
+   "countries": [
+    "AT",
+    "CH",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "LV",
+    "NL",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SI",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "AVEVA (AVEVA_careers)",
+   "system": "workday",
+   "board": "https://aveva.wd3.myworkdayjobs.com/AVEVA_careers",
+   "countries": [
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IT",
+    "NO",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "AVEVA (ETAP_Careers)",
+   "system": "workday",
+   "board": "https://aveva.wd3.myworkdayjobs.com/ETAP_Careers",
+   "countries": [
+    "BE",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "IT",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "AVEVA (RIB_Careers)",
+   "system": "workday",
+   "board": "https://aveva.wd3.myworkdayjobs.com/RIB_Careers",
+   "countries": [
+    "DE",
+    "DK",
+    "ES",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Barclays",
+   "system": "workday",
+   "board": "https://barclays.wd3.myworkdayjobs.com/External_Career_Site_Barclays",
+   "countries": [
+    "CH",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IT",
+    "NL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Baxter",
+   "system": "workday",
+   "board": "https://baxter.wd1.myworkdayjobs.com/baxter",
+   "countries": [
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "IE",
+    "IT",
+    "MT",
+    "NL",
+    "PL",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Biogen",
+   "system": "workday",
+   "board": "https://biibhr.wd3.myworkdayjobs.com/external",
+   "countries": [
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "PL",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "BlackRock",
+   "system": "workday",
+   "board": "https://blackrock.wd1.myworkdayjobs.com/BlackRock_Professional",
+   "countries": [
+    "DE",
+    "DK",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "LU",
+    "NL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Bristol Myers Squibb",
+   "system": "workday",
+   "board": "https://bristolmyerssquibb.wd5.myworkdayjobs.com/BMS",
+   "countries": [
+    "AT",
+    "DE",
+    "GB",
+    "IE",
+    "NL",
+    "PL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Broadcom",
+   "system": "workday",
+   "board": "https://broadcom.wd1.myworkdayjobs.com/External_Career",
+   "countries": [
+    "AT",
+    "DE",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Cadence",
+   "system": "workday",
+   "board": "https://cadence.wd1.myworkdayjobs.com/External_Careers",
+   "countries": [
+    "BE",
+    "DE",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "IE",
+    "IT",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Capita",
+   "system": "workday",
+   "board": "https://capita.wd3.myworkdayjobs.com/CapitaGlobal",
+   "countries": [
+    "GB",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Centrica",
+   "system": "workday",
+   "board": "https://centrica.wd3.myworkdayjobs.com/Centrica",
+   "countries": [
+    "BE",
+    "DK",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Citi",
+   "system": "workday",
+   "board": "https://citi.wd5.myworkdayjobs.com/2",
+   "countries": [
+    "CH",
+    "CZ",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "LU",
+    "NL",
+    "NO",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Coca-Cola",
+   "system": "workday",
+   "board": "https://coke.wd1.myworkdayjobs.com/coca-cola-careers",
+   "countries": [
+    "AT",
+    "BE",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "IE",
+    "PL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Danaher",
+   "system": "workday",
+   "board": "https://danaher.wd1.myworkdayjobs.com/DanaherJobs",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "PT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Deloitte Ireland",
+   "system": "workday",
+   "board": "https://deloitteie.wd3.myworkdayjobs.com/Experienced_Professionals",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Diageo",
+   "system": "workday",
+   "board": "https://diageo.wd3.myworkdayjobs.com/Diageo_Careers",
+   "countries": [
+    "CZ",
+    "DE",
+    "GB",
+    "GR",
+    "HU",
+    "IE",
+    "PT",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Dyson (dyson_careers)",
+   "system": "workday",
+   "board": "https://dyson.wd3.myworkdayjobs.com/dyson_careers",
+   "countries": [
+    "AT",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "NL",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Edwards Lifesciences",
+   "system": "workday",
+   "board": "https://edwards.wd5.myworkdayjobs.com/EdwardsCareers",
+   "countries": [
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "IE",
+    "IT",
+    "NL",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Emerson (Emerson_College_Affiliated_Faculty)",
+   "system": "workday",
+   "board": "https://emerson.wd5.myworkdayjobs.com/Emerson_College_Affiliated_Faculty",
+   "countries": [
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Equinor (EQNR)",
+   "system": "workday",
+   "board": "https://equinor.wd3.myworkdayjobs.com/EQNR",
+   "countries": [
+    "GB",
+    "NO",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "FNZ",
+   "system": "workday",
+   "board": "https://fnz.wd3.myworkdayjobs.com/fnz_careers",
+   "countries": [
+    "CH",
+    "CZ",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "LU",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Fresenius Medical Care",
+   "system": "workday",
+   "board": "https://freseniusmedicalcare.wd3.myworkdayjobs.com/FME",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "PT",
+    "RO",
+    "SI",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "GE Aerospace",
+   "system": "workday",
+   "board": "https://geaerospace.wd5.myworkdayjobs.com/GE_ExternalSite",
+   "countries": [
+    "CZ",
+    "GB",
+    "IT",
+    "PL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "GE Aerospace (Only_Confidential_Executive_Recruiting)",
+   "system": "workday",
+   "board": "https://geaerospace.wd5.myworkdayjobs.com/Only_Confidential_Executive_Recruiting",
+   "countries": [
+    "CZ"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "GE Vernova",
+   "system": "workday",
+   "board": "https://gevernova.wd5.myworkdayjobs.com/Vernova_ExternalSite",
+   "countries": [
+    "DE",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "PL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "General Motors",
+   "system": "workday",
+   "board": "https://generalmotors.wd5.myworkdayjobs.com/careers_gm",
+   "countries": [
+    "DE",
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "GlobalFoundries",
+   "system": "workday",
+   "board": "https://globalfoundries.wd1.myworkdayjobs.com/External",
+   "countries": [
+    "BE",
+    "DE",
+    "NL",
+    "NO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "GSK",
+   "system": "workday",
+   "board": "https://gsk.wd5.myworkdayjobs.com/GSKCareers",
+   "countries": [
+    "BE",
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "PT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "HP",
+   "system": "workday",
+   "board": "https://hp.wd5.myworkdayjobs.com/ExternalCareerSite",
+   "countries": [
+    "BE",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "ICON",
+   "system": "workday",
+   "board": "https://icon.wd3.myworkdayjobs.com/broadbean_external",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "EE",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "LV",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Illumina",
+   "system": "workday",
+   "board": "https://illumina.wd1.myworkdayjobs.com/illumina-careers",
+   "countries": [
+    "AT",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Integer",
+   "system": "workday",
+   "board": "https://integer.wd1.myworkdayjobs.com/external",
+   "countries": [
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Intel",
+   "system": "workday",
+   "board": "https://intel.wd1.myworkdayjobs.com/External",
+   "countries": [
+    "DE",
+    "GB",
+    "IE",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "IQVIA",
+   "system": "workday",
+   "board": "https://iqvia.wd1.myworkdayjobs.com/IQVIA",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "EE",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "LU",
+    "LV",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SI",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "JLL",
+   "system": "workday",
+   "board": "https://jll.wd1.myworkdayjobs.com/jllcareers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "LU",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Johnson & Johnson",
+   "system": "workday",
+   "board": "https://jj.wd5.myworkdayjobs.com/JJ",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "LV",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SI",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Johnson Controls",
+   "system": "workday",
+   "board": "https://jci.wd5.myworkdayjobs.com/jci",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "SE",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "KLA",
+   "system": "workday",
+   "board": "https://kla.wd1.myworkdayjobs.com/Search",
+   "countries": [
+    "BE",
+    "DE",
+    "DK",
+    "FR",
+    "GB",
+    "IE",
+    "IT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "LSEG",
+   "system": "workday",
+   "board": "https://lseg.wd3.myworkdayjobs.com/Careers",
+   "countries": [
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Maersk (APMT_Careers)",
+   "system": "workday",
+   "board": "https://maersk.wd3.myworkdayjobs.com/APMT_Careers",
+   "countries": [
+    "DE",
+    "DK",
+    "ES",
+    "HR",
+    "IT",
+    "NL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Maersk (Damco_FFW)",
+   "system": "workday",
+   "board": "https://maersk.wd3.myworkdayjobs.com/Damco_FFW",
+   "countries": [
+    "HU"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Maersk (Maersk_Careers)",
+   "system": "workday",
+   "board": "https://maersk.wd3.myworkdayjobs.com/Maersk_Careers",
+   "countries": [
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SI",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Marvell",
+   "system": "workday",
+   "board": "https://marvell.wd1.myworkdayjobs.com/MarvellCareers",
+   "countries": [
+    "ES",
+    "IT",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Mastercard",
+   "system": "workday",
+   "board": "https://mastercard.wd1.myworkdayjobs.com/CorporateCareers",
+   "countries": [
+    "AT",
+    "BE",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "HU",
+    "IE",
+    "LV",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "MBDA",
+   "system": "workday",
+   "board": "https://mbda.wd3.myworkdayjobs.com/MBDA-UK",
+   "countries": [
+    "ES",
+    "GB"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Medtronic",
+   "system": "workday",
+   "board": "https://medtronic.wd1.myworkdayjobs.com/MedtronicCareers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "LV",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SI",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Micron",
+   "system": "workday",
+   "board": "https://micron.wd1.myworkdayjobs.com/External",
+   "countries": [
+    "DE",
+    "IT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Morgan Stanley",
+   "system": "workday",
+   "board": "https://ms.wd5.myworkdayjobs.com/External",
+   "countries": [
+    "DE",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Motorola Solutions",
+   "system": "workday",
+   "board": "https://motorolasolutions.wd5.myworkdayjobs.com/Careers",
+   "countries": [
+    "AT",
+    "BE",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IS",
+    "IT",
+    "LT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "MSD",
+   "system": "workday",
+   "board": "https://msd.wd5.myworkdayjobs.com/SearchJobs",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "LV",
+    "NL",
+    "PL",
+    "PT",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Northern Trust",
+   "system": "workday",
+   "board": "https://ntrs.wd1.myworkdayjobs.com/northerntrust",
+   "countries": [
+    "DE",
+    "GB",
+    "IE",
+    "LU",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Novartis",
+   "system": "workday",
+   "board": "https://novartis.wd3.myworkdayjobs.com/Novartis_Careers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CY",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "PT",
+    "RO",
+    "SI",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "NVIDIA",
+   "system": "workday",
+   "board": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite",
+   "countries": [
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HU",
+    "IT",
+    "NL",
+    "PL",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "NXP Semiconductors",
+   "system": "workday",
+   "board": "https://nxp.wd3.myworkdayjobs.com/careers",
+   "countries": [
+    "AT",
+    "BE",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "HR",
+    "HU",
+    "IT",
+    "NL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Orange",
+   "system": "workday",
+   "board": "https://orange.wd3.myworkdayjobs.com/Orange_Career",
+   "countries": [
+    "BE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "PayPal",
+   "system": "workday",
+   "board": "https://paypal.wd1.myworkdayjobs.com/jobs",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "LU"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Pfizer",
+   "system": "workday",
+   "board": "https://pfizer.wd1.myworkdayjobs.com/PfizerCareers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "DE",
+    "EE",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "PL",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Philips",
+   "system": "workday",
+   "board": "https://philips.wd3.myworkdayjobs.com/jobs-and-careers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "POLITICO Europe",
+   "system": "workday",
+   "board": "https://politico.wd108.myworkdayjobs.com/POLITICOEU",
+   "countries": [
+    "BE",
+    "DE",
+    "GB"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Procter & Gamble",
+   "system": "workday",
+   "board": "https://pg.wd5.myworkdayjobs.com/1000",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "HU",
+    "IT",
+    "NL",
+    "PL",
+    "RO",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Red Hat",
+   "system": "workday",
+   "board": "https://redhat.wd5.myworkdayjobs.com/Jobs",
+   "countries": [
+    "AT",
+    "DE",
+    "ES",
+    "GB",
+    "IE",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Regeneron",
+   "system": "workday",
+   "board": "https://regeneron.wd1.myworkdayjobs.com/Careers",
+   "countries": [
+    "AT",
+    "CH",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Regeneron (IrelandPrivate)",
+   "system": "workday",
+   "board": "https://regeneron.wd1.myworkdayjobs.com/IrelandPrivate",
+   "countries": [
+    "IE"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "ReliaQuest",
+   "system": "workday",
+   "board": "https://reliaquest.wd5.myworkdayjobs.com/ReliaQuest_Careers",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Roche (mysugr-ext)",
+   "system": "workday",
+   "board": "https://roche.wd3.myworkdayjobs.com/mysugr-ext",
+   "countries": [
+    "AT"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Roche (roche-ext)",
+   "system": "workday",
+   "board": "https://roche.wd3.myworkdayjobs.com/roche-ext",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "HU",
+    "IE",
+    "LV",
+    "NO",
+    "PL",
+    "PT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Rolls-Royce (Apprentice)",
+   "system": "workday",
+   "board": "https://rollsroyce.wd3.myworkdayjobs.com/Apprentice",
+   "countries": [
+    "FR"
+   ],
+   "elsewhere": false
+  },
+  {
+   "name": "Rolls-Royce (Intern_Graduate)",
+   "system": "workday",
+   "board": "https://rollsroyce.wd3.myworkdayjobs.com/Intern_Graduate",
+   "countries": [
+    "DE",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Rolls-Royce (professional)",
+   "system": "workday",
+   "board": "https://rollsroyce.wd3.myworkdayjobs.com/professional",
+   "countries": [
+    "BE",
+    "DE",
+    "GB",
+    "IT",
+    "NL",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Roquette",
+   "system": "workday",
+   "board": "https://roquette.wd3.myworkdayjobs.com/External",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "IE",
+    "IT",
+    "LT",
+    "NO",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "RTX (Collins Aerospace, Pratt & Whitney, Raytheon)",
+   "system": "workday",
+   "board": "https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway",
+   "countries": [
+    "BE",
+    "CH",
+    "DE",
+    "FR",
+    "GB",
+    "IE",
+    "IS",
+    "NL",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Salesforce",
+   "system": "workday",
+   "board": "https://salesforce.wd12.myworkdayjobs.com/External_Career_Site",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Samsung",
+   "system": "workday",
+   "board": "https://sec.wd3.myworkdayjobs.com/Samsung_Careers",
+   "countries": [
+    "CZ",
+    "DE",
+    "FR",
+    "GB",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "NL",
+    "PL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Sandvik (dormerpramet-jobs)",
+   "system": "workday",
+   "board": "https://sandvik.wd3.myworkdayjobs.com/dormerpramet-jobs",
+   "countries": [
+    "CZ",
+    "GB",
+    "IT",
+    "PL",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Sandvik (seco-jobs)",
+   "system": "workday",
+   "board": "https://sandvik.wd3.myworkdayjobs.com/seco-jobs",
+   "countries": [
+    "AT",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Sandvik (walter-jobs)",
+   "system": "workday",
+   "board": "https://sandvik.wd3.myworkdayjobs.com/walter-jobs",
+   "countries": [
+    "AT",
+    "DE",
+    "ES",
+    "FR",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Sanofi",
+   "system": "workday",
+   "board": "https://sanofi.wd3.myworkdayjobs.com/SanofiCareers",
+   "countries": [
+    "AT",
+    "BE",
+    "CZ",
+    "DE",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Shell",
+   "system": "workday",
+   "board": "https://shell.wd3.myworkdayjobs.com/ShellCareers",
+   "countries": [
+    "DE",
+    "DK",
+    "GB",
+    "NL",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Solenis",
+   "system": "workday",
+   "board": "https://solenis.wd1.myworkdayjobs.com/Solenis",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "State Street",
+   "system": "workday",
+   "board": "https://statestreet.wd1.myworkdayjobs.com/Global",
+   "countries": [
+    "CH",
+    "DE",
+    "GB",
+    "IE",
+    "IT",
+    "LU",
+    "NL",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Stryker",
+   "system": "workday",
+   "board": "https://stryker.wd1.myworkdayjobs.com/StrykerCareers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "DE",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Sun Life",
+   "system": "workday",
+   "board": "https://sunlife.wd3.myworkdayjobs.com/Experienced-Jobs",
+   "countries": [
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "TD Securities",
+   "system": "workday",
+   "board": "https://td.wd3.myworkdayjobs.com/TD_Bank_Careers",
+   "countries": [
+    "GB",
+    "IE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Thales",
+   "system": "workday",
+   "board": "https://thales.wd3.myworkdayjobs.com/Careers",
+   "countries": [
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "IT",
+    "LU",
+    "NL",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Thermo Fisher",
+   "system": "workday",
+   "board": "https://thermofisher.wd5.myworkdayjobs.com/ThermoFisherCareers",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "EE",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "LT",
+    "LV",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SK"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "TRUMPF (TRUMPF_Apprenticeships)",
+   "system": "workday",
+   "board": "https://trumpf.wd3.myworkdayjobs.com/TRUMPF_Apprenticeships",
+   "countries": [
+    "CH",
+    "DE",
+    "IT"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "TRUMPF (TRUMPF_Graduates_and_Professionals)",
+   "system": "workday",
+   "board": "https://trumpf.wd3.myworkdayjobs.com/TRUMPF_Graduates_and_Professionals",
+   "countries": [
+    "AT",
+    "CH",
+    "DE",
+    "FR",
+    "GB",
+    "IT",
+    "NL",
+    "PL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "TRUMPF (TRUMPF_Students)",
+   "system": "workday",
+   "board": "https://trumpf.wd3.myworkdayjobs.com/TRUMPF_Students",
+   "countries": [
+    "AT",
+    "DE",
+    "IT",
+    "NL"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Unilever",
+   "system": "workday",
+   "board": "https://unilever.wd3.myworkdayjobs.com/Unilever_Experienced_Professionals",
+   "countries": [
+    "BE",
+    "CH",
+    "DE",
+    "DK",
+    "FI",
+    "FR",
+    "GB",
+    "IT",
+    "NL",
+    "PL",
+    "RO"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Uniqlo",
+   "system": "workday",
+   "board": "https://fastretailing.wd3.myworkdayjobs.com/headquarters_eu_Uniqlo",
+   "countries": [
+    "DE",
+    "ES",
+    "FR",
+    "GB"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Workday",
+   "system": "workday",
+   "board": "https://workday.wd5.myworkdayjobs.com/Workday",
+   "countries": [
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Zalando",
+   "system": "workday",
+   "board": "https://zalando.wd3.myworkdayjobs.com/ZalandoSiteWD",
+   "countries": [
+    "CH",
+    "DE",
+    "FI",
+    "IE",
+    "PL",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true
+  },
+  {
+   "name": "Zoetis",
+   "system": "workday",
+   "board": "https://zoetis.wd5.myworkdayjobs.com/zoetis",
+   "countries": [
+    "GB"
+   ],
+   "elsewhere": true
+  }
+ ]
+}

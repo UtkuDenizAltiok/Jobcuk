@@ -169,7 +169,7 @@ def build_card(
         seen = set()
     # "Also on" lists other sites; repeats of the ad on the same site are left out.
     for copy in group.copies:
-        if copy.source not in seen and copy.url:
+        if copy.source not in seen and copy.url and copy.url != main_link["url"]:
             seen.add(copy.source)
             also_on.append({"source": source_names.get(copy.source, copy.source), "url": copy.url})
     country = main.country or next((c.country for c in group.copies if c.country), None)

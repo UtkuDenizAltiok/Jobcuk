@@ -7,21 +7,14 @@ what's really relevant, so a job is only left out when nothing in it matches.
 """
 
 import re
-import unicodedata
 from collections.abc import Iterable
 
 from jobcu.keywords import SearchTerm
 from jobcu.location import Place
+from jobcu.text import normalise
 
 # Words this short must match a whole word ("IT" shouldn't match "digital").
 _SHORT_WORD = 3
-
-
-def normalise(text: str | None) -> str:
-    """Lower case, accents removed ("München" → "munchen"), punctuation as spaces."""
-    text = unicodedata.normalize("NFKD", (text or "").replace("ß", "ss"))
-    text = "".join(c for c in text if not unicodedata.combining(c)).casefold()
-    return " ".join(re.sub(r"[^\w]+", " ", text).split())
 
 
 def _contains(haystack: str, word: str) -> bool:

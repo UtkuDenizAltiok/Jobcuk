@@ -111,3 +111,22 @@ def test_employer_page_becomes_the_main_link_unless_it_is_an_agency():
     assert employer["also_on"] == [{"source": "Board", "url": "https://board.test/1"}]
     agency = card_for("Brunel GmbH")
     assert agency["main_link"]["source"] == "Board"
+
+
+def test_a_career_site_job_links_to_the_employer_once():
+    from datetime import UTC, datetime
+
+    from jobcu.pipeline import build_card
+
+    own = FoundJob(source="greenhouse", source_job_id="acme/1", url="https://careers.example/1",
+                   title="Hardware Engineer", company="Acme", location_text="Dublin, Ireland",
+                   employer_url="https://careers.example/1")
+    board = FoundJob(source="s", source_job_id="9", url="https://board.test/9",
+                     title="Hardware Engineer", company="Acme", location_text="Dublin, Ireland")
+    group = group_duplicates([board, own], {"s": "job_board", "greenhouse": "employer"})[0]
+    card = build_card(group, job_id=1, is_new=True, state=None, scored=None, plan=PLAN,
+                      source_names={"s": "Board", "greenhouse": "Company career sites"},
+                      possible_duplicate_of=None, started_at=datetime.now(UTC),
+                      posted_within_hours=24)
+    assert card["main_link"] == {"source": "Employer's site", "url": "https://careers.example/1"}
+    assert card["also_on"] == [{"source": "Board", "url": "https://board.test/9"}]

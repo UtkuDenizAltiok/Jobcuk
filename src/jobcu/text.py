@@ -1,6 +1,7 @@
 """Turning job ad HTML into clean plain text."""
 
 import re
+import unicodedata
 
 from lxml import html as lxml_html
 from lxml.etree import ParserError
@@ -33,3 +34,11 @@ def tidy(text: str) -> str:
     text = "\n".join(line.strip() for line in text.split("\n"))
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
+
+
+def normalise(text: str | None) -> str:
+    """For comparing words: lower case, accents removed ("München" → "munchen"), punctuation as
+    spaces."""
+    text = unicodedata.normalize("NFKD", (text or "").replace("ß", "ss"))
+    text = "".join(c for c in text if not unicodedata.combining(c)).casefold()
+    return " ".join(re.sub(r"[^\w]+", " ", text).split())

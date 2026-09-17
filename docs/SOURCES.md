@@ -86,6 +86,43 @@ Update this whenever a source changes or something new is learned. Decisions are
 - Many JobsIreland jobs also appear on EURES (IDs like `base64("2470780 18")`, 18 = JobsIreland),
   but EURES showed only ~1,970 of its ~5,100 jobs.
 
+## Company career systems (`src/jobcu/sources/careers.py` and one module per system), checked 2026-09-17
+
+Jobcu reads the job lists that companies publish in their career systems. Which companies are
+read comes from the **employer directory** (`src/jobcu/data/employers.json`), kept up to date with
+`tools/check_employers.py` (one request per company; it records the supported countries each
+company had jobs in, and whether it also hires outside them).
+
+| System | Address Jobcu reads | What it gives | Notes |
+|---|---|---|---|
+| Greenhouse | `GET boards-api.greenhouse.io/v1/boards/{board}/jobs`, full ad from `…/jobs/{id}` | title, location text, `first_published` (exact), `absolute_url` | Public Job Board API. robots.txt allows everything but `/embed/`. EU boards (`job-boards.eu.greenhouse.io`) are served by the same API host. The list has no ad text, so full ads are read per job. |
+| Lever | `GET api.lever.co/v0/postings/{company}?mode=json` (EU: `api.eu.lever.co`) | full ad, `createdAt` (exact), **`country`** code, `workplaceType`, `commitment` | Public Postings API; robots.txt asks for 1 s between requests. One country code even for jobs in several places, so it's only trusted for single-place jobs. |
+| Ashby | `GET api.ashbyhq.com/posting-api/job-board/{board}` | full ad, `publishedAt`, location plus `addressCountry`, `employmentType`, `workplaceType` | Public Job Postings API. Answers can be several MB for big companies. |
+| Workable | `GET apply.workable.com/api/v1/widget/accounts/{board}`, full ad from `…/api/v2/accounts/{board}/jobs/{shortcode}` | title, city and country code, `published_on` (**day only**), `employment_type`, `telecommuting` | Public widget API; robots.txt allows everything. |
+| Recruitee | `GET {board}.recruitee.com/api/offers/` | full ad, `published_at` (exact), places with `country_code`, `employment_type_code`, remote/hybrid | Public Careers Site API. Each company has its own address, so several are read at once. |
+| Workday | `POST {host}/wday/cxs/{tenant}/{site}/jobs` with `{"appliedFacets": …, "limit": 20, "offset": N, "searchText": ""}`, full ad from `GET {host}/wday/cxs/{tenant}/{site}{externalPath}` | title, `locationsText`, **relative** date ("Posted Today", "Posted 3 Days Ago", "Posted 30+ Days Ago"); the full ad has `startDate` (day), `timeType`, `remoteType` | Not documented, so Jobcu reads each site's robots.txt first and skips the company if it disallows these addresses. Newest first, 20 per page. The answer's filters give each country an ID, so Jobcu asks per searched country. |
+
+- **SmartRecruiters is not used:** `api.smartrecruiters.com/robots.txt` allows only LinkedIn's
+  crawler and disallows everyone else, although the Posting API itself is public.
+- **Personio is not used yet:** the XML feed (`{company}.jobs.personio.de/xml`) is empty unless the
+  company switches it on (checked on several companies), and the career pages need JavaScript.
+  Many Personio jobs arrive through Arbeitnow instead.
+- Career-system jobs count as the **employer's own ad**, so they win the main link (HANDOVER §10).
+
+## Arbeitnow (`src/jobcu/sources/arbeitnow.py`), checked 2026-09-17
+
+- **Free public API, no key:** `GET https://www.arbeitnow.com/api/job-board-api?page=N` (Germany
+  and neighbours, 250 jobs a page) and `https://www.arbeitnow.co.uk/api/job-board-api` (UK, 100 a
+  page). Jobs come **newest first** with `created_at` (exact), the **full ad text**, company,
+  free-text location, `job_types`, `remote` and a link to the job's page there.
+- Its jobs come mostly from career systems (Greenhouse, SmartRecruiters, JOIN, Teamtailor,
+  Recruitee, Personio), so it reaches many German and British companies Jobcu has no directory
+  entry for. About 200 new jobs a day on the German list.
+- Terms: free to use, "please do not abuse", and a link back to Arbeitnow, which Jobcu's job link
+  provides. robots.txt allows everything.
+- Locations are free text ("Berlin", "London, Greater London, United Kingdom", "Remote - EMEA"),
+  so the country comes from `placenames.py`.
+
 ## Checked and not used
 
 - **EURES** (europa.eu/eures), checked 2026-09-17. Technically ideal: `POST
@@ -98,6 +135,9 @@ Update this whenever a source changes or something new is learned. Decisions are
   that only EURES partner organisations recognised by a National Coordination Office may extract
   data using the API. Its jobs come from public employment services Jobcu reads directly
   (Bundesagentur, JobsIreland) or may read later.
+- **EURES-style aggregators needing a publisher website** (Jooble, Careerjet) are still open
+  questions: their free keys are meant for websites showing their jobs, and Jobcu has no website.
+  The owner decides whether to sign up.
 - **UK Find a Job (DWP)**, findajob.dwp.gov.uk, checked 2026-09-17. Requests with Jobcu's
   User-Agent time out, and a browser-like request gets a web-application-firewall page ("Something
   went wrong"). That's bot protection, so Jobcu doesn't use it.

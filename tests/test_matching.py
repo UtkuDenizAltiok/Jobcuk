@@ -1,6 +1,7 @@
 from jobcu.keywords import SearchTerm
 from jobcu.location import Place
-from jobcu.sources.matching import matches_places, matches_terms, normalise, term_matches
+from jobcu.sources.matching import matches_places, matches_terms, term_matches
+from jobcu.text import normalise
 
 
 def term(text, language="en", kind="job_title"):

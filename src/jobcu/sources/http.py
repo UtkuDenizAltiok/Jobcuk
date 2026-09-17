@@ -44,6 +44,14 @@ SITE_INTERVALS = {
     "www.reed.co.uk": 0.5,
     "rest.arbeitsagentur.de": 0.7,
     "jobsireland.ie": 2.0,
+    # Company career systems' public job lists (Lever's robots.txt asks for 1 s).
+    "boards-api.greenhouse.io": 0.5,
+    "api.lever.co": 1.0,
+    "api.eu.lever.co": 1.0,
+    "api.ashbyhq.com": 1.0,
+    "apply.workable.com": 1.0,
+    "www.arbeitnow.com": 1.0,
+    "www.arbeitnow.co.uk": 1.0,
     # Adzuna's job pages are read at a relaxed, human-like pace.
     **{f"www.adzuna.{ending}": 3.0
        for ending in ("de", "co.uk", "at", "be", "ch", "es", "fr", "it", "nl", "pl")},
