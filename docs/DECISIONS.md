@@ -156,3 +156,17 @@ aren't repeated here unless something about them was clarified.
 | **One search at a time** | Keeps usage predictable and avoids two searches competing for the same free AI allowance. |
 | The search form (location text and filters) is **remembered for the next visit** | Convenience only. Every search still reads the documents and the location text again from scratch. |
 | After a search, "What Jobcu understood" shows **exactly what that search used**. Before any search, it reads the documents on the spot. | The user sees what the search really worked with. |
+
+### Owner's choices for the smart location filter (Phase 2 design, decided 2026-09-17)
+
+Based on the owner's own test sentence: *"Germany or Ireland or UK, no AfD or other fascist supporter
+cities (dominant election result). Also the job location should be at most 50 minutes to a city that
+has at least 0.3% of its country's total population."*
+
+| Decision | Reason |
+|---|---|
+| **The AI settles unclear wording itself** instead of asking the user, and shows exactly how it read each condition under "Understood as", where the user can edit it | The owner's principle: interpreting fuzzy wording is why Jobcu uses an AI. It also matches HANDOVER §6 (no confirmation step before searching). |
+| **Political conditions:** when the user describes parties by a label (e.g. "far-right" or "fascist supporter") instead of naming them, the AI researches, with live web search, which parties reliable current sources put in that group for each country. It lists the parties it used, with source links, in "Understood as". | The owner asked the AI to research and decide. Showing the parties and sources keeps the choice transparent and correctable. Jobcu itself takes no political position; it applies the user's own condition. |
+| **"Dominant election result"** is read as **above the party's national average** in the latest national parliamentary election, unless the user's wording says otherwise. Results come from official sources for each place, so failing places are hidden (verified). | The owner's reading, e.g. Dresden should be excluded. |
+| **Travel time** uses the travel mode the user writes. **If none is given, it means public transport.** | The owner's choice. Exact public-transport times need a route-planning source; Phase 2 will look for a free, permitted one and otherwise show a clearly labelled estimate. |
+| City size given as a share of the country's population is computed per country from official population figures (0.3% ≈ 250,000 in Germany, ≈ 200,000 in the UK, ≈ 16,000 in Ireland) | Follows the user's rule exactly. The very different results per country are shown in "Understood as". |
