@@ -16,8 +16,9 @@ committed and pushed, and GitHub's tests pass on macOS and Windows.
 - **JobsIreland.ie** (the Irish public employment service): Ireland's first source.
 - **Company career sites** in six systems (Greenhouse, Lever, Ashby, Workable, Recruitee,
   Workday), read through the public job lists those systems publish, with a checked **employer
-  directory of 240 companies** (`src/jobcu/data/employers.json`, refreshed with
-  `tools/check_employers.py`): 115 hire in Ireland, 189 in the UK, 165 in Germany.
+  directory of 326 companies** (`src/jobcu/data/employers.json`, refreshed with
+  `tools/check_employers.py`): 135 hire in Ireland, 245 in the UK, 216 in Germany, and every
+  supported country has at least two.
 - **Arbeitnow** (free public API): many German and British jobs from career systems.
 - `placenames.py` tells which country a free-text location is in ("Dublin, Ireland" vs
   "Dublin, CA"), and `sources/matching.py` matches titles and named places on Jobcu's side.
