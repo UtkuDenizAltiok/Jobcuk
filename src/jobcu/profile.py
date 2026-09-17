@@ -1,15 +1,24 @@
 """Reads the CV and cover letter into a structured profile (HANDOVER section 4).
 
-The profile is made fresh for every search and is never stored. The AI is told
-only to understand the person: never to rate, critique or rewrite documents, and
+The AI is told only to understand the person: never to rate, critique or rewrite documents, and
 never to guess personal characteristics such as nationality, gender or age.
+
+Reading the documents is the same work every time, so the result is kept in the data folder for
+**exactly these documents** with the same prompt and model (the owner's decision in
+DECISIONS.md). Everything about the job search itself stays fresh in every search. The kept
+profile never leaves the computer, and changing a document makes a new one.
 """
 
+import hashlib
+import json
 from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from jobcu import db
 from jobcu.ai.client import AIClient
+
+KEPT_PROFILES = 5
 
 CEFR = Literal["A1", "A2", "B1", "B2", "C1", "C2", "native"]
 Seniority = Literal[
@@ -109,6 +118,7 @@ for the same kind of work. Keep them realistic for the person's background.
 
 
 def read_profile(client: AIClient, cv_text: str, cover_letter_text: str) -> Profile:
+    """Asks the AI to read the documents, always freshly."""
     prompt = (
         "CV (between the markers):\n<<<CV\n"
         f"{cv_text}\nCV>>>\n\n"
@@ -123,3 +133,43 @@ def read_profile(client: AIClient, cv_text: str, cover_letter_text: str) -> Prof
         reasoning=True,
         max_output_tokens=8000,
     )
+
+
+def _cache_key(client: AIClient, cv_text: str, cover_letter_text: str) -> str:
+    parts = [
+        cv_text,
+        cover_letter_text,
+        SYSTEM_PROMPT,
+        client.provider_id,
+        client.model_for(reasoning=True),
+        json.dumps(Profile.model_json_schema(), sort_keys=True),
+    ]
+    return hashlib.sha256("\u0000".join(parts).encode("utf-8")).hexdigest()
+
+
+def read_profile_reusing(
+    client: AIClient, cv_text: str, cover_letter_text: str
+) -> tuple[Profile, bool]:
+    """The profile and whether it came from the last time these exact documents were read."""
+    key = _cache_key(client, cv_text, cover_letter_text)
+    with db.connect() as conn:
+        row = conn.execute(
+            "SELECT profile_json FROM profile_cache WHERE key = ?", (key,)
+        ).fetchone()
+    if row is not None:
+        try:
+            return Profile.model_validate_json(row["profile_json"]), True
+        except ValueError:
+            pass  # saved by an older Jobcu and no longer readable: read the documents again
+    profile = read_profile(client, cv_text, cover_letter_text)
+    with db.connect() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO profile_cache (key, profile_json) VALUES (?, ?)",
+            (key, profile.model_dump_json()),
+        )
+        conn.execute(
+            "DELETE FROM profile_cache WHERE key NOT IN "
+            "(SELECT key FROM profile_cache ORDER BY created_at DESC LIMIT ?)",
+            (KEPT_PROFILES,),
+        )
+    return profile, False

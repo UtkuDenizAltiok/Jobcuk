@@ -68,8 +68,10 @@ Germany are worked on and tested first**; that's the order of work, not a limit.
    well. Also consider reading employer career pages through `jobposting.py`.
 3. **Optimise API use without losing quality** (DECISIONS.md, "Countries, reusing AI work,
    optimising requests"):
-   - **Profile reuse:** keyed by a hash of the CV text, cover letter text, profile prompt and model,
-     stored in the data folder. The quick check, search words and scores always stay fresh.
+   - ~~**Profile reuse**~~ **done (2026-09-17)**: what the AI understood from the documents is
+     kept in the data folder, keyed by the CV text, cover letter text, prompt, model and answer
+     format, and reused while nothing changes. "What Jobcu understood" uses it too. Everything
+     about the job search itself still runs fresh in every search.
    - **Remember job ad texts** by source and job ID for a few days, so the same ad isn't downloaded
      again.
    - **Provider-side prompt caching** where supported.

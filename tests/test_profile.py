@@ -8,7 +8,7 @@ from jobcu import documents
 from jobcu.ai.base import ProviderAdapter, RawReply, Usage
 from jobcu.ai.client import AIClient
 from jobcu.app import create_app
-from jobcu.profile import Profile, read_profile
+from jobcu.profile import Profile, read_profile, read_profile_reusing
 from jobcu.settings import Settings
 
 PROFILE = {
@@ -128,10 +128,26 @@ def test_preview_returns_the_profile(client, monkeypatch):
 
     def fake_read_profile(ai_client, cv_text, letter_text):
         seen["texts"] = (cv_text, letter_text)
-        return Profile.model_validate(PROFILE)
+        return Profile.model_validate(PROFILE), False
 
-    monkeypatch.setattr("jobcu.documents_api.read_profile", fake_read_profile)
+    monkeypatch.setattr("jobcu.documents_api.read_profile_reusing", fake_read_profile)
     data = client.post("/api/profile/preview", headers=HEADERS).json()
     assert data["error"] is None
     assert data["profile"]["seniority"] == "mid"
     assert "embedded systems" in seen["texts"][0]
+
+
+def test_unchanged_documents_are_not_read_again(settings):
+    """The owner's rule: only understanding the person may be reused, never the job search."""
+    adapter = RecordingAdapter()
+    client = AIClient(settings, adapter=adapter)
+    first, reused = read_profile_reusing(client, "CV TEXT", "LETTER TEXT")
+    assert not reused and len(adapter.calls) == 1
+    again, reused = read_profile_reusing(client, "CV TEXT", "LETTER TEXT")
+    assert reused and len(adapter.calls) == 1 and again == first
+    # A changed document, or a different model, means reading them again.
+    read_profile_reusing(client, "CV TEXT (updated)", "LETTER TEXT")
+    assert len(adapter.calls) == 2
+    settings.ai.reasoning_model = "another-model"
+    read_profile_reusing(AIClient(settings, adapter=adapter), "CV TEXT", "LETTER TEXT")
+    assert len(adapter.calls) == 3

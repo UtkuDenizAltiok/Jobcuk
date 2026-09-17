@@ -23,7 +23,7 @@ from jobcu.filters import REASONS, apply_rules
 from jobcu.keystore import KeyStore
 from jobcu.keywords import generate_search_words
 from jobcu.location import interpret_location
-from jobcu.profile import read_profile
+from jobcu.profile import read_profile_reusing
 from jobcu.relevance import quick_pass
 from jobcu.scoring import score_groups
 from jobcu.settings import SearchForm, load_settings
@@ -221,9 +221,11 @@ def run_search(run: SearchRun) -> None:
     checkpoint()
 
     run.update("profile", "running")
-    profile = read_profile(client, cv_text, cover_letter_text)
+    profile, reused = read_profile_reusing(client, cv_text, cover_letter_text)
     run.set_result("profile", profile.model_dump())
-    run.update("profile", "done", profile.current_or_last_role or profile.field)
+    detail = profile.current_or_last_role or profile.field
+    run.update("profile", "done", f"{detail} (documents unchanged, read again not needed)"
+               if reused else detail)
     checkpoint()
 
     run.update("location", "running")

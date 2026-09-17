@@ -12,7 +12,7 @@ from jobcu.ai.client import AIClient
 from jobcu.ai.usage import UsageLog
 from jobcu.documents import DocumentError
 from jobcu.keystore import KeyStore
-from jobcu.profile import read_profile
+from jobcu.profile import read_profile_reusing
 from jobcu.settings import load_settings
 
 log = logging.getLogger(__name__)
@@ -64,7 +64,7 @@ def preview_profile() -> dict:
         cv_text = documents.read_text("cv")
         cover_letter_text = documents.read_text("cover_letter")
         client = AIClient(load_settings(), KeyStore(), usage_log=UsageLog())
-        profile = read_profile(client, cv_text, cover_letter_text)
+        profile, _reused = read_profile_reusing(client, cv_text, cover_letter_text)
     except DocumentError as exc:
         return {"profile": None, "error": str(exc)}
     except AIError as exc:

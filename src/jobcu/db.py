@@ -85,6 +85,15 @@ MIGRATIONS: list[str] = [
         updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
     );
     """,
+    # 5: What the AI understood from the CV and cover letter, kept only for exactly these
+    # documents, prompt and model, so unchanged documents aren't read again (DECISIONS.md).
+    """
+    CREATE TABLE profile_cache (
+        key TEXT PRIMARY KEY,
+        created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        profile_json TEXT NOT NULL
+    );
+    """,
 ]
 
 
