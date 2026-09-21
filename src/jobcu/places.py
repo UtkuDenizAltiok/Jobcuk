@@ -29,6 +29,13 @@ _QUALIFIERS = re.compile(
     r"près de|nad|nad|pri|del|di|de|na)\s+.*$",
     re.IGNORECASE,
 )
+# Parts of a location that name a district or county, not a town: "München (Kreis)" is the
+# district around Munich, not the city, and "Co. Cork" is the county, not Cork city. They are
+# used only when nothing more precise is named.
+_DISTRICT = re.compile(
+    r"\((?:land)?kreis\)|\b(?:land)?kreis\b|\bco\.?\s|\bcounty\b|\bbezirk\b|\bdistrict\b",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -71,8 +78,20 @@ def find(name: str | None, country: str | None = None) -> Town | None:
 def locate(text: str | None, country: str | None = None) -> Town | None:
     """The town a free-text location names ("Ireland, Limerick" → Limerick).
 
-    Longer names win ("Frankfurt am Main" over "Frankfurt"), then the bigger town.
+    Longer names win ("Frankfurt am Main" over "Frankfurt"), then the bigger town. A district
+    or county counts only when no town is named besides it ("Unterhaching, München (Kreis)" is
+    Unterhaching).
     """
+    parts = re.split(r"[,;|]", text or "")
+    precise = [part for part in parts if not _DISTRICT.search(part)]
+    if precise and len(precise) < len(parts):
+        town = _locate(", ".join(precise), country)
+        if town is not None:
+            return town
+    return _locate(text, country)
+
+
+def _locate(text: str | None, country: str | None) -> Town | None:
     words = normalise(text).split()
     best: Town | None = None
     best_words = 0

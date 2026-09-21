@@ -29,6 +29,12 @@ def test_locate_reads_the_town_out_of_a_job_location():
     assert places.locate("Garching bei München, Bayern", "DE").name.startswith("Garching")
     assert places.locate("Frankfurt am Main, Germany", "DE").name == "Frankfurt am Main"
     assert places.locate("Remote", "DE") is None
+    # A district or county named after a big town isn't that town (a real Adzuna location).
+    assert places.locate("Unterhaching, München (Kreis)", "DE").name == "Unterhaching"
+    assert places.locate("Gilching, Starnberg (Kreis)", "DE").name == "Gilching"
+    assert places.locate("Ballincollig, Co. Cork", "IE").name == "Ballincollig"
+    assert places.locate("München (Kreis)", "DE").name == "Munich"  # nothing more precise
+    assert places.locate("Moosach, München", "DE").name == "Munich"  # a part of the city
     assert places.locate("", "DE") is None
 
 

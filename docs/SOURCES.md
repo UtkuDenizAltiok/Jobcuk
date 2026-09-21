@@ -24,6 +24,9 @@ Update this whenever a source changes or something new is learned. Decisions are
   while others load: skip that ad; stop only after 3 refusals in a row or a robot check.
 - Adzuna's website answered 403 to `robots.txt` and its terms page for Jobcu's User-Agent.
 - Adzuna often lists the same job twice under different IDs.
+- German locations read "Unterhaching, München (Kreis)": the part marked **(Kreis)** is the
+  district around a city, not the city, so `places.locate` uses it only when no town is named
+  besides it (found in a real test, 2026-09-21: suburbs passed a "1 million people" condition).
 
 ## Reed (`src/jobcu/sources/reed.py`), checked 2026-09-17
 
