@@ -27,8 +27,8 @@ class AshbySource(CareerSystemSource):
     name = "Company career sites (Ashby)"
     system = "ashby"
 
-    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None
-                  ) -> Iterator[FoundJob]:
+    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None,
+                  terms=None) -> Iterator[FoundJob]:
         data = self.get_json(f"{API}/{employer.board}", ctx)
         for item in data.get("jobs") or []:
             if item.get("isListed", True):

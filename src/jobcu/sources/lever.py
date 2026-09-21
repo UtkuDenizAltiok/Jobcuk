@@ -31,8 +31,8 @@ class LeverSource(CareerSystemSource):
     name = "Company career sites (Lever)"
     system = "lever"
 
-    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None
-                  ) -> Iterator[FoundJob]:
+    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None,
+                  terms=None) -> Iterator[FoundJob]:
         data = self.get_json(_address(employer.board), ctx, params={"mode": "json"})
         for item in data if isinstance(data, list) else []:
             yield to_found_job(item, employer)

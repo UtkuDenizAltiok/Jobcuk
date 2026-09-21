@@ -89,7 +89,7 @@ Update this whenever a source changes or something new is learned. Decisions are
 - Many JobsIreland jobs also appear on EURES (IDs like `base64("2470780 18")`, 18 = JobsIreland),
   but EURES showed only ~1,970 of its ~5,100 jobs.
 
-## Company career systems (`src/jobcu/sources/careers.py` and one module per system), checked 2026-09-17
+## Company career systems (`src/jobcu/sources/careers.py` and one module per system), checked 2026-09-17 and 2026-09-21
 
 Jobcu reads the job lists that companies publish in their career systems. Which companies are
 read comes from the **employer directory** (`src/jobcu/data/employers.json`), kept up to date with
@@ -103,8 +103,18 @@ company had jobs in, and whether it also hires outside them).
 | Ashby | `GET api.ashbyhq.com/posting-api/job-board/{board}` | full ad, `publishedAt`, location plus `addressCountry`, `employmentType`, `workplaceType` | Public Job Postings API. Answers can be several MB for big companies. |
 | Workable | `GET apply.workable.com/api/v1/widget/accounts/{board}`, full ad from `…/api/v2/accounts/{board}/jobs/{shortcode}` | title, city and country code, `published_on` (**day only**), `employment_type`, `telecommuting` | Public widget API; robots.txt allows everything. |
 | Recruitee | `GET {board}.recruitee.com/api/offers/` | full ad, `published_at` (exact), places with `country_code`, `employment_type_code`, remote/hybrid | Public Careers Site API. Each company has its own address, so several are read at once. |
+| SuccessFactors (added 2026-09-21) | `GET {host}/sitemap.xml`, then the job's page `{host}/job/…/{id}/` | Either an RSS job feed (SAP: full ad, place "Walldorf, DE, 69190", **no date**) or a sitemap of job addresses `/job/{Town}-{Title}-{postcode}/{id}/` (Schaeffler, Festo, SICK, KUKA, MTU, ZF and most others; every entry has the same `lastmod`). The job page carries `itemprop` data: `datePosted` ("Wed Sep 09 02:00:00 UTC 2026"), `streetAddress` ("Bühl, DE, 77815"), `title`, `hiringOrganization`, `description` | SAP's Career Site Builder. robots.txt normally closes `/services/` (SuccessFactors' own RSS search, so it isn't used) and allows the sitemap and job pages; Jobcu checks each company's robots.txt anyway. In a search only the pages whose title matches the search words are opened (Schaeffler: 3 requests in a live test). SAP's feed is 16 MB. Hitachi Energy's and Lenze's sitemaps weren't job lists. **Only sites whose job pages carry the date, place and ad text are in the directory** (SAP, Schaeffler, ZF, KUKA, Festo, Endress+Hauser). Danfoss, SICK, Vitesco and Wacker pages show only the title (the rest needs JavaScript), and MTU's job pages redirect elsewhere: left out for now. |
+| Teamtailor (added 2026-09-21) | `GET {board}.teamtailor.com/jobs.rss`, or `{own domain}/jobs.rss` for companies with their own career-site address | RSS: full ad (HTML), `pubDate` (exact, with zone), `remoteStatus` (`none`/`onsite`, `hybrid`, `fully`, `temporary`), `tt:locations` with city and English country name, department, role | Every Teamtailor career site publishes this feed. robots.txt allows it for every crawler (only `/app/`, `/messages/`, `/jobs/internal/` and one AI crawler are closed) and declares `ai-train=no, ai-input=yes`: Jobcu doesn't train anything. No job type in the feed. Popular in Sweden, Norway, the UK and Ireland. |
 | Workday | `POST {host}/wday/cxs/{tenant}/{site}/jobs` with `{"appliedFacets": …, "limit": 20, "offset": N, "searchText": ""}`, full ad from `GET {host}/wday/cxs/{tenant}/{site}{externalPath}` | title, `locationsText`, **relative** date ("Posted Today", "Posted 3 Days Ago", "Posted 30+ Days Ago"); the full ad has `startDate` (day), `timeType`, `remoteType` | Not documented, so Jobcu reads each site's robots.txt first and skips the company if it disallows these addresses. Newest first, 20 per page. The answer's filters give each country an ID, so Jobcu asks per searched country. |
 
+- **Finding SuccessFactors sites** (2026-09-21): their robots.txt has the tell-tale
+  `Disallow: /services/`, `/applybutton/`, `/talentcommunity/` lines. Probing `jobs.{company}.com`
+  for 50 big German engineering employers found 13; `check_employers.py --only-new` kept 11,
+  of which 6 have job pages with full data.
+- **Finding employers for the directory** (2026-09-21): web searches such as
+  `site:teamtailor.com jobs Dublin engineer` give a handful of companies each. Teamtailor links in
+  Arbetsförmedlingen's open data are mostly Swedish care and service employers whose ads Jobcu
+  already gets from Arbetsförmedlingen, so they weren't added.
 - **SmartRecruiters is not used:** `api.smartrecruiters.com/robots.txt` allows only LinkedIn's
   crawler and disallows everyone else, although the Posting API itself is public.
 - **Personio is not used yet:** the XML feed (`{company}.jobs.personio.de/xml`) is empty unless the

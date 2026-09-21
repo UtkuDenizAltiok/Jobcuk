@@ -24,8 +24,8 @@ class GreenhouseSource(CareerSystemSource):
     name = "Company career sites (Greenhouse)"
     system = "greenhouse"
 
-    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None
-                  ) -> Iterator[FoundJob]:
+    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None,
+                  terms=None) -> Iterator[FoundJob]:
         data = self.get_json(f"{API}/{employer.board}/jobs", ctx)
         for item in data.get("jobs") or []:
             yield to_found_job(item, employer)

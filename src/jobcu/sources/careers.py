@@ -22,6 +22,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from functools import cache
 from pathlib import Path
+from urllib.parse import urlsplit
+from urllib.robotparser import RobotFileParser
 
 import httpx
 
@@ -119,7 +121,7 @@ class CareerSystemSource(JobSource):
                 return []
             try:
                 return [kept for job in self.list_jobs(employer, ctx, countries=query.countries,
-                                                       start=start)
+                                                       start=start, terms=query.terms)
                         if (kept := keep_job(job, employer, query, start)) is not None]
             except (BudgetExhausted, Blocked) as exc:
                 stop.append(exc)
@@ -156,9 +158,11 @@ class CareerSystemSource(JobSource):
         *,
         countries: list[str] | None = None,
         start: datetime | None = None,
+        terms: list | None = None,
     ) -> Iterator[FoundJob]:
-        """The employer's jobs. `countries` and `start` are hints a system may use to read less;
-        without them, every job is listed (used by the directory check)."""
+        """The employer's jobs. `countries`, `start` and the search words `terms` are hints a
+        system may use to read less; without them, every job is listed (used by the directory
+        check). Jobs are still checked against the whole search afterwards."""
         raise NotImplementedError
 
     def survey(self, employer: Employer, ctx: SourceContext) -> Survey:
@@ -188,6 +192,28 @@ class CareerSystemSource(JobSource):
         if response.status_code != 200:
             raise SourceError(f"{self.name} answered with a problem (code {response.status_code}).")
         return response
+
+    def allowed(self, url: str, ctx: SourceContext) -> bool:
+        """Whether the site's robots.txt lets automated tools read this address. Asked once per
+        site and search; a site without robots.txt allows everything, one that refuses to show
+        it allows nothing."""
+        host = urlsplit(url).hostname or ""
+        robots: dict[str, RobotFileParser] = self.__dict__.setdefault("_robots", {})
+        if host not in robots:
+            parser = RobotFileParser()
+            try:
+                response = ctx.http.get(f"https://{host}/robots.txt")
+                ctx.report.requests += 1
+            except Exception:
+                response = None
+            if response is not None and response.status_code in (401, 403):
+                parser.disallow_all = True
+            elif response is not None and response.status_code == 200:
+                parser.parse(response.text.splitlines())
+            else:
+                parser.allow_all = True
+            robots[host] = parser
+        return robots[host].can_fetch("Jobcu", url)
 
     def get_json(self, url: str, ctx: SourceContext, **kwargs):
         response = self.get(url, ctx, **kwargs)

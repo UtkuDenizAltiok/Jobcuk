@@ -19,8 +19,8 @@ class RecruiteeSource(CareerSystemSource):
     system = "recruitee"
     parallel = 4
 
-    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None
-                  ) -> Iterator[FoundJob]:
+    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None,
+                  terms=None) -> Iterator[FoundJob]:
         data = self.get_json(f"https://{employer.board}.recruitee.com/api/offers/", ctx)
         for item in data.get("offers") or []:
             if item.get("status", "published") == "published":

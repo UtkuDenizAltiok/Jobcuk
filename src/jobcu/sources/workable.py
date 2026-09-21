@@ -24,8 +24,8 @@ class WorkableSource(CareerSystemSource):
     name = "Company career sites (Workable)"
     system = "workable"
 
-    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None
-                  ) -> Iterator[FoundJob]:
+    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None,
+                  terms=None) -> Iterator[FoundJob]:
         data = self.get_json(f"{SITE}/v1/widget/accounts/{employer.board}", ctx)
         for item in data.get("jobs") or []:
             yield to_found_job(item, employer)

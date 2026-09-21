@@ -8,6 +8,9 @@ dropped and listed.
 Usage:
     uv run python tools/check_employers.py                      check the directory as it is
     uv run python tools/check_employers.py new.json --write     add candidates and save
+    uv run python tools/check_employers.py new.json --only-new --write
+                                    check only candidates not in the directory yet; the
+                                    directory's entries are kept as they are (much faster)
 
 A candidates file has the same shape as the directory:
     {"employers": [{"name": "Acme", "system": "greenhouse", "board": "acme"}]}
@@ -53,6 +56,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("candidates", nargs="*", type=Path)
     parser.add_argument("--write", action="store_true", help="save the checked directory")
+    parser.add_argument("--only-new", action="store_true",
+                        help="check only candidates that aren't in the directory yet")
     args = parser.parse_args()
 
     entries: dict[tuple[str, str], dict] = {}
@@ -66,6 +71,11 @@ def main() -> int:
             key = (entry["system"], entry["board"].strip().lower())
             entries.setdefault(key, entry)
 
+    unchecked: list[dict] = []
+    if args.only_new:
+        unchecked = [entry for key, entry in entries.items() if key in existing]
+        entries = {key: entry for key, entry in entries.items() if key not in existing}
+
     sources = {source.system: source for source in career_sources()}
     unknown = sorted({system for system, _ in entries if system not in sources})
     if unknown:
@@ -73,7 +83,7 @@ def main() -> int:
         return 1
 
     http = PoliteClient()
-    kept: list[dict] = []
+    kept: list[dict] = list(unchecked)
     dropped: list[str] = []
     lock = threading.Lock()
 

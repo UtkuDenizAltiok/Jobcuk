@@ -9,7 +9,17 @@ import pytest
 from jobcu.keystore import KeyStore
 from jobcu.keywords import SearchTerm
 from jobcu.location import Place
-from jobcu.sources import all_sources, ashby, careers, greenhouse, lever, recruitee, workable
+from jobcu.sources import (
+    all_sources,
+    ashby,
+    careers,
+    greenhouse,
+    lever,
+    recruitee,
+    successfactors,
+    teamtailor,
+    workable,
+)
 from jobcu.sources import workday as wd
 from jobcu.sources.base import FoundJob, JobQuery, SourceContext, SourceError, SourceReport
 from jobcu.sources.careers import Employer, job_types_from_text, keep_job
@@ -134,7 +144,8 @@ def test_one_company_failing_never_stops_the_others(monkeypatch):
 
 def test_career_systems_are_part_of_every_search():
     ids = {source.id for source in all_sources()}
-    assert {"greenhouse", "lever", "ashby", "workable", "recruitee", "workday"} <= ids
+    assert {"greenhouse", "lever", "ashby", "workable", "recruitee", "successfactors",
+            "teamtailor", "workday"} <= ids
 
 
 def test_the_shipped_directory_is_valid():
@@ -251,6 +262,212 @@ def test_recruitee_reads_places_types_and_dates():
     assert found.country == "NL" and found.work_mode == "hybrid"
     assert found.posted_at == datetime(2026, 9, 15, 8, 11, 57, tzinfo=UTC)
     assert found.description == "Firmware\n\nC" and found.job_types == ["full_time_permanent"]
+
+
+# --- Teamtailor -----------------------------------------------------------------------
+
+TEAMTAILOR_FEED = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:tt="https://teamtailor.com/locations"><channel>
+  <item>
+    <title>Electronics Hardware Engineer</title>
+    <description>&lt;p&gt;Design &lt;b&gt;power electronics&lt;/b&gt;.&lt;/p&gt;</description>
+    <pubDate>{posted}</pubDate>
+    <link>https://fakeco.teamtailor.com/jobs/1-electronics-hardware-engineer</link>
+    <remoteStatus>hybrid</remoteStatus>
+    <guid>aaaa-1111</guid>
+    <tt:locations>
+      <tt:location><tt:city>Dublin</tt:city><tt:country>Ireland</tt:country></tt:location>
+    </tt:locations>
+  </item>
+  <item>
+    <title>Hardware Engineer</title>
+    <description>&lt;p&gt;Boards.&lt;/p&gt;</description>
+    <pubDate>{posted}</pubDate>
+    <link>https://fakeco.teamtailor.com/jobs/2-hardware-engineer</link>
+    <remoteStatus>none</remoteStatus>
+    <guid>bbbb-2222</guid>
+    <tt:locations>
+      <tt:location><tt:city>London</tt:city><tt:country>United Kingdom</tt:country></tt:location>
+      <tt:location><tt:city>Austin</tt:city><tt:country>United States</tt:country></tt:location>
+    </tt:locations>
+  </item>
+</channel></rss>"""
+
+
+def test_teamtailor_reads_the_feed_with_places_times_and_remote_status():
+    from email.utils import format_datetime
+
+    requested = []
+
+    def handler(request):
+        requested.append(str(request.url))
+        feed = TEAMTAILOR_FEED.replace("{posted}", format_datetime(NOW - timedelta(hours=3)))
+        return httpx.Response(200, content=feed.encode(),
+                              headers={"content-type": "application/rss+xml"})
+
+    source = teamtailor.TeamtailorSource()
+    jobs = list(source.list_jobs(employer("teamtailor"), context(handler)))
+    assert requested == ["https://fakeco.teamtailor.com/jobs.rss"]
+    dublin, london = jobs
+    assert dublin.location_text == "Dublin, Ireland" and dublin.country == "IE"
+    assert dublin.description == "Design power electronics." and dublin.description_is_complete
+    assert dublin.work_mode == "hybrid" and dublin.date_precision == "exact"
+    assert abs((dublin.posted_at - (NOW - timedelta(hours=3))).total_seconds()) < 2
+    assert dublin.source_job_id == "fakeco/aaaa-1111"
+    assert london.country == "GB" and london.work_mode == "on_site"
+    # A company with its own career-site address.
+    assert teamtailor.feed_url("careers.fake.example") == "https://careers.fake.example/jobs.rss"
+
+
+# --- SuccessFactors -------------------------------------------------------------------
+
+SF_FEED = """<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0"><channel><title>Jobs at FakeCo</title>
+<item><title>Hardware Engineer (Walldorf, DE, 69190)</title>
+  <description><![CDATA[&lt;p&gt;Design &lt;b&gt;boards&lt;/b&gt;.&lt;/p&gt;]]></description>
+  <link>https://jobs.fake.example/job/Walldorf-Hardware-Engineer/111/</link><guid>111</guid>
+  <g:expiration_date>2026-12-01</g:expiration_date><g:employer>FakeCo</g:employer>
+  <g:location>Walldorf, DE, 69190</g:location></item>
+<item><title>Hardware Engineer (Dresden, DE, 01067)</title>
+  <description><![CDATA[&lt;p&gt;Old job.&lt;/p&gt;]]></description>
+  <link>https://jobs.fake.example/job/Dresden-Hardware-Engineer/222/</link><guid>222</guid>
+  <g:location>Dresden, DE, 01067</g:location></item>
+<item><title>Hardware Engineer (Burlington, MA, US, 01803)</title>
+  <description><![CDATA[&lt;p&gt;Far away.&lt;/p&gt;]]></description>
+  <link>https://jobs.fake.example/job/Burlington-Hardware-Engineer/333/</link><guid>333</guid>
+  <g:location>Burlington, MA, US, 01803</g:location></item>
+<item><title>Account Executive (Berlin, DE, 10557)</title>
+  <description><![CDATA[&lt;p&gt;Sales.&lt;/p&gt;]]></description>
+  <link>https://jobs.fake.example/job/Berlin-Account-Executive/444/</link><guid>444</guid>
+  <g:location>Berlin, DE, 10557</g:location></item>
+</channel></rss>"""
+
+
+def sf_page(day):
+    stamp = day.strftime("%a %b %d 02:00:00 UTC %Y")
+    return f'<html><meta itemprop="datePosted" content="{stamp}"><h1>Job</h1></html>'
+
+
+def test_successfactors_reads_the_feed_and_dates_only_the_jobs_still_in_the_running(monkeypatch):
+    requested = []
+    pages = {"111": sf_page(NOW - timedelta(days=1)), "222": sf_page(NOW - timedelta(days=40))}
+
+    def handler(request):
+        requested.append(request.url.path)
+        if request.url.path == "/robots.txt":
+            return httpx.Response(200, text="User-agent: *\nDisallow: /services/\n")
+        if request.url.path == "/sitemap.xml":
+            return httpx.Response(200, content=SF_FEED.encode(),
+                                  headers={"content-type": "text/xml"})
+        return httpx.Response(200, text=pages[request.url.path.rstrip("/").split("/")[-1]])
+
+    fake = employer("successfactors", board="jobs.fake.example", countries=("DE",))
+    monkeypatch.setattr(careers, "load_directory", lambda: (fake,))
+    source = successfactors.SuccessFactorsSource()
+    jobs = list(source.search(query(["DE"], hours=72), context(handler, "successfactors")))
+    assert [job.source_job_id for job in jobs] == ["jobs.fake.example/111"]
+    walldorf = jobs[0]
+    assert walldorf.title == "Hardware Engineer" and walldorf.country == "DE"
+    assert walldorf.location_text == "Walldorf, Germany"
+    assert walldorf.description == "Design boards." and walldorf.date_precision == "day"
+    assert walldorf.posted_at.date() == (NOW - timedelta(days=1)).date()
+    # Only the matching jobs in Germany had their pages opened; the far-away and unrelated
+    # ones didn't cost a request.
+    assert sorted(requested) == ["/job/Dresden-Hardware-Engineer/222/",
+                                 "/job/Walldorf-Hardware-Engineer/111/", "/robots.txt",
+                                 "/sitemap.xml"]
+
+    # The next search takes the dates it already knows instead of opening the pages again.
+    requested.clear()
+    again = list(source.search(query(["DE"], hours=72), context(handler, "successfactors")))
+    assert [job.source_job_id for job in again] == ["jobs.fake.example/111"]
+    assert requested.count("/job/Walldorf-Hardware-Engineer/111/") == 0
+
+
+SF_ADDRESSES = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.google.com/schemas/sitemap/0.9">
+<url><loc>https://jobs.fake.example/job/B%C3%BChl-Hardware-Engineer-%28mwd%29-77815/555/</loc>
+  <lastmod>2026-09-19</lastmod></url>
+<url><loc>https://jobs.fake.example/job/Anting-Hardware-Engineer-201805/666/</loc>
+  <lastmod>2026-09-19</lastmod></url>
+<url><loc>https://jobs.fake.example/job/Herzogenaurach-Controller-%28mwd%29-91074/777/</loc>
+  <lastmod>2026-09-19</lastmod></url>
+</urlset>"""
+
+
+def sf_full_page(title, place, day, text="Design boards."):
+    stamp = day.strftime("%a %b %d 02:00:00 UTC %Y")
+    return (f'<html><span itemprop="jobLocation"><span itemprop="address">'
+            f'<meta itemprop="streetAddress" content="{place}"></span></span>'
+            f'<meta itemprop="datePosted" content="{stamp}">'
+            f'<meta itemprop="hiringOrganization" content="FakeCo">'
+            f'<h1><span itemprop="title">{title} </span></h1>'
+            f'<span itemprop="description"><p>{text}</p></span></html>')
+
+
+def test_successfactors_address_lists_open_only_pages_whose_title_matches(monkeypatch):
+    requested = []
+    pages = {"555": sf_full_page("Hardware Engineer (m/w/d)", "Bühl, DE, 77815",
+                                 NOW - timedelta(days=1)),
+             "666": sf_full_page("Hardware Engineer", "Anting, CN, 201805",
+                                 NOW - timedelta(days=1))}
+
+    def handler(request):
+        requested.append(request.url.path)
+        if request.url.path == "/robots.txt":
+            return httpx.Response(404)
+        if request.url.path == "/sitemap.xml":
+            return httpx.Response(200, content=SF_ADDRESSES.encode(),
+                                  headers={"content-type": "text/xml"})
+        return httpx.Response(200, text=pages[request.url.path.rstrip("/").split("/")[-1]])
+
+    fake = employer("successfactors", board="jobs.fake.example", countries=("DE",))
+    monkeypatch.setattr(careers, "load_directory", lambda: (fake,))
+    jobs = list(successfactors.SuccessFactorsSource().search(
+        query(["DE"], hours=72), context(handler, "successfactors")))
+    assert [job.source_job_id for job in jobs] == ["jobs.fake.example/555"]
+    buehl = jobs[0]
+    assert buehl.title == "Hardware Engineer (m/w/d)" and buehl.company == "FakeCo"
+    assert buehl.location_text == "Bühl, Germany" and buehl.country == "DE"
+    assert buehl.description == "Design boards." and buehl.description_is_complete
+    assert buehl.date_precision == "day"
+    assert "/job/Herzogenaurach-Controller-%28mwd%29-91074/777/" not in requested
+
+    # The directory check sees every job, and learns the towns from the addresses alone.
+    requested.clear()
+    survey = successfactors.SuccessFactorsSource().survey(fake, context(handler))
+    assert requested == ["/robots.txt", "/sitemap.xml"]
+    assert survey.counts["DE"] == 2 and "Bühl" in survey.towns["DE"]
+
+
+def test_successfactors_respects_robots_txt(monkeypatch):
+    def handler(request):
+        if request.url.path == "/robots.txt":
+            return httpx.Response(200, text="User-agent: *\nDisallow: /\n")
+        raise AssertionError("nothing else may be read")
+
+    fake = employer("successfactors", board="jobs.fake.example", countries=("DE",))
+    monkeypatch.setattr(careers, "load_directory", lambda: (fake,))
+    with pytest.raises(SourceError):
+        list(successfactors.SuccessFactorsSource().search(query(["DE"]), context(handler)))
+
+
+@pytest.mark.parametrize(("text", "expected"), [
+    ("Walldorf, DE, 69190", ("Walldorf, Germany", "DE")),
+    ("Burlington, MA, US, 01803", ("Burlington, MA", "US")),
+    ("London, UK, SW1A 1AA", ("London, United Kingdom", "GB")),
+    ("", (None, None)),
+])
+def test_successfactors_places(text, expected):
+    assert successfactors.place(text) == expected
+
+
+def test_successfactors_page_dates():
+    assert successfactors.date_posted(sf_page(datetime(2026, 9, 9, tzinfo=UTC))).day == 9
+    json_ld = ('<script type="application/ld+json">{"@type": "JobPosting", "title": "X", '
+               '"datePosted": "2026-09-10"}</script>')
+    assert successfactors.date_posted(json_ld).day == 10
+    assert successfactors.date_posted("<html></html>") is None
 
 
 # --- Workday --------------------------------------------------------------------------

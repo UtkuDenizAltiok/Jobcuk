@@ -302,9 +302,12 @@ students"*.
 | **Jobcu keeps the latest search's jobs** that passed the other rules (dates, job types, remote, countries, Not interested), with their quick-check answers and scores (`pool.py`, table `search_pool`). The next search replaces them, and a new search never reads them. | Corrections must still work after Jobcu restarts. It's the same data as the saved results, on the same computer. It doesn't change "everything starts fresh each search" (HANDOVER §12): it's only used within the search it came from. |
 | **Places and countries can't be changed with Edit.** They decide which job sites are asked, so the window says to change "Where do you want to work?" and search again. | Re-applying works only on jobs already found. |
 
-## 2026-09-21: Sweden's public employment service
+## 2026-09-21: More sources: Sweden's public employment service, Teamtailor, SuccessFactors
 
 | Decision | Reason |
 |---|---|
 | **Arbetsförmedlingen is a source** for Sweden, through its open JobSearch API (JobTech): every ad in Platsbanken, with full texts. | Sweden had no source of its own. The data is CC0, needs no key, and it's the national public job board (HANDOVER §9.2 names it as a candidate). |
 | **Jobcu reads every ad in the "Posted within" window and matches on its own side**, instead of using the API's word search. | The word search misses Swedish compound words and, by default, narrows multi-word titles to one occupation. Coverage comes first (AGENTS.md); a 24-hour search is about 16 requests, and only the fields Jobcu uses are downloaded. |
+| **Teamtailor career sites are read** (a seventh career system), through the RSS feed every Teamtailor career site publishes, for the employers in the directory. | Teamtailor is widely used in the UK, Ireland and the Nordics. The feed is public, allowed by robots.txt, and carries full ads with exact times. |
+| **SuccessFactors career sites are read** (an eighth career system) through the sitemap each site publishes for search engines, opening a job's own page only when its title matches the search words (for the posting date, place and full ad). | Many large German engineering employers use it (Schaeffler, MTU Aero Engines, ZF, KUKA, SICK, Festo, Endress+Hauser). SuccessFactors' own RSS search is closed by robots.txt, the sitemap and job pages are open. Opening only matching pages keeps requests low. |
+| **The employer directory grows to 357 companies** (IE 149, UK 259, DE 232), found through web searches and by probing big employers' career addresses; `check_employers.py --only-new` checks new candidates without re-checking everyone. | Coverage (AGENTS.md). Still general reference data from public career sites, never from anyone's searches. |

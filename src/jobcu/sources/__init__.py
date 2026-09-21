@@ -14,14 +14,16 @@ from jobcu.sources.jobtech import JobTechSource
 from jobcu.sources.lever import LeverSource
 from jobcu.sources.recruitee import RecruiteeSource
 from jobcu.sources.reed import ReedSource
+from jobcu.sources.successfactors import SuccessFactorsSource
+from jobcu.sources.teamtailor import TeamtailorSource
 from jobcu.sources.workable import WorkableSource
 from jobcu.sources.workday import WorkdaySource
 
 
 def career_sources() -> list[CareerSystemSource]:
     """Company career systems, read for the employers in the employer directory."""
-    return [AshbySource(), GreenhouseSource(), LeverSource(), RecruiteeSource(), WorkableSource(),
-            WorkdaySource()]
+    return [AshbySource(), GreenhouseSource(), LeverSource(), RecruiteeSource(),
+            SuccessFactorsSource(), TeamtailorSource(), WorkableSource(), WorkdaySource()]
 
 
 def all_sources() -> list[JobSource]:

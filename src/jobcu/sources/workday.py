@@ -17,7 +17,6 @@ import re
 from collections.abc import Iterator
 from datetime import UTC, date, datetime, timedelta
 from urllib.parse import urlsplit
-from urllib.robotparser import RobotFileParser
 
 from jobcu import places as place_list
 from jobcu.freshness import day_at_utc, freshness
@@ -79,11 +78,8 @@ class WorkdaySource(CareerSystemSource):
     system = "workday"
     parallel = 4
 
-    def __init__(self) -> None:
-        self._robots: dict[str, RobotFileParser] = {}
-
-    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None
-                  ) -> Iterator[FoundJob]:
+    def list_jobs(self, employer: Employer, ctx: SourceContext, *, countries=None, start=None,
+                  terms=None) -> Iterator[FoundJob]:
         site = parse_board(employer.board)
         self._check_robots(site, ctx)
         today = datetime.now(UTC).date()
@@ -160,21 +156,7 @@ class WorkdaySource(CareerSystemSource):
         return self.get_json(f"{site.api}/jobs", ctx, method="POST", json=body, headers=HEADERS)
 
     def _check_robots(self, site: Site, ctx: SourceContext) -> None:
-        if site.host not in self._robots:
-            parser = RobotFileParser()
-            try:
-                response = ctx.http.get(f"https://{site.host}/robots.txt")
-                ctx.report.requests += 1
-            except Exception:
-                response = None
-            if response is not None and response.status_code in (401, 403):
-                parser.disallow_all = True
-            elif response is not None and response.status_code == 200:
-                parser.parse(response.text.splitlines())
-            else:
-                parser.allow_all = True
-            self._robots[site.host] = parser
-        if not self._robots[site.host].can_fetch("Jobcu", f"{site.api}/jobs"):
+        if not self.allowed(f"{site.api}/jobs", ctx):
             raise SourceError(f"{site.host} asks automated tools not to read its job list.")
 
 
