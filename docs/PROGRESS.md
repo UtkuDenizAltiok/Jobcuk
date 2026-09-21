@@ -6,12 +6,13 @@ tested and shown to the owner before the next one starts. Decisions are in
 
 ## Right now
 
-*Last updated: 2026-09-21 (afternoon). Tree clean, all pushed, CI green, 331 tests pass.*
+*Last updated: 2026-09-21 (evening). Tree clean, all pushed, CI green, 340 tests pass.*
 
 **Where we are:** Phase 1 is essentially complete. Phase 2 (the location box as a research task
 for the AI) works, and **people can now correct it after a search** with the Edit button.
-Coverage grows source by source: **12 sources** now, Sweden newly included. Everything is
-committed and pushed; GitHub's tests pass on macOS and Windows.
+Coverage grows source by source: **16 sources** now (8 of them company career systems), with
+Sweden and two more career systems added today and **357 employers** in the directory. Everything
+is committed and pushed; GitHub's tests pass on macOS and Windows.
 
 **Last finished (2026-09-21)**
 
@@ -29,6 +30,16 @@ committed and pushed; GitHub's tests pass on macOS and Windows.
 - **Arbetsförmedlingen (Sweden)** is a source: its open JobSearch API (CC0, no key). Jobcu reads
   every ad in the time window and matches on its own side, because the API's word search misses
   Swedish compound words. 24 hours ≈ 16 requests, 10 s. Details in SOURCES.md.
+- **Teamtailor** (seventh career system): every Teamtailor career site's RSS feed (full ads, exact
+  times, places). **SuccessFactors** (eighth): the sitemap each site publishes for search engines;
+  a job's own page is opened only when its title matches the search words (date, place and full
+  ad are on the page). Only sites whose pages carry that data are in the directory (SAP,
+  Schaeffler, ZF, KUKA, Festo, Endress+Hauser); Danfoss, SICK, Vitesco, Wacker need JavaScript and
+  MTU's pages redirect: left out, see SOURCES.md. Career systems now get the search words as a
+  hint, and share one robots.txt check (`CareerSystemSource.allowed`).
+- **Employer directory: 357 companies** (was 326; IE 149, UK 259, DE 232), re-checked today.
+  Found via web searches and by probing `jobs.{company}.com`. `tools/check_employers.py
+  candidates.json --only-new --write` checks only new candidates (seconds instead of 15 minutes).
 - **Terms of the job boards on hold** (IrishJobs.ie, Jobs.ie, Totaljobs, StepStone.de, all Stepstone
   Group) are read and recorded in SOURCES.md: none clearly allows automated reading, StepStone.de
   names scraping. They stay on hold.
@@ -72,11 +83,15 @@ Ireland, the UK and Germany are worked on and tested first.
 **Next tasks for the assistant, in this order:**
 1. **Use the score-check loop once the owner has answered a few jobs** (`tools/score_check.py`:
    compare, or `--rescore --batch 1 --effort medium --summary` to tune; HANDOVER §13).
-2. **More coverage, IE/UK/DE first:** more career systems (Teamtailor has public career pages and
-   feeds; SuccessFactors is used by many big German employers; also BambooHR, Comeet, Oracle),
-   more employers in the directory, and national public employment services with open data and no
-   key (candidates to check: Czechia's MPSV open data, Poland's CBOP, Finland, Estonia, Slovenia,
-   Luxembourg). Check terms and robots.txt first and record each in SOURCES.md.
+2. **More coverage, IE/UK/DE first:** more employers in the directory (especially Teamtailor
+   companies in Ireland and the UK, and SuccessFactors sites of German engineering firms; MTU Aero
+   Engines' job pages redirect and are worth a closer look), more career systems (Personio,
+   Softgarden, BambooHR, Comeet, Oracle), and national public employment services with open data
+   and no key (candidates: Czechia's MPSV open data, Poland's CBOP, Finland, Estonia, Slovenia,
+   Luxembourg). Check terms and robots.txt first and record each in SOURCES.md. Possible saving:
+   SuccessFactors pages opened for address-list sites aren't remembered between searches yet
+   (only feed sites' dates are); remembering title, place and date for three days would cut
+   repeat requests.
 3. **More of Phase 2:** real travel times once the owner agrees to a Maps key; remembering
    researched facts if he allows it. Possible improvement: the Swedish ads and Adzuna give
    coordinates, which could decide the town for size conditions better than the place name.
