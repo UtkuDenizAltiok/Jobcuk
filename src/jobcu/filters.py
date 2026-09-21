@@ -7,8 +7,8 @@ A job is left out only when a fact proves it doesn't fit:
 - the source states it's fully remote and remote jobs are excluded
 - the source states a country outside the countries searched
 - a location condition the AI checked says this place doesn't fit (for example a town that is
-  too small, or one the person asked to avoid). A job whose place can't be recognised is kept
-  and shown as "not checked" on its card.
+  too small, one the person asked to avoid, or too far from the places a condition measures
+  to). A job whose place can't be recognised is kept and shown as "not checked" on its card.
 
 Every left-out job is counted with its reason, for "Search details".
 """
@@ -17,6 +17,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime
 
+from jobcu import travel
 from jobcu.dedupe import JobGroup
 from jobcu.freshness import freshness, window_start
 from jobcu.jobstore import JobState
@@ -92,6 +93,8 @@ def fails_a_condition(group: JobGroup, conditions: list) -> bool:
 
 def condition_fit(condition, group: JobGroup) -> str:
     """"yes", "no" or "unknown" for a job and one of the conditions the person wrote."""
+    if condition.kind == "near":
+        return travel.answer(condition, group)
     country = next((c.country for c in group.copies if c.country), None)
     answers = {fits(condition, country, copy.location_text) for copy in group.copies}
     if "yes" in answers:

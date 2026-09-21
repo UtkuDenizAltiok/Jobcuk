@@ -15,7 +15,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from typing import Literal
 
-from jobcu import db, documents, jobstore, pipeline, quality
+from jobcu import db, documents, jobstore, pipeline, quality, travel
 from jobcu import pool as search_pool
 from jobcu.ai.base import AIError
 from jobcu.ai.client import AIClient
@@ -396,7 +396,11 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
     started_at = datetime.fromisoformat(run.started_at)
     profile = Profile.model_validate(job_pool.profile)
     groups = [job.group for job in job_pool.jobs]
-    ruled_out = [i for i, group in enumerate(groups) if fails_a_condition(group, plan.conditions)]
+    # Travel times cost a request each, so they're measured last, only for jobs still worth a
+    # closer look; everything else about places is worked out at once.
+    measured = [c for c in plan.conditions if c.kind == "near" and c.max_minutes and c.filters]
+    at_once = [c for c in plan.conditions if all(c is not m for m in measured)]
+    ruled_out = [i for i, group in enumerate(groups) if fails_a_condition(group, at_once)]
     excluded = set(ruled_out)
     in_running = [i for i in range(len(groups)) if i not in excluded]
     unchecked = [i for i in in_running if job_pool.jobs[i].unrelated is None]
@@ -406,6 +410,16 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
             job_pool.jobs[index].unrelated = index in unrelated_now
     unrelated = [i for i in in_running if job_pool.jobs[i].unrelated]
     candidates = [i for i in in_running if not job_pool.jobs[i].unrelated]
+    if measured and candidates:
+        run.update("filtering", "running", "Measuring travel times")
+        if not keys.get(travel.KEY_NAME):
+            run.note("Travel times are AI estimates. A Google Maps key in Settings gives real "
+                     "ones.")
+        travel.TravelMeter(client, keys, http, settings, note=run.note).measure(
+            measured, groups, candidates)
+        too_far = {i for i in candidates if fails_a_condition(groups[i], measured)}
+        candidates = [i for i in candidates if i not in too_far]
+        ruled_out += sorted(too_far)
     run.update(
         "filtering",
         "done",

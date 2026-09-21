@@ -7,7 +7,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 
-from jobcu import jobstore
+from jobcu import jobstore, travel
 from jobcu.countries import COUNTRIES
 from jobcu.dedupe import JobGroup, group_duplicates, is_agency
 from jobcu.filters import condition_fit
@@ -208,10 +208,12 @@ def build_card(
         if not condition.filters:
             continue
         answer = condition_fit(condition, group)
+        found = travel.detail(condition, group)
         checks.append({
             "label": condition.understood_as,
             "status": {"yes": "verified", "unknown": "unclear"}.get(answer, "fails"),
-            "source": _checked_by(condition),
+            "source": _checked_by(condition, found[1] if found else None),
+            "detail": found[0] if found else None,
         })
     start = window_start(started_at, posted_within_hours)
     state = state or JobState()
@@ -242,12 +244,18 @@ def build_card(
     }
 
 
-def _checked_by(condition) -> str:
+def _checked_by(condition, measured_by: str | None = None) -> str:
+    if measured_by == "AI estimate":
+        return "AI estimate"
+    if measured_by == "Google Maps":
+        return "Google Maps"
     if condition.changed_by_you:
         return "Changed by you"
-    if condition.status == "estimate":
+    if condition.status == "estimate" and measured_by is None:
         return "AI estimate"
-    return "Worked out by Jobcu" if condition.kind == "town_size" else "Checked on the web"
+    if condition.kind in ("town_size", "near"):
+        return "Worked out by Jobcu"
+    return "Checked on the web"
 
 
 def sort_cards(cards: list[dict]) -> list[dict]:

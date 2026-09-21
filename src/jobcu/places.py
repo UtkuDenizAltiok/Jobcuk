@@ -64,6 +64,13 @@ def _towns(path: Path = DATA) -> dict[str, tuple[Town, ...]]:
             for name, towns in index.items()}
 
 
+@cache
+def towns_in(country: str) -> tuple[Town, ...]:
+    """Every town of one country in the list, biggest first."""
+    unique = {town for towns in _towns().values() for town in towns if town.country == country}
+    return tuple(sorted(unique, key=lambda town: -town.people))
+
+
 def find(name: str | None, country: str | None = None) -> Town | None:
     """The best known town with this name, preferring the one in the given country."""
     towns = _towns().get(normalise(name))
@@ -108,6 +115,11 @@ def _locate(text: str | None, country: str | None) -> Town | None:
 
 def distance_km(a: Town, b: Town) -> float:
     """Distance in a straight line, which is close enough for "within 50 km"."""
-    lat1, lon1, lat2, lon2 = map(radians, (a.latitude, a.longitude, b.latitude, b.longitude))
+    return km(a.latitude, a.longitude, b.latitude, b.longitude)
+
+
+def km(lat_a: float, lon_a: float, lat_b: float, lon_b: float) -> float:
+    """Distance in a straight line between two points on the map."""
+    lat1, lon1, lat2, lon2 = map(radians, (lat_a, lon_a, lat_b, lon_b))
     haversine = sin((lat2 - lat1) / 2) ** 2 + cos(lat1) * cos(lat2) * sin((lon2 - lon1) / 2) ** 2
     return 2 * EARTH_RADIUS_KM * asin(sqrt(haversine))

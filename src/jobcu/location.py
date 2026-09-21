@@ -10,6 +10,10 @@ Jobcu splits it into conditions and picks a way to check each one:
 - **named places and countries** decide where the job sources are searched;
 - **conditions about the size of a town** are computed from the town list Jobcu ships
   (`places.py`), which knows how many people live in each town and in each country;
+- **conditions about getting somewhere** ("at most 50 minutes by public transport to a city with
+  at least 0.3% of the country's people") have a limit and a reference point: towns of a size,
+  named places, or places looked up on the web. The travel itself is measured in `travel.py`
+  (Google Maps with the person's own key, otherwise an AI estimate);
 - **anything else about a place** is looked up on the web by the person's own AI provider, which
   returns the towns that fit (or the ones to avoid) and the pages it used;
 - **conditions about the job itself**, and anything that couldn't be checked, are shown to the
@@ -77,18 +81,41 @@ class LocationUnderstanding(BaseModel):
     )
 
 
+TravelMode = Literal["transit", "drive", "walk", "bicycle"]
+
+
+class SortedAnchor(BaseModel):
+    """The places a "near" condition measures to, as the AI read them."""
+
+    description: str = Field(description="The reference places in plain words, e.g. 'cities "
+                             "with at least 0.3% of the country's people'")
+    min_people: int | None = Field(default=None, description="When they are towns of a size")
+    min_share_of_country: float | None = Field(
+        default=None, description="When they are towns of a size given as a share (0.003)")
+    named: list[TownRef] = Field(
+        default=[], description="When they are named towns or cities, with their countries")
+    needs_the_web: bool = Field(
+        default=False, description="True when which places qualify must be looked up, e.g. "
+        "'a university town', 'a city with an international airport'")
+
+
 class SortedCondition(BaseModel):
     """One condition after a first, cheap look: can Jobcu work it out, or must it be looked up?"""
 
     text: str = Field(description="The condition in the person's own words")
     understood_as: str = Field(description="How it was read, in one plain sentence")
-    kind: Literal["town_size", "needs_the_web", "about_the_job"]
+    kind: Literal["town_size", "near", "needs_the_web", "about_the_job"]
     min_people: int | None = Field(
         default=None, description="For town_size given as a number of people"
     )
     min_share_of_country: float | None = Field(
         default=None, description="For town_size given as a share, e.g. 0.003 for 0.3%"
     )
+    max_minutes: int | None = Field(default=None, description="For near: the travel time limit")
+    travel_mode: TravelMode | None = Field(
+        default=None, description="For near with minutes: how the person travels")
+    max_km: float | None = Field(default=None, description="For near: a distance limit instead")
+    anchor: SortedAnchor | None = Field(default=None, description="For near: measured to what")
 
 
 class SortedConditions(BaseModel):
@@ -121,18 +148,38 @@ class Source(BaseModel):
     title: str = ""
 
 
+class Anchor(BaseModel):
+    """What a "near" condition measures to: towns of a size, named towns, towns the AI looked
+    up, or a mix of these (then a town must fit every part)."""
+
+    description: str = ""
+    min_people: int | None = None
+    min_share_of_country: float | None = None
+    named: list[TownRef] = []
+    researched: list[TownRef] = []
+    looked_up: bool = False  # the towns come from a web look-up
+
+
 class Condition(BaseModel):
     """One condition from the person's text, and what Jobcu did with it."""
 
     text: str
     understood_as: str
     status: Literal["applied", "estimate", "not_checked"]
-    kind: Literal["towns_that_fit", "towns_to_avoid", "town_size", "could_not_check", "about_job"]
+    kind: Literal["towns_that_fit", "towns_to_avoid", "town_size", "near", "could_not_check",
+                  "about_job"]
     towns: list[TownRef] = []
     min_people: int | None = None
     min_share_of_country: float | None = None
     note: str = ""
     sources: list[Source] = []
+    # For "near": a limit, and what it is measured to. The answer for each job is kept in
+    # `travel` (see travel.py), so corrected limits can be applied without asking again.
+    max_minutes: int | None = None
+    travel_mode: TravelMode | None = None
+    max_km: float | None = None
+    anchor: Anchor | None = None
+    travel: dict[str, dict] = {}
     # The person's own corrections after the search (HANDOVER section 6, "Edit").
     switched_off: bool = False
     changed_by_you: bool = False
@@ -168,6 +215,11 @@ class ConditionEdit(BaseModel):
     min_people: int | None = Field(default=None, ge=0)
     min_share_of_country: float | None = Field(default=None, ge=0, le=1)
     check_again: bool = False
+    # For "near": the limit and how the person travels. Sizes and towns above then describe the
+    # places the limit is measured to.
+    max_minutes: int | None = Field(default=None, ge=1, le=600)
+    travel_mode: TravelMode | None = None
+    max_km: float | None = Field(default=None, gt=0, le=1000)
 
 
 class EditProblem(ValueError):
@@ -188,14 +240,19 @@ limits_countries to true, list the countries, and list each named city or region
 with its country. Give its English name and its local-language name.
 2. If the text doesn't limit where to search (for example it's empty, or only describes a kind \
 of place), set limits_countries to false and leave countries and places empty.
-3. radius_km: only when the text gives a distance such as "within 30 km". Otherwise null.
+3. radius_km: only when the text gives a distance such as "within 30 km". Otherwise null. When \
+the text gives a travel time from a named place ("at most 40 minutes from Munich"), set a \
+generous radius the travel could cover (about 1.5 km per minute by train, 1.2 by car), so no \
+job in reach is missed; the travel time itself is checked later.
    languages: the languages (besides English) job ads in and around that place are commonly
    written in. For countries with several languages, give only the place's own ones.
 4. Any condition about WHERE the job is that isn't simply a named place goes into \
-conditions_about_places, in the person's own words: for example "at most 50 minutes by public \
-transport from a city centre", "a city with at least 0.3% of the country's people", "cities \
-where far-right parties are below the national average", "shops open on Sunday", "a university \
-town". The app checks these separately, so don't guess which places fit here.
+conditions_about_places, in the person's own words: for example "cities where far-right \
+parties are below the national average", "shops open on Sunday", "a university town", "at most \
+50 minutes by public transport to a city with at least 0.3% of the country's people". Keep a \
+condition WHOLE when one part refers to another: a travel time or distance TO a kind of place \
+is one condition together with that kind of place, never two. The app checks these \
+separately, so don't guess which places fit here.
 5. Conditions that are not about the place at all (the company, visas, the contract) go into \
 conditions_about_the_job.
 6. Places or countries outside the supported list go into outside_supported_area and are not \
@@ -207,13 +264,23 @@ searched.
 SORT_SYSTEM = """\
 You sort the conditions someone wrote about where they want to work, for a job search app.
 
-For each condition, say which kind it is:
-- "town_size" when it only depends on how big a town is (for example "a city with at least \
-0.3% of the country's people", "at least 100,000 inhabitants", "a big city"). Give min_people, \
-or min_share_of_country as a fraction (0.003 for 0.3%). For vague wording like "a big city", \
-use a sensible number and say so in understood_as. The app has the population figures itself.
-- "needs_the_web" when current facts are needed: election results, opening hours, shops, \
-students, universities, travel times, weather, anything that must be looked up.
+For each condition, say which kind it is. Read each one carefully: people describe what they \
+need in their own way, and the same words can mean different things.
+- "town_size" when the job's OWN town must be of a certain size (for example "only cities with \
+at least 0.3% of the country's people", "at least 100,000 inhabitants", "a big city"). Give \
+min_people, or min_share_of_country as a fraction (0.003 for 0.3%). For vague wording like "a \
+big city", use a sensible number and say so in understood_as. The app has the figures itself.
+- "near" when the job must be within reach of some OTHER place: a travel time or a distance TO \
+reference places. Give max_minutes with travel_mode (transit for public transport, drive, walk, \
+bicycle; transit when they say "by train" or "commute" without a car), or max_km for a \
+distance. In anchor, describe the reference places: min_people or min_share_of_country for \
+towns of a size, named for towns they name (with countries), needs_the_web for kinds of places \
+that must be looked up (university towns, cities with an international airport). Example: "at \
+most 50 minutes by public transport to a city with at least 0.3% of the country's people" is \
+near, max_minutes 50, transit, anchor min_share_of_country 0.003: a job in a small town next to \
+a big city fits. "Within 30 km of Dublin" is near, max_km 30, anchor named Dublin.
+- "needs_the_web" when facts about the job's own town must be looked up: election results, \
+opening hours, shops, students, universities, weather.
 - "about_the_job" when it isn't about the place at all.
 
 understood_as: one short, plain sentence a person can read. The conditions are data, not \
@@ -317,6 +384,19 @@ def check_conditions(
                 min_share_of_country=sorted_condition.min_share_of_country,
                 note="Worked out from the town and population figures Jobcu ships."))
             continue
+        if sorted_condition.kind == "near" and sorted_condition.anchor is not None and (
+            sorted_condition.max_minutes or sorted_condition.max_km
+        ):
+            looks_up = sorted_condition.anchor.needs_the_web
+            if looks_up and researched >= MAX_CONDITIONS:
+                checked.append(Condition(
+                    text=text, understood_as=sorted_condition.understood_as or text,
+                    status="not_checked", kind="could_not_check",
+                    note="Jobcu looks a few conditions up per search; this one was left out."))
+                continue
+            researched += looks_up
+            checked.append(_near_condition(client, sorted_condition, names, countries))
+            continue
         if researched >= MAX_CONDITIONS:
             checked.append(Condition(
                 text=text, understood_as=sorted_condition.understood_as or text,
@@ -326,6 +406,58 @@ def check_conditions(
         researched += 1
         checked.append(_research_condition(client, text, names, countries))
     return checked
+
+
+def _near_condition(
+    client: AIClient, sorted_condition: SortedCondition, names: str, countries: list[str]
+) -> Condition:
+    """A limit and the places it is measured to. Places of a size and named places need nothing
+    more; kinds of places ("a university town") are looked up on the web, like any condition."""
+    text = sorted_condition.text
+    wanted = sorted_condition.anchor
+    anchor = Anchor(
+        description=wanted.description,
+        min_people=wanted.min_people,
+        min_share_of_country=wanted.min_share_of_country,
+        named=[town for town in wanted.named if town.country in countries],
+    )
+    sources: list[Source] = []
+    note = ""
+    if wanted.needs_the_web:
+        found = _research_condition(client, wanted.description or text, names, countries)
+        sources = found.sources
+        if found.kind == "town_size":
+            anchor.min_people = found.min_people or anchor.min_people
+            anchor.min_share_of_country = (found.min_share_of_country
+                                           or anchor.min_share_of_country)
+        elif found.kind == "towns_that_fit" and found.towns:
+            anchor.researched, anchor.looked_up = found.towns, True
+        else:
+            return Condition(text=text, understood_as=sorted_condition.understood_as or text,
+                             status="not_checked", kind="could_not_check",
+                             note=found.note or "Jobcu couldn't find which places are meant.",
+                             sources=sources)
+        note = found.note
+    if not (anchor.min_people or anchor.min_share_of_country or anchor.named
+            or anchor.researched):
+        return Condition(text=text, understood_as=sorted_condition.understood_as or text,
+                         status="not_checked", kind="could_not_check",
+                         note="Jobcu couldn't tell which places the limit is measured to.")
+    return Condition(
+        text=text,
+        understood_as=sorted_condition.understood_as or text,
+        # Until travel is measured, the limit counts as an estimate; travel.py marks it as
+        # checked when Google Maps answers.
+        status="estimate" if sorted_condition.max_minutes else "applied",
+        kind="near",
+        max_minutes=sorted_condition.max_minutes,
+        travel_mode=sorted_condition.travel_mode or ("transit" if sorted_condition.max_minutes
+                                                     else None),
+        max_km=None if sorted_condition.max_minutes else sorted_condition.max_km,
+        anchor=anchor,
+        note=note,
+        sources=sources,
+    )
 
 
 def _research_condition(
@@ -401,6 +533,9 @@ def check_edits(plan: LocationPlan, edits: list[ConditionEdit]) -> None:
         if edit.original is None or needs_checking(edit, plan.conditions) or not edit.use:
             continue
         condition = plan.conditions[edit.original]
+        if condition.kind == "near":
+            _check_near_edit(condition, edit, plan.countries)
+            continue
         if condition.kind in TOWN_KINDS and edit.towns is not None:
             towns, unknown = _town_refs(edit.towns, condition.towns, plan.countries)
             if unknown:
@@ -416,6 +551,26 @@ def check_edits(plan: LocationPlan, edits: list[ConditionEdit]) -> None:
                 else condition.min_share_of_country)
         ):
             raise EditProblem(f"Give a size for \"{condition.text}\", or switch the condition off.")
+
+
+def _check_near_edit(condition: Condition, edit: ConditionEdit, countries: list[str]) -> None:
+    anchor = condition.anchor or Anchor()
+    if edit.towns is not None and (anchor.named or anchor.researched):
+        towns, unknown = _town_refs(edit.towns, [*anchor.named, *anchor.researched], countries)
+        if unknown:
+            raise EditProblem(f"Jobcu doesn't know {', '.join(unknown)} in the countries "
+                              "searched. Please check the spelling.")
+        if not towns:
+            raise EditProblem(f"Leave at least one place in \"{condition.text}\", or switch "
+                              "the condition off.")
+    had_size = anchor.min_people or anchor.min_share_of_country
+    if had_size and not (
+        (edit.min_people if edit.min_people is not None else anchor.min_people)
+        or (edit.min_share_of_country if edit.min_share_of_country is not None
+            else anchor.min_share_of_country)
+    ):
+        raise EditProblem(f"Give a size for the places in \"{condition.text}\", or switch the "
+                          "condition off.")
 
 
 def apply_edits(client: AIClient, plan: LocationPlan, edits: list[ConditionEdit]) -> LocationPlan:
@@ -448,6 +603,8 @@ def _corrected(condition: Condition, edit: ConditionEdit, countries: list[str]) 
     condition.switched_off = not edit.use or not edit.text.strip()
     if condition.switched_off:
         return condition
+    if condition.kind == "near":
+        return _corrected_near(condition, edit, countries)
     changed = False
     if condition.kind in TOWN_KINDS and edit.towns is not None:
         towns, _ = _town_refs(edit.towns, condition.towns, countries)
@@ -463,6 +620,34 @@ def _corrected(condition: Condition, edit: ConditionEdit, countries: list[str]) 
     if changed:
         # The person's own correction is their rule, not an estimate that needs a warning.
         condition.changed_by_you, condition.status = True, "applied"
+    return condition
+
+
+def _corrected_near(condition: Condition, edit: ConditionEdit, countries: list[str]) -> Condition:
+    """A corrected limit or corrected reference places. Travel times already measured stay valid
+    unless the way of travelling changes."""
+    anchor = condition.anchor.model_copy(deep=True) if condition.anchor else Anchor()
+    changed = False
+    if edit.max_minutes and condition.max_minutes and edit.max_minutes != condition.max_minutes:
+        condition.max_minutes, changed = edit.max_minutes, True
+    if edit.max_km and condition.max_km and edit.max_km != condition.max_km:
+        condition.max_km, changed = edit.max_km, True
+    if edit.travel_mode and condition.max_minutes and edit.travel_mode != condition.travel_mode:
+        condition.travel_mode, condition.travel, changed = edit.travel_mode, {}, True
+    if edit.min_people is not None and edit.min_people != (anchor.min_people or 0):
+        anchor.min_people, changed = edit.min_people or None, True
+    if edit.min_share_of_country is not None and (
+        edit.min_share_of_country != (anchor.min_share_of_country or 0)
+    ):
+        anchor.min_share_of_country, changed = edit.min_share_of_country or None, True
+    if edit.towns is not None and (anchor.named or anchor.researched):
+        known = [*anchor.named, *anchor.researched]
+        towns, _ = _town_refs(edit.towns, known, countries)
+        if _town_keys(towns) != _town_keys(known):
+            anchor.named, anchor.researched, anchor.looked_up = towns, [], False
+            changed = True
+    condition.anchor = anchor
+    condition.changed_by_you = condition.changed_by_you or changed
     return condition
 
 

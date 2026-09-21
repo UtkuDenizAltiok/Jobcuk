@@ -205,6 +205,30 @@ company had jobs in, and whether it also hires outside them).
   ReachMee, Visma Recruit, Teamtailor, Recruitee), so it is used as the employer's link.
 - A real check (24 hours, 12 electronics search words): 3 jobs in 17 requests, 10 s.
 
+## Google Maps, for travel times (`src/jobcu/travel.py`), checked 2026-09-21
+
+Not a job source: used only for conditions like "at most 50 minutes by public transport to a
+big city", and only with the user's own key (Settings → Travel times).
+
+- **Routes API, Compute Route Matrix:** `POST routes.googleapis.com/distanceMatrix/v2:
+  computeRouteMatrix`, headers `X-Goog-Api-Key` and `X-Goog-FieldMask:
+  originIndex,destinationIndex,duration,condition`; origins and destinations as `latLng`;
+  `travelMode` TRANSIT / DRIVE / WALK / BICYCLE; `departureTime` for transit and driving (Jobcu:
+  next Tuesday 8:00 local time). The answer is a JSON list of elements with `duration` like
+  `"1020s"` and `condition` `ROUTE_EXISTS`. **At most 100 elements per request for TRANSIT**
+  (625 otherwise). Billed per element (origins × destinations).
+- **Places API (New), Text Search:** `POST places.googleapis.com/v1/places:searchText` with
+  `textQuery` "{company}, {town}", `maxResultCount` 1, a 30 km `locationBias` circle and field
+  mask `places.location`. Used only for jobs within 10 minutes of the limit.
+- **Free monthly allowance (since March 2025, checked 2026-09-21):** Route Matrix Essentials
+  10,000 elements, Pro 5,000 (traffic-aware routing, which Jobcu doesn't use); Places Text Search
+  Essentials/Pro 5,000; Geocoding 10,000. Above that, about $5 per 1,000 route elements and
+  $32 per 1,000 place look-ups. Google requires a billing account even for free use.
+- Jobcu counts elements and place look-ups in `source_requests` (`google_maps_routes`,
+  `google_maps_places`) and stops at the monthly limits in Settings (9,000 / 4,500 by default),
+  then uses AI estimates.
+- The key goes only in a request header, never in an address, so it can't end up in a log.
+
 ## Job boards on hold: what their terms say (checked 2026-09-18 and 2026-09-21)
 
 Facts for the owner's decision (DECISIONS.md, 2026-09-17: boards stay on hold until the coverage

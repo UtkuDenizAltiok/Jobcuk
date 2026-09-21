@@ -79,8 +79,9 @@ class RequestBudget:
         self._now = now
         self._lock = threading.Lock()
 
-    def spend(self) -> None:
-        """Count one request, or raise BudgetExhausted if a limit would be passed."""
+    def spend(self, count: int = 1) -> None:
+        """Count one request (or `count` billed items), or raise BudgetExhausted if a limit
+        would be passed."""
         with self._lock:
             today = self._now().strftime("%Y-%m-%d")
             month = today[:7]
@@ -96,24 +97,26 @@ class RequestBudget:
                     (self.source, month),
                 ).fetchone()[0]
                 if self.limits.per_search is not None and (
-                    self.used_this_search >= self.limits.per_search
+                    self.used_this_search + count > self.limits.per_search
                 ):
                     raise BudgetExhausted(
                         f"{self.name}: used this search's share of its free requests."
                     )
-                if self.limits.per_day is not None and used_today >= self.limits.per_day:
+                if self.limits.per_day is not None and used_today + count > self.limits.per_day:
                     raise BudgetExhausted(
                         f"{self.name}: today's free requests are used up. It will work again "
                         "tomorrow."
                     )
-                if self.limits.per_month is not None and used_month >= self.limits.per_month:
+                if self.limits.per_month is not None and (
+                    used_month + count > self.limits.per_month
+                ):
                     raise BudgetExhausted(
                         f"{self.name}: this month's free requests are used up. It will work again "
                         "next month."
                     )
                 conn.execute(
-                    "INSERT INTO source_requests (day, source, count) VALUES (?, ?, 1) "
-                    "ON CONFLICT (day, source) DO UPDATE SET count = count + 1",
-                    (today, self.source),
+                    "INSERT INTO source_requests (day, source, count) VALUES (?, ?, ?) "
+                    "ON CONFLICT (day, source) DO UPDATE SET count = count + excluded.count",
+                    (today, self.source, count),
                 )
-            self.used_this_search += 1
+            self.used_this_search += count

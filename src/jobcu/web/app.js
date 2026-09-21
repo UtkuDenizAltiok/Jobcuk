@@ -397,6 +397,8 @@ function conditionLine(condition) {
     const names = condition.towns.slice(0, 12).map((town) => town.name).join(", ");
     const more = condition.towns.length > 12 ? ` and ${condition.towns.length - 12} more` : "";
     parts.push(el("p", { class: "muted", text: `${how}: ${names}${more}` }));
+  } else if (condition.kind === "near") {
+    parts.push(el("p", { class: "muted", text: nearSummary(condition) }));
   } else if (condition.kind === "town_size") {
     const size = condition.min_share_of_country
       ? `at least ${(condition.min_share_of_country * 100).toFixed(2)}% of the country's people`
@@ -420,7 +422,42 @@ function conditionLine(condition) {
   return el("li", {}, ...parts);
 }
 
+const TRAVEL_MODES = {
+  transit: "by public transport",
+  drive: "by car",
+  walk: "on foot",
+  bicycle: "by bike",
+};
+
+/** "towns with at least 250,500 people" or "Munich, Augsburg" for a "near" condition. */
+function anchorText(anchor) {
+  if (!anchor) return "the places you named";
+  const parts = [];
+  const towns = [...(anchor.named || []), ...(anchor.researched || [])].map((t) => t.name);
+  if (towns.length) {
+    parts.push(towns.slice(0, 12).join(", ") + (towns.length > 12 ? ` and ${towns.length - 12} more` : ""));
+  }
+  if (anchor.min_share_of_country) {
+    parts.push(`towns with at least ${+(anchor.min_share_of_country * 100).toPrecision(6)}% of the country's people`);
+  } else if (anchor.min_people) {
+    parts.push(`towns with at least ${anchor.min_people.toLocaleString()} people`);
+  }
+  return parts.join("; ") || anchor.description || "the places you named";
+}
+
+function nearSummary(condition) {
+  const limit = condition.max_minutes
+    ? `${condition.max_minutes} minutes ${TRAVEL_MODES[condition.travel_mode] || ""}`
+    : `${condition.max_km} km`;
+  return `Within ${limit.trim()} of ${anchorText(condition.anchor)}.`;
+}
+
 function howChecked(condition) {
+  if (condition.kind === "near" && condition.max_minutes) {
+    return condition.status === "estimate"
+      ? "travel times are AI estimates — please check"
+      : "travel times from Google Maps";
+  }
   if (condition.changed_by_you) return "changed by you";
   if (condition.status === "estimate") return "AI estimate — please check";
   return condition.kind === "town_size" ? "worked out by Jobcu" : "checked on the web";
@@ -493,12 +530,65 @@ function conditionEditor(condition, index) {
         el("span", { text: share ? "% of the country's people" : "people" })),
     ));
   }
+  if (condition.kind === "near") block.append(...nearEditor(condition, id));
   if (condition.status === "not_checked") {
     block.append(el("label", { class: "check" },
       el("input", { type: "checkbox", name: "check_again" }),
       el("span", { text: "Try to check it again" })));
   }
   return block;
+}
+
+/** The limit and the reference places of a "near" condition, as fields. */
+function nearEditor(condition, id) {
+  const fields = [];
+  if (condition.max_minutes) {
+    const mode = condition.travel_mode || "transit";
+    fields.push(el("div", { class: "field" },
+      el("label", { for: `${id}-minutes`, text: "Time limit" }),
+      el("div", { class: "size" },
+        el("input", { type: "number", id: `${id}-minutes`, name: "max_minutes", min: "1",
+                      max: "600", step: "1", value: String(condition.max_minutes),
+                      "data-was": String(condition.max_minutes) }),
+        el("span", { text: "minutes" }),
+        el("select", { name: "travel_mode", "data-was": mode, "aria-label": "How you travel" },
+          ...Object.entries(TRAVEL_MODES).map(([value, text]) =>
+            el("option", { value, text, selected: value === mode }))),
+      ),
+    ));
+  } else if (condition.max_km) {
+    fields.push(el("div", { class: "field" },
+      el("label", { for: `${id}-km`, text: "Distance limit" }),
+      el("div", { class: "size" },
+        el("input", { type: "number", id: `${id}-km`, name: "max_km", min: "1", step: "any",
+                      value: String(condition.max_km), "data-was": String(condition.max_km) }),
+        el("span", { text: "km in a straight line" }),
+      ),
+    ));
+  }
+  const anchor = condition.anchor || {};
+  const share = anchor.min_share_of_country;
+  if (share || anchor.min_people) {
+    const value = share ? +(share * 100).toPrecision(6) : anchor.min_people;
+    fields.push(el("div", { class: "field" },
+      el("label", { for: `${id}-size`, text: "Measured to towns with at least" }),
+      el("div", { class: "size" },
+        el("input", { type: "number", id: `${id}-size`, name: share ? "share" : "people",
+                      min: "0", step: "any", value: String(value), "data-was": String(value) }),
+        el("span", { text: share ? "% of the country's people" : "people" }),
+      ),
+    ));
+  }
+  const towns = [...(anchor.named || []), ...(anchor.researched || [])];
+  if (towns.length) {
+    fields.push(el("div", { class: "field" },
+      el("label", { for: `${id}-towns`, text: "Measured to these places" }),
+      el("textarea", { id: `${id}-towns`, name: "towns", rows: "3", spellcheck: "false",
+                       text: towns.map((town) => town.name).join(", ") }),
+      el("small", { class: "muted", text: "Separate places with commas." }),
+    ));
+  }
+  return fields;
 }
 
 function newConditionEditor() {
@@ -536,6 +626,14 @@ function readConditionEdits() {
         else edit.min_share_of_country = Math.min(number / 100, 1);
       }
       if (field("check_again")) edit.check_again = field("check_again").checked;
+      const minutes = field("max_minutes");
+      if (minutes && minutes.value !== minutes.dataset.was) {
+        edit.max_minutes = Math.min(600, Math.max(1, Math.round(Number(minutes.value) || 1)));
+      }
+      const km = field("max_km");
+      if (km && km.value !== km.dataset.was && Number(km.value) > 0) edit.max_km = Number(km.value);
+      const mode = field("travel_mode");
+      if (mode && mode.value !== mode.dataset.was) edit.travel_mode = mode.value;
       return edit;
     })
     .filter((edit) => edit.original !== null || edit.text.trim());
@@ -859,14 +957,16 @@ function renderCard(card) {
       "AI estimate": "AI estimate — please check",
       "Changed by you": "your change",
     }[check.source] || `verified: ${check.source}`;
+    // What was found for this job, such as "Munich, 17 min by public transport".
+    const what = check.detail ? `${check.label.replace(/\.$/, "")} — ${check.detail}` : check.label;
     const label =
       check.status === "fails"
-        ? `Doesn't fit: ${check.label}`
+        ? `Doesn't fit: ${what}${check.source === "AI estimate" ? " (AI estimate — please check)" : ""}`
         : check.status === "verified" && check.source
-          ? `${check.label} (${how})`
+          ? `${what} (${how})`
           : check.status === "unclear"
-            ? `${check.label} — couldn't be checked for this job`
-            : `${check.label} (AI estimate — please check)`;
+            ? `${what} — couldn't be checked for this job`
+            : `${what} (AI estimate — please check)`;
     checks.append(el("span", { class: statusClass, text: label }));
   }
   if (card.summary_only && card.score !== null) {
@@ -1114,8 +1214,9 @@ async function loadSettings() {
   state.provider = state.settings.ai.provider;
   renderProviderOptions();
   renderProviderDetails();
+  const keyStatuses = [...state.settings.job_site_keys, ...state.settings.travel_keys];
   for (const row of document.querySelectorAll("[data-key-name]")) {
-    const status = state.settings.job_site_keys.find((k) => k.name === row.dataset.keyName);
+    const status = keyStatuses.find((k) => k.name === row.dataset.keyName);
     renderKeyRow(row, status, status.label);
   }
   renderChecklist();
@@ -1405,6 +1506,11 @@ function renderUsage() {
     ? `Last search: ${tokens(usage.last_search.tokens)}, ${money(usage.last_search)}.`
     : "No search yet.";
 
+  $("travel-usage").textContent =
+    `This month: ${usage.travel.routes_this_month.toLocaleString()} of ` +
+    `${usage.limits.maps_monthly_routes.toLocaleString()} travel-time look-ups and ` +
+    `${usage.travel.places_this_month.toLocaleString()} of ` +
+    `${usage.limits.maps_monthly_places.toLocaleString()} company addresses.`;
   $("scoring-cap").value = usage.limits.scoring_cap;
   $("token-limit").value = usage.limits.monthly_token_limit ?? "";
   $("cost-limit").value = usage.limits.monthly_cost_limit ?? "";
@@ -1571,6 +1677,18 @@ function setUpSettingsActions() {
           : "The provider didn't list any models. You can type a model name instead.";
       } catch (error) {
         status.textContent = error.message;
+      }
+    }),
+  );
+
+  $("check-travel").addEventListener("click", (event) =>
+    busy(event.target, async () => {
+      setStatus($("travel-status"), "", "Testing…");
+      try {
+        const result = await api("/api/travel/check", { method: "POST" });
+        setStatus($("travel-status"), result.ok ? "ok" : "problem", result.message);
+      } catch (error) {
+        setStatus($("travel-status"), "problem", error.message);
       }
     }),
   );

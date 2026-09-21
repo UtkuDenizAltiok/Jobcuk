@@ -6,7 +6,7 @@ tested and shown to the owner before the next one starts. Decisions are in
 
 ## Right now
 
-*Last updated: 2026-09-21 (evening). Tree clean, all pushed, CI green, 340 tests pass.*
+*Last updated: 2026-09-21 (late evening). Tree clean, all pushed, CI green, 362 tests pass.*
 
 **Where we are:** Phase 1 is essentially complete. Phase 2 (the location box as a research task
 for the AI) works, and **people can now correct it after a search** with the Edit button.
@@ -14,7 +14,27 @@ Coverage grows source by source: **16 sources** now (8 of them company career sy
 Sweden and two more career systems added today and **357 employers** in the directory. Everything
 is committed and pushed; GitHub's tests pass on macOS and Windows.
 
-**Last finished (2026-09-21)**
+**Last finished (2026-09-21, late evening): travel limits to reference places**
+
+The owner saw a job in Fürstenfeldbruck left out by *"at most 50 minutes to a city with at least
+0.3% of the country's people"*: Jobcu had read it as "the job's own town has 0.3%". Now:
+- **A limit to reference places is one condition** (`kind="near"` in `location.py`): minutes and
+  a way of travelling (or km), measured to towns of a size, named towns or kinds of places the AI
+  looks up. The AI reads each person's wording; nothing is built in. Checked live with the
+  owner's Gemini: it read the owner's sentence exactly so (50 min, transit, 0.3%).
+- **`travel.py` measures it:** job position from the job site's coordinates, else the town centre;
+  straight-line bounds settle clear cases; Google Maps (Routes API, weekday 8:00) for the 3
+  nearest reference places, only for jobs that passed the quick check; jobs within 10 minutes
+  of the limit measured again from the company's address (Places); without a key, AI estimates,
+  labelled. Monthly limits below Google's free allowance (Settings → Travel times, with a test
+  button). Minutes are kept per job, so Edit applies a new limit instantly.
+- Live test (Munich or within 40 km, 72 h, no Maps key): Weßling and Gilching kept at an
+  estimated 40–45 minutes to Munich, Neuching left out at 65; tightening to 30 minutes in Edit
+  moved them out with no new requests.
+- Also fixed: an import loop from the SuccessFactors module (a new test loads every key module in
+  a fresh Python).
+
+**Earlier on 2026-09-21**
 
 - **"Edit" next to "Understood as"** (HANDOVER §6, point 2). A window lists each condition about
   places: switch it off, correct its list of towns or its town size, reword it (Jobcu checks it
@@ -62,12 +82,14 @@ reuse, ad texts reused for three days, Adzuna's allowance shared across the mont
 4. **A coverage list, to measure what Jobcu misses:** 15–25 jobs you'd want Jobcu to find (from
    LinkedIn, StepStone, Indeed, anywhere), one per line: `Company | Job title | Place | link`. Then
    `uv run python tools/coverage_test.py that-file.txt` says how many Jobcu found and why not.
-5. **The job boards on hold** (IrishJobs.ie, Jobs.ie, Totaljobs, StepStone.de): their terms are
+5. **Google Maps key, now built in and waiting for your key:** real public-transport times for
+   conditions like yours. It needs a Google Cloud account with billing (a card), but stays in the
+   free allowance; the steps are in `docs/guides/getting-your-keys.md`, and the assistant will
+   walk you through them one at a time.
+6. **The job boards on hold** (IrishJobs.ie, Jobs.ie, Totaljobs, StepStone.de): their terms are
    now summarised in SOURCES.md. Options: keep them on hold (today's rule), or write to the
    Stepstone Group asking permission for personal, device-local use. Best decided with the
    coverage list's numbers.
-6. **Travel times need a Google Maps key** (your own choice earlier). Until then, conditions like
-   "at most 50 minutes by public transport" are a clearly labelled AI estimate.
 7. **One question:** may facts that barely change (a town's population, the last election's
    results) be remembered with their source and date for a while, or should every search look them
    up again? Everything about the *jobs* stays fresh either way.
@@ -92,9 +114,11 @@ Ireland, the UK and Germany are worked on and tested first.
    SuccessFactors pages opened for address-list sites aren't remembered between searches yet
    (only feed sites' dates are); remembering title, place and date for three days would cut
    repeat requests.
-3. **More of Phase 2:** real travel times once the owner agrees to a Maps key; remembering
-   researched facts if he allows it. Possible improvement: the Swedish ads and Adzuna give
-   coordinates, which could decide the town for size conditions better than the place name.
+3. **More of Phase 2:** walk the owner through the Google Maps key when he's ready (one step
+   at a time, `docs/guides/getting-your-keys.md`), then run a real search with it and compare
+   Google's times with the AI's estimates. Remember researched facts and travel times between
+   searches if he allows it (question 7). Possible next kind of reference place: kinds of places
+   near the job itself (a train station, Turkish supermarkets) through Places nearby search.
 4. Keep `docs/guides/` in step with the screens; fix what the tester's feedback shows.
 5. Confirm Phase 1 "Done when" with the owner, then agree what Phase 2 must still deliver.
 
@@ -185,8 +209,9 @@ The location box is a research task for the AI, not a filter (DECISIONS.md, 2026
       (2026-09-17)
 - [x] **Live web search** for conditions that need facts (elections, shops, students, anything
       else), with the sources kept and shown (2026-09-17)
-- [ ] **Real travel times** (Google Maps, weekday working hours, within the free allowance),
-      one request per place and not per job
+- [x] **Real travel times** (Google Maps, weekday working hours, within the free allowance),
+      one request per place and not per job (built 2026-09-21; waiting for the owner's key, AI
+      estimates until then)
 - [x] Location interpretation shown with the results, with an Edit option, sources and clearly
       marked estimates (Edit: 2026-09-21)
 - [ ] Reference data from HANDOVER §6 as *rulers* only: the town list already ships (coordinates,

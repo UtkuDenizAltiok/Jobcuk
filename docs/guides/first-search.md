@@ -18,8 +18,9 @@ saying what work you want works best. **What Jobcu understood** shows how your d
 ## 3. Search
 
 1. **Where do you want to work?** Write it your way, e.g. *Dublin or Cork*, *Munich or within 50 km*,
-   or with conditions such as *Germany, only towns with at least 100,000 people*. Jobcu checks
-   conditions itself or looks them up on the web.
+   or with conditions such as *Germany, only towns with at least 100,000 people* or *at most 50
+   minutes by public transport to a big city*. Jobcu checks conditions itself or looks them up on
+   the web. Travel times come from Google Maps if you added a key, otherwise they're AI estimates.
 2. Choose **Posted within** (72 hours or 1 week finds more) and the **job types**.
 3. Click **Search**. It takes a few minutes.
 

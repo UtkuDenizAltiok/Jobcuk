@@ -56,7 +56,8 @@ they say otherwise.
    CAPTCHAs, logins or bot protection. If a site blocks Jobcu, back off and mark the source
    unavailable for that search.
 2. **Device-local only:** no website, hosting, server, cloud storage, user accounts, analytics or
-   telemetry. Jobcu connects only to job sources and to the AI provider the user chose.
+   telemetry. Jobcu connects only to job sources, to the AI provider the user chose and, only if
+   the user saved a key for it, to Google Maps for travel times (the owner's decision).
 3. **macOS and Windows are both fully supported.** Every feature, file path and launcher must work
    on both, and CI tests both.
 4. **Stay neutral about AI providers.** Never recommend, prefer or default to one, in code, UI or
@@ -95,6 +96,8 @@ src/jobcu/
   countries.py               supported countries and their job-ad languages
   location.py                understands "Where do you want to work?": splits it into conditions,
                              computes size rules, researches the rest on the web with sources
+  travel.py                  travel limits to reference places ("50 minutes by public transport
+                             to a big city"): Google Maps with the user's key, else AI estimates
   quality.py                 the score check: ads kept from real searches and the owner's answers
   quality_api.py             internal API behind the Score check screen
   keywords.py                the hidden multilingual search words

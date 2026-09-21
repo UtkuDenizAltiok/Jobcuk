@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from jobcu import db
+from jobcu import db, travel
 from jobcu.ai.base import AIError
 from jobcu.ai.client import check_setup
 from jobcu.ai.providers import PROVIDERS
@@ -14,6 +14,7 @@ from jobcu.ai.usage import ModelUsage, UsageLog, estimate_cost, total_tokens
 from jobcu.keystore import KeyStore, KeyStoreError, mask
 from jobcu.settings import LimitSettings, ModelPrice, ProviderId, load_settings, save_settings
 from jobcu.sources import adzuna, all_sources, reed
+from jobcu.sources.http import PoliteClient
 
 router = APIRouter(prefix="/api")
 
@@ -22,7 +23,9 @@ JOB_SITE_KEYS = {
     adzuna.KEY_APP_KEY: "Adzuna Application Key",
     reed.KEY_API_KEY: "Reed API key",
 }
-ALLOWED_KEYS = {info.key_name for info in PROVIDERS.values()} | set(JOB_SITE_KEYS)
+TRAVEL_KEYS = {travel.KEY_NAME: "Google Maps API key"}
+ALLOWED_KEYS = ({info.key_name for info in PROVIDERS.values()} | set(JOB_SITE_KEYS)
+                | set(TRAVEL_KEYS))
 
 
 def _key_status(keys: KeyStore, name: str) -> dict:
@@ -52,6 +55,9 @@ def get_settings() -> dict:
         ],
         "job_site_keys": [
             {**_key_status(keys, name), "label": label} for name, label in JOB_SITE_KEYS.items()
+        ],
+        "travel_keys": [
+            {**_key_status(keys, name), "label": label} for name, label in TRAVEL_KEYS.items()
         ],
     }
 
@@ -136,10 +142,22 @@ def check_job_site(site: str) -> dict:
     return {"ok": result.ok, "message": result.message}
 
 
+@router.post("/travel/check")
+def check_travel() -> dict:
+    http = PoliteClient()
+    try:
+        ok, message = travel.check_key(KeyStore(), http)
+    finally:
+        http.close()
+    return {"ok": ok, "message": message}
+
+
 class Limits(BaseModel):
     scoring_cap: int
     monthly_token_limit: int | None = None
     monthly_cost_limit: float | None = None
+    maps_monthly_routes: int | None = None
+    maps_monthly_places: int | None = None
 
 
 @router.put("/settings/limits")
@@ -150,6 +168,10 @@ def put_limits(limits: Limits) -> dict:
         web_search_cap=settings.limits.web_search_cap,
         monthly_token_limit=limits.monthly_token_limit,
         monthly_cost_limit=limits.monthly_cost_limit,
+        maps_monthly_routes=(limits.maps_monthly_routes if limits.maps_monthly_routes is not None
+                             else settings.limits.maps_monthly_routes),
+        maps_monthly_places=(limits.maps_monthly_places if limits.maps_monthly_places is not None
+                             else settings.limits.maps_monthly_places),
     )
     save_settings(settings)
     return get_usage()
@@ -229,6 +251,10 @@ def get_usage(now: datetime | None = None) -> dict:
             ],
         },
         "last_search": last_search,
+        "travel": {
+            "routes_this_month": month.get("google_maps_routes", 0),
+            "places_this_month": month.get("google_maps_places", 0),
+        },
         "limits": settings.limits.model_dump(),
         "prices": [price.model_dump() for price in settings.prices],
         "sources": [

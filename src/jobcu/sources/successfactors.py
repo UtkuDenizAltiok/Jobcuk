@@ -30,7 +30,6 @@ from xml.etree import ElementTree
 from lxml import html as lxml_html
 from lxml.etree import ParserError
 
-from jobcu import jobstore
 from jobcu import places as place_list
 from jobcu.countries import COUNTRIES
 from jobcu.freshness import day_at_utc, parse_iso
@@ -99,6 +98,9 @@ class SuccessFactorsSource(CareerSystemSource):
 
     def _dated(self, job: FoundJob, ctx: SourceContext) -> FoundJob:
         """A feed job with its posting day, from memory or from its page."""
+        # Imported here: the job memory itself imports the sources (through dedupe).
+        from jobcu import jobstore
+
         known = jobstore.remembered_ad(job)
         if known is not None and known.posted_at:
             return dataclasses.replace(known, date_precision="day")

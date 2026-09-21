@@ -38,7 +38,8 @@ Conditions it can't check are shown as "not checked", never silently dropped.
 - **Private:** Jobcu runs on your own computer. Your documents, keys and results never leave it,
   except to the job sites and the AI service you choose. It never logs in to job sites.
 - **You need:** a Mac or Windows computer and a key from an AI provider of your choice. Free
-  Adzuna and Reed keys are optional and add two more job sites.
+  Adzuna and Reed keys are optional and add two more job sites. A Google Maps key is optional
+  and gives real travel times.
 - **Cost:** Jobcu is free. Your AI provider may charge for use; some have a free allowance.
 
 ---

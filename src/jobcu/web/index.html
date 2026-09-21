@@ -292,6 +292,23 @@
       </div>
 
       <div class="card">
+        <h2>Travel times (optional)</h2>
+        <p class="muted">When you ask for a travel time, such as "at most 50 minutes by public
+          transport to a big city", Jobcu can ask Google Maps for real weekday times with your own
+          key. Without a key, the AI estimates them. Google gives a free allowance every month,
+          and Jobcu stops below it.</p>
+        <div class="field">
+          <span class="label">Google Maps API key</span>
+          <div class="key-row" data-key-row data-key-name="google_maps"></div>
+        </div>
+        <div class="actions">
+          <button type="button" class="secondary" id="check-travel">Test Google Maps</button>
+        </div>
+        <p class="status" id="travel-status" role="status" hidden></p>
+        <p class="muted" id="travel-usage"></p>
+      </div>
+
+      <div class="card">
         <h2>Usage and limits</h2>
         <p class="muted">What Jobcu has used from your AI provider. Prices are yours to fill in,
           so the cost is an estimate; Jobcu has no prices built in.</p>
