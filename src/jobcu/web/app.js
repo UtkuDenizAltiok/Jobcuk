@@ -399,6 +399,10 @@ function conditionLine(condition) {
     parts.push(el("p", { class: "muted", text: `${how}: ${names}${more}` }));
   } else if (condition.kind === "near") {
     parts.push(el("p", { class: "muted", text: nearSummary(condition) }));
+  } else if (condition.kind === "countries_that_fit" || condition.kind === "countries_to_avoid") {
+    const which = condition.kind === "countries_that_fit" ? "Countries that fit" : "Countries left out";
+    parts.push(el("p", { class: "muted",
+                         text: `${which}: ${countryList(condition.countries || []) || "none"}.` }));
   } else if (condition.kind === "town_size") {
     const size = condition.min_share_of_country
       ? `at least ${(condition.min_share_of_country * 100).toFixed(2)}% of the country's people`
@@ -429,6 +433,9 @@ const TRAVEL_MODES = {
   bicycle: "by bike",
 };
 
+const COUNTRY_NAMES = new Intl.DisplayNames(["en"], { type: "region" });
+const countryList = (codes) => codes.map((code) => COUNTRY_NAMES.of(code) || code).join(", ");
+
 /** "towns with at least 250,500 people" or "Munich, Augsburg" for a "near" condition. */
 function anchorText(anchor) {
   if (!anchor) return "the places you named";
@@ -442,7 +449,15 @@ function anchorText(anchor) {
   } else if (anchor.min_people) {
     parts.push(`towns with at least ${anchor.min_people.toLocaleString()} people`);
   }
-  return parts.join("; ") || anchor.description || "the places you named";
+  if ((anchor.countries_fit || []).length) parts.push(`in ${countryList(anchor.countries_fit)}`);
+  if ((anchor.countries_avoided || []).length) {
+    parts.push(`not in ${countryList(anchor.countries_avoided)}`);
+  }
+  const avoided = (anchor.avoided || []).map((t) => t.name);
+  const except = avoided.length
+    ? ` except ${avoided.slice(0, 12).join(", ")}${avoided.length > 12 ? ` and ${avoided.length - 12} more` : ""}`
+    : "";
+  return (parts.join("; ") || anchor.description || "the places you named") + except;
 }
 
 function nearSummary(condition) {
@@ -588,6 +603,14 @@ function nearEditor(condition, id) {
       el("small", { class: "muted", text: "Separate places with commas." }),
     ));
   }
+  if ((anchor.avoided || []).length) {
+    fields.push(el("div", { class: "field" },
+      el("label", { for: `${id}-avoided`, text: "Never measured to these places" }),
+      el("textarea", { id: `${id}-avoided`, name: "avoided", rows: "3", spellcheck: "false",
+                       text: anchor.avoided.map((town) => town.name).join(", ") }),
+      el("small", { class: "muted", text: "Found on the web. Separate places with commas." }),
+    ));
+  }
   return fields;
 }
 
@@ -617,6 +640,9 @@ function readConditionEdits() {
       const edit = { text: field("text").value, original, use: field("use")?.checked ?? true };
       if (field("towns")) {
         edit.towns = field("towns").value.split(/[,;\n]/).map((t) => t.trim()).filter(Boolean);
+      }
+      if (field("avoided")) {
+        edit.avoided = field("avoided").value.split(/[,;\n]/).map((t) => t.trim()).filter(Boolean);
       }
       // A size is sent only when it was changed, so rounding never counts as a change.
       const size = field("people") || field("share");
@@ -1508,9 +1534,7 @@ function renderUsage() {
 
   $("travel-usage").textContent =
     `This month: ${usage.travel.routes_this_month.toLocaleString()} of ` +
-    `${usage.limits.maps_monthly_routes.toLocaleString()} travel-time look-ups and ` +
-    `${usage.travel.places_this_month.toLocaleString()} of ` +
-    `${usage.limits.maps_monthly_places.toLocaleString()} company addresses.`;
+    `${usage.limits.maps_monthly_routes.toLocaleString()} travel-time look-ups.`;
   $("scoring-cap").value = usage.limits.scoring_cap;
   $("token-limit").value = usage.limits.monthly_token_limit ?? "";
   $("cost-limit").value = usage.limits.monthly_cost_limit ?? "";

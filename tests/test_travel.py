@@ -53,19 +53,15 @@ def group(location, job_id="1", company="FakeCo", latitude=None, longitude=None)
 
 
 class FakeMaps:
-    """Answers route matrices with made-up minutes per destination town, and company look-ups."""
+    """Answers route matrices with made-up minutes per destination town."""
 
-    def __init__(self, minutes, company=None):
+    def __init__(self, minutes):
         self.minutes = minutes  # {town name: minutes}
-        self.company = company
         self.requests = []
 
     def handler(self, request):
         body = json.loads(request.content)
         self.requests.append((request.url.path, body, dict(request.headers)))
-        if request.url.host == "places.googleapis.com":
-            return httpx.Response(200, json={"places": [{"location": self.company}]}
-                                  if self.company else {})
         elements = []
         for index, destination in enumerate(body["destinations"]):
             point = destination["waypoint"]["location"]["latLng"]
@@ -168,15 +164,16 @@ def test_clear_cases_need_no_route_look_up():
     assert travel.detail(condition, far_away)[0].startswith("nearest is Munich")
 
 
-def test_a_job_just_over_the_limit_is_measured_from_the_company_address():
-    fake = FakeMaps({"Munich": 55}, company={"latitude": 48.20, "longitude": 11.40})
+def test_a_close_call_is_measured_from_the_ads_own_place_only():
+    # A company can have several sites with the same name, so Jobcu never looks up a company's
+    # address elsewhere: the place the ad names is what counts (the owner's decision).
+    fake = FakeMaps({"Munich": 52})
     condition = near()
-    job = group("Fürstenfeldbruck", company="Close To Munich GmbH")
+    job = group("Fürstenfeldbruck", company="Has Many Sites GmbH")
     meter(fake).measure([condition], [job], [0])
-    hosts = [path for path, _, _ in fake.requests]
-    assert hosts[1].endswith("places:searchText") and len(hosts) == 3
-    assert "Close To Munich GmbH, Fürstenfeldbruck" in fake.requests[1][1]["textQuery"]
-    assert condition.travel["s:1"]["from"] == "company"
+    assert [path for path, _, _ in fake.requests] == ["/distanceMatrix/v2:computeRouteMatrix"]
+    assert condition_fit(condition, job) == "no"
+    assert travel.detail(condition, job)[0] == "Munich, 52 min by public transport"
 
 
 def test_without_a_key_the_ai_estimates_and_says_so():
@@ -329,3 +326,156 @@ def test_a_search_keeps_jobs_near_a_big_city_and_leaves_out_far_ones(ready, monk
     assert check["detail"] == "Munich, 25 min by public transport"
     assert check["source"] == "AI estimate"
     assert any("Google Maps key" in note for note in result["notes"])
+
+
+# --- Remembered for 30 days ---------------------------------------------------------------
+
+
+def test_travel_times_are_remembered_for_30_days_from_the_same_town():
+    fake = FakeMaps({"Munich": 17, "Augsburg": 55})
+    meter(fake).measure([near()], [group("Fürstenfeldbruck", "1")], [0])
+    assert len(fake.requests) == 1
+    # Another search, another job in the same town: nothing is asked again.
+    later = near()
+    job = group("Fürstenfeldbruck", "2", company="Other GmbH")
+    meter().measure([later], [job], [0])  # would fail if Google Maps were asked
+    assert condition_fit(later, job) == "yes" and travel.detail(later, job)[1] == "Google Maps"
+    # After 30 days it's measured again.
+    stale = TravelMeter(None, KeyStore(), PoliteClient(
+        min_intervals={}, sleep=lambda s: None, transport=httpx.MockTransport(fake.handler)),
+        Settings(), now=lambda: NOW + timedelta(days=31))
+    stale.measure([near()], [job], [0])
+    assert len(fake.requests) == 2
+
+
+def test_estimates_are_remembered_only_until_there_is_a_key():
+    class GuessingClient:
+        calls = 0
+
+        def generate(self, output, **request):
+            GuessingClient.calls += 1
+            return TravelGuesses(answers=[TravelGuess(id="P0", town="Munich", minutes=25)])
+
+    meter(key=False, client=GuessingClient()).measure([near()], [group("Fürstenfeldbruck")], [0])
+    meter(key=False, client=GuessingClient()).measure([near()], [group("Fürstenfeldbruck")], [0])
+    assert GuessingClient.calls == 1  # the second search used the remembered estimate
+    fake = FakeMaps({"Munich": 17, "Augsburg": 55})
+    with_key = near()
+    meter(fake).measure([with_key], [group("Fürstenfeldbruck")], [0])
+    assert len(fake.requests) == 1 and travel.detail(with_key, group("Fürstenfeldbruck")) == (
+        "Munich, 17 min by public transport", "Google Maps")
+
+
+# --- Reference places defined by any fact -------------------------------------------------
+
+
+def test_places_that_fail_a_fact_are_never_reference_places():
+    anchor = Anchor(min_share_of_country=0.003, avoided=[TownRef(name="Dresden", country="DE")],
+                    looked_up=True)
+    towns = {town.name for town in travel.anchor_towns(anchor, "DE")}
+    assert "Leipzig" in towns and "Dresden" not in towns
+
+
+def test_one_fact_is_looked_up_once_for_the_job_town_and_the_reference_places():
+    far_right = "no cities where far-right parties polled above the national average"
+    commute = "at most 50 minutes by public transport to a city with at least 0.3% of people"
+    sorted_kinds = {
+        commute: SortedCondition(
+            text=commute, understood_as="Within 50 minutes of a big city that isn't a "
+            "far-right stronghold", kind="near", max_minutes=50, travel_mode="transit",
+            anchor=SortedAnchor(description="big cities that aren't far-right strongholds",
+                                min_share_of_country=0.003, needs_the_web=True,
+                                look_up=far_right)),
+        far_right: SortedCondition(text=far_right, understood_as="Not in far-right strongholds",
+                                   kind="needs_the_web"),
+    }
+    avoid = CheckedCondition(understood_as="Avoid far-right strongholds", kind="towns_to_avoid",
+                             towns=[TownRef(name="Dresden", country="DE"),
+                                    TownRef(name="Chemnitz", country="DE")],
+                             confidence="checked", note="Federal election 2025 results.")
+    client = ScriptedClient(avoid, sorted_kinds=sorted_kinds)
+    reference, own_town = check_conditions(client, [commute, far_right], ["DE"])
+    assert len(client.research_calls) == 1
+    assert [t.name for t in reference.anchor.avoided] == ["Dresden", "Chemnitz"]
+    assert reference.anchor.min_share_of_country == 0.003 and reference.sources
+    assert own_town.kind == "towns_to_avoid" and own_town.text == far_right
+
+
+def test_a_fact_without_a_size_counts_towns_big_enough_to_be_called_cities():
+    text = "within 30 minutes of a city that isn't a far-right stronghold"
+    sorted_kinds = {text: SortedCondition(
+        text=text, understood_as="Within 30 minutes of such a city", kind="near",
+        max_minutes=30, travel_mode="transit",
+        anchor=SortedAnchor(description="cities that aren't far-right strongholds",
+                            needs_the_web=True, look_up="far-right strongholds"))}
+    avoid = CheckedCondition(understood_as="x", kind="towns_to_avoid",
+                             towns=[TownRef(name="Dresden", country="DE")], confidence="checked",
+                             note="")
+    (condition,) = check_conditions(ScriptedClient(avoid, sorted_kinds=sorted_kinds), [text],
+                                    ["DE"])
+    assert condition.anchor.min_people == 20_000 and "20,000" in condition.note
+
+
+def test_places_to_avoid_can_be_corrected():
+    condition = near()
+    condition.anchor.avoided = [TownRef(name="Dresden", country="DE"),
+                                TownRef(name="Leipzig", country="DE")]
+    plan = LocationPlan(text="", understood_as="", countries=["DE"], places=[],
+                        conditions=[condition], not_checked_yet=[], outside_supported_area=[],
+                        broad=False)
+    corrected = apply_edits(ScriptedClient(None), plan, [
+        ConditionEdit(text=OWNERS_TEXT, original=0, avoided=["Dresden"])]).conditions[0]
+    assert [t.name for t in corrected.anchor.avoided] == ["Dresden"]
+    assert corrected.changed_by_you
+    assert "Leipzig" in {t.name for t in travel.anchor_towns(corrected.anchor, "DE")}
+
+
+# --- Facts decided country by country -----------------------------------------------------
+
+
+def test_a_fact_about_whole_countries_narrows_the_countries_searched():
+    from jobcu.location import (
+        LocationUnderstanding,
+        SortedConditions,
+        fits,
+        interpret_location,
+    )
+
+    text = "a country in the top 10 for work-life balance"
+
+    class CountryClient:
+        research_calls = 0
+
+        def generate(self, output, **request):
+            if output is LocationUnderstanding:
+                return LocationUnderstanding(
+                    understood_as="Anywhere, in a top-10 work-life-balance country.",
+                    limits_countries=False, countries=[], places=[],
+                    conditions_about_places=[text], conditions_about_the_job=[],
+                    outside_supported_area=[])
+            if output is SortedConditions:
+                return SortedConditions(conditions=[SortedCondition(
+                    text=text, understood_as="Top-10 countries for work-life balance",
+                    kind="needs_the_web")])
+            return CheckedCondition(understood_as="Top-10 work-life balance (OECD index)",
+                                    kind="countries_that_fit", countries=["NL", "DK", "NO"],
+                                    confidence="checked", note="OECD Better Life Index.")
+
+        def research(self, **request):
+            CountryClient.research_calls += 1
+            from jobcu.ai.base import ResearchReply, Source, Usage
+            return ResearchReply("notes", [Source("https://oecd.example/bli", "OECD")],
+                                 Usage(1, 1))
+
+    plan = interpret_location(CountryClient(), text)
+    assert plan.countries == ["DK", "NL", "NO"] and not plan.broad
+    (condition,) = plan.conditions
+    assert condition.kind == "countries_that_fit" and condition.status == "applied"
+    assert fits(condition, "NL", "Utrecht") == "yes" and fits(condition, "DE", "Berlin") == "no"
+    assert CountryClient.research_calls == 1
+
+
+def test_reference_places_can_be_limited_to_countries_by_a_fact():
+    anchor = Anchor(min_people=500_000, countries_fit=["NL"])
+    assert travel.anchor_towns(anchor, "DE") == []
+    assert {"Amsterdam", "Rotterdam"} <= {t.name for t in travel.anchor_towns(anchor, "NL")}

@@ -45,10 +45,9 @@ every month, and Jobcu stops below it.
 2. Add a billing account when Google asks. Then set a small budget alert (for example €1) at
    [console.cloud.google.com/billing/budgets](https://console.cloud.google.com/billing/budgets).
 3. Turn on the [Routes API](https://console.cloud.google.com/apis/library/routes.googleapis.com)
-   and the [Places API (New)](https://console.cloud.google.com/apis/library/places.googleapis.com)
-   (**Enable** on each page).
+   (**Enable**).
 4. [Credentials](https://console.cloud.google.com/apis/credentials) → **Create credentials** →
-   **API key**. Under **API restrictions**, allow only those two APIs → **Save**.
+   **API key**. Under **API restrictions**, allow only the Routes API → **Save**.
 5. In Jobcu: **Settings → Travel times** → paste the key → **Save** → **Test Google Maps**.
 
 ➡️ Next: [Your first search](first-search.md)

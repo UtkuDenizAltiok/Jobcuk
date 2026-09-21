@@ -137,6 +137,19 @@ MIGRATIONS: list[str] = [
         pool_json TEXT NOT NULL
     );
     """,
+    # 9: Travel times, remembered for 30 days (the owner's decision, 2026-09-21), so repeated
+    # searches don't ask Google Maps or the AI again (travel.py).
+    """
+    CREATE TABLE travel_memory (
+        origin TEXT NOT NULL,
+        destination TEXT NOT NULL,
+        mode TEXT NOT NULL,
+        measured_by TEXT NOT NULL,
+        minutes INTEGER,
+        measured_at TEXT NOT NULL,
+        PRIMARY KEY (origin, destination, mode, measured_by)
+    );
+    """,
 ]
 
 

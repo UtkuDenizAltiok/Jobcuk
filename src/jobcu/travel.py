@@ -5,8 +5,9 @@ is one condition: a limit (50 minutes, public transport) and reference places (t
 that size). A job in Fürstenfeldbruck fits it through Munich, although Fürstenfeldbruck itself
 is small. `location.py` reads the condition; this module measures it for each job:
 
-1. **Where the job is:** the coordinates a job site gave, otherwise the centre of the job's town.
-   With a Google Maps key, a job close to the limit is placed at the company's own address.
+1. **Where the job is:** the coordinates the job ad gave, otherwise the centre of the district or
+   town the ad names. Never a company's address from elsewhere: a company can have several sites
+   with the same name (the owner's decision).
 2. **Which reference places could be in reach:** straight-line distances rule out places no
    train or car could reach in time and settle jobs inside a reference town at once, so only
    the nearest few places in between are asked about.
@@ -15,7 +16,11 @@ is small. `location.py` reads the condition; this module measures it for each jo
    when the limit is reached, the AI estimates the times and the card says so.
 
 Each job's answer is kept in the condition (minutes per reference place), so a corrected limit
-is applied again without asking anyone.
+is applied again without asking anyone. Travel times are also remembered for 30 days (the
+owner's decision): from the same town, or the same point a job ad gave, to the same place, by
+the same way of travelling. With a Google Maps
+key, only Google's own answers are taken from memory; the AI's estimates are only used again
+while there is no key.
 """
 
 import logging
@@ -28,18 +33,19 @@ from zoneinfo import ZoneInfo
 import httpx
 from pydantic import BaseModel, Field
 
+from jobcu import db
 from jobcu import places as place_list
 from jobcu.ai.base import AIError
 from jobcu.countries import COUNTRIES
 from jobcu.dedupe import JobGroup
 from jobcu.location import Anchor, Condition
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget
+from jobcu.text import normalise
 
 log = logging.getLogger(__name__)
 
 KEY_NAME = "google_maps"
 ROUTES = "https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix"
-PLACES = "https://places.googleapis.com/v1/places:searchText"
 
 MODES = {"transit": "TRANSIT", "drive": "DRIVE", "walk": "WALK", "bicycle": "BICYCLE"}
 MODE_WORDS = {"transit": "by public transport", "drive": "by car", "walk": "on foot",
@@ -51,9 +57,9 @@ FASTEST_KMH = {"transit": 220, "drive": 120, "bicycle": 25, "walk": 7}
 IN_TOWN_KM = 3.0
 # How many of the nearest reference places are asked about for each job.
 NEAREST = 3
-# Jobs this close to the limit (minutes) are measured again from the company's own address.
-BORDERLINE = 10
 ESTIMATE_BATCH = 30
+MEMORY_DAYS = 30
+MAPS, ESTIMATE = "Google Maps", "AI estimate"
 
 _TIMEZONES = {"GB": "Europe/London", "IE": "Europe/Dublin", "PT": "Europe/Lisbon",
               "IS": "Atlantic/Reykjavik", "FI": "Europe/Helsinki", "EE": "Europe/Tallinn",
@@ -70,12 +76,20 @@ class Point:
     latitude: float
     longitude: float
     country: str
-    how: str  # "address" (from the job site), "company" (Google Maps), "town" (its centre)
+    how: str  # "address" (the point the job ad gave) or "town" (its centre)
     town: str | None = None
 
     @property
     def key(self) -> str:
         return f"{self.latitude:.3f},{self.longitude:.3f}"
+
+    @property
+    def identity(self) -> str:
+        """What a travel time is remembered for: the town, or the point the job ad gave (to
+        about 100 metres)."""
+        if self.how == "town":
+            return f"town:{self.country}:{normalise(self.town)}"
+        return f"point:{self.key}"
 
 
 def job_key(group: JobGroup) -> str:
@@ -108,6 +122,9 @@ def anchor_towns(anchor: Anchor | None, country: str) -> list[place_list.Town]:
     the choice when more than one is given ("a university town with at least 100,000 people")."""
     if anchor is None or country not in COUNTRIES:
         return []
+    if (anchor.countries_fit and country not in anchor.countries_fit) or (
+            country in anchor.countries_avoided):
+        return []
     chosen: set[place_list.Town] | None = None
     if anchor.min_people or anchor.min_share_of_country:
         smallest = max(anchor.min_people or 0,
@@ -117,7 +134,10 @@ def anchor_towns(anchor: Anchor | None, country: str) -> list[place_list.Town]:
     if anchor.named or anchor.researched:
         found = {town for ref in listed if (town := place_list.find(ref.name, country))}
         chosen = found if chosen is None else chosen & found
-    return sorted(chosen or (), key=lambda town: -town.people)
+    # Places that fail a looked-up fact ("far-right strongholds") never count.
+    avoided = {place_list.find(ref.name, country) for ref in anchor.avoided
+               if ref.country == country}
+    return sorted((chosen or set()) - avoided, key=lambda town: -town.people)
 
 
 def answer(condition: Condition, group: JobGroup) -> str:
@@ -155,8 +175,6 @@ def detail(condition: Condition, group: JobGroup) -> tuple[str, str] | None:
         text = f"nearest is {entry['nearest']}, too far {words}"
     else:
         text = "no such place in reach"
-    if entry.get("from") == "company":
-        text += ", from the company's address"
     return text, entry.get("by") or "estimate"
 
 
@@ -216,21 +234,6 @@ class GoogleMaps:
                 found[towns[index].name] = math.ceil(int(seconds) / 60)
         return found
 
-    def company(self, name: str, place: str, near: Point) -> Point | None:
-        """The company's own address near the job's town, if Google knows it."""
-        body = {"textQuery": f"{name}, {place}", "maxResultCount": 1,
-                "locationBias": {"circle": {"center": {"latitude": near.latitude,
-                                                       "longitude": near.longitude},
-                                            "radius": 30000.0}}}
-        data = self._post(PLACES, body, "places.location")
-        location = ((data.get("places") or [{}])[0]).get("location") or {}
-        lat, lon = location.get("latitude"), location.get("longitude")
-        if lat is None or lon is None:
-            return None
-        if place_list.km(lat, lon, near.latitude, near.longitude) > 40:
-            return None  # a namesake somewhere else
-        return Point(lat, lon, near.country, "company", near.town)
-
 
 class TravelGuess(BaseModel):
     id: str
@@ -261,11 +264,10 @@ class TravelMeter:
         self._note = note
         key = keys.get(KEY_NAME) if keys is not None else None
         self._maps = GoogleMaps(key, http, now) if key else None
+        self._now = now
         limits = settings.limits
         self._routes = RequestBudget("google_maps_routes", "Google Maps",
                                      Limits(per_month=limits.maps_monthly_routes), now=now)
-        self._places = RequestBudget("google_maps_places", "Google Maps",
-                                     Limits(per_month=limits.maps_monthly_places), now=now)
 
     def measure(self, conditions: list[Condition], groups: list[JobGroup],
                 indexes: list[int]) -> None:
@@ -311,21 +313,46 @@ class TravelMeter:
         if not wanted:
             self._settle_status(condition)
             return
-        places = list(wanted.values())
-        measured = self._with_maps(places, mode) if self._maps else {}
-        guesses = self._estimate([p for p in places if p[0].key not in measured], mode)
-        for point, _towns, keys in places:
-            minutes, by = measured.get(point.key), "Google Maps"
-            if minutes is None:
-                minutes, by = guesses.get(point.key), "AI estimate"
-            if minutes is None:
+        found = self._minutes(list(wanted.values()), mode)
+        for point, _towns, keys in wanted.values():
+            if point.key not in found:
                 continue
+            minutes, by = found[point.key]
             for key in keys:
                 condition.travel[key] = {"minutes": minutes, "by": by, "from": point.how,
                                          "point": point.key}
-        if self._maps:
-            self._refine(condition, groups, indexes, mode)
         self._settle_status(condition)
+
+    def _minutes(self, places, mode) -> dict[str, tuple[dict[str, int | None], str]]:
+        """Minutes to each town for each place, from memory where possible, otherwise from
+        Google Maps, otherwise from the AI; with who measured them."""
+        found: dict[str, tuple[dict[str, int | None], str]] = {}
+        missing = []
+        for point, towns, keys in places:
+            known, by = recall(point, towns, mode, maps=self._maps is not None, now=self._now())
+            still = [town for town in towns if town.name not in known]
+            if still:
+                missing.append((point, still, keys, known, by))
+            else:
+                found[point.key] = (known, by)
+        if not missing:
+            return found
+        measured = self._with_maps([(p, t, k) for p, t, k, _, _ in missing], mode) \
+            if self._maps else {}
+        guesses = self._estimate([(p, t, k) for p, t, k, _, _ in missing
+                                  if p.key not in measured], mode)
+        for point, towns, _, known, known_by in missing:
+            if point.key in measured:
+                new, by = measured[point.key], MAPS
+            elif point.key in guesses:
+                new, by = guesses[point.key], ESTIMATE
+            else:
+                continue
+            remember(point, {t.name: new.get(t.name) for t in towns}, point.country, mode, by,
+                     now=self._now())
+            either = ESTIMATE if ESTIMATE in (by, known_by) else MAPS
+            found[point.key] = ({**known, **new}, either)
+        return found
 
     def _with_maps(self, places, mode) -> dict[str, dict[str, int | None]]:
         measured: dict[str, dict[str, int | None]] = {}
@@ -341,34 +368,6 @@ class TravelMeter:
                 self._note(f"{exc} The remaining travel times are AI estimates.")
                 break
         return measured
-
-    def _refine(self, condition: Condition, groups, indexes, mode) -> None:
-        """Jobs close to the limit, placed only at their town's centre, are measured again from
-        the company's own address."""
-        limit = condition.max_minutes or 0
-        for index in indexes:
-            group = groups[index]
-            entry = condition.travel.get(job_key(group)) or {}
-            minutes = [m for m in (entry.get("minutes") or {}).values() if m is not None]
-            if (entry.get("by") != "Google Maps" or entry.get("from") != "town" or not minutes
-                    or abs(min(minutes) - limit) > BORDERLINE or not group.main.company):
-                continue
-            point = job_point(group)
-            towns = [t for t in anchor_towns(condition.anchor, point.country)
-                     if t.name in entry["minutes"]]
-            try:
-                self._places.spend()
-                exact = self._maps.company(group.main.company,
-                                           group.main.location_text or point.town or "", point)
-                if exact is None:
-                    continue
-                self._routes.spend(len(towns))
-                found = self._maps.minutes(exact, towns, mode)
-            except (BudgetExhausted, MapsError) as exc:
-                log.info("Refining a travel time stopped: %s", exc)
-                return
-            condition.travel[job_key(group)] = {"minutes": found, "by": "Google Maps",
-                                                "from": "company", "point": point.key}
 
     def _estimate(self, places, mode) -> dict[str, dict[str, int | None]]:
         """The AI's best guesses, for when Google Maps can't be asked."""
@@ -405,6 +404,47 @@ class TravelMeter:
         """Checked when every measured job was measured by Google Maps or by distance alone."""
         ways = {entry.get("by") for entry in condition.travel.values()}
         condition.status = "estimate" if "AI estimate" in ways else "applied"
+
+
+def _destination(country: str, town: str) -> str:
+    return f"{country}:{town}"
+
+
+def recall(point: Point, towns: list[place_list.Town], mode: str, *, maps: bool,
+           now: datetime) -> tuple[dict[str, int | None], str]:
+    """Remembered minutes from this place to these towns, and who measured them. With a Google
+    Maps key, only Google's answers count, so estimates made without a key get replaced."""
+    since = (now - timedelta(days=MEMORY_DAYS)).isoformat()
+    ways = [MAPS] if maps else [MAPS, ESTIMATE]
+    marks = ",".join("?" * len(ways))
+    known: dict[str, int | None] = {}
+    by = MAPS
+    with db.connect() as conn:
+        for town in towns:
+            row = conn.execute(
+                f"SELECT minutes, measured_by FROM travel_memory WHERE origin = ? AND "
+                f"destination = ? AND mode = ? AND measured_at >= ? AND measured_by IN ({marks}) "
+                "ORDER BY measured_by = ? DESC, measured_at DESC LIMIT 1",
+                (point.identity, _destination(point.country, town.name), mode, since, *ways,
+                 MAPS),
+            ).fetchone()
+            if row is not None:
+                known[town.name] = row["minutes"]
+                by = ESTIMATE if row["measured_by"] == ESTIMATE else by
+    return known, by
+
+
+def remember(point: Point, minutes: dict[str, int | None], country: str, mode: str, by: str, *,
+             now: datetime) -> None:
+    with db.connect() as conn:
+        conn.executemany(
+            "INSERT OR REPLACE INTO travel_memory (origin, destination, mode, measured_by, "
+            "minutes, measured_at) VALUES (?, ?, ?, ?, ?, ?)",
+            [(point.identity, _destination(country, town), mode, by, value, now.isoformat())
+             for town, value in minutes.items()],
+        )
+        conn.execute("DELETE FROM travel_memory WHERE measured_at < ?",
+                     ((now - timedelta(days=MEMORY_DAYS)).isoformat(),))
 
 
 def check_key(keys, http) -> tuple[bool, str]:

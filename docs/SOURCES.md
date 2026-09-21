@@ -217,16 +217,18 @@ big city", and only with the user's own key (Settings → Travel times).
   next Tuesday 8:00 local time). The answer is a JSON list of elements with `duration` like
   `"1020s"` and `condition` `ROUTE_EXISTS`. **At most 100 elements per request for TRANSIT**
   (625 otherwise). Billed per element (origins × destinations).
-- **Places API (New), Text Search:** `POST places.googleapis.com/v1/places:searchText` with
-  `textQuery` "{company}, {town}", `maxResultCount` 1, a 30 km `locationBias` circle and field
-  mask `places.location`. Used only for jobs within 10 minutes of the limit.
+- **Places API is not used** (it was for a short while on 2026-09-21): looking up "{company},
+  {town}" can find the wrong site of a company with several, so Jobcu stays with the place the
+  job ad gives (the owner's decision).
 - **Free monthly allowance (since March 2025, checked 2026-09-21):** Route Matrix Essentials
   10,000 elements, Pro 5,000 (traffic-aware routing, which Jobcu doesn't use); Places Text Search
   Essentials/Pro 5,000; Geocoding 10,000. Above that, about $5 per 1,000 route elements and
   $32 per 1,000 place look-ups. Google requires a billing account even for free use.
-- Jobcu counts elements and place look-ups in `source_requests` (`google_maps_routes`,
-  `google_maps_places`) and stops at the monthly limits in Settings (9,000 / 4,500 by default),
-  then uses AI estimates.
+- Jobcu counts elements in `source_requests` (`google_maps_routes`) and stops at the monthly
+  limit in Settings (9,000 by default), then uses AI estimates.
+- **Remembered for 30 days** (table `travel_memory`, the owner's decision): minutes from the same
+  town, or the same point a job ad gave, to the same reference place by the same way of
+  travelling. With a key, only Google's own answers are reused.
 - The key goes only in a request header, never in an address, so it can't end up in a log.
 
 ## Job boards on hold: what their terms say (checked 2026-09-18 and 2026-09-21)

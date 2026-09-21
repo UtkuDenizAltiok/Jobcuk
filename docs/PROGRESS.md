@@ -6,7 +6,7 @@ tested and shown to the owner before the next one starts. Decisions are in
 
 ## Right now
 
-*Last updated: 2026-09-21 (late evening). Tree clean, all pushed, CI green, 362 tests pass.*
+*Last updated: 2026-09-21 (night). Tree clean, all pushed, CI green, 370 tests pass.*
 
 **Where we are:** Phase 1 is essentially complete. Phase 2 (the location box as a research task
 for the AI) works, and **people can now correct it after a search** with the Edit button.
@@ -14,7 +14,27 @@ Coverage grows source by source: **16 sources** now (8 of them company career sy
 Sweden and two more career systems added today and **357 employers** in the directory. Everything
 is committed and pushed; GitHub's tests pass on macOS and Windows.
 
-**Last finished (2026-09-21, late evening): travel limits to reference places**
+**Last finished (2026-09-21, night): the owner's answers on travel and facts**
+
+- **Travel times remembered for 30 days** per town (or per point a job ad gave), reference place
+  and way of travelling (`travel_memory`, migration 9). With a Maps key only Google's answers are
+  reused.
+- **Company-address look-ups removed** (owner: a company can have several sites with one name).
+  Jobs are placed where the ad says. Settings and the Maps guide no longer mention Places.
+- **Any fact, any level:** the web research can answer with countries that fit / to avoid
+  (`countries_that_fit`, `countries_to_avoid`); these also narrow the countries searched. Facts
+  can define the places someone travels from too (`Anchor.avoided`, `countries_fit`,
+  `countries_avoided`, `look_up`), and one fact is looked up once for both uses. When nothing
+  lists every place, the AI reasons to a labelled estimate instead of giving up. Edit can correct
+  the places to avoid.
+- Live checks with the owner's Gemini (location step only): his own sentence applied "no AfD
+  cities" to both the job's town and the reference cities with one look-up; "top 10 for
+  work-life balance" narrowed the search to 11 countries; "sunshine for more than half the year"
+  gave northern towns to avoid; "a Turkish supermarket" gave an estimated rule (towns of
+  100,000+). His sentence's "dominant election result" was read as "AfD won the mayor or most
+  votes locally", which doesn't include Dresden; "above the national average" would.
+
+**Earlier (2026-09-21, late evening): travel limits to reference places**
 
 The owner saw a job in Fürstenfeldbruck left out by *"at most 50 minutes to a city with at least
 0.3% of the country's people"*: Jobcu had read it as "the job's own town has 0.3%". Now:
@@ -82,17 +102,17 @@ reuse, ad texts reused for three days, Adzuna's allowance shared across the mont
 4. **A coverage list, to measure what Jobcu misses:** 15–25 jobs you'd want Jobcu to find (from
    LinkedIn, StepStone, Indeed, anywhere), one per line: `Company | Job title | Place | link`. Then
    `uv run python tools/coverage_test.py that-file.txt` says how many Jobcu found and why not.
-5. **Google Maps key, now built in and waiting for your key:** real public-transport times for
-   conditions like yours. It needs a Google Cloud account with billing (a card), but stays in the
-   free allowance; the steps are in `docs/guides/getting-your-keys.md`, and the assistant will
-   walk you through them one at a time.
+5. **Google Maps key, being set up step by step:** step 1 done (Google Cloud project "Jobcu",
+   ID jobcu-509321; its Billing box shows €0.00, so a billing account looks linked). Next: step 2,
+   a €1 budget alert; then enable the Routes API, create a key restricted to it, paste it in
+   Settings → Travel times and press Test (`docs/guides/getting-your-keys.md`).
 6. **The job boards on hold** (IrishJobs.ie, Jobs.ie, Totaljobs, StepStone.de): their terms are
    now summarised in SOURCES.md. Options: keep them on hold (today's rule), or write to the
    Stepstone Group asking permission for personal, device-local use. Best decided with the
    coverage list's numbers.
-7. **One question:** may facts that barely change (a town's population, the last election's
-   results) be remembered with their source and date for a while, or should every search look them
-   up again? Everything about the *jobs* stays fresh either way.
+7. **Answered for travel times** (remember 30 days). Researched facts about places (election
+   results, rankings) are still looked up fresh in every search; ask the owner only if the cost of
+   those look-ups becomes noticeable.
 8. **Jooble and Careerjet** need free keys meant for websites showing their jobs, and Jobcu has no
    website. **France Travail, Norway's NAV and Belgium's VDAB** need a free registration or key.
    Your call whether to sign up for any of them.
@@ -114,11 +134,11 @@ Ireland, the UK and Germany are worked on and tested first.
    SuccessFactors pages opened for address-list sites aren't remembered between searches yet
    (only feed sites' dates are); remembering title, place and date for three days would cut
    repeat requests.
-3. **More of Phase 2:** walk the owner through the Google Maps key when he's ready (one step
-   at a time, `docs/guides/getting-your-keys.md`), then run a real search with it and compare
-   Google's times with the AI's estimates. Remember researched facts and travel times between
-   searches if he allows it (question 7). Possible next kind of reference place: kinds of places
-   near the job itself (a train station, Turkish supermarkets) through Places nearby search.
+3. **More of Phase 2:** finish the Google Maps key with the owner, one step at a time (next:
+   step 2, the budget alert), then run a real search with it and compare Google's times with the
+   AI's estimates. Possible next: facts decided per region (needs region names in the town list,
+   `tools/update_places.py` from GeoNames admin1 codes), and kinds of places near the job itself
+   (a train station) if the owner wants them.
 4. Keep `docs/guides/` in step with the screens; fix what the tester's feedback shows.
 5. Confirm Phase 1 "Done when" with the owner, then agree what Phase 2 must still deliver.
 

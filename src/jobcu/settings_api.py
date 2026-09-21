@@ -157,7 +157,6 @@ class Limits(BaseModel):
     monthly_token_limit: int | None = None
     monthly_cost_limit: float | None = None
     maps_monthly_routes: int | None = None
-    maps_monthly_places: int | None = None
 
 
 @router.put("/settings/limits")
@@ -170,8 +169,6 @@ def put_limits(limits: Limits) -> dict:
         monthly_cost_limit=limits.monthly_cost_limit,
         maps_monthly_routes=(limits.maps_monthly_routes if limits.maps_monthly_routes is not None
                              else settings.limits.maps_monthly_routes),
-        maps_monthly_places=(limits.maps_monthly_places if limits.maps_monthly_places is not None
-                             else settings.limits.maps_monthly_places),
     )
     save_settings(settings)
     return get_usage()
@@ -251,10 +248,7 @@ def get_usage(now: datetime | None = None) -> dict:
             ],
         },
         "last_search": last_search,
-        "travel": {
-            "routes_this_month": month.get("google_maps_routes", 0),
-            "places_this_month": month.get("google_maps_places", 0),
-        },
+        "travel": {"routes_this_month": month.get("google_maps_routes", 0)},
         "limits": settings.limits.model_dump(),
         "prices": [price.model_dump() for price in settings.prices],
         "sources": [
