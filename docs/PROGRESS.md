@@ -6,7 +6,7 @@ tested and shown to the owner before the next one starts. Decisions are in
 
 ## Right now
 
-*Last updated: 2026-09-17, late night.*
+*Last updated: 2026-09-21, before a fresh context window. Tree clean, all pushed, CI green, 306 tests pass.*
 
 **Where we are:** Phase 1 is essentially complete, and the two things the owner cares most about
 moved a long way: **coverage** (Ireland now has sources, company career sites and several new job
@@ -43,6 +43,20 @@ Windows.
 - Jobcu also ships a town list (GeoNames, 63,220 towns with local names, coordinates and
   population) **as a ruler only**: it answers "where is this place and how big is it" once the AI
   has decided what to measure.
+
+*Finished just before this handoff:* conditions Jobcu can't apply itself (about the job, or not
+checked) now reach the **scoring** prompt; the results screen has a collapsed **"Left out by your
+conditions"** list (unscored, so the person can judge the AI's reading); cards say **"Doesn't
+fit: …"** in red for a failed condition; and `tools/score_check.py` is built.
+
+*Interrupted (nothing written yet, pick up if useful):* checking what the big boards on hold
+actually allow, as facts for the owner's decision. Found so far (2026-09-18): the robots.txt of
+**IrishJobs.ie, Jobs.ie, Totaljobs and StepStone.de** allow `/job/` and `/jobs/` pages for every
+crawler; their **terms** still need reading in full (IrishJobs/Jobs.ie section 4.8 "Unlawful &
+prohibited use" at `/about/terms-and-conditions`). Record the result in SOURCES.md; don't build
+anything for them without the owner's decision. **Sweden's JobTech JobSearch API**
+(`jobsearch.api.jobtechdev.se/search`, open, no key) was checked and works, not built yet.
+**Remotive** and **RemoteOK** have open APIs for remote jobs (low value for hardware roles).
 
 *Other work:* the **Score check** screen (every search keeps a few of its ads and left-out titles
 for the owner to rate), a **usage meter with limits, a price table and on/off switches per source**
