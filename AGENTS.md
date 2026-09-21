@@ -106,6 +106,8 @@ src/jobcu/
   scoring.py                 the scoring rubric and prompt
   freshness.py               posting dates and "Posted within"
   jobstore.py                jobs remembered between searches, job states, saved results
+  pool.py                    the latest search's jobs, so corrected conditions can be applied
+                             to them afterwards ("Edit" next to "Understood as")
   text.py                    job ad HTML to plain text
   jobposting.py              reads schema.org JobPosting data from job pages
   search_api.py              internal API for starting and following a search

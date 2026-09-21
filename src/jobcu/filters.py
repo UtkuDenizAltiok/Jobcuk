@@ -80,9 +80,14 @@ def _reason(group, state, start, wanted_types, exclude_remote, countries, condit
     stated_countries = {c.country for c in group.copies if c.country}
     if stated_countries and not (stated_countries & countries):
         return "country"
-    if any(condition_fit(condition, group) == "no" for condition in conditions):
+    if fails_a_condition(group, conditions):
         return "location_condition"
     return None
+
+
+def fails_a_condition(group: JobGroup, conditions: list) -> bool:
+    """True when a condition the person wrote about places says this job's place doesn't fit."""
+    return any(condition_fit(condition, group) == "no" for condition in conditions)
 
 
 def condition_fit(condition, group: JobGroup) -> str:

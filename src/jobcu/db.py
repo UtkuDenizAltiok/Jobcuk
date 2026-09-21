@@ -129,6 +129,14 @@ MIGRATIONS: list[str] = [
     );
     CREATE UNIQUE INDEX quality_ads_job ON quality_ads (kind, source, source_job_id, title);
     """,
+    # 8: The latest search's jobs that the conditions about places decide about, so the person
+    # can correct the conditions afterwards and apply them to the same jobs (pool.py).
+    """
+    CREATE TABLE search_pool (
+        search_id INTEGER PRIMARY KEY,
+        pool_json TEXT NOT NULL
+    );
+    """,
 ]
 
 

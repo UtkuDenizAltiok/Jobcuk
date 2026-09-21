@@ -130,8 +130,8 @@
         <details id="ruled-out-section" hidden>
           <summary id="ruled-out-summary">Left out by your conditions</summary>
           <p class="muted">These fit your search words but not a condition you wrote about the
-            place. Jobcu didn't score them. If one of them should have been kept, change the
-            wording and search again.</p>
+            place. Jobcu didn't score them. If one of them should have been kept, press
+            <strong>Edit</strong> next to "Understood as" and correct the condition.</p>
           <div id="ruled-out-list" class="job-list"></div>
         </details>
       </section>
@@ -142,6 +142,25 @@
           <button type="button" class="secondary" id="close-details">Close</button>
         </div>
         <div id="details-content"></div>
+      </dialog>
+
+      <dialog id="conditions-dialog" aria-labelledby="conditions-title">
+        <div class="dialog-head">
+          <h2 id="conditions-title">Edit your conditions</h2>
+          <button type="button" class="secondary" id="close-conditions">Cancel</button>
+        </div>
+        <p class="muted">Correct anything Jobcu got wrong. Your changes are applied to the jobs
+          this search already found, without searching again. To search other places or
+          countries, change "Where do you want to work?" and press Search.</p>
+        <p class="muted" id="conditions-empty" hidden>This search had no conditions about
+          places. You can add one.</p>
+        <div id="conditions-editor"></div>
+        <p class="muted" id="conditions-about-job" hidden></p>
+        <div class="actions">
+          <button type="button" id="apply-conditions">Apply to the jobs found</button>
+          <button type="button" class="secondary" id="add-condition">Add a condition</button>
+        </div>
+        <p class="status" id="conditions-status" role="status" hidden></p>
       </dialog>
 
       <dialog id="profile-dialog" aria-labelledby="profile-title">

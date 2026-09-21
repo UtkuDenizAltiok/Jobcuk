@@ -20,7 +20,11 @@ async function api(path, { method = "GET", body } = {}) {
     throw new Error("Jobcu's engine isn't answering.");
   }
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.detail || "Something went wrong. Please try again.");
+  if (!response.ok) {
+    // Jobcu's own messages are plain sentences; anything else gets a general one.
+    const message = typeof data.detail === "string" ? data.detail : "";
+    throw new Error(message || "Something went wrong. Please try again.");
+  }
   return data;
 }
 
@@ -378,17 +382,13 @@ function conditionLine(condition) {
     towns_that_fit: "only the places found",
     towns_to_avoid: "the places found are left out",
   }[condition.kind] || "checked";
-  const how_checked =
-    condition.status === "estimate"
-      ? "AI estimate — please check"
-      : condition.kind === "town_size"
-        ? "worked out by Jobcu"
-        : "checked on the web";
+  const how_checked = condition.switched_off ? "switched off by you" : howChecked(condition);
   const parts = [
     el("strong", { text: `"${condition.text}"` }),
     el("span", { text: ` — ${condition.understood_as} ` }),
     el("span", {
-      class: condition.status === "estimate" ? "check-estimate" : "check-verified",
+      class: condition.switched_off || condition.status === "estimate"
+        ? "check-estimate" : "check-verified",
       text: how_checked,
     }),
   ];
@@ -418,6 +418,152 @@ function conditionLine(condition) {
     );
   }
   return el("li", {}, ...parts);
+}
+
+function howChecked(condition) {
+  if (condition.changed_by_you) return "changed by you";
+  if (condition.status === "estimate") return "AI estimate — please check";
+  return condition.kind === "town_size" ? "worked out by Jobcu" : "checked on the web";
+}
+
+// ---------------------------------------------------------------------------
+// Correcting the conditions after a search (HANDOVER section 6, "Edit")
+// ---------------------------------------------------------------------------
+
+const TOWN_LIST_LABELS = {
+  towns_that_fit: "Only these places",
+  towns_to_avoid: "These places are left out",
+};
+let newConditions = 0;
+
+function openConditionEditor() {
+  const location = state.search?.result.location;
+  if (!location) return;
+  const conditions = (location.conditions || []).map((condition, index) => ({ condition, index }));
+  const aboutPlaces = conditions.filter(({ condition }) => condition.kind !== "about_job");
+  const aboutJob = conditions.filter(({ condition }) => condition.kind === "about_job");
+  $("conditions-editor").replaceChildren(
+    ...aboutPlaces.map(({ condition, index }) => conditionEditor(condition, index)),
+  );
+  $("conditions-empty").hidden = aboutPlaces.length > 0;
+  $("conditions-about-job").hidden = !aboutJob.length;
+  $("conditions-about-job").textContent = aboutJob.length
+    ? `About the job rather than the place, so the scores take these into account: ${aboutJob
+        .map(({ condition }) => `"${condition.text}"`).join(", ")}.`
+    : "";
+  setStatus($("conditions-status"), "", "");
+  $("conditions-dialog").showModal();
+}
+
+function conditionEditor(condition, index) {
+  const id = `condition-${index}`;
+  const block = el("fieldset", { class: "condition-edit", "data-original": String(index) });
+  const reading = condition.status === "not_checked"
+    ? `Not checked: ${condition.note || "Jobcu couldn't check this."}`
+    : `Jobcu read it as: ${condition.understood_as} (${howChecked(condition)})`;
+  block.append(
+    el("label", { class: "check" },
+       el("input", { type: "checkbox", name: "use", checked: !condition.switched_off }),
+       el("span", { text: "Use this condition" })),
+    el("div", { class: "field" },
+       el("label", { for: `${id}-text`, text: "Your words" }),
+       el("input", { type: "text", id: `${id}-text`, name: "text", value: condition.text,
+                     maxlength: "500", spellcheck: "false" }),
+       el("small", { class: "muted",
+                     text: "Change the wording and Jobcu checks it again with your AI." })),
+    el("p", { class: "muted", text: reading }),
+  );
+  if (TOWN_LIST_LABELS[condition.kind]) {
+    block.append(el("div", { class: "field" },
+      el("label", { for: `${id}-towns`, text: TOWN_LIST_LABELS[condition.kind] }),
+      el("textarea", { id: `${id}-towns`, name: "towns", rows: "3", spellcheck: "false",
+                       text: condition.towns.map((town) => town.name).join(", ") }),
+      el("small", { class: "muted", text: "Separate places with commas. Remove a place or add one." }),
+    ));
+  }
+  if (condition.kind === "town_size") {
+    const share = condition.min_share_of_country;
+    // Shown in the unit the condition was written in: people, or a share of the country.
+    const value = share ? +(share * 100).toPrecision(6) : condition.min_people || 0;
+    block.append(el("div", { class: "field" },
+      el("label", { for: `${id}-size`, text: "Smallest town" }),
+      el("div", { class: "size" },
+        el("input", { type: "number", id: `${id}-size`, name: share ? "share" : "people",
+                      min: "0", step: "any", value: String(value), "data-was": String(value) }),
+        el("span", { text: share ? "% of the country's people" : "people" })),
+    ));
+  }
+  if (condition.status === "not_checked") {
+    block.append(el("label", { class: "check" },
+      el("input", { type: "checkbox", name: "check_again" }),
+      el("span", { text: "Try to check it again" })));
+  }
+  return block;
+}
+
+function newConditionEditor() {
+  const id = `new-condition-${++newConditions}`;
+  const block = el("fieldset", { class: "condition-edit" });
+  block.append(
+    el("div", { class: "field" },
+       el("label", { for: id, text: "A new condition" }),
+       el("input", { type: "text", id, name: "text", maxlength: "500",
+                     placeholder: "For example: towns with at least 100,000 people" }),
+       el("small", { class: "muted",
+                     text: "Jobcu checks it with your AI, then applies it to the jobs found." })),
+    el("button", { type: "button", class: "link", text: "Remove",
+                   onclick: () => block.remove() }),
+  );
+  return block;
+}
+
+/** What the person left in the Edit window, in the form Jobcu's engine expects. */
+function readConditionEdits() {
+  const blocks = [...$("conditions-editor").querySelectorAll(".condition-edit")];
+  return blocks
+    .map((block) => {
+      const field = (name) => block.querySelector(`[name="${name}"]`);
+      const original = block.dataset.original === undefined ? null : Number(block.dataset.original);
+      const edit = { text: field("text").value, original, use: field("use")?.checked ?? true };
+      if (field("towns")) {
+        edit.towns = field("towns").value.split(/[,;\n]/).map((t) => t.trim()).filter(Boolean);
+      }
+      // A size is sent only when it was changed, so rounding never counts as a change.
+      const size = field("people") || field("share");
+      if (size && size.value !== size.dataset.was) {
+        const number = Math.max(0, Number(size.value) || 0);
+        if (field("people")) edit.min_people = Math.round(number);
+        else edit.min_share_of_country = Math.min(number / 100, 1);
+      }
+      if (field("check_again")) edit.check_again = field("check_again").checked;
+      return edit;
+    })
+    .filter((edit) => edit.original !== null || edit.text.trim());
+}
+
+function setUpConditionActions() {
+  $("close-conditions").addEventListener("click", () => $("conditions-dialog").close());
+  $("add-condition").addEventListener("click", () => {
+    const block = newConditionEditor();
+    $("conditions-editor").append(block);
+    block.querySelector("input").focus();
+  });
+  $("apply-conditions").addEventListener("click", (event) =>
+    busy(event.target, async () => {
+      setStatus($("conditions-status"), "", "");
+      try {
+        const run = await api(`/api/search/${state.search.id}/conditions`, {
+          method: "POST",
+          body: { conditions: readConditionEdits() },
+        });
+        $("conditions-dialog").close();
+        showSearch(run);
+        $("progress-card").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        setStatus($("conditions-status"), "problem", error.message);
+      }
+    }),
+  );
 }
 
 function setUpDocumentActions() {
@@ -505,12 +651,19 @@ function showSearch(search) {
   state.search = search;
   const running = search.status === "running";
   $("progress-card").hidden = false;
-  $("progress-title").textContent = {
-    running: "Searching…",
-    finished: "Search finished",
-    failed: "The search stopped because of a problem",
-    stopped: "Search stopped",
-  }[search.status];
+  $("progress-title").textContent = (search.kind === "reapply"
+    ? {
+        running: "Applying your changes…",
+        finished: "Your changes are applied",
+        failed: "Your changes couldn't be applied",
+        stopped: "Stopped. Your earlier results are unchanged",
+      }
+    : {
+        running: "Searching…",
+        finished: "Search finished",
+        failed: "The search stopped because of a problem",
+        stopped: "Search stopped",
+      })[search.status];
   $("stop-search").hidden = !running;
   $("start-search").disabled = running;
 
@@ -542,7 +695,22 @@ function showSearch(search) {
       el("strong", { text: "Understood as: " }),
       document.createTextNode(location.understood_as),
     );
+    if (search.can_edit_conditions) {
+      $("understood-as").append(el("button", {
+        type: "button", class: "link edit-conditions", text: "Edit", onclick: openConditionEditor,
+      }));
+    }
     const notes = [];
+    if (location.edited) {
+      const inUse = (location.conditions || []).filter(
+        (c) => !c.switched_off && c.status !== "not_checked" && c.kind !== "about_job");
+      notes.push("You changed the conditions after this search. They were applied to the jobs it found.");
+      if (inUse.length) notes.push(`Conditions now in use: ${inUse.map((c) => `"${c.text}"`).join(", ")}.`);
+    }
+    const switchedOff = (location.conditions || []).filter((c) => c.switched_off);
+    if (switchedOff.length) {
+      notes.push(`Switched off by you: ${switchedOff.map((c) => `"${c.text}"`).join(", ")}.`);
+    }
     if (location.broad) {
       notes.push("This searches every supported country, so it takes longer and uses more AI.");
     }
@@ -553,7 +721,7 @@ function showSearch(search) {
     }
     if (location.not_checked_yet.length) {
       notes.push(
-        `Not checked yet: ${location.not_checked_yet.join("; ")}. This comes with the smart location filter.`,
+        `Not checked: ${location.not_checked_yet.join("; ")}. Jobcu shows these but doesn't filter on them.`,
       );
     }
     $("location-notes").replaceChildren(...notes.map((note) => el("li", { text: note })));
@@ -687,12 +855,15 @@ function renderCard(card) {
       unclear: "check-unclear",
       fails: "check-fails",
     }[check.status] || "check-estimate";
+    const how = {
+      "AI estimate": "AI estimate — please check",
+      "Changed by you": "your change",
+    }[check.source] || `verified: ${check.source}`;
     const label =
       check.status === "fails"
         ? `Doesn't fit: ${check.label}`
         : check.status === "verified" && check.source
-          ? `${check.label} (${check.source === "AI estimate" ? "AI estimate — please check"
-                                                              : `verified: ${check.source}`})`
+          ? `${check.label} (${how})`
           : check.status === "unclear"
             ? `${check.label} — couldn't be checked for this job`
             : `${check.label} (AI estimate — please check)`;
@@ -1428,6 +1599,7 @@ async function start() {
   window.addEventListener("hashchange", showView);
   setUpSettingsActions();
   setUpDocumentActions();
+  setUpConditionActions();
   setUpSearchActions();
   showView();
   try {

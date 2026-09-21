@@ -170,10 +170,13 @@ def _background(profile: Profile, plan: LocationPlan) -> str:
     other = [
         condition.understood_as or condition.text
         for condition in plan.conditions
-        if condition.kind == "about_job" or condition.status == "not_checked"
+        if (condition.kind == "about_job" or condition.status == "not_checked")
+        and not condition.switched_off
     ] or plan.not_checked_yet
     location = {
-        "understood_as": plan.understood_as,
+        # After the person corrected the conditions, the first reading may name ones they
+        # switched off, so only the places and the remaining conditions are passed on.
+        **({} if plan.edited else {"understood_as": plan.understood_as}),
         "places": [p.model_dump() for p in plan.places],
         "other_conditions": other,
     }

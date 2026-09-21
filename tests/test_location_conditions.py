@@ -212,7 +212,7 @@ def test_the_card_says_what_each_condition_found():
                       possible_duplicate_of=None, started_at=NOW, posted_within_hours=24)
     labels = {check["label"]: check for check in card["location_checks"]}
     assert labels["Towns with at least 250,000 people"]["status"] == "verified"
-    assert labels["Towns with at least 250,000 people"]["source"] == "Checked on the web"
+    assert labels["Towns with at least 250,000 people"]["source"] == "Worked out by Jobcu"
 
     unclear = build_card(job(location="Nowhere at all"), job_id=2, is_new=True, state=None,
                          scored=None, plan=plan_with(condition), source_names={"s": "Board"},

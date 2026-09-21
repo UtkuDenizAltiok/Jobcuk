@@ -203,6 +203,7 @@ code {
 
 input[type="text"],
 input[type="password"],
+input[type="number"],
 textarea,
 select {
   width: 100%;
@@ -1045,6 +1046,38 @@ dialog::backdrop {
 }
 
 /* ---- Location conditions in "What Jobcu understood" ---- */
+
+.understood .edit-conditions {
+  margin-left: 10px;
+  font-size: 0.95rem;
+}
+
+/* ---- Editing the conditions after a search ---- */
+
+.condition-edit {
+  margin: 0;
+  padding: 14px 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.condition-edit .field {
+  margin: 10px 0;
+}
+
+.condition-edit p {
+  margin: 6px 0;
+}
+
+.condition-edit .size {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.condition-edit .size input {
+  max-width: 180px;
+}
 
 .conditions {
   margin: 0;

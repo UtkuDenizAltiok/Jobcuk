@@ -17,7 +17,9 @@ saying what work you want works best. **What Jobcu understood** shows how your d
 
 ## 3. Search
 
-1. **Where do you want to work?** Write it your way, e.g. *Dublin or Cork*, *Munich or within 50 km*.
+1. **Where do you want to work?** Write it your way, e.g. *Dublin or Cork*, *Munich or within 50 km*,
+   or with conditions such as *Germany, only towns with at least 100,000 people*. Jobcu checks
+   conditions itself or looks them up on the web.
 2. Choose **Posted within** (72 hours or 1 week finds more) and the **job types**.
 3. Click **Search**. It takes a few minutes.
 
@@ -25,6 +27,10 @@ saying what work you want works best. **What Jobcu understood** shows how your d
 
 - **Score (0–100):** how well a job fits you, with short reasons.
 - **New:** not seen in an earlier search.
+- **Understood as:** how Jobcu read where you want to work. If something is wrong, click **Edit**
+  to switch a condition off, fix its list of places or its town size, reword it or add one.
+  Your changes are applied to the jobs already found, without searching again.
+- **Left out by your conditions** (at the bottom) lists the jobs a condition ruled out.
 - **Open job** opens the ad. **Save**, **Applied** and **Not interested** keep your list tidy;
   "Not interested" hides a job for good (**Show hidden** undoes it).
 - **Search details:** which sites were searched and why some jobs were left out.

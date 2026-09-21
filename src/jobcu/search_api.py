@@ -3,9 +3,11 @@
 import json
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from jobcu import jobstore, search
+from jobcu import pool as search_pool
+from jobcu.location import ConditionEdit, EditProblem
 from jobcu.settings import SearchForm, load_settings, save_settings
 
 router = APIRouter(prefix="/api")
@@ -42,7 +44,33 @@ def current_search() -> dict:
             return {"search": None}
         snapshot = json.loads(saved[1])
     _refresh_states(snapshot)
+    # The conditions can be corrected afterwards only while Jobcu keeps that search's jobs.
+    snapshot["can_edit_conditions"] = (
+        snapshot["status"] != "running" and "location" in snapshot["result"]
+        and search_pool.exists(snapshot["id"])
+    )
     return {"search": snapshot}
+
+
+class ConditionEdits(BaseModel):
+    conditions: list[ConditionEdit] = Field(max_length=20)
+
+
+@router.post("/search/{search_id}/conditions")
+def change_conditions(search_id: int, body: ConditionEdits) -> dict:
+    """Applies corrected location conditions to the jobs the latest search found."""
+    try:
+        run = search.manager.reapply(search_id, body.conditions)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail="A search is already running.") from exc
+    except LookupError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail="Jobcu no longer has the jobs of that search. Please search again.",
+        ) from exc
+    except EditProblem as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return run.snapshot()
 
 
 class Answer(BaseModel):

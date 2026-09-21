@@ -5,25 +5,35 @@ can see what Jobcu is doing. Only one search runs at a time. Every search starts
 fresh from the current CV, cover letter and location text.
 """
 
+import dataclasses
 import json
 import logging
 import threading
+from collections import Counter
 from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from typing import Literal
 
 from jobcu import db, documents, jobstore, pipeline, quality
+from jobcu import pool as search_pool
 from jobcu.ai.base import AIError
 from jobcu.ai.client import AIClient
 from jobcu.ai.usage import UsageLog
 from jobcu.countries import COUNTRIES, LANGUAGE_NAMES, languages_for
 from jobcu.documents import DocumentError
-from jobcu.filters import REASONS, apply_rules
+from jobcu.filters import REASONS, apply_rules, fails_a_condition
 from jobcu.keystore import KeyStore
 from jobcu.keywords import generate_search_words
-from jobcu.location import interpret_location
-from jobcu.profile import read_profile_reusing
+from jobcu.location import (
+    ConditionEdit,
+    LocationPlan,
+    apply_edits,
+    check_edits,
+    interpret_location,
+    needs_checking,
+)
+from jobcu.profile import Profile, read_profile_reusing
 from jobcu.relevance import quick_pass
 from jobcu.scoring import score_groups
 from jobcu.settings import SearchForm, load_settings
@@ -44,6 +54,13 @@ STEPS: list[tuple[str, str]] = [
     ("filtering", "Removing duplicates and jobs that don't fit"),
     ("details", "Reading the full job ads"),
     ("scoring", "Scoring jobs"),
+]
+# Applying corrected conditions to the jobs a search already found (HANDOVER section 6, "Edit").
+REAPPLY_STEPS: list[tuple[str, str]] = [
+    ("conditions", "Checking the conditions you changed"),
+    ("filtering", "Applying your conditions to the jobs found"),
+    ("details", "Reading the full job ads"),
+    ("scoring", "Scoring jobs that came back in"),
 ]
 
 # How long a search waits for an answer to a question (e.g. the scoring limit) before
@@ -66,6 +83,7 @@ class SearchRun:
     id: int
     form: SearchForm
     started_at: str
+    kind: Literal["search", "reapply"] = "search"
     status: RunStatus = "running"
     steps: list[Step] = field(default_factory=lambda: [Step(i, label) for i, label in STEPS])
     notes: list[str] = field(default_factory=list)
@@ -119,6 +137,7 @@ class SearchRun:
                 "id": self.id,
                 "form": self.form.model_dump(),
                 "started_at": self.started_at,
+                "kind": self.kind,
                 "status": self.status,
                 "steps": [asdict(s) for s in self.steps],
                 "notes": list(self.notes),
@@ -158,12 +177,49 @@ class SearchManager:
                 id=search_id, form=form, started_at=datetime.now(UTC).isoformat(timespec="seconds")
             )
             self._current = run
-        threading.Thread(target=self._run, args=(run,), daemon=True, name="search").start()
+        threading.Thread(
+            target=self._run, args=(run, self._runner), daemon=True, name="search"
+        ).start()
         return run
 
-    def _run(self, run: SearchRun) -> None:
+    def reapply(self, search_id: int, edits: list[ConditionEdit]) -> SearchRun:
+        """Applies corrected conditions to the jobs the latest search found, in the background.
+
+        Raises LookupError when those jobs aren't kept any more, and EditProblem when the
+        corrections can't be used."""
+        with self._lock:
+            current = self._current
+            if current is not None and current.status == "running":
+                raise RuntimeError("A search is already running.")
+            if current is not None and current.id == search_id:
+                snapshot = current.snapshot()
+            else:
+                saved = jobstore.latest_results()
+                snapshot = json.loads(saved[1]) if saved and saved[0] == search_id else None
+            job_pool = search_pool.load(search_id) if snapshot else None
+            if job_pool is None or not {"jobs", "location"} <= set(snapshot["result"]):
+                raise LookupError(search_id)
+            check_edits(LocationPlan.model_validate(snapshot["result"]["location"]), edits)
+            run = SearchRun(
+                id=search_id,
+                form=SearchForm.model_validate(snapshot["form"]),
+                started_at=snapshot["started_at"],
+                kind="reapply",
+                steps=[Step(i, label) for i, label in REAPPLY_STEPS],
+                result=snapshot["result"],
+            )
+            self._current = run
+        threading.Thread(
+            target=self._run,
+            args=(run, lambda run: reapply_conditions(run, job_pool, edits)),
+            daemon=True,
+            name="search",
+        ).start()
+        return run
+
+    def _run(self, run: SearchRun, runner: Callable[[SearchRun], None]) -> None:
         try:
-            self._runner(run)
+            runner(run)
             run.status = "finished"
         except SearchStopped:
             run.status = "stopped"
@@ -213,8 +269,7 @@ def run_search(run: SearchRun) -> None:
     )
 
     def checkpoint() -> None:
-        if run.stop_requested:
-            raise SearchStopped
+        _checkpoint(run)
 
     run.update("documents", "running")
     cv_text = documents.read_text("cv")
@@ -297,27 +352,77 @@ def _find_and_score(run, settings, client, keys, http, profile, plan, query, che
         job_types=form.job_types,
         exclude_remote=form.exclude_remote,
         countries=plan.countries,
-        conditions=plan.conditions,
     )
-    left_out = dict(outcome.left_out)
-    unrelated = set(quick_pass(client, profile, groups, outcome.kept)) if outcome.kept else set()
-    candidates = [i for i in outcome.kept if i not in unrelated]
+    hidden = [i for i, s in enumerate(remembered_states) if s is not None and s.dismissed]
+    hidden_ids, hidden_new = jobstore.remember([groups[i] for i in hidden], run.id)
+    hidden_states = jobstore.states(hidden_ids)
+    hidden_cards = [
+        pipeline.build_card(
+            groups[index], job_id=job_id, is_new=is_new, state=hidden_states.get(job_id),
+            scored=None, plan=plan, source_names=names, possible_duplicate_of=None,
+            started_at=query.started_at, posted_within_hours=form.posted_within_hours,
+        )
+        for index, job_id, is_new in zip(hidden, hidden_ids, hidden_new, strict=True)
+    ]
+    # Every job that passed these rules is kept together with what the search learns about it:
+    # the conditions about places decide the rest, and the person may correct those later.
+    position = {index: n for n, index in enumerate(outcome.kept)}
+    job_pool = search_pool.Pool(
+        search_id=run.id,
+        jobs=[
+            search_pool.PoolJob(dataclasses.replace(
+                group, possible_duplicate_of=position.get(group.possible_duplicate_of)
+            ))
+            for group in (groups[index] for index in outcome.kept)
+        ],
+        profile=profile.model_dump(),
+        left_out=dict(outcome.left_out),
+        source_names=names,
+        ads_found=len(collected.jobs),
+        different_jobs=len(groups),
+    )
+    _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden_cards, checkpoint)
+
+
+def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden_cards,
+            checkpoint) -> None:
+    """Applies the conditions about places to the kept jobs, then checks, reads and scores the
+    ones still in the running, and builds the results.
+
+    A search does this once. Correcting the conditions afterwards does it again for the same
+    jobs, reusing every answer already worked out, so only jobs that come back in cost AI.
+    """
+    form = run.form
+    started_at = datetime.fromisoformat(run.started_at)
+    profile = Profile.model_validate(job_pool.profile)
+    groups = [job.group for job in job_pool.jobs]
+    ruled_out = [i for i, group in enumerate(groups) if fails_a_condition(group, plan.conditions)]
+    excluded = set(ruled_out)
+    in_running = [i for i in range(len(groups)) if i not in excluded]
+    unchecked = [i for i in in_running if job_pool.jobs[i].unrelated is None]
+    if unchecked:
+        unrelated_now = set(quick_pass(client, profile, groups, unchecked))
+        for index in unchecked:
+            job_pool.jobs[index].unrelated = index in unrelated_now
+    unrelated = [i for i in in_running if job_pool.jobs[i].unrelated]
+    candidates = [i for i in in_running if not job_pool.jobs[i].unrelated]
     run.update(
         "filtering",
         "done",
-        f"{len(groups)} different jobs, {len(candidates)} worth a closer look",
+        f"{job_pool.different_jobs} different jobs, {len(candidates)} worth a closer look",
     )
     checkpoint()
 
+    to_score = [i for i in candidates if job_pool.jobs[i].scored is None]
     run.update("details", "running")
-    pipeline.load_full_ads(groups, candidates, collected, http, keys, run)
+    pipeline.load_full_ads(groups, to_score, collected, http, keys, run)
     run.update("details", "done", "Full ads read where available")
     checkpoint()
 
     run.update("scoring", "running")
-    order = pipeline.newest_first(groups, candidates)
+    order = pipeline.newest_first(groups, to_score)
     cap = settings.limits.scoring_cap
-    scored: dict[int, dict] = {}
+    scored_now: dict[int, dict] = {}
     position = 0
     while position < len(order):
         chunk = order[position : position + cap] if position == 0 else order[position:]
@@ -339,32 +444,38 @@ def _find_and_score(run, settings, client, keys, http, profile, plan, query, che
         def progress(done, total, base=position):
             run.update("scoring", "running", f"{base + done} of {len(order)} jobs")
 
-        scored.update(score_groups(client, profile, plan, groups, chunk, on_progress=progress))
+        scored_now.update(score_groups(client, profile, plan, groups, chunk, on_progress=progress))
         position += len(chunk)
         checkpoint()
+    for index, result in scored_now.items():
+        job_pool.jobs[index].scored = result
 
     # Facts only the ad text revealed can still rule a job out.
+    left_out = Counter(job_pool.left_out)
+    if ruled_out:
+        left_out["location_condition"] = len(ruled_out)
     shown: list[int] = []
     for index in candidates:
-        result = scored.get(index)
+        result = job_pool.jobs[index].scored
         stated_types = any(copy.job_types for copy in groups[index].copies)
         if result and form.exclude_remote and result["fully_remote"]:
-            left_out["remote_text"] = left_out.get("remote_text", 0) + 1
+            left_out["remote_text"] += 1
         elif (
             result and not stated_types and result["job_type"]
             and result["job_type"] not in form.job_types
         ):
-            left_out["job_type_text"] = left_out.get("job_type_text", 0) + 1
+            left_out["job_type_text"] += 1
         else:
             shown.append(index)
-    run.update("scoring", "done", f"{len(scored)} jobs scored")
+    nothing_new = not scored_now and run.kind == "reapply"
+    run.update("scoring", "done",
+               "Nothing new to score" if nothing_new else f"{len(scored_now)} jobs scored")
 
-    hidden = [i for i, s in enumerate(remembered_states) if s is not None and s.dismissed]
-    to_remember = shown + hidden
-    job_ids, new_flags = jobstore.remember([groups[i] for i in to_remember], run.id)
-    id_of = dict(zip(to_remember, job_ids, strict=True))
-    new_of = dict(zip(to_remember, new_flags, strict=True))
+    job_ids, new_flags = jobstore.remember([groups[i] for i in shown], run.id)
+    id_of = dict(zip(shown, job_ids, strict=True))
+    new_of = dict(zip(shown, new_flags, strict=True))
     states = jobstore.states(job_ids)
+    names = job_pool.source_names
 
     def card(index: int) -> dict:
         duplicate = groups[index].possible_duplicate_of
@@ -373,50 +484,94 @@ def _find_and_score(run, settings, client, keys, http, profile, plan, query, che
             job_id=id_of[index],
             is_new=new_of[index],
             state=states.get(id_of[index]),
-            scored=scored.get(index),
+            scored=job_pool.jobs[index].scored,
             plan=plan,
             source_names=names,
             possible_duplicate_of=id_of.get(duplicate) if duplicate is not None else None,
-            started_at=query.started_at,
+            started_at=started_at,
             posted_within_hours=form.posted_within_hours,
         )
 
     cards = [card(i) for i in shown]
     # Jobs a condition the person wrote ruled out are listed (without scores), so they can see
     # what the condition did and judge whether the AI read it right.
-    ruled_out = outcome.by_reason.get("location_condition", [])[:MAX_RULED_OUT_SHOWN]
     ruled_out_cards = [
         pipeline.build_card(
             groups[index], job_id=0, is_new=False, state=None, scored=None, plan=plan,
-            source_names=names, possible_duplicate_of=None, started_at=query.started_at,
+            source_names=names, possible_duplicate_of=None, started_at=started_at,
             posted_within_hours=form.posted_within_hours,
         )
-        for index in ruled_out
+        for index in ruled_out[:MAX_RULED_OUT_SHOWN]
     ]
     jobstore.save_cards(cards)
+    job_pool.reports = [asdict(report) for report in collected.reports]
     unique = pipeline.unique_counts(groups, shown)
     reasons = {**REASONS, "remote_text": "Fully remote, according to the ad text",
                "job_type_text": "A job type you didn't tick, according to the ad text"}
+    run.set_result("location", plan.model_dump())
     run.set_result("jobs", {
         "cards": pipeline.sort_cards([c for c in cards if c["date_known"]]),
         "date_unknown": pipeline.sort_cards([c for c in cards if not c["date_known"]]),
-        "hidden": [card(i) for i in hidden],
+        "hidden": hidden_cards,
         "ruled_out_by_conditions": ruled_out_cards,
         "new_count": sum(1 for c in cards if c["is_new"]),
         "counts": {
-            "ads_found": len(collected.jobs),
-            "different_jobs": len(groups),
-            "left_out": [{"reason": reasons[k], "count": v} for k, v in left_out.items()],
+            "ads_found": job_pool.ads_found,
+            "different_jobs": job_pool.different_jobs,
+            "left_out": [{"reason": reasons[k], "count": v} for k, v in left_out.items() if v],
             "unrelated": len(unrelated),
             "unrelated_titles": sorted({groups[i].main.title for i in unrelated})[:200],
-            "not_scored": len(candidates) - len(scored),
+            "not_scored": sum(1 for i in candidates if job_pool.jobs[i].scored is None),
             "shown": len(cards),
         },
         "sources": [
-            {**asdict(r), "unique": unique.get(r.source, 0)} for r in collected.reports
+            {**report, "unique": unique.get(report["source"], 0)} for report in job_pool.reports
         ],
     })
-    _keep_for_the_score_check(groups, shown, scored, unrelated)
+    search_pool.save(job_pool)
+    # Only what this pass worked out is new for the score check.
+    worked_on = set(unchecked) | set(scored_now)
+    _keep_for_the_score_check(
+        groups,
+        [i for i in shown if i in worked_on],
+        scored_now,
+        {i for i in unrelated if i in worked_on},
+    )
+
+
+def reapply_conditions(run: SearchRun, job_pool: search_pool.Pool,
+                       edits: list[ConditionEdit]) -> None:
+    """The person corrected the conditions after a search: check what they reworded, then
+    decide again about the jobs that search found (HANDOVER section 6, "Edit")."""
+    settings = load_settings()
+    client = AIClient(
+        settings, KeyStore(), usage_log=UsageLog(), search_id=run.id, notify=run.note
+    )
+    run.update("conditions", "running")
+    plan = LocationPlan.model_validate(run.result["location"])
+    rechecked = sum(1 for edit in edits if needs_checking(edit, plan.conditions))
+    plan = apply_edits(client, plan, edits)
+    run.update("conditions", "done", f"{rechecked} checked again" if rechecked
+               else "Nothing to look up")
+    for condition in plan.conditions:
+        if condition.status == "not_checked" and condition.kind != "about_job":
+            run.note(f"\"{condition.text}\": {condition.note}")
+    _checkpoint(run)
+
+    http = PoliteClient()
+    try:
+        collected = pipeline.collected_again(job_pool.reports)
+        _decide(run, client, KeyStore(), http, settings, plan, job_pool, collected,
+                run.result["jobs"]["hidden"], lambda: _checkpoint(run))
+    finally:
+        http.close()
+        usage = UsageLog().for_search(run.id)
+        run.set_result("usage", {step: asdict(used) for step, used in usage.items()})
+
+
+def _checkpoint(run: SearchRun) -> None:
+    if run.stop_requested:
+        raise SearchStopped
 
 
 def _keep_for_the_score_check(groups, shown, scored, unrelated) -> None:

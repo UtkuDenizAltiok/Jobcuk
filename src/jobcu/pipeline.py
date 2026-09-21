@@ -85,6 +85,13 @@ def collect(query: JobQuery, http: PoliteClient, keys, disabled: list[str], run)
     return Collected(jobs, reports, {s.id: s for s in sources})
 
 
+def collected_again(reports: list[dict]) -> Collected:
+    """An earlier search's sources, to read more full ads after that search has ended."""
+    sources = all_sources()
+    return Collected([], [SourceReport(**report) for report in reports],
+                     {source.id: source for source in sources})
+
+
 def make_groups(collected: Collected) -> list[JobGroup]:
     kinds = {source_id: source.kind for source_id, source in collected.sources.items()}
     return group_duplicates(collected.jobs, kinds)
@@ -198,13 +205,13 @@ def build_card(
         checks.append({"label": "Location unclear", "status": "unclear", "source": None})
     # What the conditions the person wrote say about this job (HANDOVER section 6).
     for condition in plan.conditions:
-        if condition.kind == "about_job" or condition.status == "not_checked":
+        if not condition.filters:
             continue
         answer = condition_fit(condition, group)
         checks.append({
             "label": condition.understood_as,
             "status": {"yes": "verified", "unknown": "unclear"}.get(answer, "fails"),
-            "source": "Checked on the web" if condition.status == "applied" else "AI estimate",
+            "source": _checked_by(condition),
         })
     start = window_start(started_at, posted_within_hours)
     state = state or JobState()
@@ -233,6 +240,14 @@ def build_card(
         "salary": best.salary_text or main.salary_text,
         "location_checks": checks,
     }
+
+
+def _checked_by(condition) -> str:
+    if condition.changed_by_you:
+        return "Changed by you"
+    if condition.status == "estimate":
+        return "AI estimate"
+    return "Worked out by Jobcu" if condition.kind == "town_size" else "Checked on the web"
 
 
 def sort_cards(cards: list[dict]) -> list[dict]:

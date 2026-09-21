@@ -133,6 +133,15 @@ class Condition(BaseModel):
     min_share_of_country: float | None = None
     note: str = ""
     sources: list[Source] = []
+    # The person's own corrections after the search (HANDOVER section 6, "Edit").
+    switched_off: bool = False
+    changed_by_you: bool = False
+
+    @property
+    def filters(self) -> bool:
+        """Whether this condition decides which jobs are shown."""
+        return (not self.switched_off and self.status != "not_checked"
+                and self.kind != "about_job")
 
 
 class LocationPlan(BaseModel):
@@ -146,6 +155,23 @@ class LocationPlan(BaseModel):
     not_checked_yet: list[str]
     outside_supported_area: list[str]
     broad: bool  # searching every supported country, which takes longer
+    edited: bool = False  # the person changed the conditions after the search
+
+
+class ConditionEdit(BaseModel):
+    """One condition as the person left it in the Edit window."""
+
+    text: str = Field(max_length=500)
+    original: int | None = None  # its position in the plan, or None for a new condition
+    use: bool = True
+    towns: list[str] | None = Field(default=None, max_length=2 * MAX_TOWNS_PER_CONDITION)
+    min_people: int | None = Field(default=None, ge=0)
+    min_share_of_country: float | None = Field(default=None, ge=0, le=1)
+    check_again: bool = False
+
+
+class EditProblem(ValueError):
+    """Something in the Edit window that Jobcu can't use, in words for the person."""
 
 
 def _country_list() -> str:
@@ -354,6 +380,127 @@ def _as_condition(
     )
 
 
+TOWN_KINDS = ("towns_that_fit", "towns_to_avoid")
+
+
+def needs_checking(edit: ConditionEdit, conditions: list[Condition]) -> bool:
+    """New and reworded conditions are checked again; the rest keep what the search found."""
+    if not edit.use or not edit.text.strip():
+        return False
+    if edit.original is None or edit.check_again:
+        return True
+    return normalise(edit.text) != normalise(conditions[edit.original].text)
+
+
+def check_edits(plan: LocationPlan, edits: list[ConditionEdit]) -> None:
+    """Raises EditProblem, in words for the person, before any AI is used."""
+    for edit in edits:
+        if edit.original is not None and not 0 <= edit.original < len(plan.conditions):
+            raise EditProblem("These conditions have changed in the meantime. Please close the "
+                              "window and open it again.")
+        if edit.original is None or needs_checking(edit, plan.conditions) or not edit.use:
+            continue
+        condition = plan.conditions[edit.original]
+        if condition.kind in TOWN_KINDS and edit.towns is not None:
+            towns, unknown = _town_refs(edit.towns, condition.towns, plan.countries)
+            if unknown:
+                raise EditProblem(
+                    f"Jobcu doesn't know {', '.join(unknown)} in the countries searched. "
+                    "Please check the spelling.")
+            if not towns:
+                raise EditProblem(f"Leave at least one place in \"{condition.text}\", or switch "
+                                  "the condition off.")
+        if condition.kind == "town_size" and not (
+            (edit.min_people if edit.min_people is not None else condition.min_people)
+            or (edit.min_share_of_country if edit.min_share_of_country is not None
+                else condition.min_share_of_country)
+        ):
+            raise EditProblem(f"Give a size for \"{condition.text}\", or switch the condition off.")
+
+
+def apply_edits(client: AIClient, plan: LocationPlan, edits: list[ConditionEdit]) -> LocationPlan:
+    """The plan with the person's corrections (HANDOVER section 6, "Edit").
+
+    Reworded and new conditions are checked again, exactly like in a search. Everything else
+    keeps what the search found, so nothing is looked up twice. A corrected list of towns or a
+    corrected size is the person's own rule from then on.
+    """
+    check_edits(plan, edits)
+    conditions: list[Condition] = []
+    mentioned = {edit.original for edit in edits if edit.original is not None}
+    for edit in edits:
+        if needs_checking(edit, plan.conditions):
+            conditions.extend(check_conditions(client, [edit.text.strip()], plan.countries))
+        elif edit.original is not None:
+            conditions.append(_corrected(plan.conditions[edit.original], edit, plan.countries))
+    # Conditions the window didn't mention stay as they were.
+    conditions += [c for i, c in enumerate(plan.conditions) if i not in mentioned]
+    return plan.model_copy(update={
+        "conditions": conditions,
+        "not_checked_yet": [c.text for c in conditions
+                            if c.status == "not_checked" and not c.switched_off],
+        "edited": True,
+    })
+
+
+def _corrected(condition: Condition, edit: ConditionEdit, countries: list[str]) -> Condition:
+    condition = condition.model_copy(deep=True)
+    condition.switched_off = not edit.use or not edit.text.strip()
+    if condition.switched_off:
+        return condition
+    changed = False
+    if condition.kind in TOWN_KINDS and edit.towns is not None:
+        towns, _ = _town_refs(edit.towns, condition.towns, countries)
+        if _town_keys(towns) != _town_keys(condition.towns):
+            condition.towns, changed = towns, True
+    if condition.kind == "town_size":
+        if edit.min_people is not None and edit.min_people != (condition.min_people or 0):
+            condition.min_people, changed = edit.min_people or None, True
+        if edit.min_share_of_country is not None and (
+            edit.min_share_of_country != (condition.min_share_of_country or 0)
+        ):
+            condition.min_share_of_country, changed = edit.min_share_of_country or None, True
+    if changed:
+        # The person's own correction is their rule, not an estimate that needs a warning.
+        condition.changed_by_you, condition.status = True, "applied"
+    return condition
+
+
+def _town_refs(
+    names: list[str], known: list[TownRef], countries: list[str]
+) -> tuple[list[TownRef], list[str]]:
+    """The towns the person typed, and the names Jobcu couldn't find.
+
+    Towns already in the list keep their country; a new name is looked up in the town list, in
+    every country searched. With one country searched, an unknown name is still accepted: a job
+    whose place is written that way still matches it.
+    """
+    by_name: dict[str, list[TownRef]] = {}
+    for town in known:
+        by_name.setdefault(normalise(town.name), []).append(town)
+    towns: list[TownRef] = []
+    unknown: list[str] = []
+    for name in (name.strip() for name in names):
+        if not name:
+            continue
+        if normalise(name) in by_name:
+            towns += by_name[normalise(name)]
+            continue
+        found = [town for country in countries if (town := place_list.find(name, country))]
+        if found:
+            towns += [TownRef(name=town.name, country=town.country) for town in found]
+        elif len(countries) == 1:
+            towns.append(TownRef(name=name, country=countries[0]))
+        else:
+            unknown.append(name)
+    unique = {(normalise(town.name), town.country): town for town in towns}
+    return list(unique.values()), unknown
+
+
+def _town_keys(towns: list[TownRef]) -> set[tuple[str, str]]:
+    return {(normalise(town.name), town.country) for town in towns}
+
+
 def smallest_town(condition: Condition, country: str) -> int:
     """How many people a town must have for a "town_size" condition, in this country."""
     people = COUNTRIES[country].people if country in COUNTRIES else 0
@@ -363,7 +510,7 @@ def smallest_town(condition: Condition, country: str) -> int:
 
 def fits(condition: Condition, country: str | None, location_text: str | None) -> str:
     """"yes", "no" or "unknown" for one job and one condition."""
-    if condition.status == "not_checked" or condition.kind == "about_job":
+    if not condition.filters:
         return "unknown"
     if condition.kind == "town_size":
         if not country:
