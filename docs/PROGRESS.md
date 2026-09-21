@@ -6,96 +6,63 @@ tested and shown to the owner before the next one starts. Decisions are in
 
 ## Right now
 
-*Last updated: 2026-09-21, before a fresh context window. Tree clean, all pushed, CI green, 306 tests pass.*
+*Last updated: 2026-09-21 (afternoon). Tree clean, all pushed, CI green, 331 tests pass.*
 
-**Where we are:** Phase 1 is essentially complete, and the two things the owner cares most about
-moved a long way: **coverage** (Ireland now has sources, company career sites and several new job
-sites are read in every search) and **the location box as a research task for the AI** (the first
-version of Phase 2 works). Everything is committed and pushed; GitHub's tests pass on macOS and
-Windows.
+**Where we are:** Phase 1 is essentially complete. Phase 2 (the location box as a research task
+for the AI) works, and **people can now correct it after a search** with the Edit button.
+Coverage grows source by source: **12 sources** now, Sweden newly included. Everything is
+committed and pushed; GitHub's tests pass on macOS and Windows.
 
-**Last finished (2026-09-17, night and late night)**
+**Last finished (2026-09-21)**
 
-*More sources (11 now, from 3):*
-- **JobsIreland.ie** (Irish public employment service), **jobs.ac.uk** (UK and Irish universities
-  and research institutes), **EURAXESS** (research jobs all over Europe), **Arbeitnow** (free
-  public API, many German and British jobs from career systems).
-- **Company career sites** in six systems (Greenhouse, Lever, Ashby, Workable, Recruitee,
-  Workday), with a checked **employer directory of 326 companies**
-  (`src/jobcu/data/employers.json`, refreshed with `tools/check_employers.py`): 135 hire in
-  Ireland, 245 in the UK, 216 in Germany, and every supported country has at least two. The
-  directory also records **which towns** each company hires in, so a search for one city can skip
-  companies that only hire far away.
-- Checked and **not** used, with reasons in [SOURCES.md](SOURCES.md): EURES (its terms allow
-  automated extraction only for EURES partners), UK Find a Job, UK Civil Service Jobs and
-  publicjobs.ie (all answer with bot checks), SmartRecruiters (robots.txt allows only LinkedIn),
-  Personio (its pages need JavaScript; many of its jobs arrive through Arbeitnow anyway).
-- **Adzuna and Reed keys are now optional:** Jobcu finds jobs without any job-site key.
+- **"Edit" next to "Understood as"** (HANDOVER §6, point 2). A window lists each condition about
+  places: switch it off, correct its list of towns or its town size, reword it (Jobcu checks it
+  again with the AI), ask for a new check, or add a condition. The changes are applied to the jobs
+  the search already found, without searching again: only jobs that come back in are quick-checked
+  and scored, and every earlier answer is reused. The latest search's jobs are kept for this
+  (`pool.py`, table `search_pool`; the next search replaces them). Search and correction share one
+  final step (`search._decide`). Checked live on a copy of the owner's data: Munich + "at least
+  1 million people", then switched off and replaced by "at least 20,000 people".
+- **Bug found in that live test and fixed:** Adzuna writes "Unterhaching, München (Kreis)"; the
+  town finder took the district for the city of Munich, so suburbs passed a big-city condition.
+  Districts and counties ("(Kreis)", "Co. Cork", "County …") now count only when no town is named.
+- **Arbetsförmedlingen (Sweden)** is a source: its open JobSearch API (CC0, no key). Jobcu reads
+  every ad in the time window and matches on its own side, because the API's word search misses
+  Swedish compound words. 24 hours ≈ 16 requests, 10 s. Details in SOURCES.md.
+- **Terms of the job boards on hold** (IrishJobs.ie, Jobs.ie, Totaljobs, StepStone.de, all Stepstone
+  Group) are read and recorded in SOURCES.md: none clearly allows automated reading, StepStone.de
+  names scraping. They stay on hold.
+- README no longer says the smart checks are still to come; the first-search guide explains Edit.
 
-*The location box (Phase 2, first version):*
-- The AI splits what someone writes into conditions and checks each one: **town-size conditions
-  are computed** from the figures Jobcu ships (town populations, and people per country), and
-  **anything else about a place is looked up live on the web** through the person's own AI
-  provider, which returns the towns that fit or the towns to avoid **with its sources**.
-- Conditions it can't confirm, and conditions about the job itself, are shown as "not checked" and
-  never filter anything. Every job card says what each condition found, and jobs whose place can't
-  be recognised are kept, not dropped.
-- Jobcu also ships a town list (GeoNames, 63,220 towns with local names, coordinates and
-  population) **as a ruler only**: it answers "where is this place and how big is it" once the AI
-  has decided what to measure.
-
-*Finished just before this handoff:* conditions Jobcu can't apply itself (about the job, or not
-checked) now reach the **scoring** prompt; the results screen has a collapsed **"Left out by your
-conditions"** list (unscored, so the person can judge the AI's reading); cards say **"Doesn't
-fit: …"** in red for a failed condition; and `tools/score_check.py` is built.
-
-*Interrupted (nothing written yet, pick up if useful):* checking what the big boards on hold
-actually allow, as facts for the owner's decision. Found so far (2026-09-18): the robots.txt of
-**IrishJobs.ie, Jobs.ie, Totaljobs and StepStone.de** allow `/job/` and `/jobs/` pages for every
-crawler; their **terms** still need reading in full (IrishJobs/Jobs.ie section 4.8 "Unlawful &
-prohibited use" at `/about/terms-and-conditions`). Record the result in SOURCES.md; don't build
-anything for them without the owner's decision. **Sweden's JobTech JobSearch API**
-(`jobsearch.api.jobtechdev.se/search`, open, no key) was checked and works, not built yet.
-**Remotive** and **RemoteOK** have open APIs for remote jobs (low value for hardware roles).
-
-*Other work:* the **Score check** screen (every search keeps a few of its ads and left-out titles
-for the owner to rate), a **usage meter with limits, a price table and on/off switches per source**
-in Settings, **profile reuse** for unchanged documents, **ad texts reused for three days**,
-**Adzuna's monthly allowance shared across the month**, **prompt caching** where a provider needs
-asking, and `tools/coverage_test.py`.
-
-**Real tests (the owner's own documents and keys, on a copy of his data folder):**
-- *"Germany, but no cities where far-right parties polled above the national average, and only
-  cities with at least 0.3% of the country's people", 24 hours*: 4 minutes, 268 ads, 251 different
-  jobs, **139 left out by those conditions**, 56 shown. The far-right condition was researched live
-  (Dresden, Chemnitz, Cottbus, Erfurt, Leipzig… excluded, sources: bundeswahlleiterin.de and
-  others); the 0.3% condition was computed (at least 250,500 people in Germany, 15,930 in Ireland).
-  Top results were real power-electronics jobs (Franka Robotics 96, GE Vernova 95, eMoSys 93).
-- *Munich or within 50 km, 24 hours*: 19 ads, 9 scored, 2.5 minutes (before the new sources).
-- *Ireland, 72 hours*: 94 seconds, no matching hardware jobs — his search words are narrow and
-  Ireland has few such jobs that week.
+**Earlier (2026-09-17):** 11 sources (JobsIreland.ie, jobs.ac.uk, EURAXESS, Arbeitnow, six
+company career systems with a 326-company employer directory, Adzuna, Reed, Bundesagentur), the
+location conditions researched live or computed from the shipped town list (GeoNames), the Score
+check screen and `tools/score_check.py`, the usage meter with limits and source switches, profile
+reuse, ad texts reused for three days, Adzuna's allowance shared across the month, prompt caching,
+`tools/coverage_test.py`. Real tests then: Germany with the far-right and 0.3% conditions (4 min,
+251 jobs, 139 left out by the conditions, 56 shown); Munich 24 h; Ireland 72 h.
 
 **Waiting on the owner (Utku):**
 1. **A friend is testing Jobcu.** Collect his feedback (installation, confusing steps, results).
-2. **Run a real search yourself** and say whether the top results look right, whether any score is
-   clearly wrong, and whether any title in "left out as clearly unrelated" was actually relevant.
-   The new **Score check** screen is the place to record that: answer good / okay / poor for the
-   jobs it kept from your searches.
+2. **Run a real search yourself** and say whether the top results look right. The **Score check**
+   screen (top menu) collects a few jobs from each search: answer good / okay / poor. His data
+   folder shows no search since 2026-09-17, so nothing is rated yet.
 3. Optional: a **generic cover letter** (the uploaded one is written for Tesla).
-4. **A coverage list, to measure what Jobcu misses:** paste 15–25 jobs you'd want Jobcu to find
-   (from LinkedIn, StepStone, Indeed, anywhere) into a text file, one per line:
-   `Company | Job title | Place | link`. Then `uv run python tools/coverage_test.py that-file.txt`
-   says how many Jobcu found and why it missed the rest. That's how we decide with numbers whether
-   Jobcu needs the job boards that are on hold.
-5. **Travel times need a Google Maps key** (your own choice earlier). Conditions like "at most 50
-   minutes by public transport from a city centre" are answered as a clearly labelled **AI
-   estimate** today. Real times need a Maps key with billing switched on, kept inside the free
-   allowance. Say the word and I'll write the exact steps, one at a time.
-6. **One question:** may facts that barely change (a town's population, the last election's
+4. **A coverage list, to measure what Jobcu misses:** 15–25 jobs you'd want Jobcu to find (from
+   LinkedIn, StepStone, Indeed, anywhere), one per line: `Company | Job title | Place | link`. Then
+   `uv run python tools/coverage_test.py that-file.txt` says how many Jobcu found and why not.
+5. **The job boards on hold** (IrishJobs.ie, Jobs.ie, Totaljobs, StepStone.de): their terms are
+   now summarised in SOURCES.md. Options: keep them on hold (today's rule), or write to the
+   Stepstone Group asking permission for personal, device-local use. Best decided with the
+   coverage list's numbers.
+6. **Travel times need a Google Maps key** (your own choice earlier). Until then, conditions like
+   "at most 50 minutes by public transport" are a clearly labelled AI estimate.
+7. **One question:** may facts that barely change (a town's population, the last election's
    results) be remembered with their source and date for a while, or should every search look them
    up again? Everything about the *jobs* stays fresh either way.
-7. **Jooble and Careerjet** (aggregators covering Ireland, the UK and Germany) need free keys meant
-   for websites showing their jobs, and Jobcu has no website. Your call whether to sign up.
+8. **Jooble and Careerjet** need free keys meant for websites showing their jobs, and Jobcu has no
+   website. **France Travail, Norway's NAV and Belgium's VDAB** need a free registration or key.
+   Your call whether to sign up for any of them.
 
 **Countries:** 30 European countries (see `countries.py`). Search words use English plus the
 languages of the places searched.
@@ -103,17 +70,16 @@ languages of the places searched.
 Ireland, the UK and Germany are worked on and tested first.
 
 **Next tasks for the assistant, in this order:**
-1. **Use the score-check loop once the owner has answered a few jobs.** The screen and
-   `tools/score_check.py` are built: the tool compares his answers with the scores Jobcu gave
-   (free), or re-scores the same ads with different settings (`--rescore --batch 1 --effort medium
-   --summary`) to tune the quick relevance check, batch size, summary vs full ad, reasoning effort,
-   and how wide the search words should be (HANDOVER §13).
-2. **More of Phase 2:** an Edit option for the interpretation, real travel times when the owner
-   agrees to a Maps key, and remembering researched facts if he allows it.
-3. **More coverage:** more employers in the directory, more career systems (SuccessFactors,
-   Teamtailor, BambooHR, Comeet, Oracle), national public employment services with open APIs
-   (Sweden's works and needs no key; Norway, France, Belgium and others need a free key or
-   registration), and the decision about the job boards on hold once the coverage list exists.
+1. **Use the score-check loop once the owner has answered a few jobs** (`tools/score_check.py`:
+   compare, or `--rescore --batch 1 --effort medium --summary` to tune; HANDOVER §13).
+2. **More coverage, IE/UK/DE first:** more career systems (Teamtailor has public career pages and
+   feeds; SuccessFactors is used by many big German employers; also BambooHR, Comeet, Oracle),
+   more employers in the directory, and national public employment services with open data and no
+   key (candidates to check: Czechia's MPSV open data, Poland's CBOP, Finland, Estonia, Slovenia,
+   Luxembourg). Check terms and robots.txt first and record each in SOURCES.md.
+3. **More of Phase 2:** real travel times once the owner agrees to a Maps key; remembering
+   researched facts if he allows it. Possible improvement: the Swedish ads and Adzuna give
+   coordinates, which could decide the town for size conditions better than the place name.
 4. Keep `docs/guides/` in step with the screens; fix what the tester's feedback shows.
 5. Confirm Phase 1 "Done when" with the owner, then agree what Phase 2 must still deliver.
 
@@ -200,13 +166,14 @@ Ireland, the UK and Germany are worked on and tested first.
 
 The location box is a research task for the AI, not a filter (DECISIONS.md, 2026-09-17 night).
 
-- [ ] The AI splits the location text into conditions and picks a way to check each one
-- [ ] **Live web search** for conditions that need facts (elections, shops, students, anything
-      else), with the sources kept and shown
+- [x] The AI splits the location text into conditions and picks a way to check each one
+      (2026-09-17)
+- [x] **Live web search** for conditions that need facts (elections, shops, students, anything
+      else), with the sources kept and shown (2026-09-17)
 - [ ] **Real travel times** (Google Maps, weekday working hours, within the free allowance),
       one request per place and not per job
-- [ ] Location interpretation shown with the results, with an Edit option, sources and clearly
-      marked estimates
+- [x] Location interpretation shown with the results, with an Edit option, sources and clearly
+      marked estimates (Edit: 2026-09-21)
 - [ ] Reference data from HANDOVER §6 as *rulers* only: the town list already ships (coordinates,
       population, local names); boundaries, coastlines, the UK sponsor register and election
       results as needed
@@ -221,7 +188,7 @@ The location box is a research task for the AI, not a filter (DECISIONS.md, 2026
       240-company directory already arrived in Phase 1 (2026-09-17), and the generic `JobPosting`
       reader exists since Phase 1 and reads Adzuna's job pages
 - [ ] General live AI web search
-- [ ] Per-source status, unique-job counts and on/off settings
+- [x] Per-source status, unique-job counts and on/off settings (Phase 1, 2026-09-17)
 - [ ] **Done when:** the coverage test shows no large avoidable gaps, and the remaining gaps are
       explained to the owner.
 
