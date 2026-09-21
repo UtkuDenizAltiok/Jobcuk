@@ -195,6 +195,38 @@ company had jobs in, and whether it also hires outside them).
   ReachMee, Visma Recruit, Teamtailor, Recruitee), so it is used as the employer's link.
 - A real check (24 hours, 12 electronics search words): 3 jobs in 17 requests, 10 s.
 
+## Job boards on hold: what their terms say (checked 2026-09-18 and 2026-09-21)
+
+Facts for the owner's decision (DECISIONS.md, 2026-09-17: boards stay on hold until the coverage
+test shows what Jobcu misses). Nothing is built for them. **All four belong to the Stepstone
+Group**, so one written permission could cover them all.
+
+- **robots.txt** of IrishJobs.ie, Jobs.ie, Totaljobs and StepStone.de allows the `/job/` and
+  `/jobs/` pages for every crawler (2026-09-18).
+- **IrishJobs.ie and Jobs.ie** (The Stepstone Group Ireland Recruit Ltd, same terms): 4.8.1 use
+  the site "only … for lawful purposes when seeking employment", and never overload it; 4.8.2 and
+  4.8.3 no use of the site or its Content "in competition with our business activities (as
+  determined by us at our sole discretion)"; 4.5.2 "our prior written permission is required for
+  any such use or removal of the Content"; 16 "Content … can be downloaded for personal
+  non-commercial use". **No clause names robots, crawling or scraping.**
+- **Totaljobs** (The Stepstone Group UK Ltd): 1.1 the site is "for the sole purpose of individuals
+  looking for employment opportunities"; people "may use, print and download information from the
+  site for these purposes only" and may not otherwise copy, transmit or distribute it; any other
+  "unauthorised processing" is a material breach. **No clause names robots or scraping.**
+- **StepStone.de** (The Stepstone Group GmbH, terms of 06.11.2025, a PDF linked from
+  /e-recruiting/rechtliches/nutzungsbedingungen-bewerber/): 1.2 only for "die individuelle
+  Arbeitssuche natürlicher Personen", no other commercial use; **4.3.4 forbids scraping or
+  similar techniques to collect content "für einen anderen Zweck"**, to republish it or to use it
+  other than for the intended purpose of the services; 13.2 (i) forbids using the platforms "für
+  die Entwicklung anderer Dienstleistungen". Its `/agb` address answers 403 even in a browser.
+- **Reading of these facts (not legal advice):** each allows a person to download ads for their
+  own job search, and Jobcu does only that, on the person's own computer, without republishing.
+  But none clearly allows automated reading: StepStone.de names scraping and "developing other
+  services", and the Irish sites keep the final say on what counts as competition and ask for
+  prior written permission. That is **not "clearly permitted"**, so under the owner's no-legal-risk
+  rule they stay on hold. The clean route would be written permission from the Stepstone Group
+  for personal, non-commercial, device-local use.
+
 ## Checked and not used
 
 - **EURES** (europa.eu/eures), checked 2026-09-17. Technically ideal: `POST
