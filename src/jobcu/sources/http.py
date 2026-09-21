@@ -54,6 +54,8 @@ SITE_INTERVALS = {
     "apply.workable.com": 1.0,
     "www.arbeitnow.com": 1.0,
     "www.arbeitnow.co.uk": 1.0,
+    # Sweden's open job data (CC0, no stated limit): pages are big, so a short pause is enough.
+    "jobsearch.api.jobtechdev.se": 0.5,
     # Adzuna's job pages are read at a relaxed, human-like pace.
     **{f"www.adzuna.{ending}": 3.0
        for ending in ("de", "co.uk", "at", "be", "ch", "es", "fr", "it", "nl", "pl")},

@@ -166,6 +166,35 @@ company had jobs in, and whether it also hires outside them).
   are described by field, not job title), reads at most 12 words and 2 pages each, and stops at
   25 requests per search.
 
+## Arbetsförmedlingen, Sweden (`src/jobcu/sources/jobtech.py`), checked 2026-09-21
+
+- **Sweden's public employment service**, through its open **JobSearch API** (JobTech):
+  `GET https://jobsearch.api.jobtechdev.se/search`. All ads in Platsbanken, Sweden's national
+  job board, with the **full ad text**. Data licence **CC0**, **no key or registration**, no
+  robots.txt, no stated rate limit (data.arbetsformedlingen.se/dataservice/jobsearch).
+- Parameters used: `published-after` (minutes back, or a datetime), `published-before`,
+  `sort=pubdate-desc`, `limit` (at most 100), `offset` (**at most 2,000**). Older ads are reached
+  by asking again with `published-before` set to the oldest ad seen. The `X-Fields` header asks
+  only for the fields Jobcu uses (0.55 MB per 100 ads instead of 1.3 MB).
+- **About 1,600 new ads a day** (10,900 in a week, counted on 2026-09-21). A 24-hour search is
+  about 16 requests; a week about 110.
+- **Why Jobcu reads the whole window instead of using `q`:** the default "smart" free-text search
+  treats "hardware engineer" as one occupation (2 hits in a week, against 18 with
+  `x-feature-disable-smart-freetext: true` and `x-feature-freetext-bool-method: and`), and word
+  search doesn't look inside Swedish compound words ("kraftelektronik" isn't found by
+  "elektronik"). Jobcu's own matching finds words inside longer words.
+- `publication_date` is **Swedish local time** without a zone. `workplace_address` gives city,
+  municipality, county (`län`) and `coordinates` as **[longitude, latitude]** (about 96% have
+  them). The distance filter `position` + `position.radius` returned nothing in a test, so Jobcu
+  matches places itself. Ads abroad (country other than "Sverige") are skipped.
+- Job types: `employment_type` "Tillsvidareanställning" = permanent; "Vanlig anställning" depends
+  on `duration` ("Tills vidare" = permanent, a period = fixed-term); "Tidsbegränsad",
+  "Säsongsanställning", "Sommarjobb" = fixed-term; "Behovsanställning" (called in when needed) =
+  part-time; `working_hours_type` "Deltid" adds part-time.
+- `application_details.url` mostly leads to the employer's own application system (Varbi,
+  ReachMee, Visma Recruit, Teamtailor, Recruitee), so it is used as the employer's link.
+- A real check (24 hours, 12 electronics search words): 3 jobs in 17 requests, 10 s.
+
 ## Checked and not used
 
 - **EURES** (europa.eu/eures), checked 2026-09-17. Technically ideal: `POST

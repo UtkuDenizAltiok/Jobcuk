@@ -301,3 +301,10 @@ students"*.
 | **A corrected town list or size becomes the person's own rule**: cards say "your change", never "AI estimate". A switched-off condition stays visible, filters nothing and is no longer passed to scoring. After an edit, scoring no longer gets the first "Understood as" sentence, which may mention a switched-off condition. | Every card must say where a verdict came from (HANDOVER §6, point 6). |
 | **Jobcu keeps the latest search's jobs** that passed the other rules (dates, job types, remote, countries, Not interested), with their quick-check answers and scores (`pool.py`, table `search_pool`). The next search replaces them, and a new search never reads them. | Corrections must still work after Jobcu restarts. It's the same data as the saved results, on the same computer. It doesn't change "everything starts fresh each search" (HANDOVER §12): it's only used within the search it came from. |
 | **Places and countries can't be changed with Edit.** They decide which job sites are asked, so the window says to change "Where do you want to work?" and search again. | Re-applying works only on jobs already found. |
+
+## 2026-09-21: Sweden's public employment service
+
+| Decision | Reason |
+|---|---|
+| **Arbetsförmedlingen is a source** for Sweden, through its open JobSearch API (JobTech): every ad in Platsbanken, with full texts. | Sweden had no source of its own. The data is CC0, needs no key, and it's the national public job board (HANDOVER §9.2 names it as a candidate). |
+| **Jobcu reads every ad in the "Posted within" window and matches on its own side**, instead of using the API's word search. | The word search misses Swedish compound words and, by default, narrows multi-word titles to one occupation. Coverage comes first (AGENTS.md); a 24-hour search is about 16 requests, and only the fields Jobcu uses are downloaded. |

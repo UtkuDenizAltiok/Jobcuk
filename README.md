@@ -29,10 +29,9 @@ out what it means for **your** search. Some examples:
 - *A university town: more than 20% of the people are students.*
 - *Within 30 minutes of Munich city centre, and never fully remote.*
 
-Jobcu shows **how it understood every condition** before it uses it, with the sources it checked,
-and you can correct it. Conditions it can't check yet are shown as "not checked", never silently
-dropped. (The smart checks come in the next phase; see
-[docs/PROGRESS.md](docs/PROGRESS.md).)
+Jobcu shows **how it understood every condition**, with the sources it checked. If it got
+something wrong, click **Edit** and correct it: the change is applied to the jobs already found.
+Conditions it can't check are shown as "not checked", never silently dropped.
 
 ## Good to know
 
