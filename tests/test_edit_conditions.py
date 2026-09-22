@@ -287,3 +287,71 @@ def test_the_edit_api_explains_what_it_cant_do(conditions_ready, monkeypatch):
     restored = client.get("/api/search/current").json()["search"]
     assert restored["can_edit_conditions"] and restored["kind"] == "reapply"
     assert len(restored["result"]["jobs"]["cards"]) == 2
+
+
+# --- Jobs whose job site gives only a country --------------------------------------------------
+
+
+class CountryOnlySource(JobSource):
+    """Like Adzuna's newer ads: "Deutschland" as the place, the town only in the text."""
+
+    id = "countryonly"
+    name = "Country Only"
+    kind = "aggregator"
+    jobs = [("Hardware Engineer", "Wir suchen Sie am Standort in Berlin."),
+            ("Electronics Engineer", "Wir suchen Sie am Standort in Garching."),
+            ("PCB Designer", "Ein spannendes Team wartet.")]
+
+    def search(self, query, ctx):
+        for i, (title, text) in enumerate(self.jobs):
+            yield FoundJob(source="countryonly", source_job_id=str(i), url=f"https://jobs.test/{i}",
+                           title=title, company=f"Company {i}", location_text="Deutschland",
+                           country="DE", posted_at=NOW, date_precision="exact",
+                           description=text, description_is_complete=True)
+
+
+class PlaceReadingAI(ConditionAI):
+    """Reads "am Standort in X" for the jobs marked WHERE?, as a real model would."""
+
+    def complete_json(self, **request):
+        if request["schema_name"] == "QuickPassAnswer":
+            self.quick_checked.append(
+                re.findall(r"^J\d+ \| ([^|]+) \|", request["prompt"], re.MULTILINE))
+            places = [{"id": job_id, "places": [town]} for job_id, town in re.findall(
+                r"^(J\d+) \|.*Standort in (\w+)\..*\| WHERE\?$", request["prompt"], re.MULTILINE)]
+            return RawReply(json.dumps({"clearly_unrelated": [], "places": places}), Usage(10, 5))
+        return super().complete_json(**request)
+
+
+def test_the_town_an_ad_names_decides_when_its_site_gave_only_a_country(conditions_ready,
+                                                                       monkeypatch):
+    _, manager = conditions_ready
+    ai = PlaceReadingAI()
+    monkeypatch.setattr("jobcu.ai.client.AIClient.adapter", lambda self: ai)
+    monkeypatch.setattr("jobcu.pipeline.all_sources", lambda: [CountryOnlySource()])
+    run = manager.start(SearchForm(location_text="Germany, only big cities"))
+    first = wait_until_done(manager)
+    assert first["status"] == "finished", first["error"]
+    jobs = first["result"]["jobs"]
+    # Berlin fits, Garching is too small, and the ad that names no town is kept, saying why.
+    assert titles(jobs["cards"]) == ["Hardware Engineer", "PCB Designer"]
+    assert titles(jobs["ruled_out_by_conditions"]) == ["Electronics Engineer"]
+    berlin = next(c for c in jobs["cards"] if c["title"] == "Hardware Engineer")
+    assert berlin["location"] == "Berlin" and berlin["location_from_ad_text"]
+    assert [c["status"] for c in berlin["location_checks"]] == ["verified", "verified"]
+    unknown = next(c for c in jobs["cards"] if c["title"] == "PCB Designer")
+    assert unknown["location"] == "Deutschland" and not unknown["location_from_ad_text"]
+    assert unknown["location_checks"][-1] == {
+        "label": "The ad doesn't say which town the job is in, so your condition about places "
+                 "couldn't be checked", "status": "unclear", "source": None, "detail": None,
+        "whole_sentence": True}
+    assert len(ai.quick_checked) == 1
+
+    # Switched off: the Garching job comes back with the town already read, not asked again.
+    manager.reapply(run.id, [ConditionEdit(text="only big cities", original=0, use=False)])
+    second = wait_until_done(manager)["result"]["jobs"]
+    assert titles(second["cards"]) == ["Electronics Engineer", "Hardware Engineer", "PCB Designer"]
+    assert len(ai.quick_checked) == 1
+    garching = next(c for c in second["cards"] if c["title"] == "Electronics Engineer")
+    assert garching["location"] == "Garching" and garching["location_from_ad_text"]
+    assert pool.load(run.id).jobs[1].group.place_from_text == ["Garching"]

@@ -33,6 +33,7 @@ from jobcu import places as place_list
 from jobcu.ai.base import AIError
 from jobcu.ai.client import AIClient
 from jobcu.countries import COUNTRIES, LANGUAGE_NAMES
+from jobcu.placenames import countries_in
 from jobcu.text import normalise
 
 log = logging.getLogger(__name__)
@@ -829,7 +830,11 @@ def fits(condition: Condition, country: str | None, location_text: str | None) -
     hit = bool(names & wanted)
     if condition.kind == "towns_that_fit":
         return "yes" if hit else ("no" if found is not None else "unknown")
-    return "no" if hit else "yes"  # towns_to_avoid
+    # Towns to avoid: a place that is only a country or a region ("Deutschland", "Bayern") may
+    # still be one of them.
+    if not hit and found is None and (not location_text or countries_in(location_text)):
+        return "unknown"
+    return "no" if hit else "yes"
 
 
 def plan_from(text: str, understanding: LocationUnderstanding) -> LocationPlan:

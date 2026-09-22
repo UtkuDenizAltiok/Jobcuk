@@ -88,6 +88,11 @@ def test_towns_to_avoid_and_towns_that_fit():
                       towns=[TownRef(name="Dresden", country="DE")])
     assert fits(avoid, "DE", "Dresden") == "no"
     assert fits(avoid, "DE", "München") == "yes"
+    assert fits(avoid, "DE", "A village nobody lists") == "yes"  # a town, and not Dresden
+    # Only a country or a region: the job may still be in Dresden.
+    assert fits(avoid, "DE", "Deutschland") == "unknown"
+    assert fits(avoid, "DE", "Sachsen") == "unknown"
+    assert fits(avoid, "DE", None) == "unknown"
 
     only = Condition(text="shops open on Sunday", understood_as="Towns with Sunday opening",
                      status="estimate", kind="towns_that_fit",

@@ -122,6 +122,9 @@ class JobGroup:
     copies: list[FoundJob]
     possible_duplicate_of: int | None = None  # index of the group this may repeat
     source_kinds: dict[str, str] = field(default_factory=dict)
+    # Where the ad's own text says the job is, when no job site gave a town (relevance.py):
+    # None until the quick relevance check has read it, [] when the text names no town.
+    place_from_text: list[str] | None = None
 
     @property
     def main(self) -> FoundJob:

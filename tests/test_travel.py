@@ -62,6 +62,12 @@ class FakeMaps:
     def handler(self, request):
         body = json.loads(request.content)
         self.requests.append((request.url.path, body, dict(request.headers)))
+        if "departureTime" in body and body["travelMode"] != "TRANSIT" and "routingPreference" \
+                not in body:
+            # What the real Routes API answers (checked 2026-09-22).
+            return httpx.Response(400, json=[{"error": {
+                "code": 400, "status": "INVALID_ARGUMENT",
+                "message": "Timestamp cannot be set for TRAFFIC_UNAWARE routing mode."}}])
         elements = []
         for index, destination in enumerate(body["destinations"]):
             point = destination["waypoint"]["location"]["latLng"]
@@ -152,6 +158,31 @@ def test_fuerstenfeldbruck_fits_through_munich():
     check = card["location_checks"][-1]
     assert check["status"] == "verified" and check["source"] == "Google Maps"
     assert check["detail"] == "Munich, 17 min by public transport"
+
+
+def test_car_trips_are_measured_without_a_departure_time():
+    fake = FakeMaps({"Munich": 25})
+    condition = near(minutes=30)
+    condition.travel_mode = "drive"
+    job = group("Fürstenfeldbruck")
+    notes = []
+    meter(fake, notes=notes).measure([condition], [job], [0])
+    (_, body, _), = fake.requests
+    assert body["travelMode"] == "DRIVE" and "departureTime" not in body
+    assert condition_fit(condition, job) == "yes" and notes == []
+    assert travel.detail(condition, job) == ("Munich, 25 min by car", "Google Maps")
+
+
+def test_google_s_own_words_go_to_the_log_when_it_refuses(caplog):
+    def refuse(request):
+        return httpx.Response(400, json=[{"error": {"code": 400, "message": "Bad field."}}])
+
+    http = PoliteClient(min_intervals={}, sleep=lambda s: None,
+                        transport=httpx.MockTransport(refuse))
+    with caplog.at_level("WARNING"), pytest.raises(travel.MapsError, match="code 400"):
+        travel.GoogleMaps("fake-maps-key", http, now=lambda: NOW).minutes(
+            travel.job_point(group("Freising")), [places.find("Munich", "DE")], "transit")
+    assert "Google Maps answered 400: Bad field." in caplog.text
 
 
 def test_clear_cases_need_no_route_look_up():

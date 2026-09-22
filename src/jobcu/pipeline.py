@@ -14,6 +14,7 @@ from jobcu.filters import condition_fit
 from jobcu.freshness import freshness, window_start
 from jobcu.jobstore import JobState
 from jobcu.location import LocationPlan
+from jobcu.placenames import countries_in
 from jobcu.sources import all_sources
 from jobcu.sources.base import (
     FoundJob,
@@ -203,17 +204,35 @@ def build_card(
         })
     elif not country:
         checks.append({"label": "Location unclear", "status": "unclear", "source": None})
-    # What the conditions the person wrote say about this job (HANDOVER section 6).
+    # What the conditions the person wrote say about this job (HANDOVER section 6). When its town
+    # isn't known, one line says so instead of one "couldn't be checked" per condition.
+    town_known = travel.job_point(group) is not None
+    unanswered = 0
     for condition in plan.conditions:
         if not condition.filters:
             continue
         answer = condition_fit(condition, group)
+        if answer == "unknown" and not town_known:
+            unanswered += 1
+            continue
         found = travel.detail(condition, group)
         checks.append({
             "label": condition.understood_as,
             "status": {"yes": "verified", "unknown": "unclear"}.get(answer, "fails"),
             "source": _checked_by(condition, found[1] if found else None),
             "detail": found[0] if found else None,
+        })
+    if unanswered:
+        where = next((c.location_text for c in group.copies
+                      if c.location_text and not countries_in(c.location_text)), None)
+        conditions = "your condition about places" if unanswered == 1 else (
+            "your conditions about places")
+        checks.append({
+            "label": (f"Jobcu doesn't know where \"{where}\" is, so {conditions} couldn't be "
+                      "checked" if where else
+                      f"The ad doesn't say which town the job is in, so {conditions} couldn't "
+                      "be checked"),
+            "status": "unclear", "source": None, "detail": None, "whole_sentence": True,
         })
     start = window_start(started_at, posted_within_hours)
     state = state or JobState()
@@ -223,7 +242,9 @@ def build_card(
         "state": asdict(state),
         "title": main.title,
         "company": main.company,
-        "location": main.location_text,
+        # A town the ad's text names, when its job sites gave only a country (relevance.py).
+        "location": ", ".join(group.place_from_text or []) or main.location_text,
+        "location_from_ad_text": bool(group.place_from_text),
         "country": country,
         "work_mode": work_mode,
         "job_types": job_types,

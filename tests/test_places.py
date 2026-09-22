@@ -38,6 +38,27 @@ def test_locate_reads_the_town_out_of_a_job_location():
     assert places.locate("", "DE") is None
 
 
+def test_states_and_nations_are_never_read_as_a_town():
+    # Each of these also names a town: Sachsen bei Ansbach, Brandenburg an der Havel, Schleswig,
+    # a village called Wales, Česká.
+    for text, country in [("Sachsen", "DE"), ("Sachsen-Anhalt", "DE"), ("Brandenburg", "DE"),
+                          ("Schleswig-Holstein", "DE"), ("Sachsen, Deutschland", "DE"),
+                          ("Wales", "GB"), ("Česká republika", "CZ")]:
+        assert places.locate(text, country) is None, text
+    assert places.locate("Dresden, Sachsen", "DE").name == "Dresden"
+    assert places.locate("Cardiff, Wales", "GB").name == "Cardiff"
+    assert places.locate("Brandenburg an der Havel", "DE").name == "Brandenburg an der Havel"
+    assert places.locate("Berlin", "DE").name == "Berlin"  # a city state is a town too
+
+
+def test_a_district_after_its_town_is_that_town():
+    assert places.locate("Wietmarschen-Lohne", "DE").name == "Wietmarschen"  # not Löhne
+    assert places.locate("Hamburg-Wandsbek", "DE").name == "Hamburg"
+    assert places.locate("Stuttgart-Vaihingen, Baden-Württemberg", "DE").name == "Stuttgart"
+    for town in ("Castrop-Rauxel", "Baden-Baden", "Villingen-Schwenningen"):
+        assert places.locate(town, "DE").name == town
+
+
 def test_distances_are_about_right():
     munich = places.find("Munich", "DE")
     garching = places.locate("Garching", "DE")

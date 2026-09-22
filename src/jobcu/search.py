@@ -405,9 +405,16 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
     in_running = [i for i in range(len(groups)) if i not in excluded]
     unchecked = [i for i in in_running if job_pool.jobs[i].unrelated is None]
     if unchecked:
-        unrelated_now = set(quick_pass(client, profile, groups, unchecked))
+        checked = quick_pass(client, profile, groups, unchecked)
         for index in unchecked:
-            job_pool.jobs[index].unrelated = index in unrelated_now
+            job_pool.jobs[index].unrelated = index in checked.unrelated
+        for index, places in checked.places.items():
+            groups[index].place_from_text = places
+        # Where the ad's text named the town, the conditions about places can decide now.
+        placed = [i for i, places in checked.places.items() if places]
+        newly_out = [i for i in placed if fails_a_condition(groups[i], at_once)]
+        ruled_out = sorted([*ruled_out, *newly_out])
+        in_running = [i for i in in_running if i not in set(newly_out)]
     unrelated = [i for i in in_running if job_pool.jobs[i].unrelated]
     candidates = [i for i in in_running if not job_pool.jobs[i].unrelated]
     if measured and candidates:

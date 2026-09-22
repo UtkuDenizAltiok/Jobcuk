@@ -29,8 +29,17 @@ jobs came from Adzuna with only "Deutschland"/"UK" as their place, and Google Ma
 - [ ] `location.fits`: "towns to avoid" answers "unknown", not "yes", when the place is only a
       country or region.
 - [ ] Cards: one line when the town is unknown; a town from the ad text is labelled.
-- [ ] Tests, DECISIONS/SOURCES/AGENTS/user guide, then a real check on a copy of the owner's
-      data (a few AI requests, no new search needed: re-run `_decide` on search 5's pool).
+- [x] Car travel, town from the ad text, avoid-list "unknown", cards (tests pass; real check:
+      36 towns read, Google car times work). Also: states/nations are never read as a town
+      ("Sachsen"), and "Town-District" names are read as the town ("Wietmarschen-Lohne").
+- [ ] Research found in the real check: the far-right fact was answered as an incomplete list of
+      31 "towns that fit" (Munich/Stuttgart/Ulm jobs wrongly out), and the travel condition's
+      reference places were researched separately from a fragment ("voting ratio … less than
+      average" → turnout). Fix: one look-up for a fact both conditions use (the full wording);
+      research lists the minority side (towns to avoid when most places fit). Try with the
+      owner's sentence on a real provider.
+- [ ] Check why the quick pass now called 46 of 147 previously kept jobs unrelated.
+- [ ] Tests, DECISIONS/SOURCES/AGENTS/user guide.
 Done when: all tests pass and, on search 5's jobs, most Adzuna jobs get a town and the
 conditions and Google travel times are applied to them.
 

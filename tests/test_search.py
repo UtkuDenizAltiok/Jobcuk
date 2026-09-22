@@ -41,7 +41,7 @@ class FakeAI(ProviderAdapter):
         name, prompt = request["schema_name"], request["prompt"]
         if name == "QuickPassAnswer":
             ids = re.findall(r"^(J\d+) \| Nurse", prompt, re.MULTILINE)
-            answer = {"clearly_unrelated": ids}
+            answer = {"clearly_unrelated": ids, "places": []}
         elif name == "ScoringAnswer":
             answer = {"scores": [
                 {"job_id": job_id, "role_and_skills": 35, "seniority": 18, "languages": 15,

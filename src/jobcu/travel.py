@@ -11,9 +11,10 @@ is small. `location.py` reads the condition; this module measures it for each jo
 2. **Which reference places could be in reach:** straight-line distances rule out places no
    train or car could reach in time and settle jobs inside a reference town at once, so only
    the nearest few places in between are asked about.
-3. **How long it takes:** Google Maps (the person's own key, weekday morning, the travel mode
-   the person meant), within a monthly limit below Google's free allowance. Without a key, or
-   when the limit is reached, the AI estimates the times and the card says so.
+3. **How long it takes:** Google Maps (the person's own key, the travel mode the person meant;
+   public transport on a weekday morning, car without live traffic), within a monthly limit below
+   Google's free allowance. Without a key, or when the limit is reached, the AI estimates the
+   times and the card says so.
 
 Each job's answer is kept in the condition (minutes per reference place), so a corrected limit
 is applied again without asking anyone. The AI's estimates are also remembered for 30 days (the
@@ -38,6 +39,7 @@ from jobcu.ai.base import AIError
 from jobcu.countries import COUNTRIES
 from jobcu.dedupe import JobGroup
 from jobcu.location import Anchor, Condition
+from jobcu.placenames import countries_in
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget
 from jobcu.text import normalise
 
@@ -96,8 +98,9 @@ def job_key(group: JobGroup) -> str:
 
 
 def job_point(group: JobGroup) -> Point | None:
-    """Where the job is: a job site's coordinates if any, otherwise its town's centre."""
-    country = next((c.country for c in group.copies if c.country in COUNTRIES), None)
+    """Where the job is: a job site's coordinates if any, otherwise its town's centre, otherwise
+    the town the ad's own text names."""
+    country = job_country(group)
     if country is None:
         return None
     for copy in group.copies:
@@ -105,11 +108,26 @@ def job_point(group: JobGroup) -> Point | None:
             town = place_list.locate(copy.location_text, country)
             return Point(copy.latitude, copy.longitude, country, "address",
                          town.name if town else copy.location_text)
-    for copy in group.copies:
-        town = place_list.locate(copy.location_text, country)
+    for text in [copy.location_text for copy in group.copies] + (group.place_from_text or []):
+        town = place_list.locate(text, country)
         if town is not None:
             return Point(town.latitude, town.longitude, country, "town", town.name)
     return None
+
+
+def job_country(group: JobGroup) -> str | None:
+    return next((c.country for c in group.copies if c.country in COUNTRIES), None)
+
+
+def needs_place(group: JobGroup) -> bool:
+    """True when no job site says which town the job is in ("Deutschland", "Sachsen", nothing)
+    and the ad's text hasn't been read for it yet."""
+    if group.place_from_text is not None or job_country(group) is None:
+        return False
+    return job_point(group) is None and all(
+        not (copy.location_text or "").strip() or countries_in(copy.location_text)
+        for copy in group.copies
+    )
 
 
 def distance(point: Point, town: place_list.Town) -> float:
@@ -204,6 +222,8 @@ class GoogleMaps:
         if response.status_code == 429:
             raise MapsError("Google Maps asked Jobcu to slow down for now.")
         if response.status_code != 200:
+            # Google says what it didn't like; the key is only ever in a header, never in this.
+            log.warning("Google Maps answered %s: %s", response.status_code, _problem(response))
             raise MapsError(f"Google Maps answered with a problem (code {response.status_code}).")
         try:
             return response.json()
@@ -220,7 +240,9 @@ class GoogleMaps:
                 "latitude": town.latitude, "longitude": town.longitude}}}} for town in towns],
             "travelMode": MODES[mode],
         }
-        if mode in ("transit", "drive"):
+        # Timetables need a day and time. Car trips don't: with a time, Google wants live traffic,
+        # which is billed at a higher tier with half the free allowance (SOURCES.md).
+        if mode == "transit":
             body["departureTime"] = departure(origin.country, self._now())
         elements = self._post(ROUTES, body, "originIndex,destinationIndex,duration,condition")
         found: dict[str, int | None] = {town.name: None for town in towns}
@@ -232,6 +254,15 @@ class GoogleMaps:
             ):
                 found[towns[index].name] = math.ceil(int(seconds) / 60)
         return found
+
+
+def _problem(response: httpx.Response) -> str:
+    try:
+        errors = response.json()
+        error = (errors[0] if isinstance(errors, list) else errors).get("error") or {}
+        return str(error.get("message") or "")[:300]
+    except (ValueError, AttributeError, IndexError):
+        return ""
 
 
 class TravelGuess(BaseModel):

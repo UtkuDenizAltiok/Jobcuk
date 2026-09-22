@@ -96,7 +96,8 @@ def condition_fit(condition, group: JobGroup) -> str:
     if condition.kind == "near":
         return travel.answer(condition, group)
     country = next((c.country for c in group.copies if c.country), None)
-    answers = {fits(condition, country, copy.location_text) for copy in group.copies}
+    places = [copy.location_text for copy in group.copies] + (group.place_from_text or [])
+    answers = {fits(condition, country, place) for place in places}
     if "yes" in answers:
         return "yes"
     return "no" if "no" in answers else "unknown"

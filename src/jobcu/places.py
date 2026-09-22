@@ -37,6 +37,21 @@ _DISTRICT = re.compile(
     re.IGNORECASE,
 )
 
+# States, nations and provinces a location may name on its own ("Sachsen", "Wales"). Some share a
+# name with a town ("Sachsen bei Ansbach", Brandenburg an der Havel, a village called Wales), so
+# they never count as that town: a job in "Sachsen" could be anywhere in Saxony. City states
+# (Berlin, Hamburg, Bremen) and Salzburg are towns as well and aren't listed.
+_REGIONS = frozenset(normalise(name) for name in (
+    "Baden-Württemberg", "Bayern", "Bavaria", "Brandenburg", "Hessen", "Hesse",
+    "Mecklenburg-Vorpommern", "Niedersachsen", "Lower Saxony", "Nordrhein-Westfalen",
+    "North Rhine-Westphalia", "NRW", "Rheinland-Pfalz", "Rhineland-Palatinate", "Saarland",
+    "Sachsen", "Saxony", "Sachsen-Anhalt", "Saxony-Anhalt", "Schleswig-Holstein", "Thüringen",
+    "Thuringia", "England", "Scotland", "Wales", "Cymru", "Northern Ireland", "Great Britain",
+    "United Kingdom", "Leinster", "Munster", "Connacht", "Ulster", "Tirol", "Tyrol",
+    "Vorarlberg", "Kärnten", "Carinthia", "Steiermark", "Styria", "Niederösterreich",
+    "Oberösterreich", "Burgenland", "Česká republika", "Česko", "Czechia", "Czech Republic",
+))
+
 
 @dataclass(frozen=True)
 class Town:
@@ -87,15 +102,33 @@ def locate(text: str | None, country: str | None = None) -> Town | None:
 
     Longer names win ("Frankfurt am Main" over "Frankfurt"), then the bigger town. A district
     or county counts only when no town is named besides it ("Unterhaching, München (Kreis)" is
-    Unterhaching).
+    Unterhaching), and a state or nation never counts ("Sachsen" is no town).
     """
-    parts = re.split(r"[,;|]", text or "")
+    parts = [_town_of_district(part) for part in re.split(r"[,;|]", text or "")
+             if normalise(part) not in _REGIONS]
+    if not any(part.strip() for part in parts):
+        return None
+    text = ", ".join(parts)
     precise = [part for part in parts if not _DISTRICT.search(part)]
     if precise and len(precise) < len(parts):
         town = _locate(", ".join(precise), country)
         if town is not None:
             return town
     return _locate(text, country)
+
+
+_HYPHENATED = re.compile(r"\b(\w+)-(\w+(?:-\w+)*)\b")
+
+
+def _town_of_district(text: str) -> str:
+    """Ads write a district after its town: "Wietmarschen-Lohne" is Lohne in Wietmarschen, not
+    the town of Löhne. A hyphenated name the list doesn't know stands for its first part, when
+    that is a town ("Castrop-Rauxel" is a town in its own right and stays)."""
+    def first_part(match: re.Match) -> str:
+        whole, town = match.group(0), match.group(1)
+        return town if find(whole) is None and find(town) is not None else whole
+
+    return _HYPHENATED.sub(first_part, text)
 
 
 def _locate(text: str | None, country: str | None) -> Town | None:

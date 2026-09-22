@@ -969,8 +969,11 @@ function renderCard(card) {
   const types = card.job_types.length
     ? card.job_types.map((t) => JOB_TYPE_LABELS[t]).join(" or ")
     : "Type unclear";
-  const meta = [card.location || "Location not stated", WORK_MODES[card.work_mode], types,
-    postedLabel(card), card.salary].filter(Boolean).join(" · ");
+  const where = card.location
+    ? `${card.location}${card.location_from_ad_text ? " (from the ad text)" : ""}`
+    : "Location not stated";
+  const meta = [where, WORK_MODES[card.work_mode], types, postedLabel(card), card.salary]
+    .filter(Boolean).join(" · ");
 
   const checks = el("p", { class: "job-checks" });
   for (const check of card.location_checks) {
@@ -985,8 +988,9 @@ function renderCard(card) {
     }[check.source] || `verified: ${check.source}`;
     // What was found for this job, such as "Munich, 17 min by public transport".
     const what = check.detail ? `${check.label.replace(/\.$/, "")} — ${check.detail}` : check.label;
-    const label =
-      check.status === "fails"
+    const label = check.whole_sentence
+      ? check.label
+      : check.status === "fails"
         ? `Doesn't fit: ${what}${check.source === "AI estimate" ? " (AI estimate — please check)" : ""}`
         : check.status === "verified" && check.source
           ? `${what} (${how})`

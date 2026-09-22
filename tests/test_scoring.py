@@ -87,9 +87,45 @@ def test_scoring_prompt_includes_the_profile_and_marks_short_ads():
 
 
 def test_quick_pass_only_accepts_ids_it_was_given():
-    adapter = Scripted(lambda r: {"clearly_unrelated": ["J1", "J99", "nonsense"]})
+    adapter = Scripted(lambda r: {"clearly_unrelated": ["J1", "J99", "nonsense"], "places": []})
     found = groups("Hardware Engineer", "Nurse")
-    assert quick_pass(client(adapter), PROFILE, found, [0, 1]) == [1]
+    assert quick_pass(client(adapter), PROFILE, found, [0, 1]).unrelated == [1]
+
+
+def country_only(title, text, where="Deutschland", job_id="0"):
+    return FoundJob(source="adzuna", source_job_id=job_id, url="https://x", title=title,
+                    company="Rosenxt", location_text=where, country="DE", description=text)
+
+
+def test_the_quick_pass_reads_the_town_an_ad_names_when_its_site_gave_only_a_country():
+    jobs = [
+        country_only("Hardwareentwickler (m/w/d)", "Zur Verstärkung unseres Teams suchen wir am "
+                     "Standort in Wietmarschen-Lohne einen Hardwareentwickler.", job_id="0"),
+        country_only("Elektroniker (m/w/d)", "Wir suchen Verstärkung in Bremen.", job_id="1"),
+        country_only("Engineer", "An exciting role.", job_id="2"),  # names no town
+        country_only("Nurse", "Pflege in Köln.", job_id="3"),  # unrelated: not asked about
+        FoundJob(source="s", source_job_id="4", url="https://x", title="Engineer",
+                 location_text="Dresden", country="DE", description="Kommen Sie nach Leipzig!"),
+    ]
+    found = group_duplicates(jobs, {"adzuna": "aggregator", "s": "job_board"})
+    order = {group.main.source_job_id: i for i, group in enumerate(found)}
+    j = {key: f"J{index}" for key, index in order.items()}
+    answer = {"clearly_unrelated": [j["3"]], "places": [
+        {"id": j["0"], "places": ["Wietmarschen-Lohne"]},
+        # Guesses are dropped: a town the text doesn't name, a country, an unrelated job's town.
+        {"id": j["1"], "places": ["Hamburg", "Deutschland", "Bremen"]},
+        {"id": j["2"], "places": ["Munich"]},
+        {"id": j["3"], "places": ["Köln"]},
+        {"id": j["4"], "places": ["Leipzig"]},  # its site already said Dresden
+    ]}
+    adapter = Scripted(lambda r: answer)
+    result = quick_pass(client(adapter), PROFILE, found, list(range(len(found))))
+    (prompt,) = adapter.prompts
+    marked = re.findall(r"^(J\d+) \|.*\| WHERE\?$", prompt, re.MULTILINE)
+    assert sorted(marked) == sorted(j[key] for key in ("0", "1", "2", "3"))
+    assert result.unrelated == [order["3"]]
+    assert result.places == {order["0"]: ["Wietmarschen-Lohne"], order["1"]: ["Bremen"],
+                             order["2"]: [], order["3"]: []}
 
 
 def test_employer_page_becomes_the_main_link_unless_it_is_an_agency():
