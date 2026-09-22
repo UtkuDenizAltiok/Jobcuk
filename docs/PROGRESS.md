@@ -19,7 +19,20 @@ Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is buil
 
 ### In progress
 
-Nothing.
+**Fixing what the owner's first real search showed** (2026-09-22, search 5: 142 of 165 scored
+jobs came from Adzuna with only "Deutschland"/"UK" as their place, and Google Maps answered 400).
+- [ ] Car travel: no `departureTime` for DRIVE (Google: "Timestamp cannot be set for
+      TRAFFIC_UNAWARE routing mode"; traffic-aware would be the Pro SKU). Log Google's message.
+- [ ] Town from the ad text: the quick relevance check also returns the town the ad names for
+      jobs whose sources give only a country (`JobGroup.place_from_text`, kept in the pool);
+      accepted only when it appears in the ad text; conditions and travel use it.
+- [ ] `location.fits`: "towns to avoid" answers "unknown", not "yes", when the place is only a
+      country or region.
+- [ ] Cards: one line when the town is unknown; a town from the ad text is labelled.
+- [ ] Tests, DECISIONS/SOURCES/AGENTS/user guide, then a real check on a copy of the owner's
+      data (a few AI requests, no new search needed: re-run `_decide` on search 5's pool).
+Done when: all tests pass and, on search 5's jobs, most Adzuna jobs get a town and the
+conditions and Google travel times are applied to them.
 
 ### Verify before relying on
 
