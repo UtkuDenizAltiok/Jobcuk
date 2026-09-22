@@ -32,14 +32,21 @@ def context(handler, source_id="test"):
 # --- Adzuna ---------------------------------------------------------------------------
 
 
-def test_adzuna_combines_single_words_and_puts_field_phrases_first():
-    terms = [term("Hardwareentwickler", "de"), term("Leistungselektronik", "de", "field_or_skill"),
-             term("Hardware Engineer"), term("power electronics", kind="field_or_skill"),
-             term("Ingénieur hardware", "fr")]
+def test_adzuna_asks_for_titles_in_the_title_first_then_specialist_words_anywhere():
+    terms = [term("Hardware Engineer"), term("Hardware Design Engineer"),
+             term("Embedded Hardware Engineer"), term("PCB Design Engineer"),
+             term("Hardwareentwickler", "de"), term("Hardware Engineer", "de"),
+             term("Leistungselektronik", "de", "field_or_skill"),
+             term("Schaltungsentwicklung", "de", "field_or_skill"),
+             term("power electronics", kind="field_or_skill"),
+             term("Power Electronics", "de", "field_or_skill"), term("Ingénieur hardware", "fr")]
     assert adzuna.plan_searches(terms, "DE") == [
-        {"what_or": "Hardwareentwickler Leistungselektronik"},
+        # "Hardware Design Engineer" and "Embedded Hardware Engineer" are found by the first.
+        {"title_only": "Hardware Engineer"},
+        {"title_only": "PCB Design Engineer"},
+        {"title_only": "Hardwareentwickler"},
+        {"what_or": "Leistungselektronik Schaltungsentwicklung"},
         {"what_phrase": "power electronics"},
-        {"what_phrase": "Hardware Engineer"},
     ]
 
 
@@ -50,22 +57,64 @@ def adzuna_item(job_id, created):
             "contract_type": "permanent", "contract_time": "full_time", "description": "Short"}
 
 
-def test_adzuna_stops_at_jobs_older_than_the_window():
+def test_adzuna_reads_by_relevance_and_keeps_only_jobs_inside_the_window():
     fresh = (NOW - timedelta(hours=2)).isoformat()
-    old = (NOW - timedelta(days=5)).isoformat()
-    pages = []
+    old = (NOW - timedelta(hours=30)).isoformat()  # inside Adzuna's whole days, outside 24 h
+    requests = []
 
     def handler(request):
-        pages.append(request.url.path)
-        results = [adzuna_item(str(i), fresh) for i in range(49)] + [adzuna_item("old", old)]
-        return httpx.Response(200, json={"results": results})
+        requests.append(dict(request.url.params))
+        page = int(request.url.path.rsplit("/", 1)[1])
+        if page == 1:
+            results = [adzuna_item("old", old)] + [adzuna_item(str(i), fresh) for i in range(49)]
+        else:
+            results = [adzuna_item(f"p2-{i}", fresh) for i in range(10)]
+        return httpx.Response(200, json={"count": 60, "results": results})
 
     ctx = context(handler, "adzuna")
     query = JobQuery(["DE"], [], [term("Hardwareentwickler", "de")], 24, NOW)
     jobs = list(adzuna.AdzunaSource().search(query, ctx))
-    assert len(jobs) == 49 and len(pages) == 1
+    assert len(jobs) == 59 and len(requests) == 2
+    assert requests[0]["sort_by"] == "relevance"
+    assert requests[0]["title_only"] == "Hardwareentwickler"
     assert jobs[0].job_types == ["full_time_permanent"] and jobs[0].date_precision == "exact"
     assert not jobs[0].description_is_complete
+
+
+def test_a_broad_adzuna_search_gets_a_fair_part_and_can_t_crowd_out_the_rest(monkeypatch):
+    monkeypatch.setattr(adzuna, "share_of_month",
+                        lambda source, limits: Limits(per_search=6, per_day=240, per_month=2400))
+    fresh = (NOW - timedelta(hours=2)).isoformat()
+    asked = []
+
+    def handler(request):  # every search matches endless ads
+        params = dict(request.url.params)
+        asked.append("title" if "title_only" in params else "phrase")
+        return httpx.Response(200, json={"count": 5000, "results": [
+            adzuna_item(f"{len(asked)}-{i}", fresh) for i in range(50)]})
+
+    query = JobQuery(["DE"], [], [term("Hardwareentwickler", "de"),
+                                  term("power electronics", kind="field_or_skill")], 24, NOW)
+    list(adzuna.AdzunaSource().search(query, context(handler, "adzuna")))
+    assert asked == ["title"] * 3 + ["phrase"] * 3
+
+
+def test_what_one_country_doesn_t_need_goes_to_the_next(monkeypatch):
+    monkeypatch.setattr(adzuna, "share_of_month",
+                        lambda source, limits: Limits(per_search=8, per_day=240, per_month=2400))
+    fresh = (NOW - timedelta(hours=2)).isoformat()
+    asked = []
+
+    def handler(request):  # Germany has three ads; the UK has endless ones
+        country = request.url.path.split("/")[-3]
+        asked.append(country)
+        count = 3 if country == "de" else 50
+        return httpx.Response(200, json={"results": [
+            adzuna_item(f"{len(asked)}-{i}", fresh) for i in range(count)]})
+
+    query = JobQuery(["DE", "GB"], [], [term("Hardware Engineer")], 24, NOW)
+    list(adzuna.AdzunaSource().search(query, context(handler, "adzuna")))
+    assert asked == ["de"] + ["gb"] * 7
 
 
 def test_adzuna_passes_place_and_distance():

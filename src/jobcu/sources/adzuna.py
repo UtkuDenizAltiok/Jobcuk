@@ -1,12 +1,15 @@
 """Adzuna: an official job search API with a free key (Application ID + Application Key).
 
-Free keys allow 25 requests a minute, 250 a day and 2,500 a month, so Adzuna is
-queried economically:
-- single-word search words (e.g. "Leistungselektronik") are combined into one request,
-  because Adzuna can search for "any of these words";
-- multi-word phrases ("power electronics") need a request each, so field words come
-  first, then job titles, until this search's share of requests is used;
-- results come newest first, so paging stops as soon as jobs are older than the window.
+Free keys allow 25 requests a minute, 250 a day and 2,500 a month, so every request must bring
+related ads (SOURCES.md: one general word once brought 6,459 ads in three days, and the budget
+ran out before the precise searches did):
+- job titles are searched in the ad's title only, most precise first; a title that contains
+  another one's words is already found by it ("Hardware Engineer" finds "Hardware Design
+  Engineer"), so it isn't asked for again;
+- then the person's specialist words anywhere in the ad: single words together in one request
+  ("any of these words"), phrases one by one;
+- results come by relevance within the window, and each search gets a fair part of what is left
+  of this search's requests, so a broad one reads its best ads instead of the newest noise.
 
 The API gives only the start of each ad. With the owner's approval, the full ad is read
 from the job's page (the page a person sees when clicking the job), but only for jobs that
@@ -28,6 +31,7 @@ from jobcu.keywords import SearchTerm
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget, share_of_month
 from jobcu.sources.http import Blocked, KeyCheck, client
+from jobcu.text import normalise
 
 log = logging.getLogger(__name__)
 
@@ -115,22 +119,28 @@ class AdzunaSource(JobSource):
         ]
         if not locations:
             return
-        # Each country or place gets a fair share, so the first one can't use up everything.
-        share = max(3, (limits.per_search or 40) // len(locations))
         seen: set[str] = set()
         skipped = 0
         try:
-            for country, place in locations:
+            for number_done, (country, place) in enumerate(locations):
+                # Each country or place gets a fair share of what is left, so the first can't use
+                # up everything and what one doesn't need goes to the next.
+                share = max(3, ((limits.per_search or 40) - budget.used_this_search)
+                            // (len(locations) - number_done))
                 used_before = budget.used_this_search
                 searches = plan_searches(query.terms, country)
                 for number, search in enumerate(searches):
                     if ctx.should_stop():
                         return
-                    if budget.used_this_search - used_before >= share:
+                    left = share - (budget.used_this_search - used_before)
+                    if left <= 0:
                         skipped += len(searches) - number
                         break
+                    # A fair part of what is left: precise searches need one page and leave
+                    # the rest to the searches after them.
+                    pages = max(1, left // (len(searches) - number))
                     yield from self._run(search, country, place, credentials, start,
-                                         query, budget, ctx, seen)
+                                         query, budget, ctx, seen, pages)
         except BudgetExhausted as exc:
             ctx.report.status = "partial"
             ctx.report.message = exc.message
@@ -141,7 +151,7 @@ class AdzunaSource(JobSource):
                 "free daily limit."
             )
 
-    def _run(self, search, country, place, credentials, start, query, budget, ctx, seen):
+    def _run(self, search, country, place, credentials, start, query, budget, ctx, seen, pages):
         page = 1
         while True:
             params = {
@@ -149,7 +159,7 @@ class AdzunaSource(JobSource):
                 **search,
                 "results_per_page": PAGE_SIZE,
                 "max_days_old": days_back(query.posted_within_hours),
-                "sort_by": "date",
+                "sort_by": "relevance",
                 "content-type": "application/json",
             }
             if place is not None:
@@ -168,34 +178,50 @@ class AdzunaSource(JobSource):
             if response.status_code != 200:
                 raise SourceError(f"Adzuna answered with a problem (code {response.status_code}).")
             results = response.json().get("results") or []
-            too_old = False
             for item in results:
                 job = to_found_job(item, country)
+                # Adzuna counts whole days; the window may be hours.
                 if job.posted_at is not None and job.posted_at < start:
-                    too_old = True  # newest first: everything after this is older still
-                    break
+                    continue
                 if job.source_job_id not in seen:
                     seen.add(job.source_job_id)
                     yield job
-            if too_old or len(results) < PAGE_SIZE:
+            if len(results) < PAGE_SIZE or page >= pages:
                 return
             page += 1
 
 
 def plan_searches(terms: list[SearchTerm], country: str) -> list[dict]:
-    """The Adzuna requests for one country, most valuable first."""
+    """The Adzuna requests for one country, most precise first."""
     languages = ["en", *COUNTRIES[country].ad_languages]
     relevant = [t for t in terms if t.language in languages]
-    single = list(dict.fromkeys(t.text for t in relevant if " " not in t.text.strip()))
-    searches: list[dict] = [
-        {"what_or": " ".join(single[i : i + WORDS_PER_REQUEST])}
-        for i in range(0, len(single), WORDS_PER_REQUEST)
-    ]
-    phrases = [t for t in relevant if " " in t.text.strip()]
-    phrases.sort(key=lambda t: t.kind != "field_or_skill")
-    for text in dict.fromkeys(t.text for t in phrases):
-        searches.append({"what_phrase": text})
+    titles = _broadest([t.text for t in relevant if t.kind == "job_title"])
+    searches: list[dict] = [{"title_only": title} for title in titles]
+    first_spelling: dict[str, str] = {}
+    for t in relevant:
+        if t.kind == "field_or_skill" and normalise(t.text):
+            first_spelling.setdefault(normalise(t.text), t.text.strip())
+    skills = list(first_spelling.values())
+    single = [skill for skill in skills if " " not in skill]
+    searches += [{"what_or": " ".join(single[i : i + WORDS_PER_REQUEST])}
+                 for i in range(0, len(single), WORDS_PER_REQUEST)]
+    searches += [{"what_phrase": skill} for skill in skills if " " in skill]
     return searches
+
+
+def _broadest(titles: list[str]) -> list[str]:
+    """The titles still worth asking for: one whose words include all of another's is found by
+    that one already ("Embedded Hardware Engineer" by "Hardware Engineer")."""
+    kept: list[tuple[set[str], str]] = []
+    for title in sorted(dict.fromkeys(t.strip() for t in titles if t.strip()),
+                        key=lambda t: len(normalise(t).split())):
+        words = set(normalise(title).split())
+        if words and not any(other <= words for other, _ in kept):
+            kept.append((words, title))
+    order: dict[str, int] = {}
+    for position, title in enumerate(titles):
+        order.setdefault(title.strip(), position)
+    return sorted((title for _, title in kept), key=lambda t: order[t])
 
 
 _CONTRACT_TYPES = {

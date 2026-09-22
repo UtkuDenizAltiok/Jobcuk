@@ -13,9 +13,17 @@ Update this whenever a source changes or something new is learned. Decisions are
 - **Countries:** AT, BE, CH, DE, ES, FR, GB, IT, NL, PL. **Not Ireland**, and no other supported
   country.
 - **Query parameters that work:** `what_or` (any of these single words, space-separated),
-  `what_phrase` (exact phrase), `what` (all words), `where` + `distance` (km), `max_days_old`,
-  `sort_by=date` (newest first), `results_per_page` up to 50. Boolean queries like
-  `"a" OR "b"` return **0 results**.
+  `what_phrase` (exact phrase), `what` (all words), `title_only` (all these words in the title,
+  checked 2026-09-22), `where` + `distance` (km), `max_days_old` (whole days), `sort_by=date` or
+  `relevance`, `results_per_page` up to 50. Every answer carries `count`, the total number of
+  matches, so one request with `results_per_page=1` measures a query. Boolean queries like
+  `"a" OR "b"` return **0 results**. Adzuna matches word stems: `title_only=Elektronik` also finds
+  every "Elektroniker" (3,685 in three days).
+- **How much a query brings (DE, 3 days, 2026-09-22):** the owner's single words anywhere
+  6,459 ads, the same without "Inbetriebnahme" and "Wechselrichter" 337, `what_phrase`
+  "Leistungselektronik" 184, `title_only` "Hardwareentwickler" 38. With titles in the title and
+  specific words anywhere, a real 30-request run read 192 ads with 19 requests, 78% related
+  (before: ~1,500 ads, ~7% related, budget used up before the precise searches ran).
 - **Answers:** exact posting time (`created`, UTC), company, location with coordinates, contract
   type/time, `redirect_url`. The description is only the **first ~500 characters**.
 - **Full ads:** `redirect_url` leads to `www.adzuna.<country>/details/<id>`, which carries

@@ -342,8 +342,9 @@ def test_the_town_an_ad_names_decides_when_its_site_gave_only_a_country(conditio
     unknown = next(c for c in jobs["cards"] if c["title"] == "PCB Designer")
     assert unknown["location"] == "Deutschland" and not unknown["location_from_ad_text"]
     assert unknown["location_checks"][-1] == {
-        "label": "The ad doesn't say which town the job is in, so your condition about places "
-                 "couldn't be checked", "status": "unclear", "source": None, "detail": None,
+        "label": "Country Only doesn't say which town this job is in, nor does its text, so "
+                 "your condition about places couldn't be checked", "status": "unclear",
+        "source": None, "detail": None,
         "whole_sentence": True}
     assert len(ai.quick_checked) == 1
 

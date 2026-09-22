@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-22. All 380 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-22. All 382 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -19,27 +19,16 @@ Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is buil
 
 ### In progress
 
-**Precise Adzuna searches** (owner, search 6: "3,000 Adzuna jobs isn't logical"). Search 6:
-Adzuna 3,000 ads from 60 requests, 2,382 of 2,786 unrelated; the quick check read ~3,100 jobs
-(its largest AI cost). Measured (DE, 3 days): today's single words anywhere 6,459 ads; without
-"Inbetriebnahme" and "Wechselrichter" 337; title_only "Hardwareentwickler" 38. The budget went
-on the newest noise, so the specific searches never ran.
-- [ ] Search words: specific to the person's kind of job; no general activities (keywords.py),
-      tried with the owner's profile on a real provider.
-- [ ] Adzuna: job titles via `title_only` first, then specific skills anywhere; a search matching
-      far more ads than its share can read is read by relevance, a few pages only.
-- [ ] Card: name the source when it gives no town.
-- [ ] Tests, SOURCES/DECISIONS, one real check of the Adzuna plan (counts only).
-Done when: tests pass and a real plan for the owner's words reads mostly related ads.
+Nothing.
 
 ### Verify before relying on
 
 - **Google Maps inside a real search:** the key test works (Freising → Munich 69 minutes by
   train, door to door) and car trips answer since the fix (Stuttgart → Mannheim 102 min), but
   no full search has used it yet: compare Google's times with the AI's estimates there.
-- **The fixes from search 5 inside a full search** (towns from the ad text, the far-right fact
-  as towns to avoid, one look-up for both conditions): each was checked on its own with the
-  owner's AI and data, not yet together in one search.
+- **Precise Adzuna searches inside a full search:** the new search words and Adzuna plan were
+  run for Germany on their own (192 ads, 78% related); search 6 (before them) confirmed the
+  towns from the ad text, the far-right towns to avoid and Google's car times together.
 - **Teamtailor and SuccessFactors** were tested live source by source (2026-09-21), not yet inside
   a full search.
 - **Maps billing SKU:** after the first real searches, Billing → Reports should show only

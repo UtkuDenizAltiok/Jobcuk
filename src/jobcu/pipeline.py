@@ -230,8 +230,8 @@ def build_card(
         checks.append({
             "label": (f"Jobcu doesn't know where \"{where}\" is, so {conditions} couldn't be "
                       "checked" if where else
-                      f"The ad doesn't say which town the job is in, so {conditions} couldn't "
-                      "be checked"),
+                      f"{source_names.get(main.source, main.source)} doesn't say which town "
+                      f"this job is in, nor does its text, so {conditions} couldn't be checked"),
             "status": "unclear", "source": None, "detail": None, "whole_sentence": True,
         })
     start = window_start(started_at, posted_within_hours)
