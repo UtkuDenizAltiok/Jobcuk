@@ -41,13 +41,19 @@ Without it, the AI estimates travel times. Google asks for a card, but gives a f
 every month, and Jobcu stops below it.
 
 1. Open [console.cloud.google.com/projectcreate](https://console.cloud.google.com/projectcreate),
-   name the project *Jobcu* → **Create**.
-2. Add a billing account when Google asks. Then set a small budget alert (for example €1) at
-   [console.cloud.google.com/billing/budgets](https://console.cloud.google.com/billing/budgets).
-3. Turn on the [Routes API](https://console.cloud.google.com/apis/library/routes.googleapis.com)
-   (**Enable**).
-4. [Credentials](https://console.cloud.google.com/apis/credentials) → **Create credentials** →
-   **API key**. Under **API restrictions**, allow only the Routes API → **Save**.
-5. In Jobcu: **Settings → Travel times** → paste the key → **Save** → **Test Google Maps**.
+   name the project *Jobcu Google Maps* → **Create**. Add a billing account when Google asks.
+2. [Budgets & alerts](https://console.cloud.google.com/billing/budgets) → **Create budget** →
+   **Alerts only**, name *Jobcu Google Maps*, project *Jobcu Google Maps*, amount **1** →
+   **Finish**. Google then emails you if Maps ever costs anything.
+3. Open the [Routes API](https://console.cloud.google.com/apis/library/routes.googleapis.com) →
+   **Enable**. In Europe, Google first asks you to accept its European terms: type *Confirm* →
+   **Accept & continue**. Google then creates a key by itself.
+4. [Credentials](https://console.cloud.google.com/apis/credentials) → click the key → name it
+   *Jobcu Google Maps key* → under **API restrictions** keep only **Routes API** → **Save**.
+5. Daily limit, so Google itself stops before the free allowance: **Google Maps Platform →
+   Quotas** → *ComputeRouteMatrix per-element quota per day* → ⋮ → **Edit quota** → untick
+   **Unlimited**, type **300** → **Done** → **Submit request** → **Confirm**.
+6. Back in **Credentials** → **Show key** → copy it. In Jobcu: **Settings → Travel times** →
+   paste the key → **Save** → **Test Google Maps**.
 
 ➡️ Next: [Your first search](first-search.md)

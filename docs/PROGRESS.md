@@ -28,16 +28,17 @@ Nothing.
   AI's estimates.
 - **Teamtailor and SuccessFactors** were tested live source by source (2026-09-21), not yet inside
   a full search.
-- **Google's own safety stop:** the 2026-09-17 decision asks for a daily limit in Google's
-  settings as well. Spend caps don't cover Maps ([SOURCES.md](SOURCES.md)), so after turning on
-  the Routes API, check whether its quota page allows a daily cap; if it does, add it to the key
-  guide.
+- **Google's daily quota has never been reached.** When it is, Google presumably answers 429 and
+  Jobcu falls back to AI estimates with "asked Jobcu to slow down"; check the wording then.
+- **Caching under the EEA terms:** the storing rules in SOURCES.md come from the global Maps
+  Service Specific Terms. Jobcu keeps nothing from Google, so this likely changes nothing; confirm
+  in the EEA Service Specific Terms when touching `travel.py`.
 
 ### Waiting on the owner
 
-1. **Google Maps key, step 3 of 5:** turn on the Routes API. Steps 1–2 are done (project
-   "Jobcu", ID jobcu-509321, on billing account "My Billing Account 2"; a €1 monthly budget
-   alert "Jobcu Google Maps"). The steps are in
+1. **Google Maps key, last step:** copy "Jobcu Google Maps key" (Credentials → Show key) into
+   Jobcu's Settings → Travel times → Save → Test Google Maps. Everything else on Google's side is
+   set up (DECISIONS.md, "The owner's Google billing"). The steps are in
    [guides/getting-your-keys.md](guides/getting-your-keys.md); give the next one only after he
    confirms the previous one worked.
 2. **Run a real search** and rate a few jobs on the Score check screen (nothing is rated yet).
@@ -45,14 +46,16 @@ Nothing.
    `Company | Job title | Place | link`, for `tools/coverage_test.py`.
 4. **The friend's test:** his feedback on installing and using Jobcu.
 5. Optional: a generic cover letter (the uploaded one is written for Tesla).
+   Also optional: remove the unused service account "Default Gemini API Key" in the "Jobcu AI"
+   project (left over from a deleted key; "Jobcu AI key" uses the other one).
 6. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
    permission ([SOURCES.md](SOURCES.md)), and whether to sign up for Jooble, Careerjet, France
    Travail, NAV or VDAB keys.
 
 ### Next tasks, in order
 
-1. Finish the Google Maps key with the owner (steps 2–5, one at a time), then clear the Google
-   items under "Verify before relying on".
+1. Once the owner has saved the Maps key: press Test, then one real search with a travel limit,
+   comparing Google's times with the AI's estimates (the first item under "Verify").
 2. Once jobs are rated: the score-check loop (`tools/score_check.py` to compare; `--rescore` to
    tune the quick check, batch size and scoring prompt, HANDOVER §13).
 3. More coverage, Ireland, the UK and Germany first: Teamtailor employers in Ireland and the UK,
@@ -80,8 +83,8 @@ Nothing.
 
 - Data folder `~/Library/Application Support/Jobcu`, with the keys `adzuna_app_id`,
   `adzuna_app_key`, `ai_gemini` and `reed_api_key` (`google_maps` once set up). AI: Google Gemini,
-  model `gemini-3.8-flash`, paid: €15 paid in advance and Google's spend cap at €28 a month on
-  "Default Gemini Project" (€0.58 spent by 2026-09-22); web search works on it.
+  model `gemini-3.8-flash`, paid (€15 in advance), with Google's spend cap at €20 a month on the
+  project "Jobcu AI"; web search works on it.
 - Real tests only on a copy of that folder, deleted afterwards (AGENTS.md, Commands).
 - A German 24-hour search takes about 4 minutes (Workday is the slowest source: about 400
   requests when no place is named); Munich or within 40 km over 72 hours about 3 minutes.

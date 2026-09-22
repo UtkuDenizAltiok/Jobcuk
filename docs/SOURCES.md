@@ -237,6 +237,14 @@ big city", and only with the user's own key (Settings → Travel times).
   service once a budget is reached, but only for the Gemini API, Vertex AI (Gemini Enterprise
   Agent Platform), Cloud Run and Cloud Run functions, **not Maps**: a Maps budget can only send
   emails. The Google-side stop for Maps is therefore a daily quota on the Routes API.
+- **Setting it up (checked 2026-09-22):** with a European billing address, turning on the Routes
+  API first asks to accept the Google Maps Platform EEA Terms of Service (type "Confirm"). For the
+  Routes API they add one rule: its route descriptions and steps may not be used "With any Map".
+  After enabling, Google creates a key named "Maps Platform API Key" that is allowed 35 Maps APIs;
+  restrict it to the Routes API. The quota page (Google Maps Platform → Quotas → Routes API) has
+  adjustable daily quotas "DistanceMatrix - ComputeRouteMatrix per-element quota per day" and
+  "Directions - ComputeRoutes per request quota per day" (both unlimited by default).
+  [EEA adjustments for the Routes API](https://developers.google.com/maps/comms/eea/routes).
 
 ## Google Gemini API billing, the owner's AI provider, checked 2026-09-22
 
@@ -252,6 +260,8 @@ Not a job source; recorded because the owner uses it and pays for it.
   Cloud Billing budget with "Spend cap enforcement" (one project, one service, monthly; alerts
   fixed at 50%, 80% and 100%). At the cap, the Gemini API is paused until the cap is lifted by
   hand. Since April 2026 every billing account also has a tier-wide monthly cap.
+- AI Studio's own "Monthly spend cap" (Spend page) is shown separately: with a spend-cap budget
+  set in Cloud Billing, it still shows no cap. One of the two is enough.
 - Sources: [Cloud Billing spend caps](https://docs.cloud.google.com/billing/docs/how-to/budgets-spend-caps),
   [Gemini API billing](https://ai.google.dev/gemini-api/docs/billing).
 
