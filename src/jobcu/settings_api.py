@@ -4,7 +4,7 @@ used this month, the limits, the price table and which job sources are on."""
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from jobcu import db, travel
 from jobcu.ai.base import AIError
@@ -154,6 +154,7 @@ def check_travel() -> dict:
 
 class Limits(BaseModel):
     scoring_cap: int
+    web_search_cap: int | None = Field(default=None, ge=0)
     monthly_token_limit: int | None = None
     monthly_cost_limit: float | None = None
     maps_monthly_routes: int | None = None
@@ -164,7 +165,8 @@ def put_limits(limits: Limits) -> dict:
     settings = load_settings()
     settings.limits = LimitSettings(
         scoring_cap=limits.scoring_cap,
-        web_search_cap=settings.limits.web_search_cap,
+        web_search_cap=(limits.web_search_cap if limits.web_search_cap is not None
+                        else settings.limits.web_search_cap),
         monthly_token_limit=limits.monthly_token_limit,
         monthly_cost_limit=limits.monthly_cost_limit,
         maps_monthly_routes=(limits.maps_monthly_routes if limits.maps_monthly_routes is not None

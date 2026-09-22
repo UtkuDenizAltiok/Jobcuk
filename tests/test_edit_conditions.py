@@ -15,7 +15,7 @@ from test_location_conditions import ScriptedClient
 from test_search import HEADERS, PROFILE, WORDS, FakeAI, ready, wait_until_done  # noqa: F401
 
 from jobcu import pool, search
-from jobcu.ai.base import RawReply, Usage
+from jobcu.ai.base import RawReply, ResearchReply, Source, Usage
 from jobcu.app import create_app
 from jobcu.dedupe import JobGroup
 from jobcu.location import (
@@ -241,7 +241,7 @@ def test_corrected_conditions_are_applied_to_the_jobs_already_found(conditions_r
     manager.reapply(run.id, [ConditionEdit(text="only big cities", original=0, use=False)])
     second = wait_until_done(manager)
     assert second["status"] == "finished" and second["kind"] == "reapply", second["error"]
-    assert [step["status"] for step in second["steps"]] == ["done"] * 4
+    assert [step["status"] for step in second["steps"]] == ["done"] * 5
     jobs = second["result"]["jobs"]
     assert titles(jobs["cards"]) == ["Electronics Engineer", "Hardware Engineer"]
     assert jobs["ruled_out_by_conditions"] == []
@@ -356,3 +356,45 @@ def test_the_town_an_ad_names_decides_when_its_site_gave_only_a_country(conditio
     garching = next(c for c in second["cards"] if c["title"] == "Electronics Engineer")
     assert garching["location"] == "Garching" and garching["location_from_ad_text"]
     assert pool.load(run.id).jobs[1].group.place_from_text == ["Garching"]
+
+
+class OnlineAI(PlaceReadingAI):
+    """Also finds ads on the web: the PCB Designer ad is in Garching, a small town."""
+
+    can_search_the_web = True
+
+    def __init__(self):
+        super().__init__()
+        self.looked_up: list[list[str]] = []
+
+    def research(self, **request):
+        jobs = re.findall(r"^(J\d+) \| ([^|]+) \|", request["prompt"], re.MULTILINE)
+        self.looked_up.append([title.strip() for _, title in jobs])
+        answer = "\n".join(f"{job_id} | {'Garching' if title.startswith('PCB') else 'unknown'}"
+                           for job_id, title in jobs)
+        return ResearchReply(answer, [Source("https://jobs.test/pcb", "Job board")],
+                             Usage(100, 20, web_searches=len(jobs)))
+
+
+def test_the_town_of_a_good_job_is_found_online_and_the_conditions_decide(conditions_ready,
+                                                                         monkeypatch):
+    _, manager = conditions_ready
+    ai = OnlineAI()
+    monkeypatch.setattr("jobcu.ai.client.AIClient.adapter", lambda self: ai)
+    monkeypatch.setattr("jobcu.pipeline.all_sources", lambda: [CountryOnlySource()])
+    run = manager.start(SearchForm(location_text="Germany, only big cities"))
+    result = wait_until_done(manager)
+    assert result["status"] == "finished", result["error"]
+    jobs = result["result"]["jobs"]
+    # Only the job no text placed is looked up; Garching is too small for "only big cities".
+    assert ai.looked_up == [["PCB Designer"]]
+    assert titles(jobs["cards"]) == ["Hardware Engineer"]
+    assert titles(jobs["ruled_out_by_conditions"]) == ["Electronics Engineer", "PCB Designer"]
+    assert result["steps"][-1]["detail"] == "Found online for 1 of 1 jobs"
+
+    # Switched off: it comes back, labelled, and nothing is looked up again.
+    manager.reapply(run.id, [ConditionEdit(text="only big cities", original=0, use=False)])
+    cards = wait_until_done(manager)["result"]["jobs"]["cards"]
+    pcb = next(c for c in cards if c["title"] == "PCB Designer")
+    assert pcb["location"] == "Garching" and pcb["location_found_online"]
+    assert len(ai.looked_up) == 1

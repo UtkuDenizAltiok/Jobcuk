@@ -15,7 +15,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from typing import Literal
 
-from jobcu import db, documents, jobstore, pipeline, quality, travel
+from jobcu import db, documents, jobplace, jobstore, pipeline, quality, travel
 from jobcu import pool as search_pool
 from jobcu.ai.base import AIError
 from jobcu.ai.client import AIClient
@@ -54,6 +54,7 @@ STEPS: list[tuple[str, str]] = [
     ("filtering", "Removing duplicates and jobs that don't fit"),
     ("details", "Reading the full job ads"),
     ("scoring", "Scoring jobs"),
+    ("places", "Finding where the best jobs are"),
 ]
 # Applying corrected conditions to the jobs a search already found (HANDOVER section 6, "Edit").
 REAPPLY_STEPS: list[tuple[str, str]] = [
@@ -61,6 +62,7 @@ REAPPLY_STEPS: list[tuple[str, str]] = [
     ("filtering", "Applying your conditions to the jobs found"),
     ("details", "Reading the full job ads"),
     ("scoring", "Scoring jobs that came back in"),
+    ("places", "Finding where the best jobs are"),
 ]
 
 # How long a search waits for an answer to a question (e.g. the scoring limit) before
@@ -470,6 +472,30 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
         checkpoint()
     for index, result in scored_now.items():
         job_pool.jobs[index].scored = result
+    nothing_new = not scored_now and run.kind == "reapply"
+    run.update("scoring", "done",
+               "Nothing new to score" if nothing_new else f"{len(scored_now)} jobs scored")
+    checkpoint()
+
+    # The best jobs whose town nobody gave: the person's AI finds their ads online, and the
+    # conditions about places then decide about them too.
+    run.update("places", "running")
+    worth_it = sorted(
+        (i for i in candidates if jobplace.needs_looking_up(groups[i])
+         and (job_pool.jobs[i].scored or {}).get("score", 0) >= jobplace.MIN_SCORE),
+        key=lambda i: -job_pool.jobs[i].scored["score"])
+    found = jobplace.find_online(client, groups, worth_it) if worth_it else 0
+    placed = [i for i in worth_it if groups[i].place_from_web]
+    fails = [i for i in placed if fails_a_condition(groups[i], at_once)]
+    if measured and placed:
+        in_reach = [i for i in placed if i not in fails]
+        travel.TravelMeter(client, keys, http, settings, note=run.note).measure(
+            measured, groups, in_reach)
+        fails += [i for i in in_reach if fails_a_condition(groups[i], measured)]
+    ruled_out = sorted([*ruled_out, *fails])
+    candidates = [i for i in candidates if i not in set(fails)]
+    run.update("places", "done", f"Found online for {found} of {len(worth_it)} jobs"
+               if worth_it else "Every job worth showing has a known town")
 
     # Facts only the ad text revealed can still rule a job out.
     left_out = Counter(job_pool.left_out)
@@ -488,9 +514,6 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
             left_out["job_type_text"] += 1
         else:
             shown.append(index)
-    nothing_new = not scored_now and run.kind == "reapply"
-    run.update("scoring", "done",
-               "Nothing new to score" if nothing_new else f"{len(scored_now)} jobs scored")
 
     job_ids, new_flags = jobstore.remember([groups[i] for i in shown], run.id)
     id_of = dict(zip(shown, job_ids, strict=True))

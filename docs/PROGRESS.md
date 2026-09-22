@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-22. All 382 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-22. All 386 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -19,25 +19,15 @@ Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is buil
 
 ### In progress
 
-**Finding the town of the best town-less jobs online** (owner, 2026-09-22: "the location of the
-job is a really important parameter … isn't that why we use the built-in AI?"; unknown-town jobs
-stay mixed in by score; his scoring limit 150 → 200).
-- [ ] After scoring, the best-scoring jobs still without a town (score ≥ 50, best first, within
-      the search's web look-up allowance) are looked up by the person's AI with web search, a
-      few jobs per request; a town counts only if it is in the town list for the job's country.
-      Kept on the job (`JobGroup.place_from_web`), so Edit never asks again.
-- [ ] The conditions and travel times are applied to them; failures move to "Left out by your
-      conditions". Cards say "(found online)". A new progress step.
-- [ ] Web look-ups per search: default and the owner's allowance raised to fit (Gemini: 5,000
-      free search queries a month shared by all Gemini 3.x models, then $14 per 1,000).
-- [ ] Owner's scoring limit 200. Records (DECISIONS, SOURCES: Gemini prices; the Bundesagentur
-      employer match found only ~5 of 42), guide, tests, a real check on search 6's jobs.
+Nothing.
 
 ### Verify before relying on
 
 - **Google Maps inside a real search:** the key test works (Freising → Munich 69 minutes by
   train, door to door) and car trips answer since the fix (Stuttgart → Mannheim 102 min), but
   no full search has used it yet: compare Google's times with the AI's estimates there.
+- **Finding towns online inside a full search:** checked on search 6's jobs on its own (5 of
+  10 found, with real web searches); not yet inside a search, nor with other providers.
 - **Precise Adzuna searches inside a full search:** the new search words and Adzuna plan were
   run for Germany on their own (192 ads, 78% related); search 6 (before them) confirmed the
   towns from the ad text, the far-right towns to avoid and Google's car times together.

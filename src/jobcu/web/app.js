@@ -969,9 +969,9 @@ function renderCard(card) {
   const types = card.job_types.length
     ? card.job_types.map((t) => JOB_TYPE_LABELS[t]).join(" or ")
     : "Type unclear";
-  const where = card.location
-    ? `${card.location}${card.location_from_ad_text ? " (from the ad text)" : ""}`
-    : "Location not stated";
+  const how = card.location_from_ad_text ? " (from the ad text)"
+    : card.location_found_online ? " (found online)" : "";
+  const where = card.location ? `${card.location}${how}` : "Location not stated";
   const meta = [where, WORK_MODES[card.work_mode], types, postedLabel(card), card.salary]
     .filter(Boolean).join(" · ");
 
@@ -1167,6 +1167,7 @@ function renderDetails(search) {
     search_words: "Preparing search words",
     quick_pass: "Quick relevance check",
     scoring: "Scoring jobs",
+    job_places: "Finding where jobs are",
   };
   const rows = Object.entries(usage).map(([step, used]) =>
     el("li", {
@@ -1540,6 +1541,7 @@ function renderUsage() {
     `This month: ${usage.travel.routes_this_month.toLocaleString()} of ` +
     `${usage.limits.maps_monthly_routes.toLocaleString()} travel-time look-ups.`;
   $("scoring-cap").value = usage.limits.scoring_cap;
+  $("web-search-cap").value = usage.limits.web_search_cap;
   $("token-limit").value = usage.limits.monthly_token_limit ?? "";
   $("cost-limit").value = usage.limits.monthly_cost_limit ?? "";
   renderPrices(usage.prices);
@@ -1629,7 +1631,8 @@ function setUpUsageActions() {
         state.usage = await api("/api/settings/limits", {
           method: "PUT",
           body: {
-            scoring_cap: Number($("scoring-cap").value || 150),
+            scoring_cap: Number($("scoring-cap").value || 200),
+            web_search_cap: value("web-search-cap"),
             monthly_token_limit: value("token-limit"),
             monthly_cost_limit: value("cost-limit"),
           },

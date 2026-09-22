@@ -96,6 +96,10 @@ def test_limits_and_source_switches_are_saved(client):
     }).json()
     assert data["limits"]["scoring_cap"] == 40
     assert data["limits"]["monthly_token_limit"] == 2_000_000
+    assert data["limits"]["web_search_cap"] == 50  # not sent: kept as it was
+    data = client.put("/api/settings/limits", headers=HEADERS, json={
+        "scoring_cap": 40, "web_search_cap": 20}).json()
+    assert data["limits"]["web_search_cap"] == 20 and load_settings().limits.web_search_cap == 20
 
     data = client.put("/api/settings/sources", headers=HEADERS,
                       json={"disabled": ["workday", "not-a-source"]}).json()

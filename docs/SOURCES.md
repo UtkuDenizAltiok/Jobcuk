@@ -71,6 +71,10 @@ Update this whenever a source changes or something new is learned. Decisions are
   used as a job link). Job page for people: `https://www.arbeitsagentur.de/jobsuche/jobdetail/{ref}`.
 - **Also lists jobs abroad** (e.g. Austria): the country comes from `adresse.land` (German names).
 - No rate limit found; Jobcu pauses 0.7 s.
+- **Finding one job again (checked 2026-09-22):** the `arbeitgeber` filter returns nothing in
+  v6 (even `arbeitgeber=Bayernwerk AG`). Search results carry the employer as `firma` and places
+  as `stellenlokationen` (`adresse.ort`, `breite`, `laenge`); searching by title and matching
+  `firma` found 5 of 42 town-less Adzuna jobs reliably.
 
 ## JobsIreland.ie (`src/jobcu/sources/jobsireland.py`), checked 2026-09-17
 
@@ -278,6 +282,10 @@ Not a job source; recorded because the owner uses it and pays for it.
 - **Prepay:** credits bought in advance in AI Studio (Billing page) are used up in near real
   time. At zero, every request fails with HTTP 402 until more credits are bought, unless
   auto-reload is on (with an optional monthly auto-charge limit).
+- **Prices for `gemini-3.8-flash` (checked 2026-09-22):** $0.75 per million input tokens and $3.75
+  per million output tokens until 31 December 2026, then $1.50 and $7.50. Grounding with Google
+  Search: 5,000 free search queries a month shared by all Gemini 3.x models, then $14 per 1,000,
+  billed per query the model runs (one request can run several).
 - **Spend caps:** per project, either in AI Studio (Spend page → "Monthly spend cap") or as a
   Cloud Billing budget with "Spend cap enforcement" (one project, one service, monthly; alerts
   fixed at 50%, 80% and 100%). At the cap, the Gemini API is paused until the cap is lifted by

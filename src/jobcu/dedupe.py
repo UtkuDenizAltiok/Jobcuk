@@ -125,6 +125,9 @@ class JobGroup:
     # Where the ad's own text says the job is, when no job site gave a town (relevance.py):
     # None until the quick relevance check has read it, [] when the text names no town.
     place_from_text: list[str] | None = None
+    # Where the ad says the job is, found online by the person's AI when nothing else said
+    # (jobplace.py): None until looked up, [] when not found.
+    place_from_web: list[str] | None = None
 
     @property
     def main(self) -> FoundJob:

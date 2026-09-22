@@ -146,8 +146,9 @@ documents → profile (`profile.py`) → location plan (`location.py`) → searc
 (`filters.py`) → the location conditions that need no measuring → quick relevance check
 (`relevance.py`; it also reads the town from the ad text when the job sites give only a country,
 and the conditions are then applied to those jobs) → travel limits (`travel.py`) → full ads
-(`load_details`) → scoring (`scoring.py`) → cards and job memory (`pipeline.build_card`,
-`jobstore.py`).
+(`load_details`) → scoring (`scoring.py`) → the town of the best jobs still without one, found
+online (`jobplace.py`), and the conditions for them → cards and job memory
+(`pipeline.build_card`, `jobstore.py`).
 
 Everything after the rules runs in `search._decide`. **Edit** (next to "Understood as") runs it
 again on the same jobs with corrected conditions, reusing every earlier answer (`pool.py`).
@@ -201,6 +202,7 @@ src/jobcu/
   filters.py                 the fixed rules (dates, types, remote, country, dismissed) and
                              conditions
   relevance.py               the quick AI relevance check
+  jobplace.py                the town of the best town-less jobs, found online by the person's AI
   scoring.py                 the scoring rubric and prompt
   freshness.py               posting dates and "Posted within"
   jobstore.py                jobs remembered between searches, job states, saved results

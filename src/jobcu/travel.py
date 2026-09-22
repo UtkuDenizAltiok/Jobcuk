@@ -108,11 +108,16 @@ def job_point(group: JobGroup) -> Point | None:
             town = place_list.locate(copy.location_text, country)
             return Point(copy.latitude, copy.longitude, country, "address",
                          town.name if town else copy.location_text)
-    for text in [copy.location_text for copy in group.copies] + (group.place_from_text or []):
+    for text in [copy.location_text for copy in group.copies] + found_places(group):
         town = place_list.locate(text, country)
         if town is not None:
             return Point(town.latitude, town.longitude, country, "town", town.name)
     return None
+
+
+def found_places(group: JobGroup) -> list[str]:
+    """Places Jobcu found itself when the job sites gave none: in the ad's text, or online."""
+    return (group.place_from_text or []) + (group.place_from_web or [])
 
 
 def job_country(group: JobGroup) -> str | None:

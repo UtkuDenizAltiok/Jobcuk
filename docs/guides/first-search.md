@@ -32,9 +32,9 @@ saying what work you want works best. **What Jobcu understood** shows how your d
   to switch a condition off, fix its list of places or its town size, reword it or add one.
   Your changes are applied to the jobs already found, without searching again.
 - **Left out by your conditions** (at the bottom) lists the jobs a condition ruled out.
-- **"(from the ad text)"** after a town: the job site didn't say where the job is, so Jobcu read
-  the town from the ad. If an ad names no town at all, its card says so and the job stays in your
-  list.
+- **"(from the ad text)"** or **"(found online)"** after a town: the job site didn't say where the
+  job is, so Jobcu read the town from the ad, or your AI found the ad online (for the best jobs).
+  If no town can be found, the card says so and the job stays in your list.
 - **Open job** opens the ad. **Save**, **Applied** and **Not interested** keep your list tidy;
   "Not interested" hides a job for good (**Show hidden** undoes it).
 - **Search details:** which sites were searched and why some jobs were left out.
@@ -43,7 +43,8 @@ saying what work you want works best. **What Jobcu understood** shows how your d
 
 **Settings → Usage and limits** shows what Jobcu used this month and in your last search. Add
 what your provider charges per million tokens and Jobcu estimates the cost. You can set a monthly
-limit, and switch off any job source you don't want searched.
+limit, how many jobs are scored before Jobcu asks, how many web look-ups your AI may do in one
+search, and switch off any job source you don't want searched.
 
 ## 6. Feedback
 

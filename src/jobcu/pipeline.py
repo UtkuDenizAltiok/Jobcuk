@@ -242,9 +242,11 @@ def build_card(
         "state": asdict(state),
         "title": main.title,
         "company": main.company,
-        # A town the ad's text names, when its job sites gave only a country (relevance.py).
-        "location": ", ".join(group.place_from_text or []) or main.location_text,
+        # A town Jobcu found when the job sites gave only a country: in the ad's text
+        # (relevance.py) or online (jobplace.py).
+        "location": ", ".join(travel.found_places(group)) or main.location_text,
         "location_from_ad_text": bool(group.place_from_text),
+        "location_found_online": bool(group.place_from_web),
         "country": country,
         "work_mode": work_mode,
         "job_types": job_types,

@@ -89,7 +89,8 @@ def _from_dict(data: dict) -> Pool:
         jobs.append(PoolJob(
             group=JobGroup(copies=copies, possible_duplicate_of=group["possible_duplicate_of"],
                            source_kinds=group["source_kinds"],
-                           place_from_text=group.get("place_from_text")),
+                           place_from_text=group.get("place_from_text"),
+                           place_from_web=group.get("place_from_web")),
             unrelated=stored["unrelated"],
             scored=stored["scored"],
         ))
