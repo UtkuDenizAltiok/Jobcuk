@@ -80,8 +80,8 @@ Nothing.
 
 - Data folder `~/Library/Application Support/Jobcu`, with the keys `adzuna_app_id`,
   `adzuna_app_key`, `ai_gemini` and `reed_api_key` (`google_maps` once set up). AI: Google Gemini,
-  model `gemini-3.8-flash`, paid: €15 paid in advance and a €30 monthly Gemini budget with
-  Google's spend cap (€0.58 spent by 2026-09-22); web search works on it.
+  model `gemini-3.8-flash`, paid: €15 paid in advance and Google's spend cap at €28 a month on
+  "Default Gemini Project" (€0.58 spent by 2026-09-22); web search works on it.
 - Real tests only on a copy of that folder, deleted afterwards (AGENTS.md, Commands).
 - A German 24-hour search takes about 4 minutes (Workday is the slowest source: about 400
   requests when no place is named); Munich or within 40 km over 72 hours about 3 minutes.
