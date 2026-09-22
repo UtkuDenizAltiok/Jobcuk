@@ -19,7 +19,18 @@ Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is buil
 
 ### In progress
 
-Nothing.
+**Precise Adzuna searches** (owner, search 6: "3,000 Adzuna jobs isn't logical"). Search 6:
+Adzuna 3,000 ads from 60 requests, 2,382 of 2,786 unrelated; the quick check read ~3,100 jobs
+(its largest AI cost). Measured (DE, 3 days): today's single words anywhere 6,459 ads; without
+"Inbetriebnahme" and "Wechselrichter" 337; title_only "Hardwareentwickler" 38. The budget went
+on the newest noise, so the specific searches never ran.
+- [ ] Search words: specific to the person's kind of job; no general activities (keywords.py),
+      tried with the owner's profile on a real provider.
+- [ ] Adzuna: job titles via `title_only` first, then specific skills anywhere; a search matching
+      far more ads than its share can read is read by relevance, a few pages only.
+- [ ] Card: name the source when it gives no town.
+- [ ] Tests, SOURCES/DECISIONS, one real check of the Adzuna plan (counts only).
+Done when: tests pass and a real plan for the owner's words reads mostly related ads.
 
 ### Verify before relying on
 
