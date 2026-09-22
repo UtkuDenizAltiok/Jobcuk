@@ -73,7 +73,7 @@ that replaces an older one, mark the older row the same way in the same commit.
 | Decision | Reason |
 |---|---|
 | For **his own copy** of Jobcu, the owner chose **Google (Gemini)** after a neutral comparison | His choice. It only affects his settings: Jobcu itself still recommends no provider and has no default, and every user picks their own. |
-| He starts on Google's **free allowance, with no billing set up yet** | Nothing is paid for before real usage is measured in Phase 1. If paid use turns out to be needed, the owner is asked first and shown how to set a monthly spending cap. |
+| *Superseded (2026-09-22): his Gemini use is now paid, see "The owner's Google billing".* He starts on Google's **free allowance, with no billing set up yet** | Nothing is paid for before real usage is measured in Phase 1. If paid use turns out to be needed, the owner is asked first and shown how to set a monthly spending cap. |
 | The owner's Adzuna, Reed and Gemini keys are kept in Apple's Passwords app until Jobcu's settings screen exists | Keys are never pasted into chat or saved in the code folder. |
 
 ### Backups and sharing
@@ -145,7 +145,7 @@ that replaces an older one, mark the older row the same way in the same commit.
 | Decision | Reason |
 |---|---|
 | **The owner allowed Claude to use his keys for development** (2026-09-17). Claude uses the keys already saved in Jobcu on his Mac, only through Jobcu's own code, and never prints, logs, copies or commits them. | Real tests with the real AI and real job sources give much better development than made-up data. Keys never have to appear in the chat: it's stored outside the owner's computer and adds no benefit, because Claude already works on that computer. |
-| Development tests use **free usage only**. Claude asks before anything that could cost money, and keeps Adzuna and Reed requests modest. | The owner's Gemini account has no billing set up, and the job-site keys have daily limits. |
+| *Superseded in part (2026-09-22): his Gemini use is now paid, see "The owner's Google billing".* Development tests use **free usage only**. Claude asks before anything that could cost money, and keeps Adzuna and Reed requests modest. | The owner's Gemini account has no billing set up, and the job-site keys have daily limits. |
 | **Experience is split into full-time years and internship / working-student / part-time years** | The first real test counted the owner's part-time student jobs as "3.1 years of experience". Job ads asking for "3+ years" usually mean full-time work, so that would have overstated seniority fit. |
 
 ### Location, search words and running a search
@@ -351,3 +351,10 @@ Jobcu had split the sentence into "the job's own town has 0.3%" and an unchecked
 | **The owner's reading of party conditions is part of the AI's research instructions:** party labels mean the parties reliable sources put in that group; "dominant" or "strong" means above the party's national share at the latest national parliamentary election, unless the person's words say otherwise. | Decided on 2026-09-17 but never given to the AI, so Dresden stayed in. Checked live: now excluded, both as a job town and as a place to travel from. |
 | **Google's travel times are not remembered between searches; the AI's estimates are (30 days).** | Google's Routes API terms (section 19.3) allow keeping only coordinates, for 30 days, not durations. The owner allowed 30 days "as far as Google's terms allow" (2026-09-17), so his 2026-09-21 answer applies to the estimates. |
 | **Removed as unused:** `KeyStore.has`, `paths.code_dir`, and the unused "fake documents folder" exception in the safety check (tests build fake documents in code). On GitHub the empty wiki and project boards are switched off, and labels that duplicated others (bug, enhancement) or didn't fit a private project were removed. | The owner asked for a clean, sleek project with nothing that doesn't add value. |
+
+## 2026-09-22: The owner's Google billing
+
+| Decision | Reason |
+|---|---|
+| **The owner's Gemini use is paid, not free:** billing is on, with €15 paid in advance and a €30 monthly budget on the Gemini API with Google's spend cap. Real tests on his key therefore cost a little money: keep them small, within the €30 a month (AGENTS.md). | Seen on his Budgets & alerts screen: €0.58 spent on the Gemini API this month. "No credits used" there only means no free promotional credit from Google, not that his €15 is untouched. |
+| **Google Maps has its own €1 monthly budget alert**, "Jobcu Google Maps", on the "Jobcu" project (billing account "My Billing Account 2") | Step 2 of the key guide: an early email if Maps ever costs anything, on top of Jobcu's own stop below the free allowance. |
