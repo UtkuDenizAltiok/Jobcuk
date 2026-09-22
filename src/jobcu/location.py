@@ -43,6 +43,9 @@ LanguageCode = Literal[tuple(LANGUAGE_NAMES)]  # type: ignore[valid-type]
 
 MAX_CONDITIONS = 4  # conditions looked up on the web in one search
 MAX_TOWNS_PER_CONDITION = 400
+# Room for the model's thinking and a complete list of up to 400 towns: a list cut short would
+# be wrong, and only what is actually written is paid for.
+RESEARCH_TOKENS = 16_000
 
 
 class Place(BaseModel):
@@ -101,9 +104,10 @@ class SortedAnchor(BaseModel):
         "'a university town', 'a city where far-right parties polled below the national "
         "average'")
     look_up: str = Field(
-        default="", description="With needs_the_web: only the fact to look up about the places, "
-        "e.g. 'far-right parties polled below the national average at the last election'. "
-        "When another condition asks about the same fact, use its exact words.")
+        default="", description="With needs_the_web: the fact to look up about the places, "
+        "complete enough to stand on its own, e.g. 'far-right parties polled below the national "
+        "average at the last election'. When another condition asks about the same fact, copy "
+        "that condition's words exactly.")
 
 
 class SortedCondition(BaseModel):
@@ -320,7 +324,13 @@ You check ONE condition about places for a personal job search app, using live w
 - Work out what the condition means, then find the facts that decide it, from current, reliable \
 sources (official statistics, election results, the places' own websites, quality news).
 - Answer with: how you read the condition; the towns in the countries given that satisfy it, OR \
-the towns to avoid if that list is shorter; the figures you used; and the sources.
+the towns to avoid; the figures you used; and the sources.
+- The app treats every town you don't list as the opposite, so a list must be complete. List the \
+side that is the MINORITY of places, as completely as the sources allow, small towns included: \
+when the condition holds for most places ("below the national average", "not a stronghold"), \
+list the towns where it FAILS, as towns to avoid; when it holds for few places ("a university \
+town", "above the national average"), list the towns that fit. Never answer a condition that \
+most places meet with a short list of examples that fit.
 - Only name real towns, and only in the countries given. If the condition is about how big a \
 town is, say the threshold instead of listing towns: the app has population figures itself.
 - If the condition is decided country by country (rankings, laws, languages, citizenship rules, \
@@ -343,7 +353,8 @@ Turn the research notes into the app's format. Use only what the notes say.
 
 - kind "town_size" when the condition is about how big a town must be: fill min_people, or \
 min_share_of_country (0.003 for 0.3% of the country's people), and leave towns empty.
-- kind "towns_that_fit" when the notes name the towns that satisfy the condition.
+- kind "towns_that_fit" when the notes name the towns that satisfy the condition (every other \
+town fails it).
 - kind "towns_to_avoid" when the notes name the towns that fail it (the rest of the country is \
 fine).
 - kind "countries_that_fit" or "countries_to_avoid" when the condition is decided for whole \
@@ -426,6 +437,10 @@ def check_conditions(
             SortedCondition(text=text, understood_as=text, kind="needs_the_web")
             for text in conditions
         ]
+    # A fact about places, once per condition that names it in full. The travel condition's
+    # reference places often depend on one of these, sometimes in fewer words ("the voting ratio
+    # should be less than its country average"): then that condition's full wording is looked up.
+    facts = [c.text for c in sorted_conditions if c.kind == "needs_the_web"]
     checked: list[Condition] = []
     researched = 0
     # The same fact is looked up once per search, even when two conditions ask about it (the
@@ -461,7 +476,11 @@ def check_conditions(
             sorted_condition.max_minutes or sorted_condition.max_km
         ):
             anchor = sorted_condition.anchor
-            fact = normalise(anchor.look_up or anchor.description or text)
+            if anchor.needs_the_web:
+                anchor = anchor.model_copy(update={"look_up": _same_fact(
+                    anchor.look_up or anchor.description or text, facts)})
+                sorted_condition = sorted_condition.model_copy(update={"anchor": anchor})
+            fact = normalise(anchor.look_up)
             looks_up = anchor.needs_the_web and fact not in looked_up
             if looks_up and researched >= MAX_CONDITIONS:
                 checked.append(Condition(
@@ -482,6 +501,17 @@ def check_conditions(
         researched += not known
         checked.append(research(text))
     return checked
+
+
+def _same_fact(fact: str, facts: list[str]) -> str:
+    """The condition that names this fact in full, when there is one."""
+    words = set(normalise(fact).split())
+    for other in facts:
+        other_words = set(normalise(other).split())
+        if words and (words <= other_words or other_words <= words
+                      or len(words & other_words) >= 0.6 * len(words)):
+            return other
+    return fact
 
 
 # The reference places when a fact only rules some out and no size was given ("near a city
@@ -522,6 +552,12 @@ def _near_condition(
             anchor.countries_fit, anchor.looked_up = found.countries, True
         elif found.kind == "countries_to_avoid":
             anchor.countries_avoided, anchor.looked_up = found.countries, True
+        elif anchor.min_people or anchor.min_share_of_country or anchor.named:
+            # The limit to places of a size, or named places, still works without the fact.
+            found = found.model_copy(update={"note": (
+                f"Only the size or the names were used: \"{anchor.look_up}\" couldn't be "
+                f"checked. {found.note}").strip()})
+            anchor.look_up = ""
         else:
             return Condition(text=text, understood_as=sorted_condition.understood_as or text,
                              status="not_checked", kind="could_not_check",
@@ -567,14 +603,14 @@ def _research_condition(
             prompt=f"Countries searched: {names}.\nCondition (between the markers):\n"
                    f"<<<\n{text}\n>>>",
             max_searches=4,
-            max_output_tokens=3000,
+            max_output_tokens=RESEARCH_TOKENS,
         )
         answer = client.generate(
             CheckedCondition,
             step="location",
             system=STRUCTURE_SYSTEM,
             prompt=f"Condition: {text}\n\nResearch notes:\n{reply.text}",
-            max_output_tokens=3000,
+            max_output_tokens=RESEARCH_TOKENS,
         )
     except AIError as exc:
         log.info("Condition %r couldn't be checked: %s", text, exc)

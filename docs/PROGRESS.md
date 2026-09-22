@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-22. All 372 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-22. All 381 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -19,35 +19,16 @@ Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is buil
 
 ### In progress
 
-**Fixing what the owner's first real search showed** (2026-09-22, search 5: 142 of 165 scored
-jobs came from Adzuna with only "Deutschland"/"UK" as their place, and Google Maps answered 400).
-- [ ] Car travel: no `departureTime` for DRIVE (Google: "Timestamp cannot be set for
-      TRAFFIC_UNAWARE routing mode"; traffic-aware would be the Pro SKU). Log Google's message.
-- [ ] Town from the ad text: the quick relevance check also returns the town the ad names for
-      jobs whose sources give only a country (`JobGroup.place_from_text`, kept in the pool);
-      accepted only when it appears in the ad text; conditions and travel use it.
-- [ ] `location.fits`: "towns to avoid" answers "unknown", not "yes", when the place is only a
-      country or region.
-- [ ] Cards: one line when the town is unknown; a town from the ad text is labelled.
-- [x] Car travel, town from the ad text, avoid-list "unknown", cards (tests pass; real check:
-      36 towns read, Google car times work). Also: states/nations are never read as a town
-      ("Sachsen"), and "Town-District" names are read as the town ("Wietmarschen-Lohne").
-- [ ] Research found in the real check: the far-right fact was answered as an incomplete list of
-      31 "towns that fit" (Munich/Stuttgart/Ulm jobs wrongly out), and the travel condition's
-      reference places were researched separately from a fragment ("voting ratio … less than
-      average" → turnout). Fix: one look-up for a fact both conditions use (the full wording);
-      research lists the minority side (towns to avoid when most places fit). Try with the
-      owner's sentence on a real provider.
-- [ ] Check why the quick pass now called 46 of 147 previously kept jobs unrelated.
-- [ ] Tests, DECISIONS/SOURCES/AGENTS/user guide.
-Done when: all tests pass and, on search 5's jobs, most Adzuna jobs get a town and the
-conditions and Google travel times are applied to them.
+Nothing.
 
 ### Verify before relying on
 
-- **Google Maps inside a real search:** the key test works (2026-09-22, Freising → Munich 69
-  minutes by train, door to door). Not yet used in a full search: compare Google's times with the
-  AI's estimates there.
+- **Google Maps inside a real search:** the key test works (Freising → Munich 69 minutes by
+  train, door to door) and car trips answer since the fix (Stuttgart → Mannheim 102 min), but
+  no full search has used it yet: compare Google's times with the AI's estimates there.
+- **The fixes from search 5 inside a full search** (towns from the ad text, the far-right fact
+  as towns to avoid, one look-up for both conditions): each was checked on its own with the
+  owner's AI and data, not yet together in one search.
 - **Teamtailor and SuccessFactors** were tested live source by source (2026-09-21), not yet inside
   a full search.
 - **Maps billing SKU:** after the first real searches, Billing → Reports should show only
@@ -73,7 +54,10 @@ conditions and Google travel times are applied to them.
 
 1. With the owner's first real search (travel limit included): compare Google's times with the
    AI's estimates (the first item under "Verify"), and fix what the search shows.
-2. Once jobs are rated: try scoring at **medium** thinking too (the owner leans to medium for
+2. Once jobs are rated: the quick relevance check first. It drops some related jobs when a batch
+   holds many similar ones (42 of 147 in the real check, 19 in mixed batches; DECISIONS.md
+   2026-09-22 evening): try one verdict per job, mixed batches, or medium thinking, measured
+   against the owner's ratings. Also try scoring at **medium** thinking (the owner leans to medium for
    every step, 2026-09-22; decide with the score check, not before). Then the score-check loop (`tools/score_check.py` to compare; `--rescore` to
    tune the quick check, batch size and scoring prompt, HANDOVER §13).
 3. More coverage, Ireland, the UK and Germany first: Teamtailor employers in Ireland and the UK,
@@ -96,6 +80,10 @@ conditions and Google travel times are applied to them.
   searches.
 - Facts about places are looked up fresh in every search. Only the AI's travel estimates are
   remembered (30 days); Google's travel times may not be kept (Routes API terms).
+- About a third of Adzuna's town-less ads name no town in their first ~700 characters (KLA,
+  HAPEKO…); they stay in the results, marked. Their full pages refuse Jobcu.
+- A list of towns to avoid can't hold every small town (at most 400). A job in an unlisted small
+  town where the fact fails still passes; facts decided per region (next tasks) would fix that.
 
 ## Owner's setup and reference numbers
 

@@ -24,6 +24,11 @@ Update this whenever a source changes or something new is learned. Decisions are
   while others load: skip that ad; stop only after 3 refusals in a row or a robot check.
 - Adzuna's website answered 403 to `robots.txt` and its terms page for Jobcu's User-Agent.
 - Adzuna often lists the same job twice under different IDs.
+- **Newer ads without a town (checked 2026-09-22):** in 50 fresh German results, 34 had
+  `location.area` `["Deutschland"]`, no coordinates, and a `redirect_url` of the form
+  `www.adzuna.de/land/ad/<id>` (not `/details/`); that page answers 403 to Jobcu. Their text
+  usually names the place ("am Standort in Wietmarschen-Lohne"), which the quick relevance check
+  reads. The other 16 had a full `area` list and coordinates.
 - German locations read "Unterhaching, München (Kreis)": the part marked **(Kreis)** is the
   district around a city, not the city, so `places.locate` uses it only when no town is named
   besides it (found in a real test, 2026-09-21: suburbs passed a "1 million people" condition).
@@ -235,6 +240,10 @@ big city", and only with the user's own key (Settings → Travel times).
   remembered for 30 days in `travel_memory`. The same terms (19.1, 19.2) allow using the answers
   without a Google map, but never with a non-Google map.
 - The key goes only in a request header, never in an address, so it can't end up in a log.
+- **Car trips take no departure time (checked 2026-09-22):** with `departureTime` and the default
+  routing, Google answers 400 "Timestamp cannot be set for TRAFFIC_UNAWARE routing mode". A time
+  would need `routingPreference` TRAFFIC_AWARE, which is billed as Pro. Public transport keeps its
+  departure time.
 - **First real answer (2026-09-22, the owner's key):** Freising town centre → Munich centre
   (Marienplatz), transit, Tuesday 8:00: 69 minutes. Door to door, so walking at both ends and
   changes are included; the train ride alone is 25–45 minutes.

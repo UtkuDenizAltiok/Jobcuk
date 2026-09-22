@@ -445,6 +445,48 @@ def test_one_fact_is_looked_up_once_for_the_job_town_and_the_reference_places():
     assert own_town.kind == "towns_to_avoid" and own_town.text == far_right
 
 
+def test_a_fact_given_in_fewer_words_is_the_other_condition_s_fact():
+    # The owner's own sentence (2026-09-22): the travel condition's reference places were looked
+    # up from the part in brackets alone, which the AI read as turnout.
+    far_right = ("I dont want far-right fascist supporter cities (the elections voting ratio "
+                 "should be less than its country average)")
+    commute = "at most 50 minutes by car to a city that has at least %0.3 of its country's people"
+    sorted_kinds = {
+        commute: SortedCondition(
+            text=commute, understood_as="Within 50 minutes by car of such a city", kind="near",
+            max_minutes=50, travel_mode="drive",
+            anchor=SortedAnchor(description="big cities", min_share_of_country=0.003,
+                                needs_the_web=True, look_up="the elections voting ratio should "
+                                "be less than its country average")),
+        far_right: SortedCondition(text=far_right, understood_as="Not far-right cities",
+                                   kind="needs_the_web"),
+    }
+    avoid = CheckedCondition(understood_as="Avoid far-right strongholds", kind="towns_to_avoid",
+                             towns=[TownRef(name="Görlitz", country="DE")], confidence="checked",
+                             note="AfD above its national share.")
+    client = ScriptedClient(avoid, sorted_kinds=sorted_kinds)
+    reference, own_town = check_conditions(client, [commute, far_right], ["DE"])
+    (call,) = client.research_calls
+    assert "far-right fascist supporter cities" in call["prompt"]
+    assert reference.anchor.look_up == far_right and own_town.kind == "towns_to_avoid"
+    assert [t.name for t in reference.anchor.avoided] == ["Görlitz"]
+
+
+def test_the_size_still_counts_when_the_fact_about_the_places_can_t_be_checked():
+    text = "at most 50 minutes to a big city where far-right parties are weak"
+    sorted_kinds = {text: SortedCondition(
+        text=text, understood_as="Within 50 minutes of such a city", kind="near",
+        max_minutes=50, travel_mode="drive",
+        anchor=SortedAnchor(description="big cities", min_share_of_country=0.003,
+                            needs_the_web=True, look_up="far-right parties are weak"))}
+    nothing = CheckedCondition(understood_as="x", kind="could_not_check", confidence="estimate",
+                               note="The notes named no towns.")
+    (condition,) = check_conditions(ScriptedClient(nothing, sorted_kinds=sorted_kinds), [text],
+                                    ["DE"])
+    assert condition.kind == "near" and condition.anchor.min_share_of_country == 0.003
+    assert not condition.anchor.looked_up and "couldn't be checked" in condition.note
+
+
 def test_a_fact_without_a_size_counts_towns_big_enough_to_be_called_cities():
     text = "within 30 minutes of a city that isn't a far-right stronghold"
     sorted_kinds = {text: SortedCondition(

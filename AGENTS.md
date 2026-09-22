@@ -144,8 +144,10 @@ answering open questions.
 documents → profile (`profile.py`) → location plan (`location.py`) → search words (`keywords.py`)
 → sources in parallel (`pipeline.collect`, `sources/*`) → duplicates (`dedupe.py`) → fixed rules
 (`filters.py`) → the location conditions that need no measuring → quick relevance check
-(`relevance.py`) → travel limits (`travel.py`) → full ads (`load_details`) → scoring
-(`scoring.py`) → cards and job memory (`pipeline.build_card`, `jobstore.py`).
+(`relevance.py`; it also reads the town from the ad text when the job sites give only a country,
+and the conditions are then applied to those jobs) → travel limits (`travel.py`) → full ads
+(`load_details`) → scoring (`scoring.py`) → cards and job memory (`pipeline.build_card`,
+`jobstore.py`).
 
 Everything after the rules runs in `search._decide`. **Edit** (next to "Understood as") runs it
 again on the same jobs with corrected conditions, reusing every earlier answer (`pool.py`).
