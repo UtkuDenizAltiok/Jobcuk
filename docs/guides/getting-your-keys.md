@@ -52,7 +52,7 @@ every month, and Jobcu stops below it.
    *Jobcu Google Maps key* → under **API restrictions** keep only **Routes API** → **Save**.
 5. Daily limit, so Google itself stops before the free allowance: **Google Maps Platform →
    Quotas** → *ComputeRouteMatrix per-element quota per day* → ⋮ → **Edit quota** → untick
-   **Unlimited**, type **300** → **Done** → **Submit request** → **Confirm**.
+   **Unlimited**, type **320** → **Done** → **Submit request** → **Confirm**.
 6. Back in **Credentials** → **Show key** → copy it. In Jobcu: **Settings → Travel times** →
    paste the key → **Save** → **Test Google Maps**.
 

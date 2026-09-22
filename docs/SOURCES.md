@@ -216,7 +216,9 @@ big city", and only with the user's own key (Settings → Travel times).
   `travelMode` TRANSIT / DRIVE / WALK / BICYCLE; `departureTime` for transit and driving (Jobcu:
   next Tuesday 8:00 local time). The answer is a JSON list of elements with `duration` like
   `"1020s"` and `condition` `ROUTE_EXISTS`. **At most 100 elements per request for TRANSIT**
-  (625 otherwise). Billed per element (origins × destinations).
+  (625 otherwise). Billed per element (origins × destinations). Jobcu's requests use no
+  traffic-aware routing and no two-wheeler mode, so they are billed as Essentials (Pro starts with
+  TRAFFIC_AWARE; checked 2026-09-22).
 - **Places API is not used** (it was for a short while on 2026-09-21): looking up "{company},
   {town}" can find the wrong site of a company with several, so Jobcu stays with the place the
   job ad gives (the owner's decision).

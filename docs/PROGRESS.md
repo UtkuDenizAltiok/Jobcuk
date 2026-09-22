@@ -19,16 +19,7 @@ Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is buil
 
 ### In progress
 
-**Final Google limits and cleanup** (owner, 2026-09-22: never more than €25 a month in total;
-delete everything Jobcu doesn't use). Done in his Chrome; check each on the console.
-- [ ] Budget "Jobcu AI": spend cap €20 → **€23** (leaves room for the cap's few-minute delay).
-- [ ] Routes API quota "ComputeRouteMatrix per-element quota per day": 300 → **320** (31 × 320 =
-      9,920, still inside the free 10,000 Essentials elements; ComputeRoutes stays at 0).
-- [ ] Delete the unused service account "Default Gemini API Key" in project "Jobcu AI".
-- [ ] Switch off Google's unused default services in both projects (BigQuery family, Dataform,
-      Dataplex, Analytics Hub, Datastore, Cloud SQL, Cloud Storage, Trace). Keep Service Usage,
-      Service Management, Logging, Monitoring and the project's own API.
-- [ ] Record the result in DECISIONS.md ("The owner's Google billing") and empty this section.
+Nothing.
 
 ### Verify before relying on
 
@@ -37,6 +28,8 @@ delete everything Jobcu doesn't use). Done in his Chrome; check each on the cons
   AI's estimates.
 - **Teamtailor and SuccessFactors** were tested live source by source (2026-09-21), not yet inside
   a full search.
+- **Maps billing SKU:** after the first real searches, Billing → Reports should show only
+  "Compute Route Matrix Essentials" at €0. Anything else means the limits need another look.
 - **Google's daily quota has never been reached.** When it is, Google presumably answers 429 and
   Jobcu falls back to AI estimates with "asked Jobcu to slow down"; check the wording then.
 - **Caching under the EEA terms:** the storing rules in SOURCES.md come from the global Maps
@@ -47,16 +40,13 @@ delete everything Jobcu doesn't use). Done in his Chrome; check each on the cons
 
 1. **Google Maps key, last step:** copy "Jobcu Google Maps key" (Credentials → Show key) into
    Jobcu's Settings → Travel times → Save → Test Google Maps. Everything else on Google's side is
-   set up (DECISIONS.md, "The owner's Google billing"). The steps are in
-   [guides/getting-your-keys.md](guides/getting-your-keys.md); give the next one only after he
-   confirms the previous one worked.
+   set up (DECISIONS.md, "The owner's Google billing"). His Gemini key ("Jobcu AI key") is
+   already saved in Jobcu.
 2. **Run a real search** and rate a few jobs on the Score check screen (nothing is rated yet).
 3. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
    `Company | Job title | Place | link`, for `tools/coverage_test.py`.
 4. **The friend's test:** his feedback on installing and using Jobcu.
 5. Optional: a generic cover letter (the uploaded one is written for Tesla).
-   Also optional: remove the unused service account "Default Gemini API Key" in the "Jobcu AI"
-   project (left over from a deleted key; "Jobcu AI key" uses the other one).
 6. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
    permission ([SOURCES.md](SOURCES.md)), and whether to sign up for Jooble, Careerjet, France
    Travail, NAV or VDAB keys.
@@ -92,8 +82,8 @@ delete everything Jobcu doesn't use). Done in his Chrome; check each on the cons
 
 - Data folder `~/Library/Application Support/Jobcu`, with the keys `adzuna_app_id`,
   `adzuna_app_key`, `ai_gemini` and `reed_api_key` (`google_maps` once set up). AI: Google Gemini,
-  model `gemini-3.8-flash`, paid (€15 in advance), with Google's spend cap at €20 a month on the
-  project "Jobcu AI"; web search works on it.
+  model `gemini-3.8-flash`, paid (€15 in advance), with Google's spend cap at €23 a month on the
+  project "Jobcu AI" (everything together never above €25); web search works on it.
 - Real tests only on a copy of that folder, deleted afterwards (AGENTS.md, Commands).
 - A German 24-hour search takes about 4 minutes (Workday is the slowest source: about 400
   requests when no place is named); Munich or within 40 km over 72 hours about 3 minutes.
