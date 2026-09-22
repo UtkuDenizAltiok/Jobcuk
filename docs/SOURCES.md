@@ -233,6 +233,27 @@ big city", and only with the user's own key (Settings → Travel times).
   remembered for 30 days in `travel_memory`. The same terms (19.1, 19.2) allow using the answers
   without a Google map, but never with a non-Google map.
 - The key goes only in a request header, never in an address, so it can't end up in a log.
+- **Google-side stops (checked 2026-09-22):** Cloud Billing's spend caps (Preview) pause a
+  service once a budget is reached, but only for the Gemini API, Vertex AI (Gemini Enterprise
+  Agent Platform), Cloud Run and Cloud Run functions, **not Maps**: a Maps budget can only send
+  emails. The Google-side stop for Maps is therefore a daily quota on the Routes API.
+
+## Google Gemini API billing, the owner's AI provider, checked 2026-09-22
+
+Not a job source; recorded because the owner uses it and pays for it.
+
+- **A project with billing turned on gets no free allowance:** every request is charged at paid
+  prices, however small. The free tier applies only to projects without billing; a person can
+  keep both kinds of project, each with its own key.
+- **Prepay:** credits bought in advance in AI Studio (Billing page) are used up in near real
+  time. At zero, every request fails with HTTP 402 until more credits are bought, unless
+  auto-reload is on (with an optional monthly auto-charge limit).
+- **Spend caps:** per project, either in AI Studio (Spend page → "Monthly spend cap") or as a
+  Cloud Billing budget with "Spend cap enforcement" (one project, one service, monthly; alerts
+  fixed at 50%, 80% and 100%). At the cap, the Gemini API is paused until the cap is lifted by
+  hand. Since April 2026 every billing account also has a tier-wide monthly cap.
+- Sources: [Cloud Billing spend caps](https://docs.cloud.google.com/billing/docs/how-to/budgets-spend-caps),
+  [Gemini API billing](https://ai.google.dev/gemini-api/docs/billing).
 
 ## Job boards on hold: what their terms say (checked 2026-09-18 and 2026-09-21)
 

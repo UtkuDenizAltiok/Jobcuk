@@ -29,8 +29,9 @@ Nothing.
 - **Teamtailor and SuccessFactors** were tested live source by source (2026-09-21), not yet inside
   a full search.
 - **Google's own safety stop:** the 2026-09-17 decision asks for a daily limit in Google's
-  settings as well. While setting up the key, check whether the Routes API quota page allows a
-  daily cap; if it does, add it to the key guide.
+  settings as well. Spend caps don't cover Maps ([SOURCES.md](SOURCES.md)), so after turning on
+  the Routes API, check whether its quota page allows a daily cap; if it does, add it to the key
+  guide.
 
 ### Waiting on the owner
 
