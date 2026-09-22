@@ -235,6 +235,9 @@ big city", and only with the user's own key (Settings → Travel times).
   remembered for 30 days in `travel_memory`. The same terms (19.1, 19.2) allow using the answers
   without a Google map, but never with a non-Google map.
 - The key goes only in a request header, never in an address, so it can't end up in a log.
+- **First real answer (2026-09-22, the owner's key):** Freising town centre → Munich centre
+  (Marienplatz), transit, Tuesday 8:00: 69 minutes. Door to door, so walking at both ends and
+  changes are included; the train ride alone is 25–45 minutes.
 - **Google-side stops (checked 2026-09-22):** Cloud Billing's spend caps (Preview) pause a
   service once a budget is reached, but only for the Gemini API, Vertex AI (Gemini Enterprise
   Agent Platform), Cloud Run and Cloud Run functions, **not Maps**: a Maps budget can only send

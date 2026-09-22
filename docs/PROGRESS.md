@@ -23,9 +23,9 @@ Nothing.
 
 ### Verify before relying on
 
-- **Google Maps has only met a fake Google in tests.** Once the owner's key is saved: press Test
-  in Settings, then run one real search with a travel limit and compare Google's times with the
-  AI's estimates.
+- **Google Maps inside a real search:** the key test works (2026-09-22, Freising → Munich 69
+  minutes by train, door to door). Not yet used in a full search: compare Google's times with the
+  AI's estimates there.
 - **Teamtailor and SuccessFactors** were tested live source by source (2026-09-21), not yet inside
   a full search.
 - **Maps billing SKU:** after the first real searches, Billing → Reports should show only
@@ -38,23 +38,19 @@ Nothing.
 
 ### Waiting on the owner
 
-1. **Google Maps key, last step:** copy "Jobcu Google Maps key" (Credentials → Show key) into
-   Jobcu's Settings → Travel times → Save → Test Google Maps. Everything else on Google's side is
-   set up (DECISIONS.md, "The owner's Google billing"). His Gemini key ("Jobcu AI key") is
-   already saved in Jobcu.
-2. **Run a real search** and rate a few jobs on the Score check screen (nothing is rated yet).
-3. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
+1. **Run a real search** with a travel limit and rate a few jobs on the Score check screen (nothing is rated yet).
+2. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
    `Company | Job title | Place | link`, for `tools/coverage_test.py`.
-4. **The friend's test:** his feedback on installing and using Jobcu.
-5. Optional: a generic cover letter (the uploaded one is written for Tesla).
-6. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
+3. **The friend's test:** his feedback on installing and using Jobcu.
+4. Optional: a generic cover letter (the uploaded one is written for Tesla).
+5. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
    permission ([SOURCES.md](SOURCES.md)), and whether to sign up for Jooble, Careerjet, France
    Travail, NAV or VDAB keys.
 
 ### Next tasks, in order
 
-1. Once the owner has saved the Maps key: press Test, then one real search with a travel limit,
-   comparing Google's times with the AI's estimates (the first item under "Verify").
+1. With the owner's first real search (travel limit included): compare Google's times with the
+   AI's estimates (the first item under "Verify"), and fix what the search shows.
 2. Once jobs are rated: try scoring at **medium** thinking too (the owner leans to medium for
    every step, 2026-09-22; decide with the score check, not before). Then the score-check loop (`tools/score_check.py` to compare; `--rescore` to
    tune the quick check, batch size and scoring prompt, HANDOVER §13).
