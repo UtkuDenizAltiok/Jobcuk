@@ -19,7 +19,19 @@ Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is buil
 
 ### In progress
 
-Nothing.
+**Finding the town of the best town-less jobs online** (owner, 2026-09-22: "the location of the
+job is a really important parameter … isn't that why we use the built-in AI?"; unknown-town jobs
+stay mixed in by score; his scoring limit 150 → 200).
+- [ ] After scoring, the best-scoring jobs still without a town (score ≥ 50, best first, within
+      the search's web look-up allowance) are looked up by the person's AI with web search, a
+      few jobs per request; a town counts only if it is in the town list for the job's country.
+      Kept on the job (`JobGroup.place_from_web`), so Edit never asks again.
+- [ ] The conditions and travel times are applied to them; failures move to "Left out by your
+      conditions". Cards say "(found online)". A new progress step.
+- [ ] Web look-ups per search: default and the owner's allowance raised to fit (Gemini: 5,000
+      free search queries a month shared by all Gemini 3.x models, then $14 per 1,000).
+- [ ] Owner's scoring limit 200. Records (DECISIONS, SOURCES: Gemini prices; the Bundesagentur
+      employer match found only ~5 of 42), guide, tests, a real check on search 6's jobs.
 
 ### Verify before relying on
 
