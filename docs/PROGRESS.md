@@ -19,7 +19,16 @@ Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is buil
 
 ### In progress
 
-Nothing.
+**Final Google limits and cleanup** (owner, 2026-09-22: never more than €25 a month in total;
+delete everything Jobcu doesn't use). Done in his Chrome; check each on the console.
+- [ ] Budget "Jobcu AI": spend cap €20 → **€23** (leaves room for the cap's few-minute delay).
+- [ ] Routes API quota "ComputeRouteMatrix per-element quota per day": 300 → **320** (31 × 320 =
+      9,920, still inside the free 10,000 Essentials elements; ComputeRoutes stays at 0).
+- [ ] Delete the unused service account "Default Gemini API Key" in project "Jobcu AI".
+- [ ] Switch off Google's unused default services in both projects (BigQuery family, Dataform,
+      Dataplex, Analytics Hub, Datastore, Cloud SQL, Cloud Storage, Trace). Keep Service Usage,
+      Service Management, Logging, Monitoring and the project's own API.
+- [ ] Record the result in DECISIONS.md ("The owner's Google billing") and empty this section.
 
 ### Verify before relying on
 
