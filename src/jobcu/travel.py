@@ -16,11 +16,10 @@ is small. `location.py` reads the condition; this module measures it for each jo
    when the limit is reached, the AI estimates the times and the card says so.
 
 Each job's answer is kept in the condition (minutes per reference place), so a corrected limit
-is applied again without asking anyone. Travel times are also remembered for 30 days (the
+is applied again without asking anyone. The AI's estimates are also remembered for 30 days (the
 owner's decision): from the same town, or the same point a job ad gave, to the same place, by
-the same way of travelling. With a Google Maps
-key, only Google's own answers are taken from memory; the AI's estimates are only used again
-while there is no key.
+the same way of travelling. Google's travel times are never kept beyond the search they were
+asked for: the Routes API terms (section 19.3) allow keeping only coordinates, not durations.
 """
 
 import logging
@@ -324,34 +323,30 @@ class TravelMeter:
         self._settle_status(condition)
 
     def _minutes(self, places, mode) -> dict[str, tuple[dict[str, int | None], str]]:
-        """Minutes to each town for each place, from memory where possible, otherwise from
-        Google Maps, otherwise from the AI; with who measured them."""
+        """Minutes to each town for each place, with who measured them: Google Maps when there
+        is a key, otherwise the AI (its estimates from the last 30 days first)."""
         found: dict[str, tuple[dict[str, int | None], str]] = {}
+        measured = self._with_maps(places, mode) if self._maps else {}
+        for point, _towns, _keys in places:
+            if point.key in measured:
+                found[point.key] = (measured[point.key], MAPS)
         missing = []
         for point, towns, keys in places:
-            known, by = recall(point, towns, mode, maps=self._maps is not None, now=self._now())
+            if point.key in found:
+                continue
+            known = recall(point, towns, mode, now=self._now())
             still = [town for town in towns if town.name not in known]
             if still:
-                missing.append((point, still, keys, known, by))
+                missing.append((point, still, keys, known))
             else:
-                found[point.key] = (known, by)
-        if not missing:
-            return found
-        measured = self._with_maps([(p, t, k) for p, t, k, _, _ in missing], mode) \
-            if self._maps else {}
-        guesses = self._estimate([(p, t, k) for p, t, k, _, _ in missing
-                                  if p.key not in measured], mode)
-        for point, towns, _, known, known_by in missing:
-            if point.key in measured:
-                new, by = measured[point.key], MAPS
-            elif point.key in guesses:
-                new, by = guesses[point.key], ESTIMATE
-            else:
+                found[point.key] = (known, ESTIMATE)
+        guesses = self._estimate([(p, t, k) for p, t, k, _ in missing], mode)
+        for point, towns, _, known in missing:
+            if point.key not in guesses:
                 continue
-            remember(point, {t.name: new.get(t.name) for t in towns}, point.country, mode, by,
-                     now=self._now())
-            either = ESTIMATE if ESTIMATE in (by, known_by) else MAPS
-            found[point.key] = ({**known, **new}, either)
+            new = {town.name: guesses[point.key].get(town.name) for town in towns}
+            remember(point, new, mode, now=self._now())
+            found[point.key] = ({**known, **new}, ESTIMATE)
         return found
 
     def _with_maps(self, places, mode) -> dict[str, dict[str, int | None]]:
@@ -410,38 +405,31 @@ def _destination(country: str, town: str) -> str:
     return f"{country}:{town}"
 
 
-def recall(point: Point, towns: list[place_list.Town], mode: str, *, maps: bool,
-           now: datetime) -> tuple[dict[str, int | None], str]:
-    """Remembered minutes from this place to these towns, and who measured them. With a Google
-    Maps key, only Google's answers count, so estimates made without a key get replaced."""
+def recall(point: Point, towns: list[place_list.Town], mode: str, *,
+           now: datetime) -> dict[str, int | None]:
+    """The AI's estimates from the last 30 days, from this place to these towns."""
     since = (now - timedelta(days=MEMORY_DAYS)).isoformat()
-    ways = [MAPS] if maps else [MAPS, ESTIMATE]
-    marks = ",".join("?" * len(ways))
     known: dict[str, int | None] = {}
-    by = MAPS
     with db.connect() as conn:
         for town in towns:
             row = conn.execute(
-                f"SELECT minutes, measured_by FROM travel_memory WHERE origin = ? AND "
-                f"destination = ? AND mode = ? AND measured_at >= ? AND measured_by IN ({marks}) "
-                "ORDER BY measured_by = ? DESC, measured_at DESC LIMIT 1",
-                (point.identity, _destination(point.country, town.name), mode, since, *ways,
-                 MAPS),
+                "SELECT minutes FROM travel_memory WHERE origin = ? AND destination = ? AND "
+                "mode = ? AND measured_by = ? AND measured_at >= ?",
+                (point.identity, _destination(point.country, town.name), mode, ESTIMATE, since),
             ).fetchone()
             if row is not None:
                 known[town.name] = row["minutes"]
-                by = ESTIMATE if row["measured_by"] == ESTIMATE else by
-    return known, by
+    return known
 
 
-def remember(point: Point, minutes: dict[str, int | None], country: str, mode: str, by: str, *,
-             now: datetime) -> None:
+def remember(point: Point, minutes: dict[str, int | None], mode: str, *, now: datetime) -> None:
+    """Keeps the AI's estimates for 30 days. Google's answers are never stored (see above)."""
     with db.connect() as conn:
         conn.executemany(
             "INSERT OR REPLACE INTO travel_memory (origin, destination, mode, measured_by, "
             "minutes, measured_at) VALUES (?, ?, ?, ?, ?, ?)",
-            [(point.identity, _destination(country, town), mode, by, value, now.isoformat())
-             for town, value in minutes.items()],
+            [(point.identity, _destination(point.country, town), mode, ESTIMATE, value,
+              now.isoformat()) for town, value in minutes.items()],
         )
         conn.execute("DELETE FROM travel_memory WHERE measured_at < ?",
                      ((now - timedelta(days=MEMORY_DAYS)).isoformat(),))

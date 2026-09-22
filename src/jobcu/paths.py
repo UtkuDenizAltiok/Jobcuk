@@ -48,7 +48,3 @@ def ensure_data_dir() -> Path:
         readme.write_text(_README_TEXT, encoding="utf-8")
     return folder
 
-
-def code_dir() -> Path:
-    """Return the folder that holds Jobcu's own code."""
-    return Path(__file__).resolve().parent

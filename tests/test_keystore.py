@@ -17,10 +17,10 @@ def test_keys_are_saved_in_the_data_folder(temporary_data_dir):
 def test_set_get_has_names_delete():
     store = KeyStore()
     assert store.get("reed") is None
-    assert not store.has("reed")
+    assert store.get("reed") is None
     store.set("reed", f"  {FAKE_KEY}\n")
     assert store.get("reed") == FAKE_KEY
-    assert store.has("reed")
+    assert store.get("reed")
     assert store.names() == ["reed"]
     store.delete("reed")
     assert store.get("reed") is None

@@ -31,9 +31,6 @@ class KeyStore:
     def get(self, name: str) -> str | None:
         return self._load().get(name)
 
-    def has(self, name: str) -> bool:
-        return bool(self.get(name))
-
     def names(self) -> list[str]:
         return sorted(self._load())
 

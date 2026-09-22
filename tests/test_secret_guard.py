@@ -56,8 +56,7 @@ def test_normal_code_is_not_flagged(text):
         "keys.json",
         ".env",
         ".env.local",
-        "tests/fixtures/fake_documents/real_cv.pdf",
-        "tests/fixtures/fake_documents/fake_data.db",
+        "tests/fake_cv.pdf",
     ],
 )
 def test_personal_and_secret_file_types_are_blocked(path):
@@ -67,13 +66,12 @@ def test_personal_and_secret_file_types_are_blocked(path):
 @pytest.mark.parametrize(
     "path",
     [
-        "tests/fixtures/fake_documents/fake_cv.pdf",
         ".env.example",
         "src/jobcu/app.py",
         "docs/images/step-1.png",
     ],
 )
-def test_normal_and_fake_test_files_are_allowed(path):
+def test_normal_files_are_allowed(path):
     assert guard.check_path(path) == []
 
 

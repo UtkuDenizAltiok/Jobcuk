@@ -24,7 +24,7 @@ def test_default_data_dir_is_the_standard_place_for_app_data(monkeypatch):
 
 def test_default_data_dir_is_outside_the_code_folder(monkeypatch):
     monkeypatch.delenv(paths.DATA_DIR_ENV)
-    project_root = paths.code_dir().parents[1]
+    project_root = Path(paths.__file__).resolve().parents[2]
     assert not paths.data_dir().is_relative_to(project_root)
 
 

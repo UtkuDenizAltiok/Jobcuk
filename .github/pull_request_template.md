@@ -11,6 +11,6 @@
 - [ ] No API keys, passwords, CVs or other personal data are included
 - [ ] `uv run ruff check .` and `uv run pytest` pass on my computer
 - [ ] Works on both Mac and Windows (the automatic tests check this)
-- [ ] Any new decision is added to `docs/DECISIONS.md`
-- [ ] `docs/PROGRESS.md` is updated if this finishes something on the list
+- [ ] The records are updated as `AGENTS.md` says: decisions in `docs/DECISIONS.md`, "Right now"
+      in `docs/PROGRESS.md`, source facts in `docs/SOURCES.md`, user guides for changed screens
 - [ ] Nothing marked *Decided* in `docs/HANDOVER.md` is changed, or the owner has agreed to it

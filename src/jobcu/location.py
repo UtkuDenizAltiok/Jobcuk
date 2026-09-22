@@ -324,6 +324,11 @@ the towns to avoid if that list is shorter; the figures you used; and the source
 town is, say the threshold instead of listing towns: the app has population figures itself.
 - If the condition is decided country by country (rankings, laws, languages, citizenship rules, \
 national figures), name the countries that fit, or the ones to avoid, instead of towns.
+- Party labels ("far-right", "fascist supporters") mean the parties that reliable current \
+sources put in that group in each country; name them. A party being "dominant" or "strong" in a \
+place, or a place being its stronghold, means its share there is above its national share in \
+the latest national parliamentary election, unless the person's words say otherwise (the \
+owner's reading, DECISIONS.md 2026-09-17).
 - When no source lists every place (shops, services, climate, anything local), don't give up: \
 reason from what you find to the most useful answer, such as the towns known to fit or a rule \
 like "towns with at least 20,000 people almost always have one", and say plainly that it is \

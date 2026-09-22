@@ -1,30 +1,13 @@
-# Developer guide
-
-Technical documentation for people and AI assistants working on Jobcu. Everyday users should read
-the [README](README.md) instead.
+# Contributing to Jobcu
 
 Jobcu is **private** (invited people only) and **not open source**: by contributing, you agree that
-your changes become part of Jobcu under its [LICENSE](LICENSE).
+your changes become part of Jobcu under its [LICENSE](LICENSE). Everyday users need only the
+[README](README.md).
 
-## Documents
+Everything about how Jobcu is built and worked on is in **[AGENTS.md](AGENTS.md)**, the one
+rulebook for people and AI assistants alike. This page only gets you started.
 
-| File | What it's for |
-|---|---|
-| [AGENTS.md](AGENTS.md) | Rules, conventions, project layout, lessons learned (read first; AI tools load it automatically) |
-| [docs/PROGRESS.md](docs/PROGRESS.md) | **"Right now"**: current state and next tasks, plus the phase checklists |
-| [docs/DECISIONS.md](docs/DECISIONS.md) | Every decision with date and reason (newer entries override older ones) |
-| [docs/SOURCES.md](docs/SOURCES.md) | Verified facts, limits and quirks of each job source |
-| [docs/HANDOVER.md](docs/HANDOVER.md) | Original concept and source of truth (never edited) |
-| [docs/guides/](docs/guides/) | Everyday-user guides; keep them in step with the app |
-
-## Stack
-
-Python 3.13 managed by **uv**, **FastAPI** + Uvicorn on 127.0.0.1, **SQLite**, plain HTML/CSS/JS (no
-build step, no external resources), official AI provider SDKs behind one layer (`src/jobcu/ai/`),
-**httpx** for job sources, **pytest** + **Ruff**. CI (GitHub Actions) runs a secrets check and the
-tests on macOS and Windows.
-
-## Setup
+## Set up
 
 Mac: `brew install git uv gh` · Windows: `winget install --id Git.Git -e`,
 `winget install --id astral-sh.uv -e`, `winget install --id GitHub.cli -e`
@@ -34,53 +17,39 @@ gh auth login
 gh repo fork UtkuDenizAltiok/jobcu --clone   # or clone directly if you have write access
 cd jobcu
 uv sync
-git config core.hooksPath .githooks          # secrets check before every commit
+git config core.hooksPath .githooks          # safety check before every commit
 uv run pytest && uv run ruff check .
-uv run jobcu                                 # JOBCU_DATA_DIR=... for a separate data folder
+uv run jobcu
 ```
 
-## How a search works
+## Working with an AI assistant
 
-`search.py` runs these steps in a background thread, with progress polled by the screen:
+Any capable AI coding assistant works: Claude Code, Codex, Gemini CLI, Cursor, GitHub Copilot,
+Aider, or a chat assistant such as ChatGPT, Gemini, Grok or Kimi. Open the project folder in your
+assistant and paste these prompts as they are.
 
-documents → profile (`profile.py`) → location plan (`location.py`) → search words (`keywords.py`)
-→ sources in parallel (`pipeline.collect`, `sources/*`) → duplicates (`dedupe.py`) → rules filter
-(`filters.py`) → quick relevance check (`relevance.py`) → full ads (`load_details`) → scoring
-(`scoring.py`) → cards and job memory (`pipeline.build_card`, `jobstore.py`).
+**At the start of every session:**
 
-## What "where do you want to work?" has to handle
+```text
+You are joining Jobcu, a private job search app. First read AGENTS.md in full and follow it: it
+is the project's rulebook. Then do what its section "Starting, or resuming after any
+interruption" says: read "Right now" in docs/PROGRESS.md and check the repository's real state.
+Tell me in plain words where the project stands, anything unfinished or needing a check, what is
+waiting on me, and what you propose to do next. Wait for my go-ahead before large changes. If you
+can't open files yourself, ask me to paste AGENTS.md and docs/PROGRESS.md.
+```
 
-People write a sentence, not a filter. The app's job is to understand it, check it against real
-information, and show its working. Real examples to design against:
+**Before you stop, or when the conversation is getting full:**
 
-| What someone writes | What Jobcu has to do |
-|---|---|
-| *Dublin or Cork* | Search those places directly. |
-| *Germany or Ireland, at most 50 minutes by public transport from a city centre with at least 0.3% of the country's people* | Work out what 0.3% means per country, find those cities, and get real weekday travel times (Google Maps, within its free allowance). |
-| *Cities where far-right parties polled below the national average* | Research with live web search which parties count and what the latest election results were, per place, and list the sources used. |
-| *Somewhere with shops open on Sunday and several Turkish supermarkets* | Research it live, per candidate place, and show what it found and where. |
-| *A town where over 20% of the people are students* | Find and check the figures, then apply them. |
+```text
+Wrap up for a fresh session: follow the section "Ending a session" in AGENTS.md. Stop at a safe
+point, make sure everything important from this session is recorded in the repository (not only
+in this chat), check the tests, commit and push. Then tell me in a few lines what was done, what
+comes next, what is waiting on me, and whether it's safe to start a new session.
+```
 
-Rules that follow from this:
+## Changes
 
-- **Every search is different.** Nothing about a person's wording may be hard-coded or carried over
-  from another search or another user: the AI reads the text fresh every time.
-- **Research, then verify.** For anything not simply a named place, the AI searches the web,
-  names the sources it used, and Jobcu shows them. A fact it can't confirm is labelled as an
-  estimate or shown as "not checked" — never quietly assumed.
-- **Show the working.** "Understood as" lists every condition, how it was checked and the source,
-  and the person can edit it.
-- **Reference data is only a ruler.** The shipped town list (coordinates and population) and any
-  similar dataset exist so a condition the AI worked out can be measured. They never decide what
-  someone meant.
-
-## Workflow
-
-1. Read "Right now" in `docs/PROGRESS.md` and the relevant decisions.
-2. Work on a branch; every change comes with tests (mock HTTP and AI; never contact real sites in
-   tests).
-3. `uv run ruff check . && uv run pytest` must pass. Never commit keys, CVs or personal data.
-4. Record decisions in `docs/DECISIONS.md`, update "Right now", and update user guides if screens
-   change.
-5. Open a pull request (`gh pr create`). CI must pass on macOS and Windows; the owner approves merges.
-   Never force-push or rewrite history.
+Work on a branch, keep every change tested (`uv run ruff check . && uv run pytest`), and open a
+pull request (`gh pr create`). GitHub runs the tests on macOS and Windows; the owner approves
+merges. Never force-push or rewrite history.

@@ -331,21 +331,34 @@ def test_a_search_keeps_jobs_near_a_big_city_and_leaves_out_far_ones(ready, monk
 # --- Remembered for 30 days ---------------------------------------------------------------
 
 
-def test_travel_times_are_remembered_for_30_days_from_the_same_town():
+def test_googles_travel_times_are_never_kept_beyond_the_search():
+    # The Routes API terms (19.3) allow keeping coordinates only, so the next search asks again.
     fake = FakeMaps({"Munich": 17, "Augsburg": 55})
     meter(fake).measure([near()], [group("Fürstenfeldbruck", "1")], [0])
-    assert len(fake.requests) == 1
-    # Another search, another job in the same town: nothing is asked again.
+    meter(fake).measure([near()], [group("Fürstenfeldbruck", "2")], [0])
+    assert len(fake.requests) == 2
+    from jobcu import db
+    with db.connect() as conn:
+        assert conn.execute("SELECT COUNT(*) FROM travel_memory").fetchone()[0] == 0
+
+
+def test_ai_estimates_are_remembered_for_30_days_from_the_same_town():
+    class GuessingClient:
+        calls = 0
+
+        def generate(self, output, **request):
+            GuessingClient.calls += 1
+            return TravelGuesses(answers=[TravelGuess(id="P0", town="Munich", minutes=25)])
+
+    meter(key=False, client=GuessingClient()).measure([near()], [group("Fürstenfeldbruck")], [0])
     later = near()
     job = group("Fürstenfeldbruck", "2", company="Other GmbH")
-    meter().measure([later], [job], [0])  # would fail if Google Maps were asked
-    assert condition_fit(later, job) == "yes" and travel.detail(later, job)[1] == "Google Maps"
-    # After 30 days it's measured again.
-    stale = TravelMeter(None, KeyStore(), PoliteClient(
-        min_intervals={}, sleep=lambda s: None, transport=httpx.MockTransport(fake.handler)),
-        Settings(), now=lambda: NOW + timedelta(days=31))
+    meter(key=False, client=GuessingClient()).measure([later], [job], [0])
+    assert GuessingClient.calls == 1 and condition_fit(later, job) == "yes"
+    stale = TravelMeter(GuessingClient(), KeyStore(), None, Settings(),
+                        now=lambda: NOW + timedelta(days=31))
     stale.measure([near()], [job], [0])
-    assert len(fake.requests) == 2
+    assert GuessingClient.calls == 2
 
 
 def test_estimates_are_remembered_only_until_there_is_a_key():

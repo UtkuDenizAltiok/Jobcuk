@@ -226,9 +226,12 @@ big city", and only with the user's own key (Settings → Travel times).
   $32 per 1,000 place look-ups. Google requires a billing account even for free use.
 - Jobcu counts elements in `source_requests` (`google_maps_routes`) and stops at the monthly
   limit in Settings (9,000 by default), then uses AI estimates.
-- **Remembered for 30 days** (table `travel_memory`, the owner's decision): minutes from the same
-  town, or the same point a job ad gave, to the same reference place by the same way of
-  travelling. With a key, only Google's own answers are reused.
+- **Storing answers (checked 2026-09-22, Maps Service Specific Terms):** for the Routes API,
+  section 19.3 allows caching **only latitude and longitude values, for up to 30 days**. Travel
+  durations may not be cached (only the Navigation Connect API allows that). So Jobcu keeps
+  Google's minutes only inside the search that asked for them; the AI's own estimates are
+  remembered for 30 days in `travel_memory`. The same terms (19.1, 19.2) allow using the answers
+  without a Google map, but never with a non-Google map.
 - The key goes only in a request header, never in an address, so it can't end up in a log.
 
 ## Job boards on hold: what their terms say (checked 2026-09-18 and 2026-09-21)

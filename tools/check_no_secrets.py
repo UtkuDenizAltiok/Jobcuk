@@ -22,9 +22,6 @@ from pathlib import PurePosixPath
 
 ALLOW_MARKER = "jobcu-guard: allow"
 
-# Fake CVs and cover letters for tests may live here, named fake_*.
-FAKE_DOCUMENTS_DIR = "tests/fixtures/fake_documents/"
-
 DOCUMENT_EXTENSIONS = {".pdf", ".doc", ".docx", ".odt", ".rtf", ".pages"}
 ALWAYS_BLOCKED_EXTENSIONS = {
     ".db", ".db-journal", ".db-wal", ".db-shm", ".sqlite", ".sqlite3",
@@ -66,12 +63,10 @@ def check_path(path: str) -> list[str]:
     if suffix in ALWAYS_BLOCKED_EXTENSIONS:
         return [f"{path}: database and key files can hold personal data or secrets"]
     if suffix in DOCUMENT_EXTENSIONS:
-        in_fake_dir = str(posix).startswith(FAKE_DOCUMENTS_DIR)
-        if not (in_fake_dir and name.startswith("fake_")):
-            return [
-                f"{path}: documents such as CVs and cover letters must not be committed "
-                f"(fake test documents go in {FAKE_DOCUMENTS_DIR}, named fake_*)"
-            ]
+        return [
+            f"{path}: documents such as CVs and cover letters must not be committed "
+            "(tests build fake documents in code, see tests/conftest.py)"
+        ]
     return []
 
 

@@ -137,8 +137,9 @@ MIGRATIONS: list[str] = [
         pool_json TEXT NOT NULL
     );
     """,
-    # 9: Travel times, remembered for 30 days (the owner's decision, 2026-09-21), so repeated
-    # searches don't ask Google Maps or the AI again (travel.py).
+    # 9: The AI's travel-time estimates, remembered for 30 days (the owner's decision,
+    # 2026-09-21), so repeated searches don't ask again (travel.py). Google's own times are never
+    # stored here: its terms allow keeping only coordinates.
     """
     CREATE TABLE travel_memory (
         origin TEXT NOT NULL,

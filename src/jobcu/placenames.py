@@ -4,7 +4,7 @@ Company career systems and some job boards give locations only as text. Jobcu re
 country names (in English and the local languages), regions and the bigger towns of the
 supported countries, and also well-known places elsewhere, so "Cambridge, MA" isn't taken for
 the English Cambridge. It only needs to be good enough to pick jobs in the countries searched;
-the smart location filter (Phase 2) uses real map data.
+towns and distances come from the shipped town list (`places.py`).
 """
 
 import re
