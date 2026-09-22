@@ -55,7 +55,8 @@ Nothing.
 
 1. Once the owner has saved the Maps key: press Test, then one real search with a travel limit,
    comparing Google's times with the AI's estimates (the first item under "Verify").
-2. Once jobs are rated: the score-check loop (`tools/score_check.py` to compare; `--rescore` to
+2. Once jobs are rated: try scoring at **medium** thinking too (the owner leans to medium for
+   every step, 2026-09-22; decide with the score check, not before). Then the score-check loop (`tools/score_check.py` to compare; `--rescore` to
    tune the quick check, batch size and scoring prompt, HANDOVER §13).
 3. More coverage, Ireland, the UK and Germany first: Teamtailor employers in Ireland and the UK,
    SuccessFactors sites of German engineering firms, more career systems (Personio, Softgarden,
