@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-22. All 386 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-23. All 390 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -47,25 +47,30 @@ Nothing.
 
 ### Waiting on the owner
 
-1. **Run a real search** with a travel limit and rate a few jobs on the Score check screen (nothing is rated yet).
-2. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
+1. **Run a search on the newest version** (the fixes from searches 6 and 7 are in it) and look at
+   a few cards marked "(found online)": is the town right? Several such jobs are agency ads,
+   where the agency's own office would be wrong.
+2. **Rate 30–50 jobs on the Score check screen** (nothing is rated yet). Everything about tuning
+   the quick check and the scoring waits on this.
+3. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
    `Company | Job title | Place | link`, for `tools/coverage_test.py`.
-3. **The friend's test:** his feedback on installing and using Jobcu.
-4. Optional: a generic cover letter (the uploaded one is written for Tesla).
-5. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
+4. **The friend's test:** his feedback on installing and using Jobcu.
+5. Optional: a generic cover letter (the uploaded one is written for Tesla).
+6. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
    permission ([SOURCES.md](SOURCES.md)), and whether to sign up for Jooble, Careerjet, France
    Travail, NAV or VDAB keys.
 
 ### Next tasks, in order
 
-1. With the owner's first real search (travel limit included): compare Google's times with the
-   AI's estimates (the first item under "Verify"), and fix what the search shows.
+1. Check the next search: Google's travel times against the AI's estimates, and the towns found
+   online (both under "Verify"). Fix what it shows.
 2. Once jobs are rated: the quick relevance check first. It drops some related jobs when a batch
    holds many similar ones (42 of 147 in the real check, 19 in mixed batches; DECISIONS.md
    2026-09-22 evening): try one verdict per job, mixed batches, or medium thinking, measured
-   against the owner's ratings. Also try scoring at **medium** thinking (the owner leans to medium for
-   every step, 2026-09-22; decide with the score check, not before). Then the score-check loop (`tools/score_check.py` to compare; `--rescore` to
-   tune the quick check, batch size and scoring prompt, HANDOVER §13).
+   against the owner's ratings. Also try scoring at **medium** thinking (the owner leans to
+   medium everywhere, 2026-09-22; decide with the score check, not before). Then the score-check
+   loop (`tools/score_check.py` to compare; `--rescore` to tune the quick check, batch size and
+   scoring prompt, HANDOVER §13).
 3. More coverage, Ireland, the UK and Germany first: Teamtailor employers in Ireland and the UK,
    SuccessFactors sites of German engineering firms, more career systems (Personio, Softgarden,
    BambooHR, Comeet, Oracle), and national employment services with open data and no key

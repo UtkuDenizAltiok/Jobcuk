@@ -298,6 +298,17 @@ short script with that `JOBCU_DATA_DIR`.
   coordinates for 30 days, not travel times.
 - **Try new AI instructions with a real provider**, on a copy of someone's data (see Commands):
   scripted tests can't show whether a model reads a sentence the way people mean it.
+- **A model answers from memory unless told to search.** "Find where this job ad is" came back
+  with company head offices and no web search at all until the instructions said to search for
+  every job and called an answer from memory a guess. Check `usage.web_searches` to see which it
+  did.
+- **Measure a search word before spending a budget on it.** Adzuna's `count` (one request) showed
+  that two general words made one query match 6,459 ads instead of 337, which had been eating the
+  whole request budget on ads nobody wants.
+- **A daily limit belongs to the service's day, not the user's.** Google's Routes quota resets at
+  midnight Pacific, so an evening search and one after midnight in Europe share it.
+- **What only a tooltip shows doesn't exist.** The owner asked how a one-point score difference
+  arises; the breakdown was there, but only on hover.
 - **Import loops can hide behind a lucky import order.** `tests/test_imports.py` loads key modules
   on their own; import heavy modules inside a function when two modules need each other.
 - The secrets check can flag public identifiers. Only if a value is clearly not a secret, add
