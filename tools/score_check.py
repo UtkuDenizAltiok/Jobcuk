@@ -47,7 +47,8 @@ def rescore(ads: list[quality.Ad], batch: int, effort: str | None, summary: bool
         settings.ai.scoring_effort = effort
     client = AIClient(settings, KeyStore(), usage_log=UsageLog(), notify=print)
     profile, reused = read_profile_reusing(
-        client, documents.read_text("cv"), documents.read_text("cover_letter")
+        client, documents.read_text("cv"), documents.read_text("cover_letter"),
+        settings.search_form.about_you,
     )
     print(f"Profile: {profile.current_or_last_role or profile.field}"
           f"{' (reused)' if reused else ''}")

@@ -71,7 +71,8 @@ class Profile(BaseModel):
     work_mode_preference: WorkMode
     dealbreakers: list[str]
     work_authorisation: str | None = Field(
-        description="Only if the documents explicitly state it, otherwise null"
+        description="Citizenship, work permits or visa needs, only if the documents or the "
+        "person's note state them, otherwise null"
     )
     ignored_as_application_specific: list[str] = Field(
         description="Things left out because they only concern one specific application"
@@ -79,17 +80,20 @@ class Profile(BaseModel):
 
 
 SYSTEM_PROMPT = """\
-You read a person's CV and cover letter for a job search app. The app uses what you write to \
-find job ads and score how well each one fits the person. Your only goal is to understand who \
+You read a person's CV and cover letter for a job search app, and a short note the person may \
+have added about what the documents don't say. The app uses what you write to find job ads and \
+score how well each one fits the person. Your only goal is to understand who \
 the person is and what kind of work they want. Do not rate, grade, critique, correct or rewrite \
 the documents.
 
 Rules:
-1. Use only what the documents say. Never guess nationality, citizenship, ethnicity, gender, \
-age, religion, health or family situation, whether from names, universities, places of study \
-or work, languages, or anything else.
-2. work_authorisation: fill it only when the documents explicitly state a work permit, \
-citizenship or a need for visa sponsorship. Otherwise use null.
+1. Use only what the documents and the note say. Never guess nationality, citizenship, \
+ethnicity, gender, age, religion, health or family situation, whether from names, universities, \
+places of study or work, languages, or anything else.
+2. work_authorisation: fill it only when the documents or the note explicitly state a \
+citizenship, a work permit or a need for visa sponsorship, in their words. Otherwise use null.
+The note is the person's own, newer word: where it differs from the documents (for example a \
+newer language level), follow the note.
 3. The cover letter may have been written for one particular job application. Leave out \
 everything that only concerns that one application: the company's name, the exact job title \
 applied for, the company's products, why the person wants that company, and any city, country \
@@ -103,7 +107,9 @@ wishes are not locations: put those in work_mode_preference.
 5. Languages: copy the level as written. Give a CEFR level when the documents state one, or use \
 "native" for native or mother-tongue languages (cefr_is_estimate false). For words such as \
 fluent, good, basic or intermediate, estimate the CEFR level and set cefr_is_estimate to true. \
-If no level is given at all, use null.
+If no level is given at all, use null. If the documents are written in a language they don't \
+list, add it with the level the writing shows (cefr_is_estimate true): job ads are compared \
+with these languages.
 6. Experience: give two separate numbers, because job ads asking for "3+ years" usually mean \
 full-time work. years_full_time_experience counts full-time jobs only. \
 years_student_or_part_time_experience counts internships, working-student jobs, part-time jobs \
@@ -117,7 +123,9 @@ for the same kind of work. Keep them realistic for the person's background.
 """
 
 
-def read_profile(client: AIClient, cv_text: str, cover_letter_text: str) -> Profile:
+def read_profile(
+    client: AIClient, cv_text: str, cover_letter_text: str, about_you: str = ""
+) -> Profile:
     """Asks the AI to read the documents, always freshly."""
     prompt = (
         "CV (between the markers):\n<<<CV\n"
@@ -125,6 +133,9 @@ def read_profile(client: AIClient, cv_text: str, cover_letter_text: str) -> Prof
         "Cover letter (between the markers):\n<<<COVER_LETTER\n"
         f"{cover_letter_text}\nCOVER_LETTER>>>"
     )
+    if about_you.strip():
+        prompt += ("\n\nThe person's note (between the markers):\n<<<NOTE\n"
+                   f"{about_you.strip()}\nNOTE>>>")
     return client.generate(
         Profile,
         step="profile",
@@ -135,10 +146,11 @@ def read_profile(client: AIClient, cv_text: str, cover_letter_text: str) -> Prof
     )
 
 
-def _cache_key(client: AIClient, cv_text: str, cover_letter_text: str) -> str:
+def _cache_key(client: AIClient, cv_text: str, cover_letter_text: str, about_you: str) -> str:
     parts = [
         cv_text,
         cover_letter_text,
+        about_you.strip(),
         SYSTEM_PROMPT,
         client.provider_id,
         client.model_for(reasoning=True),
@@ -148,10 +160,11 @@ def _cache_key(client: AIClient, cv_text: str, cover_letter_text: str) -> str:
 
 
 def read_profile_reusing(
-    client: AIClient, cv_text: str, cover_letter_text: str
+    client: AIClient, cv_text: str, cover_letter_text: str, about_you: str = ""
 ) -> tuple[Profile, bool]:
-    """The profile and whether it came from the last time these exact documents were read."""
-    key = _cache_key(client, cv_text, cover_letter_text)
+    """The profile and whether it came from the last time these exact documents (and note) were
+    read."""
+    key = _cache_key(client, cv_text, cover_letter_text, about_you)
     with db.connect() as conn:
         row = conn.execute(
             "SELECT profile_json FROM profile_cache WHERE key = ?", (key,)
@@ -161,7 +174,7 @@ def read_profile_reusing(
             return Profile.model_validate_json(row["profile_json"]), True
         except ValueError:
             pass  # saved by an older Jobcu and no longer readable: read the documents again
-    profile = read_profile(client, cv_text, cover_letter_text)
+    profile = read_profile(client, cv_text, cover_letter_text, about_you)
     with db.connect() as conn:
         conn.execute(
             "INSERT OR REPLACE INTO profile_cache (key, profile_json) VALUES (?, ?)",

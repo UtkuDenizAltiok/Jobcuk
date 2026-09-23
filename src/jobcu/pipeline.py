@@ -262,6 +262,9 @@ def build_card(
         "date_known": freshness(group.posted_at, group.date_precision, start) != "unknown",
         "score": scored["score"] if scored else None,
         "parts": scored["parts"] if scored else None,
+        # Blockers that hold the score below what its parts add up to (scoring.py).
+        "limits": (scored or {}).get("limits", []),
+        "score_notes": (scored or {}).get("notes", []),
         "reasons": scored["reasons"] if scored else [],
         "required_languages": scored["required_languages"] if scored else [],
         "main_link": main_link,

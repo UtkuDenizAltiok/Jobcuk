@@ -15,6 +15,10 @@ Keys are saved only on your computer.
 On **Search**, add your **CV** and a **cover letter** (PDF, Word or text). A general cover letter
 saying what work you want works best. **What Jobcu understood** shows how your documents were read.
 
+**Anything your documents don't say** (optional): for example your citizenship, or a newer
+language level. Jobcu only uses it to judge ads that ask for a citizenship, a security clearance
+or a language level. Without your citizenship, Jobcu never assumes one.
+
 ## 3. Search
 
 1. **Where do you want to work?** Write it your way, e.g. *Dublin or Cork*, *Munich or within 50 km*,
@@ -29,6 +33,15 @@ saying what work you want works best. **What Jobcu understood** shows how your d
 - **Score (0–100):** how well a job fits you, with short reasons. Under them, the card shows how
   the score adds up: role & skills (up to 40), seniority (20), languages (15), requirements (15)
   and location & wishes (10). That's why two jobs can differ by a single point.
+- **"Limited to …":** a clear blocker keeps a job's score low, whatever the rest adds up to:
+  - a language asked at two or more levels above yours (for example German B2 when you have A2):
+    at most 65, and 0 for languages. "Good" or "very good" counts as B2, "fluent" as C1;
+  - a citizenship or security clearance you definitely can't get: at most 30;
+  - a required PhD you don't have: at most 50;
+  - 5 or more years of experience beyond yours: at most 75; 8 or more: at most 60.
+
+  An ad written in a language you speak below B2 that doesn't say what level it needs scores low
+  for languages, but isn't limited. Jobs with a low score still stay in your list.
 - **New:** not seen in an earlier search.
 - **Understood as:** how Jobcu read where you want to work. If something is wrong, click **Edit**
   to switch a condition off, fix its list of places or its town size, reword it or add one.

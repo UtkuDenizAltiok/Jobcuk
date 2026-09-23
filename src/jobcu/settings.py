@@ -72,6 +72,8 @@ class SearchForm(BaseModel):
     """What the user filled in on the search screen, kept for their next visit."""
 
     location_text: str = Field(default="", max_length=2000)
+    # What the documents don't say, such as citizenship or a newer language level (profile.py).
+    about_you: str = Field(default="", max_length=500)
     posted_within_hours: Literal[6, 24, 72, 168] = 24
     job_types: list[JobType] = list(JOB_TYPES)
     exclude_remote: bool = False

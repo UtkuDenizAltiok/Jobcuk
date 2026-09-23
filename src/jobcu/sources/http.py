@@ -163,5 +163,7 @@ def _looks_like_bot_protection(response: httpx.Response) -> bool:
     text = response.text[:2000].lower()
     return any(
         marker in text
-        for marker in ("captcha", "cf-chl", "cloudflare", "are you a robot", "access denied")
+        for marker in ("captcha", "cf-chl", "cloudflare", "are you a robot", "access denied",
+                       # Amazon CloudFront's firewall, seen on Adzuna's pages (SOURCES.md)
+                       "request blocked")
     )

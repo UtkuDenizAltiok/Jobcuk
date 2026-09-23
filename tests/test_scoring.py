@@ -5,7 +5,7 @@ from jobcu.ai.base import ProviderAdapter, RawReply, Usage
 from jobcu.ai.client import AIClient
 from jobcu.dedupe import group_duplicates
 from jobcu.location import LocationPlan
-from jobcu.profile import Profile
+from jobcu.profile import LanguageSkill, Profile
 from jobcu.relevance import quick_pass
 from jobcu.scoring import JobScore, finish, score_groups
 from jobcu.settings import Settings
@@ -23,11 +23,13 @@ PLAN = LocationPlan(text="", understood_as="Anywhere.", countries=["DE"], places
                     not_checked_yet=[], outside_supported_area=[], broad=True)
 
 
-def score_json(job_id, role=30):
-    return {"job_id": job_id, "role_and_skills": role, "seniority": 15, "languages": 15,
+def score_json(job_id, role=30, **evidence):
+    return {"job_id": job_id, "ad_language": "English", "languages_asked": [],
+            "years_required": None, "doctorate": "not_required",
+            "citizenship_or_clearance": "no_such_requirement",
+            "citizenship_or_clearance_words": "", "role_and_skills": role, "seniority": 15,
             "hard_requirements": 15, "location_and_preferences": 8, "reasons": ["Good match"],
-            "job_type": "unclear", "work_mode": "hybrid", "fully_remote": False,
-            "required_languages": []}
+            "job_type": "unclear", "work_mode": "hybrid", "fully_remote": False, **evidence}
 
 
 class Scripted(ProviderAdapter):
@@ -59,11 +61,106 @@ def groups(*titles):
 
 def test_total_is_added_up_in_code_and_parts_are_kept_within_their_maximum():
     raw = JobScore.model_validate({**score_json("J1", role=55), "reasons": ["a", "b", "c", "d"]})
-    result = finish(raw)
+    result = finish(raw, PROFILE)
     assert result["parts"]["role_and_skills"] == 40
-    assert result["score"] == 40 + 15 + 15 + 15 + 8
+    assert result["score"] == 40 + 15 + 15 + 15 + 8 and result["limits"] == []
     assert result["reasons"] == ["a", "b", "c"]
     assert result["job_type"] is None and result["work_mode"] == "hybrid"
+
+
+# The owner's profile in search 8: English C1, German A2, Turkish native, no full-time years.
+SPEAKER = PROFILE.model_copy(update={
+    "languages": [
+        LanguageSkill(language="English", level_as_written="Fluent", cefr="C1",
+                      cefr_is_estimate=True),
+        LanguageSkill(language="German", level_as_written="Basic", cefr="A2",
+                      cefr_is_estimate=True),
+        LanguageSkill(language="Turkish", level_as_written="Native", cefr="native",
+                      cefr_is_estimate=False),
+    ],
+    "years_full_time_experience": 0.0,
+})
+
+
+def asked(language, level, must_have=True):
+    return {"language": language, "level": level, "must_have": must_have, "as_written": ""}
+
+
+def scored(profile=SPEAKER, **evidence):
+    raw = score_json("J1", role=39, **evidence)
+    raw.update({"seniority": 18, "hard_requirements": 15, "location_and_preferences": 9})
+    return finish(JobScore.model_validate(raw), profile)
+
+
+def test_a_language_two_levels_above_gives_no_language_points_and_limits_the_total_to_65():
+    # FERCHAU in search 8: "Gute Deutsch- und Englischkenntnisse", German B2+; the person has A2.
+    result = scored(ad_language="German",
+                    languages_asked=[asked("German", "B2"), asked("English", "B2")])
+    assert result["parts"]["languages"] == 0
+    assert result["score"] == 65  # the parts add up to 81
+    assert result["limits"] == [{"at": 65, "why": "German B2 required, you have A2"}]
+    assert result["required_languages"] == ["German B2", "English B2"]
+    assert result["notes"] == []  # the ad said what it needs
+
+
+def test_one_level_short_or_only_a_plus_costs_some_language_points_but_sets_no_limit():
+    one_short = scored(languages_asked=[asked("German", "B1")])
+    assert one_short["parts"]["languages"] == 8 and one_short["limits"] == []
+    a_plus = scored(languages_asked=[asked("German", "C1", must_have=False)])
+    assert a_plus["parts"]["languages"] == 12 and a_plus["limits"] == []
+    assert a_plus["required_languages"] == ["German C1 (a plus)"]
+    met = scored(languages_asked=[asked("english", "C1"), asked("Turkish (native)", "C2")])
+    assert met["parts"]["languages"] == 15
+
+
+def test_an_ad_written_in_german_that_names_no_level_is_low_but_not_zero():
+    result = scored(ad_language="German", languages_asked=[asked("English", "B2")])
+    assert result["parts"]["languages"] == 5 and result["limits"] == []
+    assert result["notes"] == [
+        "The ad is written in German and doesn't say what level it needs"]
+    no_german_needed = scored(ad_language="German",
+                              languages_asked=[asked("German", "not_needed")])
+    assert no_german_needed["parts"]["languages"] == 15 and no_german_needed["notes"] == []
+    unknown_language = scored(ad_language="Dutch")
+    assert unknown_language["parts"]["languages"] == 3
+
+
+def test_a_language_the_cv_does_not_name_is_not_spoken():
+    result = scored(languages_asked=[asked("French", "B2")])
+    assert result["limits"] == [{"at": 65, "why": "French B2 required, not in your CV"}]
+    # Documents that name no language at all can't be compared with the ad.
+    assert scored(profile=PROFILE, ad_language="German")["parts"]["languages"] == 15
+
+
+def test_the_owners_limits_for_citizenship_doctorate_and_experience():
+    blocked = scored(citizenship_or_clearance="required_definitely_out_of_reach",
+                     citizenship_or_clearance_words="UK nationals only")
+    assert blocked["score"] == 30
+    assert blocked["limits"] == [{"at": 30, "why": "UK nationals only: out of reach for you"}]
+    unclear = scored(citizenship_or_clearance="required_possible_or_unclear")
+    assert unclear["limits"] == []
+    assert scored(doctorate="required_person_lacks_it")["score"] == 50
+    assert scored(doctorate="required_person_has_it")["limits"] == []
+    assert scored(years_required=4)["limits"] == []
+    five = scored(years_required=5)
+    assert five["score"] == 75 and five["limits"][0]["why"] == (
+        "Asks for 5+ years of experience, you have no full-time years yet")
+    assert scored(years_required=8)["score"] == 60
+    # Years the person already has count: 6 full-time years against 10 asked is 4 short.
+    senior = SPEAKER.model_copy(update={"years_full_time_experience": 6.0})
+    assert scored(profile=senior, years_required=10)["limits"] == []
+
+
+def test_the_lowest_limit_wins_and_every_reason_is_kept():
+    result = scored(years_required=8, citizenship_or_clearance="required_definitely_out_of_reach",
+                    languages_asked=[asked("German", "C1")])
+    assert result["score"] == 30
+    assert [limit["at"] for limit in result["limits"]] == [30, 60, 65]
+
+
+def test_a_low_total_is_not_raised_by_a_limit():
+    raw = score_json("J1", role=5, years_required=5)
+    assert finish(JobScore.model_validate(raw), SPEAKER)["score"] == 5 + 15 + 15 + 15 + 8
 
 
 def test_every_job_in_a_batch_gets_a_score_even_if_the_ai_skips_one():

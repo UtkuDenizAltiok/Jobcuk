@@ -31,17 +31,22 @@ rules for blockers are in DECISIONS.md (2026-09-23 evening). Steps:
 
 1. [x] Adzuna: read `/land/ad/<id>` ads through `/details/<id>` (tested live: full text), and
    never count a link that can't work as a refusal. SOURCES.md.
-2. [ ] Scoring: the AI reads the evidence first (ad language, required languages with CEFR
+2. [x] Scoring: the AI reads the evidence first (ad language, required languages with CEFR
    levels, required years, required doctorate, citizenship or clearance); code works out the
    language points and the owner's limits (language 2+ levels short: 0 and at most 65; ad only
    in a language the person speaks below B2, no level stated: low, no limit; citizenship or
    clearance definitely out of reach: 30; required doctorate missing: 50; 5+ more years: 75;
    8+ more years: 60). Tighter anchors so unknown isn't treated as fine. Cards show the limit
    and why. DECISIONS.md, guides.
-3. [ ] An optional note about the person (citizenship, work permits) read with the documents,
+3. [x] An optional note about the person (citizenship, work permits) read with the documents,
    so the citizenship limit can work for anyone. Guides.
-4. [ ] Real check: re-score search 8's jobs with the owner's AI on a copy of his data folder,
-   compare the scores before and after.
+4. [x] Real check: re-score search 8's jobs with the owner's AI on a copy of his data folder,
+   compare the scores before and after (DECISIONS.md). Adzuna's firewall now blocks its pages,
+   so 68 German ads stayed summaries at up to 85 ("written in German, no level" rule).
+4b. [ ] Keep the evidence with each score, and let the online look-up (jobplace.py) also read
+   the language, years and blockers of the best summary-only jobs, then re-apply the rules.
+4c. [ ] Adzuna's "contract" means several job types: let the ad text decide (a UK "contract
+   outside IR35" job passed the full-time filter at 83).
 5. [ ] Location: facts decided per region (region names in the town list), so a condition can
    rule out all of Saxony except the towns that fit; Radeberg and Dresden out. Real check with
    the owner's sentence.

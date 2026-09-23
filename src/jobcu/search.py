@@ -281,7 +281,8 @@ def run_search(run: SearchRun) -> None:
     checkpoint()
 
     run.update("profile", "running")
-    profile, reused = read_profile_reusing(client, cv_text, cover_letter_text)
+    profile, reused = read_profile_reusing(client, cv_text, cover_letter_text,
+                                           run.form.about_you)
     run.set_result("profile", profile.model_dump())
     detail = profile.current_or_last_role or profile.field
     run.update("profile", "done", f"{detail} (documents unchanged, read again not needed)"

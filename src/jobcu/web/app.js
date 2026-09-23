@@ -709,7 +709,9 @@ function setUpDocumentActions() {
       }
       setStatus($("search-form-status"), "", "Reading your documents. This can take up to a minute…");
       try {
-        const preview = await api("/api/profile/preview", { method: "POST" });
+        const preview = await api("/api/profile/preview", {
+          method: "POST", body: { about_you: $("about-you").value },
+        });
         if (preview.error) {
           setStatus($("search-form-status"), "problem", preview.error);
           return;
@@ -741,6 +743,7 @@ let pollTimer = null;
 async function loadSearchForm() {
   const form = await api("/api/search/form");
   $("location-text").value = form.location_text;
+  $("about-you").value = form.about_you || "";
   $("posted-within").value = String(form.posted_within_hours);
   $("exclude-remote").checked = form.exclude_remote;
   $("job-types").replaceChildren(
@@ -765,6 +768,7 @@ async function loadSearchForm() {
 function readSearchForm() {
   return {
     location_text: $("location-text").value,
+    about_you: $("about-you").value,
     posted_within_hours: Number($("posted-within").value),
     job_types: [...document.querySelectorAll('input[name="job-type"]:checked')].map((i) => i.value),
     exclude_remote: $("exclude-remote").checked,
@@ -1015,9 +1019,21 @@ function renderCard(card) {
             : `${what} (AI estimate — please check)`;
     checks.append(el("span", { class: statusClass, text: label }));
   }
+  for (const note of card.score_notes || []) {
+    checks.append(el("span", { class: "check-estimate", text: note }));
+  }
   if (card.summary_only && card.score !== null) {
     checks.append(el("span", { class: "check-estimate", text: "Scored from a short summary of the ad" }));
   }
+
+  // A clear blocker holds the score below what the parts add up to (scoring.py).
+  const limits = card.limits || [];
+  const limit = limits.length && card.parts
+    ? el("p", { class: "job-limit", text:
+        `Limited to ${limits[0].at} (the parts add up to ` +
+        `${Object.values(card.parts).reduce((a, b) => a + b, 0)}): ` +
+        limits.map((l) => l.why).join(" · ") })
+    : null;
 
   const link = safeUrl(card.main_link.url);
   const actions = el(
@@ -1060,21 +1076,27 @@ function renderCard(card) {
       document.createTextNode(card.score === null ? "–" : String(card.score)),
       el("small", { text: card.score === null ? "not scored" : "match" }),
     ),
-    title,
-    el("p", { class: "job-company", text: card.company || "Company not stated" }),
-    el("p", { class: "job-meta", text: meta }),
-    card.reasons.length ? el("p", { class: "job-reasons", text: card.reasons.join(" · ") }) : null,
-    parts,
-    checks.childNodes.length ? checks : null,
-    actions,
+    el(
+      "div",
+      { class: "job-body" },
+      title,
+      el("p", { class: "job-company", text: card.company || "Company not stated" }),
+      el("p", { class: "job-meta", text: meta }),
+      card.reasons.length ? el("p", { class: "job-reasons", text: card.reasons.join(" · ") }) : null,
+      parts,
+      limit,
+      checks.childNodes.length ? checks : null,
+      actions,
+    ),
   );
 }
 
 function scoreTooltip(card) {
   if (!card.parts) return "Not scored";
-  return SCORE_PARTS.filter(([key]) => card.parts[key] !== undefined)
-    .map(([key, label, most]) => `${label}: ${card.parts[key]} of ${most}`)
-    .join("\n");
+  const lines = SCORE_PARTS.filter(([key]) => card.parts[key] !== undefined)
+    .map(([key, label, most]) => `${label}: ${card.parts[key]} of ${most}`);
+  if ((card.limits || []).length) lines.push(`Limited to ${card.limits[0].at}`);
+  return lines.join("\n");
 }
 
 function stateButton(card, name, label) {

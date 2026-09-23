@@ -44,10 +44,13 @@ class FakeAI(ProviderAdapter):
             answer = {"clearly_unrelated": ids, "places": []}
         elif name == "ScoringAnswer":
             answer = {"scores": [
-                {"job_id": job_id, "role_and_skills": 35, "seniority": 18, "languages": 15,
+                {"job_id": job_id, "ad_language": "English", "languages_asked": [],
+                 "years_required": None, "doctorate": "not_required",
+                 "citizenship_or_clearance": "no_such_requirement",
+                 "citizenship_or_clearance_words": "", "role_and_skills": 35, "seniority": 18,
                  "hard_requirements": 15, "location_and_preferences": 9,
                  "reasons": ["Strong match"], "job_type": "full_time_permanent",
-                 "work_mode": "on_site", "fully_remote": False, "required_languages": []}
+                 "work_mode": "on_site", "fully_remote": False}
                 for job_id in re.findall(r"^JOB (J\d+)", prompt, re.MULTILINE)
             ]}
         else:

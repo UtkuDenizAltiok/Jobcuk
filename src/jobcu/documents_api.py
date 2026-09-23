@@ -5,6 +5,7 @@ from dataclasses import asdict
 from typing import Annotated
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
+from pydantic import BaseModel, Field
 
 from jobcu import documents
 from jobcu.ai.base import AIError
@@ -57,14 +58,19 @@ def delete_document(kind: str) -> dict:
     return {"deleted": True}
 
 
+class PreviewRequest(BaseModel):
+    about_you: str = Field(default="", max_length=500)
+
+
 @router.post("/profile/preview")
-def preview_profile() -> dict:
-    """Read the documents now and show the profile. Nothing is stored."""
+def preview_profile(body: PreviewRequest | None = None) -> dict:
+    """Read the documents (and the person's note, as typed) now and show the profile."""
     try:
         cv_text = documents.read_text("cv")
         cover_letter_text = documents.read_text("cover_letter")
         client = AIClient(load_settings(), KeyStore(), usage_log=UsageLog())
-        profile, _reused = read_profile_reusing(client, cv_text, cover_letter_text)
+        profile, _reused = read_profile_reusing(client, cv_text, cover_letter_text,
+                                                body.about_you if body else "")
     except DocumentError as exc:
         return {"profile": None, "error": str(exc)}
     except AIError as exc:

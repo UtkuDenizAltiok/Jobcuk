@@ -132,3 +132,10 @@ def test_adzuna_pages_stop_after_repeated_refusals_or_a_robot_check():
     robot_ctx = context(lambda request: httpx.Response(403, text="Please solve the CAPTCHA"))
     robot.load_details(adzuna_job(), robot_ctx)
     assert robot.pages_refused
+
+    # Amazon CloudFront's firewall answer (seen live, 2026-09-23) is a block: stop at once.
+    firewall = AdzunaSource()
+    firewall_ctx = context(lambda request: httpx.Response(
+        403, text="<H1>403 ERROR</H1> The request could not be satisfied. Request blocked."))
+    firewall.load_details(adzuna_job(), firewall_ctx)
+    assert firewall.pages_refused

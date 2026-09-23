@@ -126,15 +126,18 @@ def test_preview_returns_the_profile(client, monkeypatch):
     documents.save_upload("cover_letter", "letter.txt", b"I enjoy hardware design work. " * 5)
     seen = {}
 
-    def fake_read_profile(ai_client, cv_text, letter_text):
-        seen["texts"] = (cv_text, letter_text)
+    def fake_read_profile(ai_client, cv_text, letter_text, about_you):
+        seen["texts"] = (cv_text, letter_text, about_you)
         return Profile.model_validate(PROFILE), False
 
     monkeypatch.setattr("jobcu.documents_api.read_profile_reusing", fake_read_profile)
     data = client.post("/api/profile/preview", headers=HEADERS).json()
     assert data["error"] is None
     assert data["profile"]["seniority"] == "mid"
-    assert "embedded systems" in seen["texts"][0]
+    assert "embedded systems" in seen["texts"][0] and seen["texts"][2] == ""
+    # The note is used as typed, before any search saved it.
+    client.post("/api/profile/preview", headers=HEADERS, json={"about_you": "Irish citizen"})
+    assert seen["texts"][2] == "Irish citizen"
 
 
 def test_unchanged_documents_are_not_read_again(settings):
@@ -151,3 +154,32 @@ def test_unchanged_documents_are_not_read_again(settings):
     settings.ai.reasoning_model = "another-model"
     read_profile_reusing(AIClient(settings, adapter=adapter), "CV TEXT", "LETTER TEXT")
     assert len(adapter.calls) == 3
+
+
+def test_the_persons_note_is_read_with_the_documents_and_changes_the_profile(settings):
+    adapter = RecordingAdapter()
+    client = AIClient(settings, adapter=adapter)
+    read_profile_reusing(client, "CV TEXT", "LETTER TEXT")
+    assert "NOTE" not in adapter.calls[0]["prompt"]
+    read_profile_reusing(client, "CV TEXT", "LETTER TEXT", "  Irish citizen  ")
+    assert len(adapter.calls) == 2
+    assert "<<<NOTE\nIrish citizen\nNOTE>>>" in adapter.calls[1]["prompt"]
+    assert "the note explicitly state" in adapter.calls[1]["system"]
+    _, reused = read_profile_reusing(client, "CV TEXT", "LETTER TEXT", "Irish citizen")
+    assert reused and len(adapter.calls) == 2
+
+
+def test_the_note_is_kept_with_the_search_form(client, monkeypatch):
+    monkeypatch.setattr("jobcu.search.manager.start", lambda form: _Started(form))
+    form = {"location_text": "", "about_you": "Irish citizen", "posted_within_hours": 24,
+            "job_types": ["full_time_permanent"], "exclude_remote": False}
+    assert client.post("/api/search", headers=HEADERS, json=form).status_code == 200
+    assert client.get("/api/search/form").json()["about_you"] == "Irish citizen"
+
+
+class _Started:
+    def __init__(self, form):
+        self.form = form
+
+    def snapshot(self):
+        return {"form": self.form.model_dump()}
