@@ -19,7 +19,18 @@ Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is buil
 
 ### In progress
 
-Nothing.
+**What search 7 showed** (2026-09-23; the owner: scores need to be explainable, and left-out jobs
+shouldn't say "couldn't be checked").
+- [ ] Google Maps: 297 route elements on 2026-09-22 plus 37 in search 7 passed the 320-a-day
+      quota, so travel times fell back to AI estimates. Google's day resets at midnight Pacific
+      (09:00 in Germany). Raise the daily quota to 450, measure the 2 nearest reference places
+      instead of 3, and say plainly that the daily limit is used up.
+- [ ] Adzuna answered 503: one failing query must leave the source partial, not failed (only
+      663 ads were collected).
+- [ ] A note is shown once per search, not once per step that made it.
+- [ ] Cards show how the score adds up (the five rubric parts), and a job left out by a condition
+      shows only what ruled it out.
+- [ ] Tests, records, guide; then the owner runs a search again.
 
 ### Verify before relying on
 
