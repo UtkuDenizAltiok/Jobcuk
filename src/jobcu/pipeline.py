@@ -176,7 +176,7 @@ def build_card(
     main = group.main
     best = group.best_description_copy
     stated_types = sorted({t for c in group.copies for t in c.job_types})
-    job_types = stated_types or ([scored["job_type"]] if scored and scored["job_type"] else [])
+    job_types = job_types_of(group, scored)
     work_mode = next((c.work_mode for c in group.copies if c.work_mode), None) or (
         scored or {}
     ).get("work_mode")
@@ -256,7 +256,7 @@ def build_card(
         "country": country,
         "work_mode": work_mode,
         "job_types": job_types,
-        "job_types_from_ad_text": not stated_types and bool(job_types),
+        "job_types_from_ad_text": job_types != stated_types and bool(job_types),
         "posted_at": group.posted_at.isoformat() if group.posted_at else None,
         "date_precision": group.date_precision,
         "date_known": freshness(group.posted_at, group.date_precision, start) != "unknown",
@@ -274,6 +274,17 @@ def build_card(
         "salary": best.salary_text or main.salary_text,
         "location_checks": checks,
     }
+
+
+def job_types_of(group: JobGroup, scored: dict | None) -> list[str]:
+    """The job's types: what its job sites say, unless they leave it open between several
+    ("contract" on Adzuna can be fixed-term, freelance or part-time) and the ad text says which
+    one it is. When no site says, the ad text decides alone."""
+    stated = sorted({t for c in group.copies for t in c.job_types})
+    read = (scored or {}).get("job_type")
+    if read and (not stated or (len(stated) > 1 and read in stated)):
+        return [read]
+    return stated
 
 
 def _checked_by(condition, measured_by: str | None = None) -> str:

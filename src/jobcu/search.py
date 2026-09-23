@@ -15,7 +15,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from typing import Literal
 
-from jobcu import db, documents, jobplace, jobstore, pipeline, quality, travel
+from jobcu import db, documents, jobplace, jobstore, pipeline, quality, scoring, travel
 from jobcu import pool as search_pool
 from jobcu.ai.base import AIError
 from jobcu.ai.client import AIClient
@@ -35,7 +35,6 @@ from jobcu.location import (
 )
 from jobcu.profile import Profile, read_profile_reusing
 from jobcu.relevance import quick_pass
-from jobcu.scoring import score_groups
 from jobcu.settings import SearchForm, load_settings
 from jobcu.sources.base import JobQuery
 from jobcu.sources.http import PoliteClient
@@ -54,7 +53,7 @@ STEPS: list[tuple[str, str]] = [
     ("filtering", "Removing duplicates and jobs that don't fit"),
     ("details", "Reading the full job ads"),
     ("scoring", "Scoring jobs"),
-    ("places", "Finding where the best jobs are"),
+    ("places", "Checking the best jobs online"),
 ]
 # Applying corrected conditions to the jobs a search already found (HANDOVER section 6, "Edit").
 REAPPLY_STEPS: list[tuple[str, str]] = [
@@ -62,7 +61,7 @@ REAPPLY_STEPS: list[tuple[str, str]] = [
     ("filtering", "Applying your conditions to the jobs found"),
     ("details", "Reading the full job ads"),
     ("scoring", "Scoring jobs that came back in"),
-    ("places", "Finding where the best jobs are"),
+    ("places", "Checking the best jobs online"),
 ]
 
 # How long a search waits for an answer to a question (e.g. the scoring limit) before
@@ -469,7 +468,8 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
         def progress(done, total, base=position):
             run.update("scoring", "running", f"{base + done} of {len(order)} jobs")
 
-        scored_now.update(score_groups(client, profile, plan, groups, chunk, on_progress=progress))
+        scored_now.update(scoring.score_groups(client, profile, plan, groups, chunk,
+                                                   on_progress=progress))
         position += len(chunk)
         checkpoint()
     for index, result in scored_now.items():
@@ -479,15 +479,29 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
                "Nothing new to score" if nothing_new else f"{len(scored_now)} jobs scored")
     checkpoint()
 
-    # The best jobs whose town nobody gave: the person's AI finds their ads online, and the
-    # conditions about places then decide about them too.
+    # The best jobs whose town nobody gave, and those near the top scored from a short summary:
+    # the person's AI finds their ads online. The conditions about places then decide about
+    # them too, and the rules for languages and experience are applied to the full ad.
     run.update("places", "running")
-    worth_it = sorted(
-        (i for i in candidates if jobplace.needs_looking_up(groups[i])
-         and (job_pool.jobs[i].scored or {}).get("score", 0) >= jobplace.MIN_SCORE),
-        key=lambda i: -job_pool.jobs[i].scored["score"])
-    found = jobplace.find_online(client, groups, worth_it) if worth_it else 0
-    placed = [i for i in worth_it if groups[i].place_from_web]
+    need_town = [i for i in candidates if jobplace.needs_looking_up(groups[i])
+                 and (job_pool.jobs[i].scored or {}).get("score", 0) >= jobplace.MIN_SCORE]
+    need_requirements = [i for i in candidates
+                         if jobplace.needs_requirements(groups[i], job_pool.jobs[i].scored)]
+    worth_it = sorted(set(need_town) | set(need_requirements),
+                      key=lambda i: -job_pool.jobs[i].scored["score"])
+    looked_up = (jobplace.find_online(client, groups, worth_it) if worth_it
+                 else jobplace.LookedUp())
+    for index in looked_up.asked:
+        scored = job_pool.jobs[index].scored
+        found = looked_up.requirements.get(index)
+        if scored and "evidence" in scored:
+            # A full ad Jobcu already read says more than what the AI found about it online.
+            summary = not groups[index].best_description_copy.description_is_complete
+            if found is not None and summary:
+                scored = scoring.with_ad_read_online(scored, profile, found.languages,
+                                                     found.years_required)
+            job_pool.jobs[index].scored = {**scored, "read_online": True}
+    placed = [i for i in need_town if groups[i].place_from_web]
     fails = [i for i in placed if fails_a_condition(groups[i], at_once)]
     if measured and placed:
         in_reach = [i for i in placed if i not in fails]
@@ -496,8 +510,14 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
         fails += [i for i in in_reach if fails_a_condition(groups[i], measured)]
     ruled_out = sorted([*ruled_out, *fails])
     candidates = [i for i in candidates if i not in set(fails)]
-    run.update("places", "done", f"Found online for {found} of {len(worth_it)} jobs"
-               if worth_it else "Every job worth showing has a known town")
+    found_online = []
+    if need_town:
+        found_online.append(f"the town of {looked_up.towns_found} of {len(need_town)} jobs")
+    if need_requirements:
+        read = sum(1 for i in need_requirements if i in looked_up.requirements)
+        found_online.append(f"the requirements of {read} of {len(need_requirements)} jobs")
+    run.update("places", "done", "Found online: " + ", ".join(found_online)
+               if found_online else "Nothing needed looking up")
 
     # Facts only the ad text revealed can still rule a job out.
     left_out = Counter(job_pool.left_out)
@@ -506,13 +526,11 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
     shown: list[int] = []
     for index in candidates:
         result = job_pool.jobs[index].scored
-        stated_types = any(copy.job_types for copy in groups[index].copies)
+        types = pipeline.job_types_of(groups[index], result)
         if result and form.exclude_remote and result["fully_remote"]:
             left_out["remote_text"] += 1
-        elif (
-            result and not stated_types and result["job_type"]
-            and result["job_type"] not in form.job_types
-        ):
+        elif types and not set(types) & set(form.job_types):
+            # The rules above let it through; the ad text says it's a type not ticked.
             left_out["job_type_text"] += 1
         else:
             shown.append(index)

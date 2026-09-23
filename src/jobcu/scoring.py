@@ -68,7 +68,12 @@ class LanguageAsked(BaseModel):
     language: str = Field(description="The language's name in English, e.g. 'German'")
     level: Level
     must_have: bool
-    as_written: str = Field(description="The ad's own words, at most 8 words")
+
+
+# What the AI read in an ad, kept with the score so the rules can be applied again when the full
+# ad is found online (jobplace.py).
+EVIDENCE = ("ad_language", "languages_asked", "years_required", "doctorate",
+            "citizenship_or_clearance", "citizenship_or_clearance_words")
 
 
 class JobScore(BaseModel):
@@ -112,7 +117,6 @@ sehr gute, sichere: B2. Fluent, business fluent, excellent, fließend, verhandlu
 Native, mother tongue, Muttersprache: C2. Asked for without a level: B2. Use not_needed when \
 the ad says the language isn't needed ("no German required", "our working language is English").
   must_have: false when the ad calls the language a plus, an advantage, desirable or nice to have.
-  as_written: the ad's own words, at most 8 words.
   Leave the list empty when the ad asks for no language. Don't list a language only because the \
 ad is written in it.
 - years_required: the least professional experience the ad requires, in years: the lower end \
@@ -215,30 +219,54 @@ def score_groups(
 
 def finish(score: JobScore, profile: Profile) -> dict:
     """The parts, the limits and the total, worked out from the AI's answer."""
-    language = judge_languages(score, profile)
-    parts = {
-        name: language.points if name == "languages"
-        else max(0, min(getattr(score, name), most))
-        for name, most in PARTS.items()
-    }
-    limits = sorted([*language.limits, *other_limits(score, profile)], key=lambda x: x["at"])
-    total = sum(parts.values())
-    reasons = [r.strip() for r in score.reasons if r.strip()][:3]
-    return {
-        "score": min([total, *(limit["at"] for limit in limits)]),
+    parts = {name: max(0, min(getattr(score, name), most))
+             for name, most in PARTS.items() if name != "languages"}
+    result = {
         "parts": parts,
-        # Why the total is lower than the parts add up to, lowest limit first.
-        "limits": limits,
-        "notes": language.notes,
-        "reasons": reasons,
+        "reasons": [r.strip() for r in score.reasons if r.strip()][:3],
         "job_type": score.job_type if score.job_type in JOB_TYPES else None,
         "work_mode": None if score.work_mode == "unclear" else score.work_mode,
         "fully_remote": score.fully_remote,
+        "evidence": score.model_dump(include=set(EVIDENCE)),
+    }
+    return judge(result, profile)
+
+
+def judge(result: dict, profile: Profile, note: str | None = None) -> dict:
+    """Works out the language part, the limits and the total from the evidence kept in a result.
+    Used after scoring, and again when the full ad was read online (then `note` says so)."""
+    score = JobScore.model_construct(**_full_evidence(result["evidence"]))
+    language = judge_languages(score, profile)
+    parts = {name: language.points if name == "languages" else result["parts"][name]
+             for name in PARTS}
+    limits = sorted([*language.limits, *other_limits(score, profile)], key=lambda x: x["at"])
+    return {
+        **result,
+        "score": min([sum(parts.values()), *(limit["at"] for limit in limits)]),
+        "parts": parts,
+        # Why the total is lower than the parts add up to, lowest limit first.
+        "limits": limits,
+        "notes": ([note] if note else []) + language.notes,
         "required_languages": [
             f"{asked.language} {asked.level}" + ("" if asked.must_have else " (a plus)")
             for asked in score.languages_asked if asked.level != "not_needed"
         ],
     }
+
+
+def with_ad_read_online(result: dict, profile: Profile, languages: list[LanguageAsked],
+                        years_required: float | None) -> dict:
+    """The score again, with what the full ad found online says about languages and years."""
+    evidence = {**result["evidence"], "languages_asked": [a.model_dump() for a in languages]}
+    if years_required is not None:
+        evidence["years_required"] = years_required
+    return judge({**result, "evidence": evidence}, profile,
+                 note="Languages and experience read from the full ad online")
+
+
+def _full_evidence(evidence: dict) -> dict:
+    return {**evidence, "languages_asked": [
+        LanguageAsked.model_validate(asked) for asked in evidence.get("languages_asked", [])]}
 
 
 @dataclass

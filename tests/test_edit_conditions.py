@@ -393,7 +393,7 @@ def test_the_town_of_a_good_job_is_found_online_and_the_conditions_decide(condit
     assert ai.looked_up == [["PCB Designer"]]
     assert titles(jobs["cards"]) == ["Hardware Engineer"]
     assert titles(jobs["ruled_out_by_conditions"]) == ["Electronics Engineer", "PCB Designer"]
-    assert result["steps"][-1]["detail"] == "Found online for 1 of 1 jobs"
+    assert result["steps"][-1]["detail"] == "Found online: the town of 1 of 1 jobs"
 
     # Switched off: it comes back, labelled, and nothing is looked up again.
     manager.reapply(run.id, [ConditionEdit(text="only big cities", original=0, use=False)])

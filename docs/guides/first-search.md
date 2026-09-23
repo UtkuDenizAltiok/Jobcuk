@@ -50,6 +50,9 @@ or a language level. Without your citizenship, Jobcu never assumes one.
 - **"(from the ad text)"** or **"(found online)"** after a town: the job site didn't say where the
   job is, so Jobcu read the town from the ad, or your AI found the ad online (for the best jobs).
   If no town can be found, the card says so and the job stays in your list.
+- **"Scored from a short summary of the ad"**: the job site didn't let Jobcu read the whole ad.
+  For the best of these jobs your AI looks the full ad up online and applies the rules above to
+  it; the card then says **"Languages and experience read from the full ad online"**.
 - **Open job** opens the ad. **Save**, **Applied** and **Not interested** keep your list tidy;
   "Not interested" hides a job for good (**Show hidden** undoes it).
 - **Search details:** which sites were searched and why some jobs were left out.

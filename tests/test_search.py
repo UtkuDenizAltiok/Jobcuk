@@ -219,3 +219,56 @@ def test_unknown_job_state_is_refused():
     client = TestClient(create_app(), base_url="http://127.0.0.1:8765")
     response = client.post("/api/jobs/999/state", json={"saved": True}, headers=HEADERS)
     assert response.status_code == 404
+
+
+class SummarySource(FakeSource):
+    """A job site whose full ads can't be read, like Adzuna when its pages refuse Jobcu."""
+
+    def load_details(self, job, ctx):
+        return job
+
+
+class ResearchingAI(FakeAI):
+    """Speaks A2 German, and finds the full ads online: they ask for good German."""
+
+    can_search_the_web = True
+
+    def __init__(self):
+        super().__init__()
+        self.looked_up: list[str] = []
+
+    def complete_json(self, **request):
+        if request["schema_name"] == "Profile":
+            languages = [{"language": "English", "level_as_written": "fluent", "cefr": "C1",
+                          "cefr_is_estimate": True},
+                         {"language": "German", "level_as_written": "basic", "cefr": "A2",
+                          "cefr_is_estimate": True}]
+            return RawReply(json.dumps({**PROFILE, "languages": languages}), Usage(10, 5))
+        return super().complete_json(**request)
+
+    def research(self, **request):
+        from jobcu.ai.base import ResearchReply, Source
+
+        ids = re.findall(r"^(J\d+) \|", request["prompt"], re.MULTILINE)
+        self.looked_up += ids
+        answer = "\n".join(f"{job_id} | Berlin | German B2 must; English B2 must | 6"
+                           for job_id in ids)
+        return ResearchReply(answer, [Source("https://jobs.test/ad", "Board")],
+                             Usage(10, 5, web_searches=len(ids)))
+
+
+def test_summaries_near_the_top_are_read_online_and_the_rules_applied(ready, monkeypatch):
+    ai = ResearchingAI()
+    monkeypatch.setattr("jobcu.ai.client.AIClient.adapter", lambda self: ai)
+    monkeypatch.setattr("jobcu.pipeline.all_sources", lambda: [SummarySource()])
+    manager = search.SearchManager()
+    manager.start(SearchForm(location_text="Germany"))
+    result = wait_until_done(manager)
+    assert result["status"] == "finished", result["error"]
+    assert len(ai.looked_up) == 2  # the two related jobs, both scored from a summary
+    assert result["steps"][-1]["detail"] == "Found online: the requirements of 2 of 2 jobs"
+    card = result["result"]["jobs"]["cards"][0]
+    assert card["summary_only"] and card["score"] == 65
+    assert card["limits"] == [{"at": 65, "why": "German B2 required, you have A2"}]
+    assert card["score_notes"] == ["Languages and experience read from the full ad online"]
+    assert card["required_languages"] == ["German B2", "English B2"]

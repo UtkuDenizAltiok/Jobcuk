@@ -83,7 +83,7 @@ SPEAKER = PROFILE.model_copy(update={
 
 
 def asked(language, level, must_have=True):
-    return {"language": language, "level": level, "must_have": must_have, "as_written": ""}
+    return {"language": language, "level": level, "must_have": must_have}
 
 
 def scored(profile=SPEAKER, **evidence):
@@ -275,3 +275,44 @@ def test_the_screen_shows_the_same_rubric_parts_as_the_scoring_prompt():
     block = script.split("const SCORE_PARTS = [", 1)[1].split("];", 1)[0]
     shown = dict(re.findall(r'\["(\w+)", "[^"]+", (\d+)\]', block))
     assert {key: int(most) for key, most in shown.items()} == PARTS
+
+
+def test_the_full_ad_found_online_replaces_what_the_summary_suggested():
+    from jobcu.scoring import LanguageAsked, with_ad_read_online
+
+    # A German summary with no level: low for languages, no limit.
+    summary = scored(ad_language="German")
+    assert summary["parts"]["languages"] == 5 and summary["limits"] == []
+    # The full ad online asks for good German and 3 years: now limited, and the card says why.
+    online = with_ad_read_online(summary, SPEAKER,
+                                 [LanguageAsked(language="German", level="B2", must_have=True)],
+                                 years_required=3)
+    assert online["score"] == 65 and online["parts"]["languages"] == 0
+    assert online["notes"] == ["Languages and experience read from the full ad online"]
+    assert online["evidence"]["years_required"] == 3
+    # Or it says English is the working language: the summary's guess goes away.
+    english = with_ad_read_online(
+        summary, SPEAKER, [LanguageAsked(language="German", level="not_needed", must_have=True)],
+        years_required=None)
+    assert english["parts"]["languages"] == 15 and english["score"] == summary["score"] + 10
+
+
+def test_the_ad_text_decides_the_job_type_when_the_job_site_leaves_it_open():
+    from jobcu.pipeline import job_types_of
+
+    def group_with(types):
+        job = FoundJob(source="s", source_job_id="1", url="https://x", title="Engineer",
+                       job_types=types)
+        return group_duplicates([job], {"s": "job_board"})[0]
+
+    contract = ["fixed_term", "freelance_or_contract", "part_time"]  # Adzuna's "contract"
+    assert job_types_of(group_with(contract), {"job_type": "freelance_or_contract"}) == [
+        "freelance_or_contract"]
+    assert job_types_of(group_with(contract), None) == sorted(contract)
+    # One clear type from the site stays; a reading the site contradicts doesn't count.
+    assert job_types_of(group_with(["full_time_permanent"]), {"job_type": "part_time"}) == [
+        "full_time_permanent"]
+    assert job_types_of(group_with(contract), {"job_type": "full_time_permanent"}) == sorted(
+        contract)
+    assert job_types_of(group_with([]), {"job_type": "part_time"}) == ["part_time"]
+    assert job_types_of(group_with([]), {"job_type": None}) == []

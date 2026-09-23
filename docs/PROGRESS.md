@@ -43,9 +43,9 @@ rules for blockers are in DECISIONS.md (2026-09-23 evening). Steps:
 4. [x] Real check: re-score search 8's jobs with the owner's AI on a copy of his data folder,
    compare the scores before and after (DECISIONS.md). Adzuna's firewall now blocks its pages,
    so 68 German ads stayed summaries at up to 85 ("written in German, no level" rule).
-4b. [ ] Keep the evidence with each score, and let the online look-up (jobplace.py) also read
+4b. [x] Keep the evidence with each score, and let the online look-up (jobplace.py) also read
    the language, years and blockers of the best summary-only jobs, then re-apply the rules.
-4c. [ ] Adzuna's "contract" means several job types: let the ad text decide (a UK "contract
+4c. [x] Adzuna's "contract" means several job types: let the ad text decide (a UK "contract
    outside IR35" job passed the full-time filter at 83).
 5. [ ] Location: facts decided per region (region names in the town list), so a condition can
    rule out all of Saxony except the towns that fit; Radeberg and Dresden out. Real check with
