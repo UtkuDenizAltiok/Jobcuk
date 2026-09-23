@@ -56,8 +56,9 @@ MODE_WORDS = {"transit": "by public transport", "drive": "by car", "walk": "on f
 FASTEST_KMH = {"transit": 220, "drive": 120, "bicycle": 25, "walk": 7}
 # A job this close to a reference town's centre is in that town.
 IN_TOWN_KM = 3.0
-# How many of the nearest reference places are asked about for each job.
-NEAREST = 3
+# How many of the nearest reference places are asked about for each job. The nearest by straight
+# line is almost always the fastest; a second keeps a margin without doubling Google's use.
+NEAREST = 2
 ESTIMATE_BATCH = 30
 MEMORY_DAYS = 30
 MAPS, ESTIMATE = "Google Maps", "AI estimate"
@@ -225,6 +226,12 @@ class GoogleMaps:
         if response.status_code in (401, 403):
             raise MapsError("Google Maps didn't accept the key. Check it in Settings.")
         if response.status_code == 429:
+            problem = _problem(response)
+            log.warning("Google Maps answered 429: %s", problem)
+            if "per day" in problem.lower() or "daily" in problem.lower():
+                raise MapsError(
+                    "Google Maps' daily limit is used up. It resets at midnight in California "
+                    "(about 9 in the morning in central Europe).")
             raise MapsError("Google Maps asked Jobcu to slow down for now.")
         if response.status_code != 200:
             # Google says what it didn't like; the key is only ever in a header, never in this.

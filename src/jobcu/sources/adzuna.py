@@ -41,9 +41,15 @@ KEY_APP_KEY = "adzuna_app_key"
 COUNTRIES_COVERED = frozenset({"AT", "BE", "CH", "DE", "ES", "FR", "GB", "IT", "NL", "PL"})
 PAGE_SIZE = 50
 WORDS_PER_REQUEST = 12
+# Adzuna sometimes answers 5xx for one query; only a run of them means Adzuna is really down.
+MAX_FAILED_SEARCHES = 3
 # A little below Adzuna's limits (250 a day, 2,500 a month), as a safety margin. How many one
 # search may use is worked out from what is left this month (see budget.share_of_month).
 LIMITS = Limits(per_day=240, per_month=2400)
+
+
+class _OneSearchFailed(Exception):
+    """This search word couldn't be asked for; the others still can."""
 
 
 class AdzunaSource(JobSource):
@@ -120,7 +126,7 @@ class AdzunaSource(JobSource):
         if not locations:
             return
         seen: set[str] = set()
-        skipped = 0
+        skipped = failed = 0
         try:
             for number_done, (country, place) in enumerate(locations):
                 # Each country or place gets a fair share of what is left, so the first can't use
@@ -139,8 +145,15 @@ class AdzunaSource(JobSource):
                     # A fair part of what is left: precise searches need one page and leave
                     # the rest to the searches after them.
                     pages = max(1, left // (len(searches) - number))
-                    yield from self._run(search, country, place, credentials, start,
-                                         query, budget, ctx, seen, pages)
+                    try:
+                        yield from self._run(search, country, place, credentials, start,
+                                             query, budget, ctx, seen, pages)
+                    except _OneSearchFailed as exc:
+                        failed += 1
+                        if failed > MAX_FAILED_SEARCHES:
+                            raise SourceError(str(exc)) from exc
+                        ctx.report.status = "partial"
+                        ctx.report.message = str(exc)
         except BudgetExhausted as exc:
             ctx.report.status = "partial"
             ctx.report.message = exc.message
@@ -176,7 +189,11 @@ class AdzunaSource(JobSource):
             if response.status_code == 429:
                 raise BudgetExhausted("Adzuna: its usage limit is reached for now.")
             if response.status_code != 200:
-                raise SourceError(f"Adzuna answered with a problem (code {response.status_code}).")
+                # One search word failing (Adzuna answered 503 on 2026-09-23) must not cost the
+                # whole source: the caller tries the next one.
+                raise _OneSearchFailed(
+                    f"Adzuna answered with a problem (code {response.status_code}), so some "
+                    "search words were left out.")
             results = response.json().get("results") or []
             for item in results:
                 job = to_found_job(item, country)

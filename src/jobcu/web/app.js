@@ -874,6 +874,15 @@ async function pollSearch() {
 // ---------------------------------------------------------------------------
 
 const view = { list: "results", sort: "score", showHidden: false, marked: [] };
+// The scoring rubric's parts and their maximum points (scoring.py; a test keeps them in step).
+const SCORE_PARTS = [
+  ["role_and_skills", "Role & skills", 40],
+  ["seniority", "Seniority", 20],
+  ["languages", "Languages", 15],
+  ["hard_requirements", "Requirements", 15],
+  ["location_and_preferences", "Location & wishes", 10],
+];
+
 const WORK_MODES = { remote: "Remote", hybrid: "Hybrid", on_site: "On-site" };
 
 function renderResults() {
@@ -975,6 +984,13 @@ function renderCard(card) {
   const meta = [where, WORK_MODES[card.work_mode], types, postedLabel(card), card.salary]
     .filter(Boolean).join(" · ");
 
+  // How the score adds up, so two jobs a point apart can be told apart (scoring.py's rubric).
+  const parts = card.parts
+    ? el("p", { class: "muted job-parts", text: SCORE_PARTS
+        .filter(([key]) => card.parts[key] !== undefined)
+        .map(([key, label, most]) => `${label} ${card.parts[key]}/${most}`).join(" · ") })
+    : null;
+
   const checks = el("p", { class: "job-checks" });
   for (const check of card.location_checks) {
     const statusClass = {
@@ -1048,6 +1064,7 @@ function renderCard(card) {
     el("p", { class: "job-company", text: card.company || "Company not stated" }),
     el("p", { class: "job-meta", text: meta }),
     card.reasons.length ? el("p", { class: "job-reasons", text: card.reasons.join(" · ") }) : null,
+    parts,
     checks.childNodes.length ? checks : null,
     actions,
   );
@@ -1055,14 +1072,9 @@ function renderCard(card) {
 
 function scoreTooltip(card) {
   if (!card.parts) return "Not scored";
-  const names = {
-    role_and_skills: "Role and skills (40)",
-    seniority: "Seniority (20)",
-    languages: "Languages (15)",
-    hard_requirements: "Hard requirements (15)",
-    location_and_preferences: "Location and preferences (10)",
-  };
-  return Object.entries(card.parts).map(([k, v]) => `${names[k]}: ${v}`).join("\n");
+  return SCORE_PARTS.filter(([key]) => card.parts[key] !== undefined)
+    .map(([key, label, most]) => `${label}: ${card.parts[key]} of ${most}`)
+    .join("\n");
 }
 
 function stateButton(card, name, label) {

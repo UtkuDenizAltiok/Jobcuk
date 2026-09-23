@@ -15,30 +15,23 @@ Jobcu works end to end. A search reads the documents with the person's own AI, c
 the rules and the location conditions, and scores what's left. The location box takes any
 condition in the person's own words (sizes, facts the AI looks up per town or per country, travel
 limits to reference places), shows how each was checked, with sources, and can be corrected with
-Edit. Phase 1 waits only on the owner's own real search; most of Phase 2 is built.
+Edit. The owner has run three real searches on his Mac (2026-09-22/23): ranked, deduplicated
+results with reasons, real Google travel times, conditions checked per town, and towns found in
+the ad text or online where the job sites gave none. Phase 1 now waits only on the quality set
+he rates; most of Phase 2 is built.
 
 ### In progress
 
-**What search 7 showed** (2026-09-23; the owner: scores need to be explainable, and left-out jobs
-shouldn't say "couldn't be checked").
-- [ ] Google Maps: 297 route elements on 2026-09-22 plus 37 in search 7 passed the 320-a-day
-      quota, so travel times fell back to AI estimates. Google's day resets at midnight Pacific
-      (09:00 in Germany). Raise the daily quota to 450, measure the 2 nearest reference places
-      instead of 3, and say plainly that the daily limit is used up.
-- [ ] Adzuna answered 503: one failing query must leave the source partial, not failed (only
-      663 ads were collected).
-- [ ] A note is shown once per search, not once per step that made it.
-- [ ] Cards show how the score adds up (the five rubric parts), and a job left out by a condition
-      shows only what ruled it out.
-- [ ] Tests, records, guide; then the owner runs a search again.
+Nothing.
 
 ### Verify before relying on
 
 - **Google Maps inside a real search:** the key test works (Freising → Munich 69 minutes by
   train, door to door) and car trips answer since the fix (Stuttgart → Mannheim 102 min), but
   no full search has used it yet: compare Google's times with the AI's estimates there.
-- **Finding towns online inside a full search:** checked on search 6's jobs on its own (5 of
-  10 found, with real web searches); not yet inside a search, nor with other providers.
+- **Finding towns online:** in search 7 it found 18 of 20, several of them agency ads where the
+  agency's own office would be the wrong answer; the instructions now ask for the place of the
+  work. Check the towns on the next search's cards, and it has never run with another provider.
 - **Precise Adzuna searches inside a full search:** the new search words and Adzuna plan were
   run for Germany on their own (192 ads, 78% related); search 6 (before them) confirmed the
   towns from the ad text, the far-right towns to avoid and Google's car times together.
@@ -115,7 +108,7 @@ shouldn't say "couldn't be checked").
 | Phase | What it delivers | Status |
 |---|---|---|
 | 0. Foundations | Project set-up; Jobcu starts with a double-click | ✅ Done (2026-09-17) |
-| 1. Usable first version | A real search with ranked, deduplicated results and reasons | 🔨 Built; waiting on the owner's real search and the quality set |
+| 1. Usable first version | A real search with ranked, deduplicated results and reasons | 🔨 Real searches work; waiting on the quality set the owner rates |
 | 2. Smart location filter | Understands sentences like "a city by the seaside" | 🔨 Mostly built |
 | 3. Maximum coverage | Many more job sources in every supported country | 🔨 Started |
 | 4. Ready for friends | Complete guides, first-run setup, tested on real Mac and Windows computers | Planned |
@@ -134,8 +127,8 @@ shouldn't say "couldn't be checked").
       date unknown"
 - [ ] A quality set of 30–50 real ads judged by the owner (the Score check screen collects them)
       and a tuned scoring prompt (HANDOVER §13)
-- [ ] **Done when:** the owner runs a real search on his Mac and gets a ranked, deduplicated list
-      with reasons.
+- [x] **Done when:** the owner runs a real search on his Mac and gets a ranked, deduplicated list
+      with reasons (2026-09-22 and 2026-09-23).
 
 ### Phase 2: Smart location filter
 

@@ -26,7 +26,9 @@ saying what work you want works best. **What Jobcu understood** shows how your d
 
 ## 4. Results
 
-- **Score (0–100):** how well a job fits you, with short reasons.
+- **Score (0–100):** how well a job fits you, with short reasons. Under them, the card shows how
+  the score adds up: role & skills (up to 40), seniority (20), languages (15), requirements (15)
+  and location & wishes (10). That's why two jobs can differ by a single point.
 - **New:** not seen in an earlier search.
 - **Understood as:** how Jobcu read where you want to work. If something is wrong, click **Edit**
   to switch a condition off, fix its list of places or its town size, reword it or add one.

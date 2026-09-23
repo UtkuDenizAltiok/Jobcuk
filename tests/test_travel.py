@@ -185,6 +185,20 @@ def test_google_s_own_words_go_to_the_log_when_it_refuses(caplog):
     assert "Google Maps answered 400: Bad field." in caplog.text
 
 
+def test_google_s_daily_limit_is_named_as_such(caplog):
+    def used_up(request):
+        return httpx.Response(429, json=[{"error": {"code": 429, "message":
+            "Quota exceeded for quota metric 'Route Matrix Elements' and limit 'Route matrix "
+            "elements per day' of service 'routes.googleapis.com'."}}])
+
+    http = PoliteClient(min_intervals={}, sleep=lambda s: None,
+                        transport=httpx.MockTransport(used_up))
+    with caplog.at_level("WARNING"), pytest.raises(travel.MapsError, match="daily limit"):
+        travel.GoogleMaps("fake-maps-key", http, now=lambda: NOW).minutes(
+            travel.job_point(group("Freising")), [places.find("Munich", "DE")], "transit")
+    assert "elements per day" in caplog.text
+
+
 def test_clear_cases_need_no_route_look_up():
     condition = near(minutes=10)
     in_munich = group("München", "1")

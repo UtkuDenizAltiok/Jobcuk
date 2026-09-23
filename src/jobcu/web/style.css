@@ -811,6 +811,7 @@ dialog::backdrop {
 
 .job-meta,
 .job-reasons,
+.job-parts,
 .job-checks {
   margin: 0;
   color: var(--text-muted);
@@ -819,6 +820,10 @@ dialog::backdrop {
 
 .job-reasons {
   color: var(--text);
+}
+
+.job-parts {
+  font-size: 0.85rem;
 }
 
 .job-checks {

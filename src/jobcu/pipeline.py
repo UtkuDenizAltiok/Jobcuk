@@ -171,6 +171,7 @@ def build_card(
     possible_duplicate_of: int | None,
     started_at,
     posted_within_hours: int,
+    ruled_out: bool = False,
 ) -> dict:
     main = group.main
     best = group.best_description_copy
@@ -196,7 +197,9 @@ def build_card(
             also_on.append({"source": source_names.get(copy.source, copy.source), "url": copy.url})
     country = main.country or next((c.country for c in group.copies if c.country), None)
     checks = []
-    if country and country in plan.countries:
+    if ruled_out:
+        pass  # the country is fine for these: a condition about places left them out
+    elif country and country in plan.countries:
         checks.append({
             "label": f"In {COUNTRIES[country].name}" if country in COUNTRIES else country,
             "status": "verified",
@@ -212,6 +215,9 @@ def build_card(
         if not condition.filters:
             continue
         answer = condition_fit(condition, group)
+        # A job left out by a condition only shows what left it out.
+        if ruled_out and answer != "no":
+            continue
         if answer == "unknown" and not town_known:
             unanswered += 1
             continue
@@ -222,7 +228,7 @@ def build_card(
             "source": _checked_by(condition, found[1] if found else None),
             "detail": found[0] if found else None,
         })
-    if unanswered:
+    if unanswered and not ruled_out:
         where = next((c.location_text for c in group.copies
                       if c.location_text and not countries_in(c.location_text)), None)
         conditions = "your condition about places" if unanswered == 1 else (

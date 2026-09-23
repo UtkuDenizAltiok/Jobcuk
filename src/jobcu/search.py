@@ -111,8 +111,9 @@ class SearchRun:
             self.result[key] = value
 
     def note(self, message: str) -> None:
+        """Something worth telling the person, once per search however many steps say it."""
         with self._lock:
-            if not self.notes or self.notes[-1] != message:
+            if message not in self.notes:
                 self.notes.append(message)
 
     def ask(self, question: dict) -> bool:
@@ -543,7 +544,7 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
         pipeline.build_card(
             groups[index], job_id=0, is_new=False, state=None, scored=None, plan=plan,
             source_names=names, possible_duplicate_of=None, started_at=started_at,
-            posted_within_hours=form.posted_within_hours,
+            posted_within_hours=form.posted_within_hours, ruled_out=True,
         )
         for index in ruled_out[:MAX_RULED_OUT_SHOWN]
     ]

@@ -233,6 +233,9 @@ def test_corrected_conditions_are_applied_to_the_jobs_already_found(conditions_r
     jobs = first["result"]["jobs"]
     assert titles(jobs["cards"]) == ["Hardware Engineer"]
     assert titles(jobs["ruled_out_by_conditions"]) == ["Electronics Engineer"]
+    # A job a condition left out shows what left it out, and nothing else.
+    (left_out,) = jobs["ruled_out_by_conditions"][0]["location_checks"]
+    assert left_out["status"] == "fails" and left_out["label"].startswith("Towns with at least")
     assert ai.scored_titles == [["Hardware Engineer"]]
     assert sorted(ai.quick_checked[0]) == ["Hardware Engineer", "Nurse"]
 

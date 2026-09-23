@@ -130,6 +130,35 @@ def test_adzuna_passes_place_and_distance():
     assert seen["where"] == "München" and seen["distance"] == "50"
 
 
+def test_one_failing_adzuna_search_leaves_the_others_running():
+    fresh = (NOW - timedelta(hours=2)).isoformat()
+    asked = []
+
+    def handler(request):
+        params = dict(request.url.params)
+        asked.append(params.get("title_only") or params.get("what_phrase"))
+        if params.get("title_only") == "Hardware Engineer":
+            return httpx.Response(503, json={})  # what Adzuna answered on 2026-09-23
+        return httpx.Response(200, json={"results": [adzuna_item(str(len(asked)), fresh)]})
+
+    ctx = context(handler, "adzuna")
+    query = JobQuery(["DE"], [], [term("Hardware Engineer"), term("Hardwareentwickler", "de"),
+                                  term("power electronics", kind="field_or_skill")], 24, NOW)
+    jobs = list(adzuna.AdzunaSource().search(query, ctx))
+    # The failing one is retried politely first, then the others are asked for as usual.
+    assert list(dict.fromkeys(asked)) == ["Hardware Engineer", "Hardwareentwickler",
+                                          "power electronics"]
+    assert len(jobs) == 2 and ctx.report.status == "partial"
+    assert "code 503" in ctx.report.message
+
+
+def test_adzuna_gives_up_when_every_search_fails():
+    ctx = context(lambda request: httpx.Response(503, json={}), "adzuna")
+    terms = [term(f"Title {i}") for i in range(5)]
+    with pytest.raises(SourceError, match="code 503"):
+        list(adzuna.AdzunaSource().search(JobQuery(["DE"], [], terms, 24, NOW), ctx))
+
+
 def test_adzuna_rejected_keys_fail_only_this_source():
     ctx = context(lambda request: httpx.Response(401, json={}), "adzuna")
     query = JobQuery(["GB"], [], [term("Hardware")], 24, NOW)

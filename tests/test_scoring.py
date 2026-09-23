@@ -166,3 +166,15 @@ def test_a_career_site_job_links_to_the_employer_once():
                       posted_within_hours=24)
     assert card["main_link"] == {"source": "Employer's site", "url": "https://careers.example/1"}
     assert card["also_on"] == [{"source": "Board", "url": "https://board.test/9"}]
+
+
+def test_the_screen_shows_the_same_rubric_parts_as_the_scoring_prompt():
+    from pathlib import Path
+
+    import jobcu
+    from jobcu.scoring import PARTS
+
+    script = (Path(jobcu.__file__).parent / "web" / "app.js").read_text(encoding="utf-8")
+    block = script.split("const SCORE_PARTS = [", 1)[1].split("];", 1)[0]
+    shown = dict(re.findall(r'\["(\w+)", "[^"]+", (\d+)\]', block))
+    assert {key: int(most) for key, most in shown.items()} == PARTS

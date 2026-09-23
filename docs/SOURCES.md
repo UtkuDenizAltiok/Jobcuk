@@ -32,6 +32,8 @@ Update this whenever a source changes or something new is learned. Decisions are
   while others load: skip that ad; stop only after 3 refusals in a row or a robot check.
 - Adzuna's website answered 403 to `robots.txt` and its terms page for Jobcu's User-Agent.
 - Adzuna often lists the same job twice under different IDs.
+- **Single queries answer 5xx now and then** (503 on 2026-09-23, after Jobcu's three polite
+  retries). One failing query leaves the source "partial"; three mean Adzuna is really down.
 - **Newer ads without a town (checked 2026-09-22):** in 50 fresh German results, 34 had
   `location.area` `["Deutschland"]`, no coordinates, and a `redirect_url` of the form
   `www.adzuna.de/land/ad/<id>` (not `/details/`); that page answers 403 to Jobcu. Their text
@@ -252,6 +254,11 @@ big city", and only with the user's own key (Settings → Travel times).
   remembered for 30 days in `travel_memory`. The same terms (19.1, 19.2) allow using the answers
   without a Google map, but never with a non-Google map.
 - The key goes only in a request header, never in an address, so it can't end up in a log.
+- **The daily quota is counted in Pacific time (checked 2026-09-23):** searches on the evening
+  of 22 September (297 elements) and at 02:00 on 23 September (37) fell in the same Google day
+  and passed the 320 quota, which answers 429 "Quota exceeded … Route matrix elements per day".
+  The owner's daily quota is now 450 (31 × 450 = 13,950, about $20 above the free 10,000 if
+  Jobcu's own monthly stop ever failed, so still inside his €25).
 - **Car trips take no departure time (checked 2026-09-22):** with `departureTime` and the default
   routing, Google answers 400 "Timestamp cannot be set for TRAFFIC_UNAWARE routing mode". A time
   would need `routingPreference` TRAFFIC_AWARE, which is billed as Pro. Public transport keeps its
