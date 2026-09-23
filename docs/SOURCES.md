@@ -39,6 +39,11 @@ Update this whenever a source changes or something new is learned. Decisions are
   `www.adzuna.de/land/ad/<id>` (not `/details/`); that page answers 403 to Jobcu. Their text
   usually names the place ("am Standort in Wietmarschen-Lohne"), which the quick relevance check
   reads. The other 16 had a full `area` list and coordinates.
+- **The same ad's `www.adzuna.<country>/details/<id>` works (checked 2026-09-23):** 200 with
+  JobPosting JSON-LD and the full text (KLA, 1,958 characters instead of 500), but its
+  `jobLocation` repeats "Deutschland", so the town still comes from the text. Jobcu reads that
+  page for `/land/ad/` links. Before this, three `/land/ad/` refusals in a row stopped all page
+  reading, so from search 4 to search 8 no Adzuna ad was read in full (search 8: 164 of 164).
 - German locations read "Unterhaching, München (Kreis)": the part marked **(Kreis)** is the
   district around a city, not the city, so `places.locate` uses it only when no town is named
   besides it (found in a real test, 2026-09-21: suburbs passed a "1 million people" condition).

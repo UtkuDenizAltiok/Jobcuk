@@ -5,7 +5,7 @@ import httpx
 
 from jobcu.jobposting import find_job_posting
 from jobcu.keystore import KeyStore
-from jobcu.sources.adzuna import AdzunaSource
+from jobcu.sources.adzuna import AdzunaSource, details_page
 from jobcu.sources.base import FoundJob, SourceContext, SourceReport
 from jobcu.sources.http import PoliteClient
 
@@ -57,16 +57,47 @@ def context(handler):
                          lambda message: None)
 
 
-def test_adzuna_full_ad_is_read_from_the_job_page():
+def test_adzuna_full_ad_is_read_from_the_details_page_even_for_landing_links():
+    # Ads without a town link to /land/ad/<id>, which always refuses Jobcu; the same ad's
+    # /details/<id> page carries the full text (checked live, 2026-09-23).
+    asked = []
+
     def handler(request):
+        asked.append(request.url.path)
         if request.url.path.startswith("/land/"):
+            return httpx.Response(403, text="Zugriff verweigert")
+        return httpx.Response(200, text=page(POSTING))
+
+    source = AdzunaSource()
+    ctx = context(handler)
+    for _ in range(4):
+        full = source.load_details(adzuna_job(), ctx)
+    assert full.description_is_complete and "inverters" in full.description
+    assert full.url == "https://www.adzuna.de/land/ad/1"  # the person's link stays as it was
+    assert full.employer_url is None and full.work_mode == "remote"
+    assert set(asked) == {"/details/1"} and not source.pages_refused
+
+
+def test_adzuna_details_page_leading_to_the_employer_makes_that_the_main_link():
+    def handler(request):
+        if request.url.host == "www.adzuna.de":
             return httpx.Response(302, headers={"location": "https://careers.acme.example/42"})
         return httpx.Response(200, text=page(POSTING))
 
-    full = AdzunaSource().load_details(adzuna_job(), context(handler))
-    assert full.description_is_complete and "inverters" in full.description
+    job = FoundJob(**{**adzuna_job().__dict__, "url": "https://www.adzuna.de/details/42?x=1"})
+    full = AdzunaSource().load_details(job, context(handler))
+    assert full.description_is_complete
     assert full.employer_url == "https://careers.acme.example/42"
-    assert full.work_mode == "remote"
+
+
+def test_adzuna_details_page_address():
+    assert details_page("https://www.adzuna.de/land/ad/5894110270?se=a&v=B") == (
+        "https://www.adzuna.de/details/5894110270")
+    assert details_page("https://www.adzuna.co.uk/land/ad/12/") == (
+        "https://www.adzuna.co.uk/details/12")
+    for unchanged in ("https://www.adzuna.de/details/5?utm_medium=api",
+                      "https://example.com/land/ad/5", "https://www.adzuna.de/land/ad/x"):
+        assert details_page(unchanged) == unchanged
 
 
 def test_one_refused_page_is_skipped_but_others_are_still_read():

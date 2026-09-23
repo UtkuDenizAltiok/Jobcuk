@@ -315,3 +315,12 @@ def test_adzuna_budget_shares_what_is_left_of_the_month():
     # Never more than today's own allowance has left.
     assert on("2026-09-20", used_this_month=1000, used_today=230) == 10
     assert on("2026-09-20", used_this_month=1000, used_today=240) == 0
+
+
+def test_adzuna_salary_shows_the_currency_and_a_single_figure_once():
+    item = {**adzuna_item("1", NOW.isoformat()), "salary_min": 75000, "salary_max": 75000,
+            "salary_is_predicted": "0"}
+    assert adzuna.to_found_job(item, "GB").salary_text == "£75,000"
+    item = {**item, "salary_max": 90000.4}
+    assert adzuna.to_found_job(item, "DE").salary_text == "€75,000 – €90,000"
+    assert adzuna.to_found_job({**item, "salary_is_predicted": "1"}, "DE").salary_text is None

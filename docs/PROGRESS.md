@@ -22,7 +22,33 @@ he rates; most of Phase 2 is built.
 
 ### In progress
 
-Nothing.
+**Fixing what search 8 showed (2026-09-23 evening).** The owner: German-required jobs scored
+80–90, too many high scores overall, and Dresden was used although the far-right condition
+should rule it out. Found: Adzuna's full ads were never read since search 4 (its town-less
+`/land/ad/` links always refuse, three refusals stop all page reading), so 120 of 216 cards
+were scored from ~500-character summaries, which scored higher than full ads. The owner's
+rules for blockers are in DECISIONS.md (2026-09-23 evening). Steps:
+
+1. [x] Adzuna: read `/land/ad/<id>` ads through `/details/<id>` (tested live: full text), and
+   never count a link that can't work as a refusal. SOURCES.md.
+2. [ ] Scoring: the AI reads the evidence first (ad language, required languages with CEFR
+   levels, required years, required doctorate, citizenship or clearance); code works out the
+   language points and the owner's limits (language 2+ levels short: 0 and at most 65; ad only
+   in a language the person speaks below B2, no level stated: low, no limit; citizenship or
+   clearance definitely out of reach: 30; required doctorate missing: 50; 5+ more years: 75;
+   8+ more years: 60). Tighter anchors so unknown isn't treated as fine. Cards show the limit
+   and why. DECISIONS.md, guides.
+3. [ ] An optional note about the person (citizenship, work permits) read with the documents,
+   so the citizenship limit can work for anyone. Guides.
+4. [ ] Real check: re-score search 8's jobs with the owner's AI on a copy of his data folder,
+   compare the scores before and after.
+5. [ ] Location: facts decided per region (region names in the town list), so a condition can
+   rule out all of Saxony except the towns that fit; Radeberg and Dresden out. Real check with
+   the owner's sentence.
+6. [ ] Update "Right now", tell the owner what to do next.
+
+Done when: tests pass on GitHub, and the re-scored search 8 has no German-required job above
+65 and no clearly blocked job near the top.
 
 ### Verify before relying on
 

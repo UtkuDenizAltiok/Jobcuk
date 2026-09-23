@@ -19,7 +19,9 @@ Adzuna refuses.
 
 import dataclasses
 import logging
+import re
 from collections.abc import Iterator
+from urllib.parse import urlsplit
 
 import httpx
 
@@ -48,6 +50,11 @@ MAX_FAILED_SEARCHES = 3
 LIMITS = Limits(per_day=240, per_month=2400)
 
 
+_LANDING_PATH = re.compile(r"/land/ad/(\d+)/?")
+# Salaries come in the country's own money.
+_CURRENCIES = {"GB": "£", "CH": "CHF ", "PL": "PLN "}
+
+
 class _OneSearchFailed(Exception):
     """This search word couldn't be asked for; the others still can."""
 
@@ -74,7 +81,7 @@ class AdzunaSource(JobSource):
         if self.pages_refused or not job.url:
             return job
         try:
-            response = ctx.http.get(job.url)
+            response = ctx.http.get(details_page(job.url))
         except Blocked:
             return self._stop_reading_pages(job, ctx)
         except httpx.HTTPError:
@@ -256,8 +263,10 @@ def to_found_job(item: dict, country: str) -> FoundJob:
     location = item.get("location") or {}
     salary = None
     if item.get("salary_min") and item.get("salary_is_predicted") in ("0", 0, None):
-        high = item.get("salary_max")
-        salary = f"{item['salary_min']:,.0f}" + (f" – {high:,.0f}" if high else "")
+        low, high = item["salary_min"], item.get("salary_max")
+        currency = _CURRENCIES.get(country, "€")
+        salary = f"{currency}{low:,.0f}" + (
+            f" – {currency}{high:,.0f}" if high and round(high) != round(low) else "")
     return FoundJob(
         source="adzuna",
         source_job_id=str(item.get("id")),
@@ -275,6 +284,16 @@ def to_found_job(item: dict, country: str) -> FoundJob:
         job_types=_CONTRACT_TYPES.get((item.get("contract_type"), item.get("contract_time")), []),
         salary_text=salary,
     )
+
+
+def details_page(url: str) -> str:
+    """The page with the full ad. Ads without a town link to `/land/ad/<id>`, which always
+    refuses Jobcu, while `/details/<id>` of the same ad carries its full text (SOURCES.md)."""
+    parts = urlsplit(url)
+    match = _LANDING_PATH.fullmatch(parts.path)
+    if not match or not parts.netloc.startswith("www.adzuna."):
+        return url
+    return f"{parts.scheme}://{parts.netloc}/details/{match.group(1)}"
 
 
 def check_keys(keys: KeyStore) -> KeyCheck:
