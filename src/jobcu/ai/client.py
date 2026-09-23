@@ -36,7 +36,7 @@ from jobcu.ai.providers import PROVIDERS
 from jobcu.ai.schema import extract_json, strict_json_schema
 from jobcu.ai.usage import UsageLog, estimate_cost, total_tokens
 from jobcu.keystore import KeyStore
-from jobcu.settings import Settings
+from jobcu.settings import Effort, Settings
 
 log = logging.getLogger(__name__)
 
@@ -185,6 +185,7 @@ class AIClient:
         prompt: str,
         max_searches: int = 4,
         max_output_tokens: int = 3000,
+        effort: Effort | None = None,
     ) -> ResearchReply:
         """Ask the AI to look something up on the web and say which pages it used.
 
@@ -209,6 +210,8 @@ class AIClient:
         if not adapter.can_search_the_web:
             raise AIError(MSG_NO_WEB_SEARCH)
         self._check_monthly_limit()
+        if (provider, model) in self._effort_unsupported:
+            effort = None
         waits = outages = 0
         while True:
             try:
@@ -218,8 +221,15 @@ class AIClient:
                     prompt=prompt,
                     max_searches=min(max_searches, left),
                     max_output_tokens=max_output_tokens,
+                    effort=effort,
                 )
                 break
+            except AIBadRequest:
+                if effort is None:
+                    raise
+                # Many models don't accept reasoning settings: try once without.
+                effort = None
+                self._effort_unsupported.add((provider, model))
             except AIRateLimited as exc:
                 waits += 1
                 if not self.patient or waits > MAX_RATE_LIMIT_WAITS:

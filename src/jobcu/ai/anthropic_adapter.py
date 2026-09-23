@@ -81,8 +81,12 @@ class AnthropicAdapter(ProviderAdapter):
         return RawReply(text=text, usage=_usage(response.usage))
 
     def research(
-        self, *, model: str, system: str, prompt: str, max_searches: int, max_output_tokens: int
+        self, *, model: str, system: str, prompt: str, max_searches: int, max_output_tokens: int,
+        effort: Effort | None = None,
     ) -> ResearchReply:
+        extra: dict = {}
+        if effort:
+            extra["output_config"] = {"effort": "low" if effort == "minimal" else effort}
         try:
             response = self._client().messages.create(
                 model=model,
@@ -91,6 +95,7 @@ class AnthropicAdapter(ProviderAdapter):
                 messages=[{"role": "user", "content": prompt}],
                 tools=[{"type": "web_search_20250305", "name": "web_search",
                         "max_uses": max_searches}],
+                **extra,
             )
         except Exception as exc:
             raise _translate(exc) from exc

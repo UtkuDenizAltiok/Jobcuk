@@ -238,6 +238,14 @@ class ResearchingAI(FakeAI):
         self.looked_up: list[str] = []
 
     def complete_json(self, **request):
+        if request["schema_name"] == "OnlineAnswer":
+            ids = re.findall(r"^(J\d+) \|", request["prompt"], re.MULTILINE)
+            answer = [{"id": job_id, "found": True, "towns": ["Berlin"], "years_required": 6,
+                       "languages_asked": [
+                           {"language": "German", "level": "B2", "must_have": True},
+                           {"language": "English", "level": "B2", "must_have": True}]}
+                      for job_id in ids]
+            return RawReply(json.dumps({"jobs": answer}), Usage(10, 5))
         if request["schema_name"] == "Profile":
             languages = [{"language": "English", "level_as_written": "fluent", "cefr": "C1",
                           "cefr_is_estimate": True},
@@ -251,9 +259,8 @@ class ResearchingAI(FakeAI):
 
         ids = re.findall(r"^(J\d+) \|", request["prompt"], re.MULTILINE)
         self.looked_up += ids
-        answer = "\n".join(f"{job_id} | Berlin | German B2 must; English B2 must | 6"
-                           for job_id in ids)
-        return ResearchReply(answer, [Source("https://jobs.test/ad", "Board")],
+        return ResearchReply("Both ads ask for good German and English, and 6 years.",
+                             [Source("https://jobs.test/ad", "Board")],
                              Usage(10, 5, web_searches=len(ids)))
 
 

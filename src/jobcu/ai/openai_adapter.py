@@ -116,8 +116,13 @@ class OpenAIAdapter(ProviderAdapter):
         )
 
     def research(
-        self, *, model: str, system: str, prompt: str, max_searches: int, max_output_tokens: int
+        self, *, model: str, system: str, prompt: str, max_searches: int, max_output_tokens: int,
+        effort: Effort | None = None,
     ) -> ResearchReply:
+        extra: dict = {}
+        if effort:
+            # Web search needs at least "low" reasoning where a model has reasoning at all.
+            extra["reasoning"] = {"effort": "low" if effort == "minimal" else effort}
         try:
             response = self._client().responses.create(
                 model=model,
@@ -126,6 +131,7 @@ class OpenAIAdapter(ProviderAdapter):
                 tools=[{"type": "web_search"}],
                 max_output_tokens=max_output_tokens,
                 store=False,
+                **extra,
             )
         except Exception as exc:
             raise translate_openai_error(exc) from exc

@@ -269,3 +269,20 @@ def test_a_provider_that_cannot_search_says_so_plainly():
     with pytest.raises(AIError) as problem:
         client.research(step="location", system="Rules", prompt="Which cities?")
     assert "can't look things up on the web" in problem.value.message
+
+
+def test_web_research_asks_again_without_a_thinking_setting_the_model_refuses():
+    class NoEffort(SearchingAdapter):
+        def research(self, **request):
+            if request.get("effort"):
+                self.calls.append(request)
+                raise AIBadRequest("reasoning isn't supported", "400")
+            return super().research(**request)
+
+    adapter = NoEffort()
+    client = AIClient(research_settings(), adapter=adapter, usage_log=UsageLog())
+    client.research(step="job_places", system="Rules", prompt="Find it", effort="low")
+    assert [call.get("effort") for call in adapter.calls] == ["low", None]
+    # Remembered: the next look-up doesn't try the setting again.
+    client.research(step="job_places", system="Rules", prompt="Find it", effort="low")
+    assert [call.get("effort") for call in adapter.calls] == ["low", None, None]

@@ -100,7 +100,21 @@ class ScoringAnswer(BaseModel):
     scores: list[JobScore]
 
 
-SYSTEM_PROMPT = """\
+# How the language levels and years an ad asks for are read: the same when scoring and when a full
+# ad is read online (jobplace.py). "Good" and "very good" are B2: the owner's rule, 2026-09-23.
+LEVEL_RULES = """\
+A stated CEFR level as written ("B2+" is B2). Otherwise: basic, Grundkenntnisse: A2. \
+Conversational, intermediate: B1. Good, very good, solid, confident, gute, sehr gute, sichere: \
+B2. Fluent, business fluent, excellent, fließend, verhandlungssicher: C1. Native, mother tongue, \
+Muttersprache: C2. Asked for without a level: B2. Use not_needed when the ad says the language \
+isn't needed ("no German required", "our working language is English")."""
+YEARS_RULES = """\
+the least professional experience the ad requires, in years: the lower end of a range ("3-5 \
+years": 3); "several years", "mehrjährige": 3; "many years", "extensive", "langjährige": 5; \
+"first experience", "erste Berufserfahrung": 1. null when the ad states no amount or only calls \
+experience a plus."""
+
+SYSTEM_PROMPT = f"""\
 You score how well job ads fit one person, for a personal job search app. Score every job \
 independently against the person's profile and the rubric. Never compare jobs with each other, \
 and never let one job influence another job's score. Use only what the ad and the profile say, \
@@ -111,18 +125,11 @@ The app works out the language points and the limits for blockers from this evid
 it carefully and never guess.
 - ad_language: the language most of the ad is written in, in English ("German", "English").
 - languages_asked: every language the ad asks the candidate to speak, with its name in English:
-  level: the level asked for. A stated CEFR level as written ("B2+" is B2). Otherwise: basic, \
-Grundkenntnisse: A2. Conversational, intermediate: B1. Good, very good, solid, confident, gute, \
-sehr gute, sichere: B2. Fluent, business fluent, excellent, fließend, verhandlungssicher: C1. \
-Native, mother tongue, Muttersprache: C2. Asked for without a level: B2. Use not_needed when \
-the ad says the language isn't needed ("no German required", "our working language is English").
+  level: the level asked for. {LEVEL_RULES}
   must_have: false when the ad calls the language a plus, an advantage, desirable or nice to have.
   Leave the list empty when the ad asks for no language. Don't list a language only because the \
 ad is written in it.
-- years_required: the least professional experience the ad requires, in years: the lower end \
-of a range ("3-5 years": 3); "several years", "mehrjährige": 3; "many years", "extensive", \
-"langjährige": 5; "first experience", "erste Berufserfahrung": 1. null when the ad states no \
-amount or only calls experience a plus.
+- years_required: {YEARS_RULES}
 - doctorate: required_person_has_it or required_person_lacks_it only when the ad requires a \
 doctorate (PhD); not_required when it's a plus or not mentioned.
 - citizenship_or_clearance: required_definitely_out_of_reach only when the ad clearly requires \

@@ -373,10 +373,18 @@ class OnlineAI(PlaceReadingAI):
     def research(self, **request):
         jobs = re.findall(r"^(J\d+) \| ([^|]+) \|", request["prompt"], re.MULTILINE)
         self.looked_up.append([title.strip() for _, title in jobs])
-        answer = "\n".join(f"{job_id} | {'Garching' if title.startswith('PCB') else 'unknown'}"
-                           for job_id, title in jobs)
-        return ResearchReply(answer, [Source("https://jobs.test/pcb", "Job board")],
+        return ResearchReply("The PCB Designer ad is in Garching.",
+                             [Source("https://jobs.test/pcb", "Job board")],
                              Usage(100, 20, web_searches=len(jobs)))
+
+    def complete_json(self, **request):
+        if request["schema_name"] != "OnlineAnswer":
+            return super().complete_json(**request)
+        jobs = re.findall(r"^(J\d+) \| ([^|]+) \|", request["prompt"], re.MULTILINE)
+        answer = [{"id": job_id, "found": title.startswith("PCB"),
+                   "towns": ["Garching"] if title.startswith("PCB") else [],
+                   "languages_asked": [], "years_required": None} for job_id, title in jobs]
+        return RawReply(json.dumps({"jobs": answer}), Usage(10, 5))
 
 
 def test_the_town_of_a_good_job_is_found_online_and_the_conditions_decide(conditions_ready,

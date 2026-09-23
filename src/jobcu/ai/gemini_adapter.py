@@ -101,11 +101,13 @@ class GeminiAdapter(ProviderAdapter):
         )
 
     def research(
-        self, *, model: str, system: str, prompt: str, max_searches: int, max_output_tokens: int
+        self, *, model: str, system: str, prompt: str, max_searches: int, max_output_tokens: int,
+        effort: Effort | None = None,
     ) -> ResearchReply:
         config = types.GenerateContentConfig(
             system_instruction=system,
             max_output_tokens=max_output_tokens,
+            thinking_config=types.ThinkingConfig(thinking_level=effort.upper()) if effort else None,
             tools=[types.Tool(google_search=types.GoogleSearch())],
             automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
         )

@@ -175,6 +175,7 @@ class ProviderAdapter(ABC):
         prompt: str,
         max_searches: int,
         max_output_tokens: int,
+        effort: Effort | None = None,
     ) -> ResearchReply:
         """Answer using live web search, naming the pages used. Providers that can't, say so."""
         raise AIError(MSG_NO_WEB_SEARCH)
