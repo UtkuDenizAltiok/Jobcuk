@@ -34,7 +34,7 @@ window to stop Jobcu. Next time, just double-click **Start Jobcu** again.
 ---
 
 **Update:** download the new ZIP and replace the `jobcu-main` folder. Your settings and saved jobs
-are kept.
+are kept. (A Jobcu folder set up with git updates itself each time you start it.)
 
 **Remove:** delete `jobcu-main`. To also delete your data, delete the `Jobcu` folder in
 `~/Library/Application Support` (Mac) or `%LOCALAPPDATA%` (Windows).

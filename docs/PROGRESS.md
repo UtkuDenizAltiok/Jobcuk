@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 420 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 421 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -73,9 +73,11 @@ Nothing.
    cloud sessions can test AI instructions with a real provider. He spends only his $100 cloud
    credit: he watches it at claude.ai, Settings → Usage, and sends the final-handover prompt
    (CONTRIBUTING.md) at about $85 used.
-2. **Restart Jobcu** on his Mac (the one running was started before these changes), write his
-   citizenship in "Anything your documents don't say", and **run a 24-hour search**. Then report
-   what looks wrong (screenshots are fine), especially the items under "Verify".
+2. **Searches while Jobcu is developed:** close Jobcu and start it again with the launcher (it
+   now updates itself from GitHub first), write his citizenship in "Anything your documents
+   don't say", and run a **72-hour search every two or three days**. After each, a short local
+   session with the prompt "Check my latest search" (CONTRIBUTING.md) records what it shows for
+   the cloud sessions. Screenshots in the cloud chat are fine for anything that looks wrong.
 3. **Rate 30–50 jobs on the Score check screen** (nothing is rated yet). Tuning the quick check
    and the scoring waits on this; it runs on his Mac.
 4. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as

@@ -68,7 +68,7 @@ def test_total_is_added_up_in_code_and_parts_are_kept_within_their_maximum():
     assert result["job_type"] is None and result["work_mode"] == "hybrid"
 
 
-# The owner's profile in search 8: English C1, German A2, Turkish native, no full-time years.
+# A made-up person: fluent English, basic German, native Turkish, no full-time years yet.
 SPEAKER = PROFILE.model_copy(update={
     "languages": [
         LanguageSkill(language="English", level_as_written="Fluent", cefr="C1",

@@ -39,6 +39,23 @@ echo More help: docs\guides\troubleshooting.md in the Jobcu folder.
 goto fail
 
 :start
+rem A copy made with git first updates itself from GitHub (see Start Jobcu.command): only when
+rem nothing is changed here and it's on main, never asking for a password. ZIP copies skip this.
+if "%JOBCU_SELFTEST%"=="1" goto run
+if not exist ".git" goto run
+where git >nul 2>nul
+if errorlevel 1 goto run
+git diff --quiet HEAD >nul 2>nul
+if errorlevel 1 goto run
+set "JOBCU_BRANCH="
+for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD 2^>nul') do set "JOBCU_BRANCH=%%b"
+if not "%JOBCU_BRANCH%"=="main" goto run
+echo Checking for a newer Jobcu...
+set "GIT_TERMINAL_PROMPT=0"
+git pull --ff-only --quiet >nul 2>nul
+if errorlevel 1 echo Jobcu couldn't be updated right now, so it starts the version you have.
+
+:run
 echo Preparing Jobcu. The first start can take a few minutes...
 uv run --frozen --no-dev --quiet jobcu
 if errorlevel 1 goto problem

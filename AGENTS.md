@@ -109,9 +109,13 @@ Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself run
   every commit). The environment's network access must be **Full**, so job sites, GeoNames and
   documentation can be reached; if a site can't be reached, say so rather than guess.
 - **No personal data in the cloud.** The owner's CV, data folder, database and keys stay on his
-  Mac. Never ask him to upload them; work with fake data. What needs his real data (his searches,
-  the score check, the coverage test on his answers) happens on his Mac: ask him to run it and
-  report, or to open a local session for it.
+  Mac. Never ask him to upload them; work with fake data. Full searches with made-up people (a
+  fake CV built in code, the AI credential below, the sources that need no key) run fine in the
+  cloud and test Jobcu for everyone. What needs his real data (his searches, the score check,
+  the coverage test on his answers) happens on his Mac: he runs a 72-hour search every two or
+  three days while Jobcu is developed, and a short local session studies it ("Check my latest
+  search" in CONTRIBUTING.md) and records the findings in PROGRESS.md. His launcher updates his
+  copy from GitHub, so his searches always use the newest merged version.
 - **AI tests with a real provider** in the cloud only through an **API credential** the owner
   saved on the cloud environment: the agent proxy adds the key to requests for that host, and
   nobody sees it. Save a placeholder key in a scratch data folder so Jobcu's code runs, and check

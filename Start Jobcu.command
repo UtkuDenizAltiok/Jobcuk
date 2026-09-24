@@ -44,6 +44,20 @@ if ! has_uv; then
   fi
 fi
 
+# A copy made with git (the owner's, developers') first updates itself from GitHub, so it runs
+# the newest version: only when nothing is changed here and it's on main, never asking for a
+# password. If the update fails, the version already here starts. Copies from a ZIP skip this.
+update_from_github() {
+  [ "$JOBCU_SELFTEST" = "1" ] && return
+  { [ -d .git ] && command -v git >/dev/null 2>&1; } || return
+  [ -z "$(git status --porcelain --untracked-files=no 2>/dev/null)" ] || return
+  [ "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" = "main" ] || return
+  echo "Checking for a newer Jobcu..."
+  GIT_TERMINAL_PROMPT=0 git pull --ff-only --quiet 2>/dev/null ||
+    echo "Jobcu couldn't be updated right now, so it starts the version you have."
+}
+update_from_github
+
 echo "Preparing Jobcu. The first start can take a few minutes..."
 uv run --frozen --no-dev --quiet jobcu
 status=$?

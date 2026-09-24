@@ -53,6 +53,19 @@ a merge commit once GitHub's tests pass. Then tell me in a few lines what was do
 next, what is waiting on me, and whether it's safe to start a new session.
 ```
 
+**Check my latest search (only on your own computer, never in a cloud session):**
+
+```text
+Check my latest search: this session runs on my own computer. First follow "Starting, or
+resuming after any interruption" in AGENTS.md. Then, with my permission for this check, copy my
+Jobcu data folder to a scratch folder and study my latest search there: the results, the scores
+and their limits, the places and conditions, the notes and the sources, against "Verify before
+relying on" and the plan in docs/PROGRESS.md. Record what you find, with examples, in
+docs/PROGRESS.md (decisions in DECISIONS.md, source facts in SOURCES.md), never my CV or other
+personal details. Delete the scratch copy, check the tests, commit and push. Then tell me in
+plain words what you found and what the cloud sessions should fix next.
+```
+
 **When a cloud credit is nearly used, before going back to local sessions:**
 
 ```text

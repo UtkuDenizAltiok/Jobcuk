@@ -4,6 +4,7 @@ import subprocess
 import sys
 import threading
 import time
+from pathlib import Path
 
 import uvicorn
 from fastapi.testclient import TestClient
@@ -63,3 +64,20 @@ def test_a_running_jobcu_can_be_asked_to_stop():
     assert launcher.stop_running_jobcu(port)
     thread.join(timeout=10)
     assert not thread.is_alive()
+
+
+def test_launchers_update_a_git_copy_first_but_never_ask_or_touch_local_changes():
+    # The owner's copy should run the newest version after cloud sessions (DECISIONS.md,
+    # 2026-09-24): an update from GitHub before starting, only on main with nothing changed
+    # locally, never asking for a password, and never during the self-test.
+    root = Path(__file__).resolve().parents[1]
+    mac = (root / "Start Jobcu.command").read_text(encoding="utf-8")
+    windows = (root / "Start Jobcu.bat").read_text(encoding="utf-8")
+    for script in (mac, windows):
+        assert "git pull --ff-only --quiet" in script
+        assert "GIT_TERMINAL_PROMPT=0" in script
+        assert "JOBCU_SELFTEST" in script and ".git" in script and '"main"' in script
+    assert "git status --porcelain --untracked-files=no" in mac
+    assert "git diff --quiet HEAD" in windows
+    assert mac.index("update_from_github\n\n") < mac.index("uv run --frozen")
+    assert windows.index("git pull") < windows.index("uv run --frozen")
