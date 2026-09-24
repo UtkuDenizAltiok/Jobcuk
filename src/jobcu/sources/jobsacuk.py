@@ -97,6 +97,7 @@ class JobsAcUkSource(JobSource):
             date_precision="exact" if posting.date_has_time else job.date_precision,
             job_types=job.job_types or posting.job_types,
             work_mode="remote" if posting.remote else job.work_mode,
+            closes_at=job.closes_at or posting.valid_through,
         )
 
     def _get(self, word: str, page: int, ctx: SourceContext) -> str:

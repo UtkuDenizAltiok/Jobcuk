@@ -15,14 +15,14 @@ import dataclasses
 import re
 import xml.etree.ElementTree as ElementTree
 from collections.abc import Iterator
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from zoneinfo import ZoneInfo
 
 import httpx
 from lxml import html as lxml_html
 from lxml.etree import ParserError
 
-from jobcu.freshness import freshness, window_start
+from jobcu.freshness import end_of_day, freshness, window_start
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget
 from jobcu.sources.http import Blocked
@@ -145,6 +145,10 @@ def to_found_job(vacancy) -> FoundJob | None:
         return None
     places = [tidy(place.text or "") for place in vacancy.iter("location") if place.text]
     posted = _uk_time(_text(vacancy, "postDate"))
+    try:
+        closing = end_of_day(date.fromisoformat(_text(vacancy, "closeDate")[:10]), UK_TIME)
+    except ValueError:
+        closing = None
     return FoundJob(
         source="nhsjobs",
         source_job_id=reference,
@@ -159,6 +163,7 @@ def to_found_job(vacancy) -> FoundJob | None:
         description=_text(vacancy, "description"),
         job_types=_CONTRACTS.get(_text(vacancy, "type").lower(), []),
         salary_text=_salary(_text(vacancy, "salary")),
+        closes_at=closing,
     )
 
 

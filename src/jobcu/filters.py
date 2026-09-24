@@ -3,6 +3,7 @@
 A job is left out only when a fact proves it doesn't fit:
 - it was marked Not interested before
 - it's proven older than "Posted within"
+- its closing date for applications has passed
 - the source states a job type the user didn't tick
 - the source states it's fully remote and remote jobs are excluded
 - the source states a country outside the countries searched
@@ -27,6 +28,7 @@ REASONS = {
     "dismissed": "Marked Not interested before",
     "location_condition": "The place doesn't fit a condition you wrote",
     "too_old": "Older than your \"Posted within\" choice",
+    "closed": "The closing date for applications has passed",
     "job_type": "A job type you didn't tick",
     "remote": "Fully remote (you excluded remote jobs)",
     "country": "In a country you didn't search",
@@ -57,7 +59,7 @@ def apply_rules(
     wanted_types = set(job_types)
     for index, group in enumerate(groups):
         reason = _reason(group, remembered_states[index], start, wanted_types, exclude_remote,
-                         set(countries), conditions or [])
+                         set(countries), conditions or [], started_at)
         if reason:
             outcome.left_out[reason] += 1
             outcome.by_reason.setdefault(reason, []).append(index)
@@ -66,12 +68,14 @@ def apply_rules(
     return outcome
 
 
-def _reason(group, state, start, wanted_types, exclude_remote, countries, conditions
-            ) -> str | None:
+def _reason(group, state, start, wanted_types, exclude_remote, countries, conditions,
+            now) -> str | None:
     if state is not None and state.dismissed:
         return "dismissed"
     if freshness(group.posted_at, group.date_precision, start) == "too_old":
         return "too_old"
+    if group.closes_at is not None and group.closes_at < now:
+        return "closed"
     stated_types = [c.job_types for c in group.copies if c.job_types]
     # Left out only if every copy that states a type says it's something not ticked.
     if stated_types and all(not (set(types) & wanted_types) for types in stated_types):

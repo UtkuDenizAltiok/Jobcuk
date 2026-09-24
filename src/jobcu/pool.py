@@ -74,7 +74,9 @@ def _to_dict(pool: Pool) -> dict:
     data = dataclasses.asdict(pool)
     for job, stored in zip(pool.jobs, data["jobs"], strict=True):
         for copy, stored_copy in zip(job.group.copies, stored["group"]["copies"], strict=True):
-            stored_copy["posted_at"] = copy.posted_at.isoformat() if copy.posted_at else None
+            for name in ("posted_at", "closes_at"):
+                when = getattr(copy, name)
+                stored_copy[name] = when.isoformat() if when else None
     return data
 
 
@@ -83,7 +85,8 @@ def _from_dict(data: dict) -> Pool:
     for stored in data.pop("jobs"):
         group = stored["group"]
         copies = [
-            FoundJob(**{**copy, "posted_at": parse_iso(copy["posted_at"])})
+            FoundJob(**{**copy, "posted_at": parse_iso(copy["posted_at"]),
+                        "closes_at": parse_iso(copy.get("closes_at"))})
             for copy in group["copies"]
         ]
         jobs.append(PoolJob(

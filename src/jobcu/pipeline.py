@@ -6,12 +6,13 @@ import threading
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
+from datetime import datetime, timedelta
 
 from jobcu import jobstore, travel
 from jobcu.countries import COUNTRIES
 from jobcu.dedupe import JobGroup, group_duplicates, is_agency
 from jobcu.filters import condition_fit
-from jobcu.freshness import freshness, window_start
+from jobcu.freshness import earliest_possible, freshness, window_start
 from jobcu.jobstore import JobState
 from jobcu.location import LocationPlan
 from jobcu.placenames import countries_in
@@ -172,6 +173,7 @@ def build_card(
     started_at,
     posted_within_hours: int,
     ruled_out: bool = False,
+    first_seen_at: datetime | None = None,
 ) -> dict:
     main = group.main
     best = group.best_description_copy
@@ -242,6 +244,9 @@ def build_card(
         })
     start = window_start(started_at, posted_within_hours)
     state = state or JobState()
+    # An old ad posted again looks fresh; Jobcu's memory knows when it first showed this job.
+    earliest = earliest_possible(group.posted_at, group.date_precision)
+    reposted = bool(first_seen_at and earliest and first_seen_at < earliest - timedelta(days=1))
     return {
         "job_id": job_id,
         "is_new": is_new,
@@ -260,6 +265,8 @@ def build_card(
         "posted_at": group.posted_at.isoformat() if group.posted_at else None,
         "date_precision": group.date_precision,
         "date_known": freshness(group.posted_at, group.date_precision, start) != "unknown",
+        "first_seen_at": first_seen_at.isoformat() if reposted else None,
+        "closes_at": group.closes_at.isoformat() if group.closes_at else None,
         "score": scored["score"] if scored else None,
         "parts": scored["parts"] if scored else None,
         # Blockers that hold the score below what its parts add up to (scoring.py).

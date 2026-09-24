@@ -80,6 +80,7 @@ def test_reads_newest_pages_until_the_window_ends():
     assert first.company == "Fake Hospitals NHS Foundation Trust"
     assert first.location_text == "Exampleton, EX1 2PL" and first.country == "GB"
     assert first.salary_text == "£31,049 to £37,796"
+    assert first.closes_at == datetime(2026, 10, 8, 22, 59, tzinfo=UTC)  # the day's end, UK time
     assert first.date_precision == "exact"
     assert abs((first.posted_at - (NOW - timedelta(hours=1))).total_seconds()) < 2
     assert first.job_types == []  # "Permanent" doesn't say full or part time

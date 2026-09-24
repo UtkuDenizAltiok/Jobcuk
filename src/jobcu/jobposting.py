@@ -8,7 +8,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from jobcu.freshness import parse_iso
+from jobcu.freshness import parse_closing, parse_iso
 from jobcu.text import html_to_text
 
 _JSON_LD = re.compile(
@@ -35,6 +35,7 @@ class JobPosting:
     location_text: str | None = None
     job_types: list[str] = field(default_factory=list)
     remote: bool = False
+    valid_through: datetime | None = None  # when applications close
 
 
 def find_job_posting(html: str) -> JobPosting | None:
@@ -82,6 +83,7 @@ def _read(item: dict) -> JobPosting:
         location_text=_location(item.get("jobLocation")),
         job_types=types,
         remote=str(item.get("jobLocationType") or "").upper() == "TELECOMMUTE",
+        valid_through=parse_closing(str(item.get("validThrough") or "")),
     )
 
 

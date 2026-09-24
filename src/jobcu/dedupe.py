@@ -157,6 +157,13 @@ class JobGroup:
         return copy.posted_at if copy else None
 
     @property
+    def closes_at(self) -> datetime | None:
+        """When applications close. Copies may differ (an extended deadline): the latest one
+        counts, so a job is never treated as closed while one of its ads is still open."""
+        dates = [c.closes_at for c in self.copies if c.closes_at]
+        return max(dates) if dates else None
+
+    @property
     def date_precision(self) -> str:
         copy = self.earliest_copy
         return copy.date_precision if copy else "unknown"

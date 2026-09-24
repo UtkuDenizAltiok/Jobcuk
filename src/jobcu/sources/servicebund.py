@@ -16,7 +16,7 @@ import dataclasses
 import html
 import re
 from collections.abc import Iterator
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from email.utils import parsedate_to_datetime
 from urllib.parse import urljoin, urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
@@ -26,7 +26,7 @@ from lxml import etree
 from lxml import html as lxml_html
 from lxml.etree import ParserError
 
-from jobcu.freshness import day_at_utc, freshness, window_start
+from jobcu.freshness import day_at_utc, end_of_day, freshness, window_start
 from jobcu.placenames import OTHER, countries_in
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
 from jobcu.sources.http import Blocked
@@ -146,6 +146,21 @@ def _posted(text: str) -> tuple[datetime | None, str]:
     return value.astimezone(UTC), "exact"
 
 
+def _closing(text: str) -> datetime | None:
+    """ "23.10.2026 23:59" or "07.10.2026" (open until the day's end), German time."""
+    found = re.search(r"(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s+(\d{1,2}):(\d{2}))?", text or "")
+    if not found:
+        return None
+    day, month, year, hour, minute = found.groups()
+    try:
+        if hour is None:
+            return end_of_day(date(int(year), int(month), int(day)), GERMAN_TIME)
+        return datetime(int(year), int(month), int(day), int(hour), int(minute),
+                        tzinfo=GERMAN_TIME).astimezone(UTC)
+    except ValueError:
+        return None
+
+
 def _without_fragment(url: str) -> str:
     """The feed adds "#track=feed-jobs" to every link."""
     parts = urlsplit(url)
@@ -185,6 +200,7 @@ def to_found_job(item: dict, searched: list[str]) -> FoundJob | None:
         posted_at=posted,
         date_precision=precision,
         description="\n".join(line for line in lines if line),
+        closes_at=_closing(item.get("closes", "")),
     )
 
 
@@ -269,4 +285,5 @@ def apply_details(job: FoundJob, page: str) -> FoundJob:
         longitude=longitude,
         employer_url=urljoin(SITE, employer_url) if employer_url else job.employer_url,
         salary_text=pay if _PAY_GRADE.search(pay) else job.salary_text,
+        closes_at=job.closes_at or _closing(closes or ""),
     )

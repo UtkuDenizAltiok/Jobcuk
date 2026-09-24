@@ -21,7 +21,9 @@ from jobcu.sources.base import FoundJob
 AD_TEXT_DAYS = 3
 # What reading the full ad adds to what a source's job list already gave.
 AD_DETAIL_FIELDS = ("description", "description_is_complete", "job_types", "work_mode",
-                    "employer_url", "salary_text", "company", "posted_at")
+                    "employer_url", "salary_text", "company", "posted_at", "closes_at",
+                    "latitude", "longitude")
+_TIMES = ("posted_at", "closes_at")
 
 
 @dataclass
@@ -98,6 +100,18 @@ def remember(groups: list[JobGroup], search_id: int) -> tuple[list[int], list[bo
     return ids, new
 
 
+def first_seen(job_ids: list[int]) -> dict[int, datetime]:
+    """When Jobcu first showed each job, to tell a repost of an old ad from a new job."""
+    if not job_ids:
+        return {}
+    with db.connect() as conn:
+        marks = ",".join("?" * len(job_ids))
+        rows = conn.execute(
+            f"SELECT id, first_seen_at FROM jobs WHERE id IN ({marks})", job_ids
+        ).fetchall()
+    return {row[0]: when for row in rows if (when := parse_iso(row[1])) is not None}
+
+
 def set_state(job_id: int, **changes: bool) -> JobState:
     allowed = {"saved", "applied", "dismissed"}
     changes = {k: bool(v) for k, v in changes.items() if k in allowed}
@@ -161,7 +175,8 @@ def remember_ad(job: FoundJob) -> None:
     if not job.description_is_complete or not job.source_job_id:
         return
     details = {field: getattr(job, field) for field in AD_DETAIL_FIELDS}
-    details["posted_at"] = job.posted_at.isoformat() if job.posted_at else None
+    for name in _TIMES:
+        details[name] = details[name].isoformat() if details[name] else None
     with db.connect() as conn:
         conn.execute(
             "INSERT OR REPLACE INTO ad_texts (source, source_job_id, fetched_at, details_json) "
@@ -195,6 +210,7 @@ def remembered_ad(job: FoundJob) -> FoundJob | None:
                if field in AD_DETAIL_FIELDS and value not in (None, "", [])}
     if not details.get("description"):
         return None
-    if "posted_at" in details:
-        details["posted_at"] = parse_iso(details["posted_at"]) or job.posted_at
+    for name in _TIMES:
+        if name in details:
+            details[name] = parse_iso(details[name]) or getattr(job, name)
     return dataclasses.replace(job, **details)
