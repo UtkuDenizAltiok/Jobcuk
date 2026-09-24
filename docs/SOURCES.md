@@ -302,6 +302,37 @@ assistants, school leaders, office, catering, cleaning and site staff.
   API (permanent, part-time, fixed-term); one page read added the visa line (2,184 → 6,222
   characters).
 
+## NHS Jobs, health in England and Wales (`src/jobcu/sources/nhsjobs.py`), checked 2026-09-24
+
+The NHS Business Services Authority's job site: NHS trusts, GP practices, hospices and health
+charities in England and Wales (nurses, doctors, pharmacists, porters, clerks, cleaners,
+managers).
+
+- **An open XML search feed:** `GET https://www.jobs.nhs.uk/api/v1/search_xml?
+  sort=publicationDateDesc&limit=100&page=N` (without `limit` 10 a page; `pageSize` and `size`
+  are ignored), also `keyword=…`. `totalResults` 12,712 live jobs; about **1,000 new a day**.
+  Each `vacancyDetails`: `id`, `reference`, `title`, a ~150-character `description`, `employer`,
+  `type` (Permanent, Fixed-Term, Bank…), `salary` ("£49387.00 to £56515.00"), `closeDate`,
+  **`postDate`** (UK time without a zone, with nanoseconds: "2026-09-24T12:18:24.800841778"),
+  `url` (on `beta.jobs.nhs.uk`; the same page is on `www.jobs.nhs.uk`), `locations`
+  ("Bradford, BD9 6RJ", one or more). `totalPages` at the end. `location=Leeds&distance=10`
+  with a keyword returned 0 in one test.
+- **Job pages** (`/candidate/jobadvert/{reference}`) carry the whole ad in `<main>`: job summary,
+  main duties, about us, job description, the **person specification** (essential and
+  desirable qualifications, such as a professional registration), date posted, pay band, salary,
+  `p#contract_type` (Permanent, Fixed term, Bank…) and the working pattern after
+  `h3#working_pattern_heading` (Full-time, Part-time, Flexible working). The details appear
+  twice (a `show-mobile` copy), which Jobcu drops. **No JobPosting data**; trafilatura misses the
+  collapsed sections, so Jobcu reads `<main>` itself.
+- **No robots.txt** (the address answers an HTML page). **Terms** (Candidate Terms and
+  Conditions, 22 July 2025) are about accounts, applications and data protection; nothing about
+  automated reading.
+- Jobcu reads pages until one holds a job older than the window, at most 40 a search. "Bank"
+  counts as part-time (called in when needed), "Permanent" says nothing about hours until the
+  page is read. **Live run (2026-09-24, a made-up intensive-care nurse, 24 hours):** 37 jobs in
+  10 requests (9.9 s); a page read took one ad from 153 to 7,194 characters with the person
+  specification.
+
 ## Google Maps, for travel times (`src/jobcu/travel.py`), checked 2026-09-21
 
 Not a job source: used only for conditions like "at most 50 minutes by public transport to a
@@ -520,20 +551,7 @@ JobsIreland.ie and the career systems. Missing: schools, the health services and
 which employ a large share of people in both countries and rarely post on commercial boards.
 
 - **Teaching Vacancies:** built (above).
-- **NHS Jobs (the NHS in England and Wales, NHS Business Services Authority, checked
-  2026-09-24).** An **open XML search feed**: `GET https://www.jobs.nhs.uk/api/v1/search_xml?
-  sort=publicationDateDesc&limit=100&page=N` (without `limit` 10 a page; `pageSize` and `size`
-  are ignored), also `keyword=…`. `totalResults` 12,712 live jobs; the newest ten were posted
-  within 12 minutes, so roughly **1,000 a day** (about 10 requests for a 24-hour search, fewer
-  with keywords). Each `vacancyDetails`: `id`, `reference`, `title`, a ~150-character
-  `description`, `employer`, `type` (Permanent, Fixed-Term, Bank…), `salary`, `closeDate`,
-  **`postDate` (exact time)**, `url`, `locations` ("Bradford, BD9 6RJ"). `location=Leeds&
-  distance=10` with a keyword returned 0 (to test again). **Job pages**
-  (`/candidate/jobadvert/{reference}`) carry the full ad, date posted, contract, working pattern
-  and pay band, **no** JobPosting data. **No robots.txt** (the address answers an HTML page).
-  **Terms** (Candidate Terms and Conditions, 22 July 2025) are about accounts, applications and
-  data protection; nothing about automated reading. Its jobs include GP practices, hospices and
-  charities, not only NHS trusts.
+- **NHS Jobs:** built (above).
 - **To check when building for the UK:** NHS Scotland (`apply.jobs.scot.nhs.uk`, no robots.txt);
   myjobscotland (Scotland's councils: robots.txt closes `/api/`; its sitemap lists categories and
   organisations, not single jobs); HSC jobs in Northern Ireland (`jobs.hscni.net`, no
