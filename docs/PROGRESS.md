@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 495 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 497 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -192,7 +192,10 @@ here.
    71, PLC commissioning 70). The quick check left out 2 of 39 titles worth a look (a university
    lab lead for electric drives, a quality engineer at a hardware company). No ad in the set is a
    good fit yet, so the check can't tell whether good jobs score high enough.
-   (g) **`tools/coverage_test.py` gives wrong reasons:** it looks only at the cards, so a job that
+   (g) **Done (cloud, 2026-09-24):** the tool now looks in the latest search's pool of every
+   collected job and names the step that lost each job (never collected, the quick check, a
+   place condition), matches company, title and town, and takes "Össur / Embla Medical" for a
+   company's two names. What search 9 showed: **`tools/coverage_test.py` gives wrong reasons:** it looks only at the cards, so a job that
    was never collected is blamed on the quick check or the search words, and a different job of
    the same company counts as found (Zenovo's Bristol test job for its Derby one). It should look
    in the saved pool (every job collected) and say at which step each was lost, match titles

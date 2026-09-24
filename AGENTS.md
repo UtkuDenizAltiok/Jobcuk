@@ -318,7 +318,8 @@ tools/check_no_secrets.py    safety check against keys and personal data (Git ho
 tools/cloud_setup.sh         prepares a cloud session (run by .claude/settings.json)
 tools/check_employers.py     checks the employer directory and adds new candidates
 tools/update_places.py       rebuilds the shipped town, region and postcode lists from GeoNames
-tools/coverage_test.py       how many jobs a person found by hand did Jobcu find, and why not
+tools/coverage_test.py       how many jobs a person found by hand did Jobcu find, and at which
+                             step it lost the others
 tools/universality_check.py  made-up people from other fields through profile, search words,
                              quick check and scoring, with the search words checked against ESCO
 tools/made_up_search.py      one complete search for a made-up person (by default a graduate
