@@ -75,13 +75,21 @@ next, what is waiting on me, and whether it's safe to start a new session.
 
 ```text
 Check my latest search: this session runs on my own computer. First follow "Starting, or
-resuming after any interruption" in AGENTS.md. Then, with my permission for this check, copy my
-Jobcu data folder to a scratch folder and study my latest search there: the results, the scores
-and their limits, the places and conditions, the notes and the sources, against "Verify before
-relying on" and the plan in docs/PROGRESS.md. Record what you find, with examples, in
-docs/PROGRESS.md (decisions in DECISIONS.md, source facts in SOURCES.md), never my CV or other
-personal details. Delete the scratch copy, check the tests, commit and push. Then tell me in
-plain words what you found and what the cloud sessions should fix next.
+resuming after any interruption" in AGENTS.md. With my permission, work on a scratch copy of my
+Jobcu data folder (JOBCU_DATA_DIR), and do three things:
+1. Study my latest search: the results, the scores and their limits, the places and conditions,
+   the notes and the sources, against "Verify before relying on" and the plan in PROGRESS.md.
+2. The quality set, on my behalf: rate the ads Jobcu kept for the score check (good, okay or
+   poor, with blockers), until 30-50 are rated over time. Judge each full ad against my CV and
+   cover letter as a careful recruiter would, before looking at Jobcu's score. Save the ratings
+   in my real data folder with quality.rate(..., by="claude"), then run tools/score_check.py.
+3. The coverage list, on my behalf: search the web for 15-25 fresh, real jobs that fit my CV in
+   my priority countries (employers' own sites and job boards, including LinkedIn and StepStone
+   pages as search engines show them), and run tools/coverage_test.py with them.
+Record what you find, with examples, in docs/PROGRESS.md (decisions in DECISIONS.md, source facts
+in SOURCES.md), never my CV or other personal details. Delete the scratch copy, check the tests,
+commit and push. Then tell me in plain words what you found and what the cloud sessions should
+fix next.
 ```
 
 **When a cloud credit is nearly used, before going back to local sessions:**

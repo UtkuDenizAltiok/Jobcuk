@@ -96,11 +96,10 @@ Nothing.
    don't say", and run a **72-hour search every two or three days**. After each, a short local
    session with the prompt "Check my latest search" (CONTRIBUTING.md) records what it shows for
    the cloud sessions. Screenshots in the cloud chat are fine for anything that looks wrong.
-3. **Rate 30–50 jobs on the Score check screen** (nothing is rated yet). Tuning the quick check
-   and the scoring waits on this; it runs on his Mac.
-4. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
-   `Company | Job title | Place | link`, for `tools/coverage_test.py`.
-5. **The friend's test:** his feedback on installing and using Jobcu.
+3. Nothing to rate or list by hand: the owner handed the quality set (30–50 rated ads) and the
+   coverage list (15–25 jobs he'd want) to the local check, Prompt D in CONTRIBUTING.md
+   (DECISIONS.md, 2026-09-24).
+4. **The friend's test:** his feedback on installing and using Jobcu.
 6. **Only if he wants to send them** (messages in his name; DECISIONS.md, 2026-09-24 evening):
    access requests to StepStone, Denmark's Jobnet, Poland's CBOP, or a private NAV token. None
    is needed for the current focus.
