@@ -112,7 +112,9 @@ for any reason:
 
 ### Working in a cloud session (claude.ai/code)
 
-Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself runs on his Mac.
+The owner worked through cloud sessions on 2026-09-24 and went back to local sessions on his
+Mac at the final handover (DECISIONS.md, "Back to local sessions"); this section is for any
+later cloud session. Jobcu itself always runs on his Mac.
 
 - A cloud session starts on a fresh Ubuntu machine with a clone of the repository. Python, uv,
   pytest, ruff and `gh` are pre-installed, and `gh` works without logging in. At the start,
@@ -141,7 +143,8 @@ Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself run
   (a cloud-only workaround; never in Jobcu's code). The gateway also cuts any AI request after
   **30 seconds** (502 "upstream request failed"), which web research at medium effort exceeds:
   set both efforts to "low" in the scratch folder's settings for cloud tests, and judge those
-  steps' quality on his Mac. Jobcu's job-site client ignores the
+  steps' quality on his Mac. Never lower the effort in Jobcu's own settings or defaults: every
+  AI step stays at medium (the owner). Jobcu's job-site client ignores the
   environment's settings, so a live source check in the cloud passes
   `PoliteClient(transport=httpx.HTTPTransport(verify=ssl.create_default_context(
   cafile=os.environ["SSL_CERT_FILE"])))`. Without such a credential, name the checks that must run

@@ -11,67 +11,45 @@ Where the project stands, and nothing else: git history says what was done, and
 ### State
 
 Jobcu works end to end. A search reads the documents with the person's own AI, collects jobs from
-25 sources (11 of them company career systems, reading 389 employers), removes duplicates, applies
-the rules and the location conditions, and scores what's left. The location box takes any
-condition in the person's own words (sizes, facts the AI looks up per town, per region or per
-country, travel limits to reference places), shows how each was checked, with sources, and can
-be corrected with Edit. The owner has run five real searches on his Mac (2026-09-22 to 24); his
-normal use will be one 24-hour search a day.
+25 sources (11 of them company career systems, reading 389 employers), lets the AI look at the
+career-site titles the search words miss, removes duplicates, applies the rules and the location
+conditions, and scores what's left with every AI step at **medium** effort (the owner's choice,
+confirmed at the handover: DECISIONS.md, "Back to local sessions"). The location box takes any
+condition in the person's own words, shows how each was checked, with sources, and can be
+corrected with Edit. The owner has run nine real searches on his Mac (2026-09-22 to 24).
 
-After search 8 (DECISIONS.md, 2026-09-23 evening and 2026-09-24): the AI reads the evidence in
-each ad first and code applies the owner's limits for clear blockers; every summary-only job
-scoring 50 or more is read online for its languages, years and town (asking before the web
-look-ups run out); facts about places can be decided for whole regions; a reference place is
-where the person would live, so a job in one needs no trip; every AI step thinks at medium, with
-room for thinking on top of each answer. Adzuna stays as the biggest source, but Jobcu no longer
-reads its pages (its firewall refuses them) and merges its "Deutschland" ads with the same job
-elsewhere. Phase 1 waits only on tuning the scoring with the quality set; most of Phase 2 is built.
+**Development is back in local Claude Code sessions on the owner's Mac** (final handover from
+the cloud, 2026-09-24 night: the cloud credit is nearly used). Local sessions can use his real
+data folder, with his permission, on a scratch copy (AGENTS.md, Commands), so everything the
+cloud couldn't check can be checked now.
 
-The first cloud session (2026-09-24) researched sources per country (SOURCES.md, "Candidate sources
-by country") and built public-sector and national sources (service.bund.de, Teaching Vacancies, NHS
-Jobs, Le Forem, Werken voor Nederland, NAV) and career systems (prospective.ch, d.vinci, Eightfold
-with Infineon, Qualcomm, Ericsson and Vodafone). Cards show closing dates and reposts. The AI
-instructions were made universal (`tools/universality_check.py`), which fixed a language bug that
-capped good jobs at 65 for anyone with a CV not in English. robots.txt is now read as the standard
-says. Then the owner set the priorities (DECISIONS.md, "The owner's priorities"): Germany, the UK
-and Ireland, and a graduate power-electronics engineer first; `tools/made_up_search.py` measures a
-whole search for such a person, and showed that the directory's career sites still find almost
-nothing for him.
+What the two cloud sessions did (2026-09-24; details in DECISIONS.md from "2026-09-24 (evening)"
+on, and in SOURCES.md):
+- **New sources:** service.bund.de, Teaching Vacancies, NHS Jobs, Le Forem, Werken voor
+  Nederland, NAV, and the career systems prospective.ch, d.vinci and Eightfold; 389 employers in
+  the directory (17 engineering employers added last, Moog, Microchip, Flex and Hitachi Energy
+  among them).
+- **Universal AI instructions** (`tools/universality_check.py`), robots.txt read as RFC 9309,
+  closing dates and reposts on cards.
+- **Search 9's findings (b) to (h) fixed**: trips to a reference place end at its nearest edge
+  ("city centre" still means the centre) and a city's districts are part of it; UK postcodes,
+  Eircodes, German state codes and English council districts are read; four kinds of duplicates
+  merge; one question, in jobs, before more web look-ups, which also read citizenship, clearance
+  and a doctorate; 3+ years short is limited to 80; `tools/coverage_test.py` says at which step
+  each job was lost; Arbeitnow's escaped HTML is read.
+- **Career-site titles the search words miss get a look from the AI** (2,377 fresh titles had
+  been dropped unseen in one search); Workday stops on repeated pages; JobsIreland.ie's empty
+  list is reported as a site problem.
+- Two 72-hour searches with the owner's CV in the cloud (no Adzuna, Reed or Google key there,
+  low effort because of the cloud's 30-second limit): **171 cards instead of 86, 21 in Ireland
+  instead of 2**, the best a graduate programme in electrical engineering in Cork.
+- Tried and not shipped: the AI searching the web for single jobs (task 3).
 
-From 2026-09-24 development runs in Claude Code cloud sessions (AGENTS.md, "Working in a cloud
-session"): no access to the owner's data folder there, so his searches and ratings come back as
-his reports, or through a local session on his Mac. He may attach his CV to a cloud session for
-testing (kept only in a scratch folder, deleted at the end).
-
-The second cloud session (2026-09-24 night, with the owner's CV attached) fixed search 9's
-findings (b) to (h) (task 1 below, each marked Done), ran two 72-hour searches with his CV
-(DECISIONS.md, "What the owner's CV showed in the cloud"), and found and fixed more:
-- trips to reference places now end at the nearest edge of the place;
-- postcodes, Eircodes, state codes and council districts are read;
-- one question, in jobs, before more web look-ups, which now also read citizenship and
-  clearance;
-- 3+ years short is limited to 80;
-- 17 engineering employers were added;
-- the person's AI now looks at career-site titles the search words miss (2,377 fresh titles had
-  been dropped unseen);
-- Workday no longer reads repeated pages;
-- JobsIreland.ie's empty list is reported, not shown as fine;
-- a schema bug in the AI layer was fixed.
-
-The second search with his CV gave 171 cards instead of 86, and 21 in Ireland instead of 2.
-A source where the AI searches the web for single jobs was tried and not shipped (task 3).
-In the cloud, AI requests over 30 seconds fail, so web research is tested there at low effort
-only (AGENTS.md).
-
-**The owner's search 9** (2026-09-24, DE/IE/GB, 72 hours, his far-right and 40-minutes-by-car
-sentence; studied in a local session the same evening): it ran end to end without errors, but
-took **33 minutes** (scoring 8, the online look-up 12) and cost about **$1.36** at today's Gemini
-prices (search 8: $0.54). 890 ads, 774 jobs, 239 cards: 132 in Germany, 105 in the UK, **2 in
-Ireland**. Adzuna 443 ads (121 unique), the Bundesagentur 171 (53), Reed 155 (38), jobs.ac.uk 72,
-the career sites 15 (Workday 11 from 734 requests). The first **quality set** is rated (32 ads and
-39 left-out titles, by Claude) and the first **coverage list** (25 fresh jobs from LinkedIn and
-StepStone) was tested: Jobcu showed **3 of 25**, and 20 were never collected by any source. The
-findings, with examples, are Next task 1.
+What the cloud could **not** check, so the next search on the Mac shows it for the first time:
+anything with Adzuna, Reed or Google Maps (the travel edge rule with real routes, Reed's
+postcodes, Adzuna summaries read online with the new citizenship limits), web research at medium
+effort (the location research and the online look-up), the AI's look at career-site titles at
+medium, and what all this costs now that more jobs reach scoring.
 
 ### In progress
 
@@ -79,223 +57,100 @@ Nothing.
 
 ### Verify before relying on
 
-- **The AI's look at career-site titles** (2026-09-24 night): in the next search on the Mac,
-  how many titles it looks at and keeps (the "Searching job sources" step says), what it costs
-  at medium, and whether jobs like graduate programmes and "RF Power Amplifier Design" reach
-  the cards.
-- **The fixes from search 9 (cloud, 2026-09-24), in the next search on the Mac:** trips to the
-  nearest edge of a reference place with Google Maps (jobs like Weichs, Weßling and Potsdam pass;
-  no job much farther away passes wrongly; "city centre" still means the centre); Reed postcodes
-  read as towns ("BB113BP, near Burnley") and merged with the same job elsewhere; council
-  districts (Thanet…) applied; one question for more web look-ups, with its time; the online
-  look-up's citizenship and clearance limits; no wrong merges of summaries; senior roles asking
-  3–4 more years at most 80.
-- **The robots.txt reader** (RFC 9309, 2026-09-24): Workday and SuccessFactors companies now
-  read differently where their robots.txt has Allow lines after a Disallow. Check that no
-  company newly read is one that clearly forbids it (the next `tools/check_employers.py` run).
-- **The new sources inside a full search** (2026-09-24): search 9 showed service.bund.de,
-  Teaching Vacancies and NHS Jobs in Search details with their counts, without slowing the search
-  (service.bund.de: 1 request, 0 jobs, "reaches back only to 22 September"). "First seen by Jobcu
-  on …" is right (12 cards, all Adzuna reposts). Still unseen: "apply by …" on a card (1 of 239 had
-  a closing date) and the non-German sources (Le Forem, prospective.ch, Werken voor Nederland,
-  NAV, d.vinci) inside a search of their countries.
-- **Merging "Deutschland" ads with the same job elsewhere:** no wrong merge seen in search 9
-  (not checked card by card). The opposite fault is common (Next task 1e).
-- **The regions answer varies from search to search:** search 7 excluded Dresden, search 8's
-  town list didn't; search 9 gave Brandenburg, Mecklenburg-Vorpommern, Saxony, Saxony-Anhalt,
-  Thuringia and Wales, except Potsdam and Cardiff. Compare the next searches' "Understood as".
-- **Cost with medium everywhere:** search 9 (72 hours) came to about $1.36 at $0.75/$3.75 per
-  million tokens (SOURCES.md, Gemini): 398k input, 282k output tokens, of which 199k thinking,
-  and 200 web searches (within Gemini's 5,000 free a month). One 24-hour search a day at that rate
-  is about $14 a month now, about $27 after the prices double on 1 January 2027, which is above
-  the €23 AI budget. Jobcu shows no cost because no prices are entered in Settings.
-- **Google Maps against the AI's estimates:** search 9 measured every trip with Google (88 cards)
-  or by distance; still no comparison with the AI's estimates.
-- **Towns found online:** search 9 found 17 of 41 (search 8: 44 of 53). The ones checked look
-  right (Leonardo in Edinburgh, Helmut-Schmidt-Universität in Hamburg, iCuTech in Lauf an der
-  Pegnitz, Ralliant in Bracknell). It has never run with another provider.
-- **Maps billing SKU:** Billing → Reports should show only "Compute Route Matrix Essentials" at
-  €0. Anything else means the limits need another look.
-- **Caching under the EEA terms:** the storing rules in SOURCES.md come from the global Maps
-  Service Specific Terms. Jobcu keeps nothing from Google, so this likely changes nothing; confirm
-  in the EEA Service Specific Terms when touching `travel.py`.
+- **The next search on the Mac** (the first with everything above), through its local check:
+  the "Searching job sources" step says how many career-site titles the AI looked at and kept;
+  graduate programmes and titles like "RF Power Amplifier Design" reach the cards; trips to the
+  nearest edge with Google Maps (jobs like Weichs, Weßling and Potsdam pass, nothing far away
+  passes wrongly); Reed postcodes read as towns and merged; council districts applied; one
+  question for more web look-ups, with its time; citizenship and clearance limits from the online
+  look-up; no wrong merges of summaries; senior roles asking 3–4 more years at most 80; **the
+  cost and the time**.
+- **The robots.txt reader** (RFC 9309): check at the next `tools/check_employers.py` run that no
+  newly read company clearly forbids it.
+- **Sources not seen inside a search yet:** "apply by …" on a card, and Le Forem, prospective.ch,
+  Werken voor Nederland, NAV and d.vinci in searches of their countries.
+- **The regions answer varies from search to search** (Dresden in or out, Wales, Ashfield):
+  compare the next searches' "Understood as".
+- **Cost:** search 9 (72 hours, medium) was about $1.36 at $0.75/$3.75 per million tokens: one
+  24-hour search a day is about $14 a month now and about $27 after the prices double on
+  1 January 2027, above the €23 AI budget. More jobs reach scoring now. Savings may never come
+  from a lower effort (the owner) or from fewer fresh jobs (AGENTS.md): see task 2.
+- **Google Maps:** Billing → Reports should show only "Compute Route Matrix Essentials" at €0;
+  no comparison of Google's times with the AI's estimates yet; the EEA terms for storing
+  (SOURCES.md) to confirm when touching `travel.py`.
+- **Towns found online:** search 9 found 17 of 41 (search 8: 44 of 53); never run with another
+  provider.
 
 ### Waiting on the owner
 
-1. **The cloud credit:** he watches it at claude.ai, Settings → Usage, and sends the
-   final-handover prompt (CONTRIBUTING.md) at about $85 used. (Cloud setup works: checked
-   2026-09-24, with Full network access and the Gemini credential answering.)
-2. **Searches while Jobcu is developed:** close Jobcu and start it again with the launcher (it
-   now updates itself from GitHub first) and run a **72-hour search every two or three days**. After each, a short local
-   session with the prompt "Check my latest search" (CONTRIBUTING.md) records what it shows for
-   the cloud sessions. Screenshots in the cloud chat are fine for anything that looks wrong.
-   **The next one matters most:** it is the first with the second cloud session's fixes and the
-   AI's look at career-site titles, on medium effort with Adzuna, Reed and Google Maps; its
-   local check goes through "Verify before relying on" and notes the cost.
-3. Nothing to rate or list by hand: the owner handed the quality set (30–50 rated ads) and the
-   coverage list (15–25 jobs he'd want) to the local check, Prompt D in CONTRIBUTING.md
-   (DECISIONS.md, 2026-09-24).
-4. **The friend's test:** his feedback on installing and using Jobcu.
-5. **So that Settings → Usage shows what each search costs:** enter the model's prices there
-   ($0.75 input and $3.75 output per million tokens until 31 December 2026). Without them Jobcu
-   shows tokens only.
-6. **Only if he wants to send them** (messages in his name; DECISIONS.md, 2026-09-24 evening):
-   access requests to StepStone, Denmark's Jobnet, Poland's CBOP, or a private NAV token. None
-   is needed for the current focus.
+1. **The next search:** restart Jobcu with the launcher (it updates itself from GitHub first)
+   and run a **72-hour search** with his usual sentence; then a local session with the prompt
+   "Check my latest search" (CONTRIBUTING.md). After that, a 72-hour search every two or three
+   days while Jobcu is developed.
+2. **So that Settings → Usage shows what each search costs:** enter the model's prices there
+   ($0.75 input and $3.75 output per million tokens until 31 December 2026).
+3. **The friend's test:** his feedback on installing and using Jobcu.
+4. **Only if he wants to send them** (messages in his name): access requests to StepStone,
+   Denmark's Jobnet, Poland's CBOP, or a private NAV token. None is needed for the current focus.
+
+The quality set and the coverage list are made by the local check on his behalf (DECISIONS.md,
+2026-09-24 night); he may still rate or add jobs himself.
 
 ### Next tasks, in order
 
 **The mission** (the owner, 2026-09-24): the best job search app possible, **universal** (any
 profession, any of the 30 countries, any wording), clean, reliable and without errors. The
 sessions decide everything (DECISIONS.md, 2026-09-24 evening); what costs money, touches his
-accounts or needs a message in his name stays his. **The owner's priorities** (2026-09-24,
-DECISIONS.md "The owner's priorities"): **Germany first, then the UK and Ireland**, and no more
-sources for other countries until these three are as strong as possible; test first and most
-with **a graduate engineer in electronics and power electronics hardware**, so that Jobcu finds
-and ranks technical and engineering jobs there as well as possible; **his own searches are the
-real test**, and their findings (from a local session on his Mac) come before everything else.
-Cost: at most €25 a month for the owner; free, or under €10 a month, for everyone else. Findings
-go to their homes: source facts to SOURCES.md, choices and reasons to DECISIONS.md, the plan
-here.
+accounts or needs a message in his name stays his. **The owner's priorities** (DECISIONS.md, "The
+owner's priorities"): **Germany first, then the UK and Ireland**, no more sources for other
+countries until these three are as strong as possible; test first and most with **a graduate
+engineer in electronics and power electronics hardware**; **his own searches are the real test**
+and their findings come before everything else. **Every AI step stays at medium effort.** Cost:
+at most €25 a month for the owner; free, or under €10 a month, for everyone else.
 
-1. **Findings from the owner's own searches**, whenever a local session records them here: they
-   come before everything else. **From search 9** (local check, 2026-09-24), most important first:
-   (a) **Partly addressed (cloud, 2026-09-24 night):** 17 engineering employers added (Moog in
-   Cork among them), career-site titles the search words miss now get a look from the AI, and
-   Stryker's Cork job turned out to be 9 days old on its own site (LinkedIn showed a repost
-   date). Still open: the agencies seen only on LinkedIn and StepStone (task 3), and more
-   employers (task 2). What search 9 showed: **Sources miss most fresh jobs.** Of 25 fresh jobs that fit his CV (LinkedIn and StepStone,
-   posted within the window), Jobcu showed 3 (Amadeus Fire in Hanover, Jobactive in Bremen, Össur
-   in Livingston as "Embla Medical"), 2 were collected and rightly left out by his conditions
-   (Great Yarmouth, Bridgend), and **20 were never collected**: all 5 in Ireland (Moog and
-   Advanced Energy in Cork, Stryker's "RF Power Engineer - R&D" in Cork, Ei Electronics in
-   Shannon), employers not in the directory (Nordex in Hamburg, Tektronix in Viersen, Saab in
-   Nuremberg, Bosch in Renningen, Luxinar in Krailling, Cambridge Consultants, ASSA ABLOY, Zenovo
-   in Derby) and agencies seen only on LinkedIn or StepStone (HILL, Next Ventures, XTENDED,
-   Actana, IC Resources' graduate job in Cambridge). Search 9 had only 2 Irish cards. So task 2
-   (the directory: Moog runs Workday; the others' systems are in SOURCES.md) and task 3 (the AI
-   searching the web) matter most, with Ireland first among the two.
-   (b) **Done (cloud, 2026-09-24): trips end at the nearest edge of a reference place, and a
-   city's districts are part of it** (DECISIONS.md, "Travel limits measured to a reference
-   place's nearest edge"); check with Google Maps in the next search. What search 9 showed:
-   **Travel limits measured to a city's centre leave jobs out wrongly.** Google gave Weichs →
-   Munich 53 minutes (Munich's centre), so three PCB-layout jobs in Weichs were left out at
-   "Augsburg, 50 min"; Forchheim → Nuremberg 44, Schrobenhausen → Augsburg 41. A reference place
-   is where the person would live (DECISIONS.md, 2026-09-24), so measure to the nearest part of
-   the city, not its centre. City districts that are reference places on their own (Hamburg's
-   Wandsbek, Eimsbüttel, and "Marienthal" with 287,101 people) take both "nearest" slots and
-   appear on cards ("Marienthal, 53 min by car").
-   (c) **Done (cloud, 2026-09-24): postcodes, state codes and council districts are read**
-   (DECISIONS.md, "Places Jobcu couldn't read in search 9"); check them in the next search.
-   What search 9 showed: **Place names the town list can't read.** Reed gives full UK postcodes as the place
-   ("CB224QR", "S336RR": 7 cards "couldn't be checked"); the Bundesagentur sometimes gives a state
-   code, shown raw ("BADEN_WUERTTEMBERG"); and 6 of the 32 UK names to avoid were council
-   districts that match no town (Thanet, Thurrock, Castle Point, Ashfield, Amber Valley, Cannock
-   Chase), so those areas passed without a word. Read postcodes and state codes, and look
-   unmatched names up among the regions and districts (`regions.csv.gz`).
-   (d) **Done (cloud, 2026-09-24): one question in jobs, with time and cost; citizenship,
-   clearance and doctorate read too** (DECISIONS.md, "The online look-up after search 9").
-   What search 9 showed: **The online look-up asks too often and reads too little.** The question about more web
-   look-ups came about four times in search 9; the owner said yes to all but the last (his
-   answer, 2026-09-24), which fits the 200 web searches exactly (50, then three more
-   allowances). Each "yes" read fewer jobs than he expected: the question counts web look-ups
-   (50) while its button counts jobs, and each job takes about two look-ups, so one allowance
-   reads about 25 jobs. Ask once, in jobs, for everything left (with a rough cost), and size the
-   allowance by jobs, not searches. Of the jobs it asked about it found most (requirements for 85
-   of 130 needing them, towns for 17 of 41); the rest were never asked because the owner stopped,
-   so 44 summary cards scoring 50+ kept their summary, and JAT in Jena (a region he excludes)
-   stayed at 81 without its town. It reads only languages and years: Rolls-Royce's two Adzuna
-   summaries scored 85 and 75, while the same jobs from its own Workday site say UK nationals
-   only (30). Read citizenship and clearance (and a required doctorate) too. It took 12 minutes.
-   (e) **Done (cloud, 2026-09-24):** all four pairs merge now (DECISIONS.md, "Places Jobcu
-   couldn't read in search 9"); check the next search for wrong merges. **Four pairs of the same job shown twice**, each for a
-   different reason: Reed's postcode
-   ("BB113BP") against Adzuna's "Burnley, Lancashire" (Corriculo, 88 and 82); two Adzuna
-   summaries of a recruiter's ad, which must be full ads to merge (AMF in Castleford, 87 twice);
-   "Heeley, Sheffield" against "Sheffield" (Adecco); and the directory's company name "Rolls-Royce
-   (professional)" with no town. Summaries could merge when one's text is contained in the
-   other's (`_text_similarity` already measures containment).
-   (f) **Partly done (cloud, 2026-09-24): 3+ years short is limited to 80** (a senior role asking
-   4+ years scored 88 with the owner's CV; DECISIONS.md, "What the owner's CV showed in the
-   cloud"). Still open: neighbouring fields. **Scoring** (score check, 32 ads rated by Claude): 23 of 32 (72%) where expected with the
-   scores given at the time, **26 of 32 (81%) re-scored with today's code** (the owner's limits
-   now hold 8+ and 10+ years to 60). Still too high: senior jobs asking 4–7 years for someone with
-   no full-time years (Tactilia 68, Stark 68, Orbem 64) and neighbouring fields (analog chip design
-   71, PLC commissioning 70). The quick check left out 2 of 39 titles worth a look (a university
-   lab lead for electric drives, a quality engineer at a hardware company). No ad in the set is a
-   good fit yet, so the check can't tell whether good jobs score high enough.
-   (g) **Done (cloud, 2026-09-24):** the tool now looks in the latest search's pool of every
-   collected job and names the step that lost each job (never collected, the quick check, a
-   place condition), matches company, title and town, and takes "Össur / Embla Medical" for a
-   company's two names. What search 9 showed: **`tools/coverage_test.py` gives wrong reasons:** it looks only at the cards, so a job that
-   was never collected is blamed on the quick check or the search words, and a different job of
-   the same company counts as found (Zenovo's Bristol test job for its Derby one). It should look
-   in the saved pool (every job collected) and say at which step each was lost, match titles
-   more strictly, and accept a company's other name (Össur and Embla Medical).
-   (h) Done (cloud, 2026-09-24): Arbeitnow sometimes sends escaped HTML, so the ad text keeps literal tags
-   (SOURCES.md, Arbeitnow).
-   (i) **Cost and time** (more jobs reach scoring since the AI looks at career-site titles:
-   watch the cost of the next search on the Mac, and consider scoring fewer, e.g. only jobs
-   the quick check calls a good fit): 33 minutes and about $1.36 for 72 hours; 70% of the output tokens were
-   thinking. Before prices double in January, find where lower thinking keeps the same answers
-   (task 7's order).
-2. **More employer career sites of engineering and tech companies in Germany, the UK and
-   Ireland.** The first full cloud searches (DECISIONS.md, 2026-09-24 evening) found no job at
-   all through the directory's career sites for a hardware engineer around Munich or in Dublin.
-   **Measure every step** with `tools/made_up_search.py` (the made-up graduate
-   power-electronics engineer; its own data folder), over **72 hours** too: 24 hours is too
-   narrow to tell sources apart. Baseline (2026-09-24, 24 hours, "Munich or within 40 km, or
-   Dublin", no Adzuna key in the cloud): 5 jobs shown before Eightfold, 7 after; career sites 0
-   both times. In order:
-   (a) Done 2026-09-24: **Eightfold** (Infineon, Qualcomm, Ericsson, Vodafone) and robots.txt
-   read as RFC 9309. Next: find out whether the robots fix now lets more Workday and
-   SuccessFactors companies through (compare `tools/check_employers.py` before and after), and
-   add Micron's Eightfold site if its Workday list is gone.
-   (b) **Personio** and **softgarden** career pages (many German engineering SMEs; check terms,
-   robots.txt and JobPosting first), and **Avature** (Siemens, Siemens Energy).
-   (c) Started 2026-09-24 (night): 17 Workday employers added (Moog, Microchip, Flex, Hitachi
-   Energy, AtkinsRéalis…; SOURCES.md). More employers on the systems Jobcu reads (Workday, SuccessFactors, Teamtailor,
-   Greenhouse, d.vinci, Eightfold): semiconductors, power electronics, automotive and industrial
-   electronics, drives, defence, medical devices, test and measurement, energy; Germany first,
-   then the UK and Ireland (Cork, Limerick, Galway, Dublin; Cambridge, Bristol, Manchester…).
-   Candidates already seen: Rohde & Schwarz, Renesas, Arm, Bosch (SOURCES.md, career systems).
-   (d) The real Workday addresses of the 30 employers whose guessed sites answered 422 (AMD,
-   Dell, Keysight, onsemi, TE Connectivity, Honeywell, Schneider Electric, Zeiss, Continental…;
-   SOURCES.md): a web search per company for its `myworkdayjobs.com` site, then
-   `tools/check_employers.py --only-new --write`.
-3. **The best legal routes to the jobs on LinkedIn and StepStone:** the person's AI searches the
-   web for fresh jobs (HANDOVER §9.6), and each is shown once Jobcu confirms it at a source it
-   may read, above all the employer's own career page (DECISIONS.md, 2026-09-24 evening).
-   **Tried 2026-09-24 (night) for single jobs, not shipped** (DECISIONS.md, "The person's AI
-   searching the web for single jobs"): the addresses a model writes are often wrong, and the
-   search engine's own links may not be followed. **Next: the AI finds employers, not jobs**:
-   it looks up employers hiring for the person's kind of work in the places searched, with their
-   career-site address; Jobcu recognises the career system from that address (Workday,
-   Greenhouse, Lever, Teamtailor, d.vinci…), checks it with one request and reads its jobs like
-   the directory's, remembering the employers found for later searches. For the directory
-   itself, sessions keep adding employers found by web search (SOURCES.md, career systems).
+1. **Check the next search** ("Check my latest search"): everything under "Verify before relying
+   on", the ratings and the coverage list; record the findings here and fix them first. Still
+   open from search 9: (a) jobs never collected, above all agencies seen only on LinkedIn and
+   StepStone (tasks 3 and 4) and employers missing from the directory (task 5); (f) neighbouring
+   fields scoring too high (analog chip design 71, PLC commissioning 70) and the quick check
+   leaving out 2 of 39 titles worth a look.
+2. **Cost at medium effort:** measure the next search's cost per step (Settings → Usage, "Search
+   details"). If the monthly cost goes above the budget, save where it loses nothing: score only
+   what the quick check keeps, send the scoring instructions and profile once per search with
+   the provider's context caching (about 3,000 tokens with each of about 60 requests; HANDOVER
+   §13, saving 8), and try the batch size with `tools/score_check.py`. Never a lower effort.
+3. **The AI finds employers, not jobs** (the route after the single-job experiment, DECISIONS.md
+   "The person's AI searching the web for single jobs"): the AI looks up employers hiring for the
+   person's kind of work in the places searched, with their career-site address; Jobcu recognises
+   the career system from that address (Workday, Greenhouse, Lever, Teamtailor, d.vinci…),
+   checks it with one request and reads its jobs like the directory's, remembering the employers
+   found for later searches.
 4. **Fewer jobs depending on Adzuna's summaries:** find the same job at its original (the
    employer's career site, the Bundesagentur) before reading it online, and measure how many
-   Adzuna jobs still rely on a summary after steps 2 and 3.
-5. **Paused until Germany, the UK and Ireland are as strong as possible:** sources for other
-   countries (the research is in SOURCES.md; Belgium's school jobs, more d.vinci and
-   prospective.ch employers), the licence limit for other professions, and the universality
-   audit's rest (re-run `tools/universality_check.py` after any change to the AI instructions,
-   which stays a rule).
+   still rely on a summary.
+5. **More employer career sites in Germany, the UK and Ireland**, measured with whole searches
+   (`tools/made_up_search.py` and the owner's own): (a) the real Workday addresses of the 30
+   employers whose guessed sites answered 422 (AMD, Dell, Keysight, onsemi, TE Connectivity,
+   Honeywell, Schneider Electric, Zeiss, Continental…; SOURCES.md), then
+   `tools/check_employers.py --only-new --write`; (b) **Personio** and **softgarden** career pages
+   (check terms, robots.txt and JobPosting first) and **Avature** (Siemens, Siemens Energy);
+   (c) more employers on the systems Jobcu reads: semiconductors, power electronics, automotive
+   and industrial electronics, drives, defence, medical devices, test and measurement, energy
+   (Rohde & Schwarz, Renesas, Arm, Bosch seen; SOURCES.md); (d) whether the robots fix lets more
+   Workday and SuccessFactors companies through, and Micron's Eightfold site.
 6. **Phase 2's "Done when":** every example sentence from HANDOVER §6, README.md and the owner's
    own, read twice with a real provider, as its author means it. Fix in general terms, never for
    one sentence.
-7. **The owner's feedback loop:** fix what his searches show; with the ratings (32 ads and 39
-   titles, rated by Claude on his behalf since 2026-09-24), the score check (`tools/score_check.py`,
-   on his Mac): the quick check first, then medium against low thinking and the batch size, then
-   the scoring prompt (HANDOVER §13); the coverage test with each local check's new list. Consider a way for him to share a search's results with a cloud
-   session without personal data (no CV, no profile).
-8. **Ready for friends (Phase 4):** a first-run setup screen, updating from GitHub while keeping
+7. **Scoring with the quality set** (`tools/score_check.py`, on his Mac): the quick check first,
+   then the scoring prompt (HANDOVER §13), once the set holds good fits too.
+8. **Paused until Germany, the UK and Ireland are as strong as possible:** sources for other
+   countries (SOURCES.md), the licence limit for other professions, and the universality audit's
+   rest (re-run `tools/universality_check.py` after any change to the AI instructions, which
+   stays a rule).
+9. **Ready for friends (Phase 4):** a first-run setup screen, updating from GitHub while keeping
    the data folder, the guides tested on a clean Mac and a clean Windows computer, and the
    repository moved to a free GitHub organization, choosing with the owner how friends
    contribute.
-9. **Cost, last:** the scoring instructions and profile (about 3,000 tokens) go out with each of
-   about 60 requests a search; try the provider's context caching (HANDOVER §13, saving 8).
 
 ### Known limitations
 
