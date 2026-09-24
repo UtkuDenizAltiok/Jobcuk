@@ -11,7 +11,7 @@ Where the project stands, and nothing else: git history says what was done, and
 ### State
 
 Jobcu works end to end. A search reads the documents with the person's own AI, collects jobs from
-25 sources (11 of them company career systems, reading 372 employers), removes duplicates, applies
+25 sources (11 of them company career systems, reading 389 employers), removes duplicates, applies
 the rules and the location conditions, and scores what's left. The location box takes any
 condition in the person's own words (sizes, facts the AI looks up per town, per region or per
 country, travel limits to reference places), shows how each was checked, with sources, and can
@@ -216,7 +216,8 @@ here.
    add Micron's Eightfold site if its Workday list is gone.
    (b) **Personio** and **softgarden** career pages (many German engineering SMEs; check terms,
    robots.txt and JobPosting first), and **Avature** (Siemens, Siemens Energy).
-   (c) More employers on the systems Jobcu reads (Workday, SuccessFactors, Teamtailor,
+   (c) Started 2026-09-24 (night): 17 Workday employers added (Moog, Microchip, Flex, Hitachi
+   Energy, AtkinsRéalis…; SOURCES.md). More employers on the systems Jobcu reads (Workday, SuccessFactors, Teamtailor,
    Greenhouse, d.vinci, Eightfold): semiconductors, power electronics, automotive and industrial
    electronics, drives, defence, medical devices, test and measurement, energy; Germany first,
    then the UK and Ireland (Cork, Limerick, Galway, Dublin; Cambridge, Bristol, Manchester…).
@@ -320,7 +321,7 @@ here.
       jobs.ac.uk, Teaching Vacancies, NHS Jobs, Le Forem, Werken voor Nederland, NAV,
       EURAXESS, Arbeitnow, Arbetsförmedlingen, and company career sites in 11 systems
       (Greenhouse, Lever, Ashby, Workable, Recruitee, Workday, Teamtailor, SuccessFactors,
-      prospective.ch, d.vinci, Eightfold) for 372 employers
+      prospective.ch, d.vinci, Eightfold) for 389 employers
 - [x] Per-source status, unique-job counts and on/off switches
 - [ ] A source for every supported country (HANDOVER §9.0)
 - [ ] More career systems and employers; live AI web search for jobs (HANDOVER §9.6)

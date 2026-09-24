@@ -7924,6 +7924,75 @@
    }
   },
   {
+   "name": "AtkinsRéalis",
+   "system": "workday",
+   "board": "https://slihrms.wd3.myworkdayjobs.com/Careers",
+   "countries": [
+    "DE",
+    "FR",
+    "GB",
+    "IE",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Oldenburg"
+    ],
+    "FR": [
+     "Lyon",
+     "Paris",
+     "Tours"
+    ],
+    "GB": [
+     "Aberdeen",
+     "Bedford",
+     "Belfast",
+     "Birmingham",
+     "Bristol",
+     "Cambridge",
+     "Cardiff",
+     "Chelmsford",
+     "Cheltenham",
+     "Crewe",
+     "Derby",
+     "Edinburgh",
+     "Exeter",
+     "Glasgow",
+     "Leeds",
+     "Liverpool",
+     "London",
+     "Manchester",
+     "Newcastle upon Tyne",
+     "Nottingham",
+     "Oxford",
+     "Peterborough",
+     "Plymouth",
+     "Royal Tunbridge Wells",
+     "Sheffield",
+     "Southampton",
+     "Swansea",
+     "Swindon",
+     "Warrington",
+     "Worcester",
+     "York"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin",
+     "Dundalk",
+     "Galway"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Stockholm"
+    ]
+   }
+  },
+  {
    "name": "AVEVA (AVEVA_careers)",
    "system": "workday",
    "board": "https://aveva.wd3.myworkdayjobs.com/AVEVA_careers",
@@ -8545,6 +8614,59 @@
    }
   },
   {
+   "name": "Carrier",
+   "system": "workday",
+   "board": "https://carrier.wd5.myworkdayjobs.com/jobs",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HU",
+    "IT",
+    "LT",
+    "NL",
+    "PL",
+    "PT",
+    "SE",
+    "SK"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Spreitenbach"
+    ],
+    "CZ": [
+     "Beroun"
+    ],
+    "DE": [
+     "Allendorf",
+     "Berlin",
+     "Mörfelden-Walldorf"
+    ],
+    "FR": [
+     "Culoz",
+     "Massy",
+     "Montluel"
+    ],
+    "NL": [
+     "Utrecht"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SK": [
+     "Bratislava"
+    ]
+   }
+  },
+  {
    "name": "Centrica",
    "system": "workday",
    "board": "https://centrica.wd3.myworkdayjobs.com/Centrica",
@@ -8675,6 +8797,37 @@
    ],
    "elsewhere": true,
    "towns": {}
+  },
+  {
+   "name": "Cognex",
+   "system": "workday",
+   "board": "https://cognex.wd1.myworkdayjobs.com/External_Career_Site",
+   "countries": [
+    "CH",
+    "DE",
+    "HU",
+    "IE",
+    "IT"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Fribourg"
+    ],
+    "DE": [
+     "Aachen",
+     "Jena"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Cork"
+    ],
+    "IT": [
+     "Milan"
+    ]
+   }
   },
   {
    "name": "Danaher",
@@ -9204,6 +9357,72 @@
     ],
     "PL": [
      "Warsaw"
+    ]
+   }
+  },
+  {
+   "name": "Flex",
+   "system": "workday",
+   "board": "https://flextronics.wd1.myworkdayjobs.com/Careers",
+   "countries": [
+    "AT",
+    "CH",
+    "DE",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Althofen",
+     "Vienna"
+    ],
+    "DE": [
+     "Stuttgart"
+    ],
+    "GB": [
+     "Blackburn",
+     "Hemel Hempstead",
+     "Kendal",
+     "Warrington"
+    ],
+    "HU": [
+     "Budapest",
+     "Gyál",
+     "Tab",
+     "Zalaegerszeg",
+     "Üllő"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin",
+     "Dundalk"
+    ],
+    "IT": [
+     "Milan",
+     "Somaglia"
+    ],
+    "NL": [
+     "Oostrum",
+     "Utrecht",
+     "Venray",
+     "Woerden"
+    ],
+    "PL": [
+     "Bielsko-Biala",
+     "Tczew"
+    ],
+    "RO": [
+     "Timişoara"
+    ],
+    "SE": [
+     "Kalmar"
     ]
    }
   },
@@ -9819,6 +10038,75 @@
      "Lisbon"
     ]
    }
+  },
+  {
+   "name": "HBK (Spectris)",
+   "system": "workday",
+   "board": "https://spectris.wd3.myworkdayjobs.com/HBK_Careers",
+   "countries": [
+    "AT",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IT",
+    "PL",
+    "PT"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Graz"
+    ],
+    "DE": [
+     "Darmstadt",
+     "Göttingen"
+    ],
+    "DK": [
+     "Virum"
+    ],
+    "FR": [
+     "Sucy-en-Brie"
+    ],
+    "IT": [
+     "Tavagnacco",
+     "Turin"
+    ],
+    "PT": [
+     "Maia",
+     "Porto"
+    ]
+   }
+  },
+  {
+   "name": "Hitachi",
+   "system": "workday",
+   "board": "https://hitachi.wd1.myworkdayjobs.com/hitachi",
+   "countries": [
+    "AT",
+    "BE",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "GR",
+    "HR",
+    "IE",
+    "IT",
+    "NL",
+    "PL",
+    "PT",
+    "RO",
+    "SE",
+    "SK"
+   ],
+   "elsewhere": true,
+   "towns": {}
   },
   {
    "name": "HP",
@@ -11504,6 +11792,135 @@
    }
   },
   {
+   "name": "Magna",
+   "system": "workday",
+   "board": "https://magna.wd3.myworkdayjobs.com/Magna",
+   "countries": [
+    "AT",
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "PL",
+    "RO",
+    "SE",
+    "SK"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Albersdorf",
+     "Graz",
+     "Ilz",
+     "Klagenfurt am Wörthersee",
+     "Lannach",
+     "Sankt Valentin",
+     "Traiskirchen",
+     "Weiz"
+    ],
+    "CZ": [
+     "Liberec",
+     "Mladá Boleslav",
+     "Pilsen",
+     "Rychnov nad Kněžnou",
+     "České Velenice"
+    ],
+    "DE": [
+     "Assamstadt",
+     "Elsendorf",
+     "Hannover",
+     "Heilbad Heiligenstadt",
+     "Kerpen",
+     "Leipzig",
+     "Markt Schwaben",
+     "Meerane",
+     "Munich",
+     "Neuenstadt am Kocher",
+     "Neuenstein",
+     "Sailauf",
+     "Salzgitter",
+     "Schleiz",
+     "Schwäbisch Gmünd",
+     "Sindelfingen",
+     "Soest",
+     "Untergruppenbach",
+     "Veitsbronn",
+     "Waldshut-Tiengen",
+     "Wolfsburg",
+     "Wuppertal"
+    ],
+    "ES": [
+     "Almussafes",
+     "Polinyà",
+     "Porriño"
+    ],
+    "FR": [
+     "Bièvres",
+     "Étupes"
+    ],
+    "GB": [
+     "Banbury",
+     "Telford"
+    ],
+    "IE": [
+     "Bagenalstown"
+    ],
+    "IT": [
+     "Collesalvetti",
+     "La Loggia"
+    ],
+    "PL": [
+     "Kędzierzyn-Koźle",
+     "Tychy"
+    ],
+    "RO": [
+     "Iaşi",
+     "Timişoara"
+    ],
+    "SE": [
+     "Linköping"
+    ]
+   }
+  },
+  {
+   "name": "Malvern Panalytical (Spectris)",
+   "system": "workday",
+   "board": "https://spectris.wd3.myworkdayjobs.com/Malvern_Panalytical_Careers",
+   "countries": [
+    "CH",
+    "DE",
+    "FR",
+    "GB",
+    "NL",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Wädenswil",
+     "Zürich"
+    ],
+    "DE": [
+     "Munich"
+    ],
+    "FR": [
+     "Palaiseau"
+    ],
+    "NL": [
+     "Almelo",
+     "Eindhoven"
+    ],
+    "PL": [
+     "Warsaw"
+    ]
+   }
+  },
+  {
    "name": "Marvell",
    "system": "workday",
    "board": "https://marvell.wd1.myworkdayjobs.com/MarvellCareers",
@@ -11826,6 +12243,73 @@
    }
   },
   {
+   "name": "Microchip",
+   "system": "workday",
+   "board": "https://microchiphr.wd5.myworkdayjobs.com/External",
+   "countries": [
+    "BE",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IE",
+    "IT",
+    "NO",
+    "RO"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "DE": [
+     "Dresden",
+     "Garching",
+     "Haan",
+     "Heilbronn",
+     "Karlsruhe",
+     "Munich",
+     "Neckarbischofsheim",
+     "Neu-Ulm",
+     "Teltow"
+    ],
+    "DK": [
+     "Herlev"
+    ],
+    "ES": [
+     "Zaragoza"
+    ],
+    "FR": [
+     "Nantes",
+     "Rousset"
+    ],
+    "GB": [
+     "Antrim",
+     "Belfast",
+     "Caldicot",
+     "Cambridge",
+     "Winchester"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin",
+     "Ennis"
+    ],
+    "IT": [
+     "Legnano",
+     "Milan",
+     "Padua"
+    ],
+    "NO": [
+     "Trondheim"
+    ],
+    "RO": [
+     "Bucharest"
+    ]
+   }
+  },
+  {
    "name": "Micron",
    "system": "workday",
    "board": "https://micron.wd1.myworkdayjobs.com/External",
@@ -11842,6 +12326,44 @@
      "Arzano",
      "Avezzano",
      "Vimercate"
+    ]
+   }
+  },
+  {
+   "name": "Moog",
+   "system": "workday",
+   "board": "https://moog.wd5.myworkdayjobs.com/MOOG_External_Career_Site",
+   "countries": [
+    "DE",
+    "GB",
+    "IE",
+    "IT",
+    "LT",
+    "NL"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Böblingen",
+     "Geisenheim"
+    ],
+    "GB": [
+     "Wolverhampton"
+    ],
+    "IE": [
+     "Carrigaline",
+     "Dublin"
+    ],
+    "IT": [
+     "Bergamo",
+     "Genoa",
+     "Varese"
+    ],
+    "LT": [
+     "Vilnius"
+    ],
+    "NL": [
+     "Amsterdam"
     ]
    }
   },
@@ -12058,6 +12580,24 @@
     ],
     "RO": [
      "Bucharest"
+    ]
+   }
+  },
+  {
+   "name": "Nidec",
+   "system": "workday",
+   "board": "https://nidec.wd1.myworkdayjobs.com/Nidec",
+   "countries": [
+    "GR",
+    "IT"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "GR": [
+     "Markópoulo"
+    ],
+    "IT": [
+     "Milan"
     ]
    }
   },
@@ -12903,6 +13443,75 @@
    }
   },
   {
+   "name": "Rockwell Automation",
+   "system": "workday",
+   "board": "https://rockwellautomation.wd1.myworkdayjobs.com/External_Rockwell_Automation",
+   "countries": [
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "ES",
+    "FR",
+    "GB",
+    "IT",
+    "NL",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Aarau",
+     "Luzern",
+     "Wil"
+    ],
+    "CZ": [
+     "Brno",
+     "Prague"
+    ],
+    "DE": [
+     "Düsseldorf",
+     "Karlsruhe"
+    ],
+    "DK": [
+     "Brønderslev"
+    ],
+    "ES": [
+     "Barcelona",
+     "Madrid"
+    ],
+    "FR": [
+     "Lille",
+     "Lyon",
+     "Nantes",
+     "Paris"
+    ],
+    "GB": [
+     "Aldridge"
+    ],
+    "IT": [
+     "Artegna",
+     "Milan",
+     "Verona"
+    ],
+    "NL": [
+     "Rotterdam"
+    ],
+    "PL": [
+     "Gdańsk",
+     "Katowice",
+     "Szczecin",
+     "Warsaw"
+    ],
+    "SE": [
+     "Gothenburg",
+     "Lund",
+     "Stockholm"
+    ]
+   }
+  },
+  {
    "name": "Rolls-Royce (Apprentice)",
    "system": "workday",
    "board": "https://rollsroyce.wd3.myworkdayjobs.com/Apprentice",
@@ -13422,6 +14031,31 @@
      "Lisbon",
      "Porto",
      "Setúbal"
+    ]
+   }
+  },
+  {
+   "name": "Sensata",
+   "system": "workday",
+   "board": "https://sensata.wd1.myworkdayjobs.com/Sensata-Careers",
+   "countries": [
+    "DE"
+   ],
+   "elsewhere": true,
+   "towns": {}
+  },
+  {
+   "name": "Servomex (Spectris)",
+   "system": "workday",
+   "board": "https://spectris.wd3.myworkdayjobs.com/Servomex_Careers",
+   "countries": [
+    "GB",
+    "NL"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "GB": [
+     "Crowborough"
     ]
    }
   },
@@ -14121,6 +14755,81 @@
    }
   },
   {
+   "name": "Trimble",
+   "system": "workday",
+   "board": "https://trimble.wd1.myworkdayjobs.com/TrimbleCareers",
+   "countries": [
+    "AT",
+    "CH",
+    "DE",
+    "DK",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HR",
+    "HU",
+    "IE",
+    "IT",
+    "LV",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Wädenswil"
+    ],
+    "DE": [
+     "Berlin",
+     "Bonn",
+     "Braunschweig",
+     "Jena",
+     "Munich",
+     "Raunheim",
+     "Stuttgart",
+     "Ulm"
+    ],
+    "FI": [
+     "Espoo"
+    ],
+    "FR": [
+     "Joinville-le-Pont"
+    ],
+    "GB": [
+     "Leeds",
+     "London",
+     "Milton Keynes",
+     "Newcastle upon Tyne"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Cork"
+    ],
+    "NL": [
+     "Best",
+     "Bodegraven"
+    ],
+    "NO": [
+     "Sandvika"
+    ],
+    "RO": [
+     "Braşov"
+    ],
+    "SE": [
+     "Danderyd",
+     "Gothenburg",
+     "Västerås"
+    ]
+   }
+  },
+  {
    "name": "TRUMPF (TRUMPF_Apprenticeships)",
    "system": "workday",
    "board": "https://trumpf.wd3.myworkdayjobs.com/TRUMPF_Apprenticeships",
@@ -14326,6 +15035,85 @@
     ],
     "NL": [
      "Utrecht"
+    ]
+   }
+  },
+  {
+   "name": "Valeo",
+   "system": "workday",
+   "board": "https://valeo.wd3.myworkdayjobs.com/valeo_jobs",
+   "countries": [
+    "CZ",
+    "DE",
+    "ES",
+    "FR",
+    "HU",
+    "IE",
+    "IT",
+    "PL",
+    "RO",
+    "SK"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Braunschweig",
+     "Garching",
+     "Munich",
+     "Rüsselsheim am Main"
+    ],
+    "ES": [
+     "Getafe",
+     "Zaragoza"
+    ],
+    "FR": [
+     "Amiens",
+     "Angers",
+     "Limoges",
+     "Paris",
+     "Reims",
+     "Saint-Denis"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Tuam"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "SK": [
+     "Prešov"
+    ]
+   }
+  },
+  {
+   "name": "Viavi",
+   "system": "workday",
+   "board": "https://viavisolutions.wd1.myworkdayjobs.com/careers",
+   "countries": [
+    "ES",
+    "GB",
+    "IE",
+    "RO"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "ES": [
+     "Madrid"
+    ],
+    "GB": [
+     "Stevenage"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "RO": [
+     "Bucharest"
     ]
    }
   },
