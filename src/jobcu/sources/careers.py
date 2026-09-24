@@ -283,10 +283,13 @@ def keep_job(job: FoundJob, employer: Employer, query: JobQuery, start: datetime
     languages = {"en"}
     for code in [country] if country else searched:
         languages.update(COUNTRIES[code].ad_languages)
-    if not matches_terms(query.terms, languages, job.title, job.description):
-        return None
+    # Career sites list every job with its title only, and fixed words miss many fitting
+    # titles ("R&D Electrical Engineering Graduate Program" for a hardware engineer): those go
+    # to the person's AI for a quick look instead of being dropped (2026-09-24 night).
+    matched = matches_terms(query.terms, languages, job.title, job.description)
     if country and not matches_places(query.places, country, job.location_text):
         return None
+    job.title_unmatched = not matched
     job.country = country
     job.company = job.company or employer.name
     job.employer_url = job.employer_url or job.url

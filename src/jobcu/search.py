@@ -35,7 +35,7 @@ from jobcu.location import (
     needs_checking,
 )
 from jobcu.profile import Profile, read_profile_reusing
-from jobcu.relevance import quick_pass
+from jobcu.relevance import quick_pass, screen_titles
 from jobcu.settings import SearchForm, load_settings
 from jobcu.sources.base import JobQuery
 from jobcu.sources.http import PoliteClient
@@ -330,13 +330,42 @@ def run_search(run: SearchRun) -> None:
         run.set_result("usage", {step: asdict(used) for step, used in usage.items()})
 
 
+def _screen_career_titles(run, client, profile, collected) -> str:
+    """Career-site titles the search words missed: the person's AI decides which deserve a
+    closer look (relevance.screen_titles); the rest are left out, as before. Says what it did,
+    for the step's detail."""
+    unmatched = [job for job in collected.jobs if job.title_unmatched]
+    if not unmatched:
+        return ""
+    run.update("sources", "running",
+               f"Your AI is looking at {len(unmatched)} more job titles from company career sites")
+    # Each title of each company is looked at once, however many places list it.
+    pairs = list(dict.fromkeys((job.title.strip(), job.company) for job in unmatched))
+    try:
+        picked = {pairs[index] for index in screen_titles(client, profile, pairs)}
+    except AIError as exc:
+        log.info("Career-site titles couldn't be checked: %s", exc)
+        run.note("Job titles from company career sites that the search words missed couldn't "
+                 f"be checked by your AI, so they were left out. {exc.message}")
+        picked = set()
+    keep = {id(job) for job in unmatched if (job.title.strip(), job.company) in picked}
+    dropped = Counter(job.source for job in unmatched if id(job) not in keep)
+    collected.jobs = [job for job in collected.jobs if not job.title_unmatched or id(job) in keep]
+    for report in collected.reports:
+        report.jobs_found -= dropped.get(report.source, 0)
+    return (f" ({len(keep)} of {len(unmatched)} more titles from company career sites kept by "
+            "your AI)")
+
+
 def _find_and_score(run, settings, client, keys, http, profile, plan, query, checkpoint) -> None:
     form = run.form
     run.update("sources", "running")
     collected = pipeline.collect(query, http, keys, settings.sources_disabled, run)
     names = {source_id: source.name for source_id, source in collected.sources.items()}
     working = [r for r in collected.reports if r.status in ("ok", "partial")]
-    run.update("sources", "done" if working else "failed", f"{len(collected.jobs)} job ads found")
+    screened = _screen_career_titles(run, client, profile, collected)
+    run.update("sources", "done" if working else "failed",
+               f"{len(collected.jobs)} job ads found" + screened)
     for report in collected.reports:
         if report.message and report.status in ("partial", "failed", "unavailable"):
             run.note(report.message if report.message.startswith(report.name)

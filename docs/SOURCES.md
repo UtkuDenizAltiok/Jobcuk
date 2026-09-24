@@ -186,6 +186,8 @@ company had jobs in, and whether it also hires outside them).
   still to be found. Siemens Healthineers' and Western Digital's robots.txt close the job list.
 - **Eightfold's 0 jobs in search 9 was real:** Infineon's sitemap (1,311 jobs) had 35 changed in
   the 72 hours, 2 of them in Germany (a working student in Regensburg, a planning job in Dresden).
+- **Some Workday sites repeat their first page for every offset** (2026-09-24 night: 25 copies
+  of the same titles), so Jobcu stops a list at the first page with nothing new.
 - **Rolls-Royce's Workday entry** is named "Rolls-Royce (professional)" (the site's name), and its
   jobs came without a town, so they never merged with the same jobs on Adzuna (search 9).
 - **Finding SuccessFactors sites** (2026-09-21): their robots.txt has the tell-tale

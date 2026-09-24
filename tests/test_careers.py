@@ -68,7 +68,10 @@ def test_keeps_fresh_matching_jobs_in_the_countries_searched():
     assert keep_job(job(hours_ago=30), employer(), q, start) is None
     assert keep_job(job(location="Munich, Germany"), employer(), q, start) is None
     assert keep_job(job(location="Dublin, CA"), employer(), q, start) is None
-    assert keep_job(job(title="Account Executive"), employer(), q, start) is None
+    # A title the search words miss goes to the person's AI for a look (relevance.py).
+    unmatched = keep_job(job(title="Account Executive"), employer(), q, start)
+    assert unmatched is not None and unmatched.title_unmatched
+    assert not kept.title_unmatched
 
 
 def test_unclear_locations_depend_on_where_the_company_hires():
@@ -543,6 +546,20 @@ def test_workday_reads_the_searched_countries_newest_first_and_stops_at_old_jobs
 
     survey = wd.WorkdaySource().survey(board, context(workday_handler([])))
     assert survey.counts == {"IE": 30, "other": 70}
+
+
+def test_workday_stops_when_a_site_answers_every_page_with_the_same_jobs():
+    # 2026-09-24 night: some sites return the first page for every offset, so the same titles
+    # came 25 times (the page limit) and cost hundreds of requests.
+    same = [posting("Digital Verification Engineer", "Posted Today", f"/job/Cork/V_{i}")
+            for i in range(20)]
+    seen = []
+    ctx = context(workday_handler([same] * 30, seen=seen))
+    board = employer("workday", "https://fakeco.wd1.myworkdayjobs.com/External")
+    jobs = list(wd.WorkdaySource().list_jobs(board, ctx, countries=["IE"],
+                                             start=NOW - timedelta(hours=72)))
+    assert len(jobs) == 20 and len({job.source_job_id for job in jobs}) == 20
+    assert len(seen) == 3  # the country filter, its first page, and one repeat
 
 
 def test_workday_respects_robots_txt():

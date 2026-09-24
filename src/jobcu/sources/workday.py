@@ -91,19 +91,26 @@ class WorkdaySource(CareerSystemSource):
             wanted = [(code, [facet_id for facet_id, codes in facets.items() if code in codes])
                       for code in countries]
             wanted = [(code, ids) for code, ids in wanted if ids]
+        seen: set[str] = set()
         for code, ids in wanted:
             for page in range(MAX_PAGES_PER_COUNTRY):
                 data = first if not ids and page == 0 else self._page(
                     site, {parameter: ids} if ids else {}, page * PAGE_SIZE, ctx)
                 postings = data.get("jobPostings") or []
-                too_old = 0
+                too_old = new = 0
                 for item in postings:
                     job = to_found_job(item, site, employer, code, today)
                     if start and freshness(job.posted_at, job.date_precision, start) == "too_old":
                         too_old += 1
+                    if job.source_job_id in seen:
+                        continue
+                    seen.add(job.source_job_id)
+                    new += 1
                     yield job
                 # Lists come newest first; a page of only older jobs means the rest is older.
-                if len(postings) < PAGE_SIZE or (start and too_old == len(postings)):
+                # Some sites answer every later page with the same jobs (the same titles 25
+                # times, 2026-09-24 night): a page with nothing new ends the list too.
+                if len(postings) < PAGE_SIZE or (start and too_old == len(postings)) or not new:
                     break
 
     def survey(self, employer: Employer, ctx: SourceContext) -> Survey:

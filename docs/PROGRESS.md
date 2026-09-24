@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 497 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 500 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -58,6 +58,10 @@ Nothing.
 
 ### Verify before relying on
 
+- **The AI's look at career-site titles** (2026-09-24 night): in the next search on the Mac,
+  how many titles it looks at and keeps (the "Searching job sources" step says), what it costs
+  at medium, and whether jobs like graduate programmes and "RF Power Amplifier Design" reach
+  the cards.
 - **The fixes from search 9 (cloud, 2026-09-24), in the next search on the Mac:** trips to the
   nearest edge of a reference place with Google Maps (jobs like Weichs, Weßling and Potsdam pass;
   no job much farther away passes wrongly; "city centre" still means the centre); Reed postcodes
