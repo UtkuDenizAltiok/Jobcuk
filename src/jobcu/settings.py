@@ -40,7 +40,7 @@ class LimitSettings(BaseModel):
     # When a cap is reached, Jobcu asks before continuing. It never skips silently.
     scoring_cap: int = Field(default=200, ge=1)
     # Web look-ups in one search, for the conditions someone wrote about places.
-    # Understanding the location takes about 10; finding where the best jobs are uses the rest.
+    # Understanding the location takes about 10; looking the best jobs up online uses the rest.
     web_search_cap: int = Field(default=50, ge=0)
     # Optional monthly limits. AI work stops when one is reached.
     monthly_token_limit: int | None = Field(default=None, ge=1)

@@ -144,16 +144,6 @@ def find_region(name: str | None, country: str | None = None) -> Region | None:
     return None
 
 
-@cache
-def _regions_by_code() -> dict[str, Region]:
-    return {region.code: region for regions in _regions().values() for region in regions}
-
-
-def region_name(code: str) -> str:
-    region = _regions_by_code().get(code)
-    return region.name if region else code
-
-
 def find(name: str | None, country: str | None = None) -> Town | None:
     """The best known town with this name, preferring the one in the given country."""
     towns = _towns().get(normalise(name))

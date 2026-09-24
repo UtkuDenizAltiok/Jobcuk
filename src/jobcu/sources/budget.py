@@ -8,7 +8,7 @@ is reached, and tells the user instead of failing.
 import calendar
 import threading
 from dataclasses import dataclass, replace
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from jobcu import db
 
@@ -20,11 +20,15 @@ class Limits:
     per_month: int | None = None
 
 
+# How far back Jobcu looks to see how many searches a person runs a day.
+HABIT_DAYS = 14
+
+
 def share_of_month(
     source: str,
     limits: Limits,
     *,
-    searches_per_day: int = 3,
+    searches_per_day: float | None = None,
     fewest: int = 25,
     most: int = 60,
     now=lambda: datetime.now(UTC),
@@ -32,9 +36,9 @@ def share_of_month(
     """Spreads what is left of a monthly free allowance over the rest of the month.
 
     A fixed number of requests per search wastes the allowance on quiet days and runs out
-    early on busy ones. This shares what is left over the days still to come, at about the
-    number of searches the owner really runs a day (DECISIONS.md), and never allows more than
-    is left today.
+    early on busy ones. This shares what is left over the days still to come, at the number of
+    searches this person really runs a day (the last two weeks: one a day for the owner, more
+    for others), and never allows more than is left today.
     """
     if limits.per_month is None:
         return limits
@@ -42,11 +46,23 @@ def share_of_month(
     used_today, used_this_month = _used(source, today)
     days_left = calendar.monthrange(today.year, today.month)[1] - today.day + 1
     left_this_month = max(0, limits.per_month - used_this_month)
-    per_search = int(left_this_month / days_left / max(1, searches_per_day))
+    if searches_per_day is None:
+        searches_per_day = searches_a_day(today)
+    per_search = int(left_this_month / days_left / searches_per_day)
     per_search = max(fewest, min(most, per_search))
     if limits.per_day is not None:
         per_search = min(per_search, max(0, limits.per_day - used_today))
     return replace(limits, per_search=per_search)
+
+
+def searches_a_day(now: datetime) -> float:
+    """How many searches a day this person ran in the last two weeks: at least one."""
+    since = (now - timedelta(days=HABIT_DAYS)).strftime("%Y-%m-%dT%H:%M:%S")
+    with db.connect() as conn:
+        searches = conn.execute(
+            "SELECT COUNT(*) FROM searches WHERE started_at >= ?", (since,)
+        ).fetchone()[0]
+    return max(1.0, searches / HABIT_DAYS)
 
 
 def _used(source: str, now: datetime) -> tuple[int, int]:

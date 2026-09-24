@@ -112,4 +112,3 @@ def test_regions_are_found_by_their_english_local_and_short_names():
     assert places.find_region("Wales", "GB").level == "region"
     assert places.find_region("Saxony", "GB") is None
     assert places.find_region("Atlantis", "DE") is None
-    assert places.region_name("DE.K.14612") == "Kreisfreie Stadt Dresden"

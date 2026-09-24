@@ -309,9 +309,10 @@ def test_adzuna_budget_shares_what_is_left_of_the_month():
                     (day, used_today),
                 )
         when = datetime.fromisoformat(day + "T12:00:00+00:00")
-        return share_of_month("adzuna", limits, now=lambda: when).per_search
+        return share_of_month("adzuna", limits, searches_per_day=3,
+                              now=lambda: when).per_search
 
-    # 2,400 requests over 31 days at about 3 searches a day is around 25 per search.
+    # 2,400 requests over 30 days at 3 searches a day is around 25 per search.
     assert on("2026-09-01") == 26
     # Nothing used by the middle of the month: more per search, but never more than 60.
     assert on("2026-09-20", used_this_month=200) == 60
@@ -329,3 +330,24 @@ def test_adzuna_salary_shows_the_currency_and_a_single_figure_once():
     item = {**item, "salary_max": 90000.4}
     assert adzuna.to_found_job(item, "DE").salary_text == "€75,000 – €90,000"
     assert adzuna.to_found_job({**item, "salary_is_predicted": "1"}, "DE").salary_text is None
+
+
+def test_the_share_follows_how_often_this_person_really_searches():
+    from datetime import datetime, timedelta
+
+    from jobcu import db
+    from jobcu.sources.budget import Limits, searches_a_day, share_of_month
+
+    now = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    limits = Limits(per_day=240, per_month=2400)
+    # No searches yet, or one a day (the owner's use): the most a search may take.
+    assert searches_a_day(now) == 1.0
+    assert share_of_month("adzuna", limits, now=lambda: now).per_search == 60
+    # Six a day for two weeks: the month's allowance is shared more thinly.
+    with db.connect() as conn:
+        for hours in range(0, 14 * 24, 4):
+            conn.execute("INSERT INTO searches (started_at, status, form_json) "
+                         "VALUES (?, 'finished', '{}')",
+                         ((now - timedelta(hours=hours)).strftime("%Y-%m-%dT%H:%M:%S.000Z"),))
+    assert searches_a_day(now) == 6.0
+    assert share_of_month("adzuna", limits, now=lambda: now).per_search == 25
