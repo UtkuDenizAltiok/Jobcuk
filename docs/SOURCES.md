@@ -365,6 +365,28 @@ dataset under CC BY-SA 4.0**, updated in real time (Opendatasoft). Credit is in 
   **no primary-school teacher jobs**, so Flemish and Walloon schools post elsewhere (the
   education departments' own portals, still to be found).
 
+## Werken voor Nederland, the Dutch government (`src/jobcu/sources/werkenvoornederland.py`), checked 2026-09-24
+
+The Dutch central government's own job site: ministries, agencies, courts, the tax office
+(Belastingdienst), Defence, Rijkswaterstaat and others.
+
+- **Sitemap:** `GET https://www.werkenvoornederland.nl/sitemap-vacatures.xml` (about 300 KB)
+  lists **1,281** job pages with `lastmod` (the last change, not the posting date): 129 changed
+  in 24 hours, 282 in 48, 430 in 72, 540 in a week (2026-09-24). Each address carries the job's
+  title and number: `/vacatures/{title words}-{organisation}-{year}-{number}`.
+- **Job pages** carry **schema.org JobPosting**: title, `datePosted` (day), `validThrough`
+  (day), `employmentType` (mostly TEMPORARY: government jobs often start with a temporary
+  contract), `hiringOrganization` (with a leading space), place ("Den Haag (Rijnstraat)",
+  "Rijnstraat 8 te Den Haag"), salary range. Its `description` is a one-line summary; the page
+  text (trafilatura) has the whole ad (1,300 to 9,000 characters).
+- **robots.txt** closes only `/login` and says `Request-rate: 10/1`; Jobcu waits 0.3 s.
+  data.overheid.nl lists the jobs as open data too ("Vacatures Overheid", with a CSO vacancy
+  API); its page timed out in the check.
+- Jobcu matches the search words against the title words of the addresses changed since the
+  day before the window, and opens only the matching pages (at most 80 a search). **Live run
+  (2026-09-24, deliberately broad words "Beleidsmedewerker", "Jurist", "Adviseur", 72 hours):**
+  43 jobs before the 80-page cap, from the Foreign Office, the tax office, a court, Defence.
+
 ## Google Maps, for travel times (`src/jobcu/travel.py`), checked 2026-09-21
 
 Not a job source: used only for conditions like "at most 50 minutes by public transport to a
@@ -618,13 +640,7 @@ systems. No Swiss public or national source yet.
 
 ### The Netherlands
 
-- **Werken voor Nederland (the Dutch central government's jobs, checked 2026-09-24):**
-  `GET https://www.werkenvoornederland.nl/sitemap-vacatures.xml` lists **1,281** job pages with
-  `lastmod` (last change, not publication). Job pages carry **schema.org JobPosting** (title,
-  `datePosted`, `validThrough`, `employmentType`, place with postcode, employer, salary range).
-  robots.txt closes only `/login` and allows `Request-rate: 10/1`. data.overheid.nl lists the
-  jobs as open data ("Vacatures Overheid", with a CSO vacancy API); its page timed out in this
-  check.
+- **Werken voor Nederland:** built (above).
 - **werk.nl (UWV):** robots.txt closes only `/webpublicaties`; how its vacancies can be read
   wasn't checked (a request for them as open data exists on data.overheid.nl, so there is none).
 - **Nationale Vacaturebank (DPG Media):** its firewall refuses Jobcu's requests ("Access Denied"),

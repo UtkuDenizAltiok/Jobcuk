@@ -6,12 +6,12 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 458 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 461 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
 Jobcu works end to end. A search reads the documents with the person's own AI, collects jobs from
-21 sources (9 of them company career systems, reading 365 employers), removes duplicates, applies
+22 sources (9 of them company career systems, reading 365 employers), removes duplicates, applies
 the rules and the location conditions, and scores what's left. The location box takes any
 condition in the person's own words (sizes, facts the AI looks up per town, per region or per
 country, travel limits to reference places), shows how each was checked, with sources, and can
@@ -124,15 +124,15 @@ not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the pla
 1. **Build the sources the research ranked highest** (research done 2026-09-24: SOURCES.md,
    "Candidate sources by country" and "LinkedIn, StepStone and the person's AI"; DECISIONS.md,
    2026-09-24 evening). Done: service.bund.de, Teaching Vacancies, NHS Jobs, closing dates and
-   reposts, Le Forem, prospective.ch (2026-09-24). Next, each an isolated adapter with tests and
-   its facts in SOURCES.md:
+   reposts, Le Forem, prospective.ch, Werken voor Nederland (2026-09-24). Next, each an
+   isolated adapter with tests and its facts in SOURCES.md:
    1. **Belgium's school jobs**: Le Forem has none; find the Flemish and French-speaking
       education departments' vacancy portals (and VDAB's question for the owner).
    2. **d.vinci** as a career system, with customers found for the directory (hospitals,
       councils, universities), and **more prospective.ch employers** (built 2026-09-24 with
       eight; cantons Bern and St. Gallen, CSS and others answered 400 under their career-centre
       numbers and need their real list number).
-   3. **NAV's stilling-feed** (Norway), then **Werken voor Nederland** (the Dutch government).
+   3. **NAV's stilling-feed** (Norway).
    4. **Interamt** (Germany; measure its overlap with service.bund.de first; reachable only
       outside the cloud), and the questions for the owner above as he answers them.
    5. **Live AI web search for jobs** (HANDOVER §9.6): the person's AI finds fresh jobs anywhere;
@@ -228,10 +228,10 @@ not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the pla
 
 ### Phase 3: Maximum coverage
 
-- [x] 21 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
-      jobs.ac.uk, Teaching Vacancies, NHS Jobs, Le Forem, EURAXESS, Arbeitnow,
-      Arbetsförmedlingen, and company career sites in 9 systems (Greenhouse, Lever, Ashby,
-      Workable, Recruitee, Workday, Teamtailor, SuccessFactors, prospective.ch) for 365
+- [x] 22 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
+      jobs.ac.uk, Teaching Vacancies, NHS Jobs, Le Forem, Werken voor Nederland, EURAXESS,
+      Arbeitnow, Arbetsförmedlingen, and company career sites in 9 systems (Greenhouse, Lever,
+      Ashby, Workable, Recruitee, Workday, Teamtailor, SuccessFactors, prospective.ch) for 365
       employers
 - [x] Per-source status, unique-job counts and on/off switches
 - [ ] A source for every supported country (HANDOVER §9.0)
