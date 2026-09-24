@@ -28,7 +28,25 @@ Phase 1 waits only on the quality set the owner rates; most of Phase 2 is built.
 
 ### In progress
 
-Nothing.
+**The owner's answers after search 8 (2026-09-24).** Normal use is one 24-hour search a day (72
+hours only while developing), so AI cost is fine within the €23 budget. "Near a city" means a
+city he'd live in: a job in such a city needs no trip, and the cities commuted from must pass
+the other conditions. Adzuna "causes problems all the time": decide what to do with it. Steps:
+
+1. [x] Record the usage and the cost answer (DECISIONS.md; drop the cost question).
+2. [ ] Travel limits: a job whose own town is an eligible reference place is in it (0 minutes,
+   no Google request), wherever in that town its address is (search 8 measured "Moosach,
+   München" as 27 minutes to Munich). Say in the AI's instructions, for any wording, that
+   reference places are usually where the person would live, so conditions about the kind of
+   place apply to them. Real check with the owner's sentence.
+3. [ ] Adzuna, decided with search 8's figures (136 of 242 scored jobs came only from Adzuna,
+   240 of its 298 jobs had no town, 0 of 164 full ads could be read): keep it as the biggest
+   source; stop reading its pages (its firewall and robots.txt refuse Jobcu); let a
+   country-only place ("Deutschland") never block merging with the same job on another site;
+   read every summary-only job scoring 50 or more online (was 70). SOURCES.md, DECISIONS.md.
+4. [ ] Update "Right now" and the plan of next tasks; tell the owner.
+
+Done when: tests pass on GitHub, and the records say what was decided and why.
 
 ### Verify before relying on
 
@@ -40,8 +58,9 @@ Nothing.
 - **The regions answer varies from search to search:** search 7 excluded Dresden, search 8's
   town list didn't, and the first region answer gave six eastern states. Compare the next
   searches' "Understood as".
-- **Cost with medium everywhere:** estimated €0.45 a search (DECISIONS.md, 2026-09-24). Read the
-  real figure in Settings → Usage after the next search.
+- **Cost with medium everywhere:** estimated €0.45 for a 72-hour search like search 8, about a
+  third of that for the usual 24-hour one (DECISIONS.md, 2026-09-24). Read the real figure in
+  Settings → Usage after the next search.
 - **Adzuna's page firewall:** "Request blocked" since 2026-09-23 21:50, still at 2026-09-24 03:20
   (SOURCES.md). If the note "Adzuna didn't allow reading more full ads" disappears, it lifted.
 - **Google Maps against the AI's estimates:** search 8 used Google's car times (Munich 27 min
@@ -62,15 +81,12 @@ Nothing.
 1. **Restart Jobcu** (the one running was started before these changes), write his citizenship
    in "Anything your documents don't say", and **run a search**. Then look at the items under
    "Verify" above, especially the German-required jobs and the "(found online)" towns.
-2. **Cost:** with medium everywhere a search costs about €0.45, so the €23 AI budget holds
-   about 50 searches a month. If he searches more, the options are low thinking for the quick
-   check and the online look-up (about €0.35), or a higher budget.
-3. **Rate 30–50 jobs on the Score check screen** (nothing is rated yet). Tuning the quick check
+2. **Rate 30–50 jobs on the Score check screen** (nothing is rated yet). Tuning the quick check
    and checking medium against low wait on this.
-4. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
+3. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
    `Company | Job title | Place | link`, for `tools/coverage_test.py`.
-5. **The friend's test:** his feedback on installing and using Jobcu.
-6. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
+4. **The friend's test:** his feedback on installing and using Jobcu.
+5. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
    permission ([SOURCES.md](SOURCES.md)), and whether to sign up for Jooble, Careerjet, France
    Travail, NAV or VDAB keys.
 
