@@ -1,6 +1,6 @@
 {
  "about": "Employers in Jobcu's supported countries and the career system they use. General reference data from public career sites, never built from anyone's searches. Checked and updated with tools/check_employers.py; 'countries' are the supported countries the employer had jobs in when checked, 'elsewhere' means it also had jobs outside them.",
- "checked": "2026-09-21",
+ "checked": "2026-09-24",
  "employers": [
   {
    "name": "AeroVect",
@@ -4533,6 +4533,271 @@
     "GB": [
      "London",
      "Manchester"
+    ]
+   }
+  },
+  {
+   "name": "Canton of Basel-Landschaft",
+   "system": "prospective",
+   "board": "1571",
+   "countries": [
+    "CH"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Allschwil",
+     "Arlesheim",
+     "Birsfelden",
+     "Bottmingen",
+     "Diegten",
+     "Füllinsdorf",
+     "Gelterkinden",
+     "Grellingen",
+     "Laufen",
+     "Lausen",
+     "Liestal",
+     "Muttenz",
+     "Münchenstein",
+     "Oberwil",
+     "Ormalingen",
+     "Pratteln",
+     "Reinach",
+     "Sissach",
+     "Therwil",
+     "Wahlen",
+     "Waldenburg"
+    ]
+   }
+  },
+  {
+   "name": "EKZ",
+   "system": "prospective",
+   "board": "1003036",
+   "countries": [
+    "CH"
+   ],
+   "elsewhere": false,
+   "towns": {
+    "CH": [
+     "Bulle",
+     "Bäretswil",
+     "Davos",
+     "Dielsdorf",
+     "Dietikon",
+     "Dübendorf",
+     "Einsiedeln",
+     "Elgg",
+     "Frauenfeld",
+     "Glarus",
+     "Meilen",
+     "Mettmenstetten",
+     "Regensdorf",
+     "Schaffhausen",
+     "Stäfa",
+     "Turbenthal",
+     "Uster",
+     "Wetzikon",
+     "Winterthur",
+     "Wädenswil",
+     "Würenlos",
+     "Zürich"
+    ]
+   }
+  },
+  {
+   "name": "EMS-Chemie",
+   "system": "prospective",
+   "board": "1005722",
+   "countries": [
+    "CH",
+    "DE"
+   ],
+   "elsewhere": false,
+   "towns": {
+    "CH": [
+     "Domat",
+     "Romanshorn"
+    ],
+    "DE": [
+     "Groß-Umstadt"
+    ]
+   }
+  },
+  {
+   "name": "Stadler Rail",
+   "system": "prospective",
+   "board": "1000470",
+   "countries": [
+    "AT",
+    "CH",
+    "CZ",
+    "DE",
+    "DK",
+    "FI",
+    "GB",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "SE"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Eferding",
+     "Sankt Pölten",
+     "Vienna"
+    ],
+    "CH": [
+     "Au",
+     "Biel/Bienne",
+     "Erlen",
+     "Frauenfeld",
+     "Olten",
+     "Sankt Margrethen",
+     "Wallisellen",
+     "Weinfelden",
+     "Winterthur"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Berlin",
+     "Braunschweig",
+     "Chemnitz",
+     "Duisburg",
+     "Eisenach",
+     "Herne",
+     "Karlsruhe",
+     "Mannheim",
+     "Pankow",
+     "Rendsburg",
+     "Stuttgart",
+     "Velten"
+    ],
+    "DK": [
+     "Odense"
+    ],
+    "FI": [
+     "Helsinki"
+    ],
+    "GB": [
+     "Leicester"
+    ],
+    "IT": [
+     "Piove di Sacco-Piovega"
+    ],
+    "NL": [
+     "Blerick"
+    ],
+    "NO": [
+     "Drammen"
+    ],
+    "PL": [
+     "Białystok",
+     "Poznań",
+     "Warsaw",
+     "Środa Wielkopolska"
+    ],
+    "SE": [
+     "Västerås"
+    ]
+   }
+  },
+  {
+   "name": "Swiss Federal Administration",
+   "system": "prospective",
+   "board": "1000624",
+   "countries": [
+    "CH"
+   ],
+   "elsewhere": false,
+   "towns": {
+    "CH": [
+     "Alle",
+     "Alpnach",
+     "Altstätten",
+     "Andermatt",
+     "Basel",
+     "Bern",
+     "Birmensdorf",
+     "Bremgarten",
+     "Bronschhofen",
+     "Brugg",
+     "Chiasso",
+     "Chur",
+     "Dübendorf",
+     "Emmen",
+     "Estavayer-le-Lac",
+     "Frauenfeld",
+     "Geneva",
+     "Grolley",
+     "Hinwil",
+     "Ittigen",
+     "Kloten",
+     "Kriens",
+     "Lausanne",
+     "Luzern",
+     "Meiringen",
+     "Nyon",
+     "Othmarsingen",
+     "Payerne",
+     "Romont",
+     "Rüti",
+     "Sankt Gallen",
+     "Sitten",
+     "Spiez",
+     "Stans",
+     "Thun",
+     "Wangen an der Aare",
+     "Winterthur",
+     "Wädenswil",
+     "Zofingen",
+     "Zollikofen"
+    ]
+   }
+  },
+  {
+   "name": "University Hospital Basel",
+   "system": "prospective",
+   "board": "1005524",
+   "countries": [
+    "CH"
+   ],
+   "elsewhere": false,
+   "towns": {}
+  },
+  {
+   "name": "University of Zurich",
+   "system": "prospective",
+   "board": "1002007",
+   "countries": [
+    "CH"
+   ],
+   "elsewhere": false,
+   "towns": {
+    "CH": [
+     "Schlieren",
+     "Villigen",
+     "Zürich"
+    ]
+   }
+  },
+  {
+   "name": "ZHAW Zurich University of Applied Sciences",
+   "system": "prospective",
+   "board": "1002929",
+   "countries": [
+    "CH"
+   ],
+   "elsewhere": false,
+   "towns": {
+    "CH": [
+     "Winterthur",
+     "Wädenswil",
+     "Zürich"
     ]
    }
   },
