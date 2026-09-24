@@ -279,3 +279,28 @@ def test_summaries_near_the_top_are_read_online_and_the_rules_applied(ready, mon
     assert card["limits"] == [{"at": 65, "why": "German B2 required, you have A2"}]
     assert card["score_notes"] == ["Languages and experience read from the full ad online"]
     assert card["required_languages"] == ["German B2", "English B2"]
+
+
+def test_when_the_web_look_ups_run_out_jobcu_asks_before_leaving_jobs_unread(ready, monkeypatch):
+    ai = ResearchingAI()
+    monkeypatch.setattr("jobcu.ai.client.AIClient.adapter", lambda self: ai)
+    monkeypatch.setattr("jobcu.pipeline.all_sources", lambda: [SummarySource()])
+    monkeypatch.setattr("jobcu.jobplace.BATCH_SIZE", 1)
+    settings = load_settings()
+    settings.limits.web_search_cap = 1
+    save_settings(settings)
+    manager = search.SearchManager()
+    manager.start(SearchForm(location_text="Germany"))
+    questions = []
+    deadline = time.monotonic() + 15
+    while manager.current.status == "running" and time.monotonic() < deadline:
+        if manager.current.question:
+            questions.append(manager.current.question)
+            manager.current.answer(True)
+        time.sleep(0.02)
+    result = manager.current.snapshot()
+    assert result["status"] == "finished", result["error"]
+    assert [q["kind"] for q in questions] == ["web_search_cap"]
+    assert "1 more job could be read online" in questions[0]["message"]
+    assert len(ai.looked_up) == 2  # both jobs, the second after the yes
+    assert result["steps"][-1]["detail"] == "Found online: the requirements of 2 of 2 jobs"

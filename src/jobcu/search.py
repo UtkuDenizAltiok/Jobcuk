@@ -491,6 +491,22 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
                       key=lambda i: -job_pool.jobs[i].scored["score"])
     looked_up = (jobplace.find_online(client, groups, worth_it) if worth_it
                  else jobplace.LookedUp())
+    while looked_up.not_asked and client.web_searches_left() <= 0:
+        left = len(looked_up.not_asked)
+        jobs, their = ("job", "its") if left == 1 else ("jobs", "their")
+        wants_more = run.ask({
+            "kind": "web_search_cap",
+            "message": (
+                f"Jobcu has used this search's {settings.limits.web_search_cap} web look-ups. "
+                f"{left} more {jobs} could be read online, for {their} town or full ad. Look "
+                "them up too? This uses more AI."),
+            "yes": f"Look up {left} more",
+            "no": "Show results now",
+        })
+        if not wants_more:
+            break
+        client.allow_more_web_searches()
+        looked_up = looked_up.add(jobplace.find_online(client, groups, looked_up.not_asked))
     for index in looked_up.asked:
         scored = job_pool.jobs[index].scored
         found = looked_up.requirements.get(index)

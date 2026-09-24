@@ -190,6 +190,15 @@ class AIClient:
                     "JSON format. Answer again with only valid JSON in exactly that format."
                 )
 
+    def web_searches_left(self) -> int:
+        """What is left of this search's allowance of web look-ups (Settings)."""
+        return self.settings.limits.web_search_cap - self.web_searches_used
+
+    def allow_more_web_searches(self) -> None:
+        """The person said yes to more web look-ups: another allowance for this search."""
+        self.web_searches_used = min(self.web_searches_used, self.settings.limits.web_search_cap)
+        self.web_searches_used -= self.settings.limits.web_search_cap
+
     def research(
         self,
         *,
@@ -212,7 +221,7 @@ class AIClient:
                 "Looking things up on the web is switched off in Settings, so anything that "
                 'needs checking is shown as "not checked".'
             )
-        left = self.settings.limits.web_search_cap - self.web_searches_used
+        left = self.web_searches_left()
         if left <= 0:
             raise AILimitReached(
                 "Jobcu has used this search's allowance of web look-ups. You can raise it in "

@@ -64,8 +64,8 @@ or a language level. Without your citizenship, Jobcu never assumes one.
 
 **Settings → Usage and limits** shows what Jobcu used this month and in your last search. Add
 what your provider charges per million tokens and Jobcu estimates the cost. You can set a monthly
-limit, how many jobs are scored before Jobcu asks, how many web look-ups your AI may do in one
-search, and switch off any job source you don't want searched.
+limit, how many jobs are scored and how many web look-ups your AI may do in one search before
+Jobcu asks whether to do more, and switch off any job source you don't want searched.
 
 ## 6. Feedback
 

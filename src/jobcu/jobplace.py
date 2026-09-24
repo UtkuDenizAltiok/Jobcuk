@@ -92,6 +92,14 @@ class LookedUp:
     requirements: dict[int, Requirements] = field(default_factory=dict)
     # Every job asked about, found or not, so it's never asked about again.
     asked: set[int] = field(default_factory=set)
+    # Jobs not asked about because the search's web look-ups were used up: the person is asked
+    # whether to look them up too (HANDOVER section 13: caps never silently reduce coverage).
+    not_asked: list[int] = field(default_factory=list)
+
+    def add(self, more: "LookedUp") -> "LookedUp":
+        return LookedUp(self.towns_found + more.towns_found,
+                        {**self.requirements, **more.requirements}, self.asked | more.asked,
+                        more.not_asked)
 
 
 def needs_looking_up(group: JobGroup) -> bool:
@@ -125,6 +133,7 @@ def find_online(client: AIClient, groups: list[JobGroup], indexes: list[int]) ->
         try:
             answers = _look_up(client, lines, len(batch))
         except AILimitReached:
+            looked_up.not_asked = indexes[start:]
             break
         except AIError as exc:
             log.info("Looking jobs up online failed: %s", exc)
