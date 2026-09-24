@@ -119,11 +119,16 @@ Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself run
   `.claude/settings.json` runs `tools/cloud_setup.sh` (the packages, and the safety check before
   every commit). The environment's network access must be **Full**, so job sites, GeoNames and
   documentation can be reached; if a site can't be reached, say so rather than guess.
-- **No personal data in the cloud.** The owner's CV, data folder, database and keys stay on his
-  Mac. Never ask him to upload them; work with fake data. Full searches with made-up people (a
-  fake CV built in code, the AI credential below, the sources that need no key) run fine in the
-  cloud and test Jobcu for everyone. What needs his real data (his searches, the score check,
-  the coverage test on his answers) happens on his Mac: he runs a 72-hour search every two or
+- **Personal data in the cloud: only the CV and cover letter the owner attaches himself**
+  (DECISIONS.md, 2026-09-24 night). Save them only in a scratch folder outside the repository
+  and delete it when the session ends. Never put them, or any personal detail from them, in the
+  repository, a commit, a branch name, a pull request, an issue, a comment, a test or CI output:
+  friends and everyone else with access to the repository must never see them. When attached,
+  they are the main test person, next to made-up people from other fields. His data folder,
+  database and keys stay on his Mac; never ask for them. Full searches with his attached CV or
+  made-up people (fake CVs built in code), the AI credential below and the sources that need no
+  key run fine in the cloud. What needs his data folder (his searches, the score check, the
+  coverage test) happens on his Mac: he runs a 72-hour search every two or
   three days while Jobcu is developed, and a short local session studies it ("Check my latest
   search" in CONTRIBUTING.md) and records the findings in PROGRESS.md. His launcher updates his
   copy from GitHub, so his searches always use the newest merged version.
