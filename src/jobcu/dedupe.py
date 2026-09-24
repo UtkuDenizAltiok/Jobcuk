@@ -26,6 +26,9 @@ TITLE_MATCH = 90
 TITLE_MATCH_WITH_TEXT = 85
 TEXT_MATCH = 0.8
 AGENCY_TEXT_MATCH = 0.5
+# Two summaries count as one job only when nearly the same, and long enough to tell.
+SUMMARY_TEXT_MATCH = 0.9
+SUMMARY_SHINGLES = 40
 NEARBY_KM = 30
 
 SOURCE_KIND_RANK = {"employer": 0, "linkedin": 1, "job_board": 2, "aggregator": 3}
@@ -101,6 +104,8 @@ def fold(text: str | None) -> str:
 
 
 def normal_company(name: str | None) -> str:
+    # A bracket names a career site or a country ("Rolls-Royce (professional)", "Acme (UK)").
+    name = re.sub(r"\([^)]*\)", " ", name or "")
     return " ".join(_LEGAL_FORMS.sub(" ", fold(name).replace("&", " ")).split())
 
 
@@ -275,11 +280,15 @@ def _text_similarity(a: str, b: str) -> float:
 
 
 def _both_full_and_similar(a: FoundJob, b: FoundJob, threshold: float) -> bool:
-    return (
-        a.description_is_complete
-        and b.description_is_complete
-        and _text_similarity(a.description, b.description) >= threshold
-    )
+    """The texts say it's one job: two full ads alike, or two summaries (Adzuna's first 500
+    characters) that are nearly word for word the same. Search 9 showed one recruiter's ad
+    twice from two Adzuna summaries."""
+    if a.description_is_complete and b.description_is_complete:
+        return _text_similarity(a.description, b.description) >= threshold
+    if a.description_is_complete or b.description_is_complete:
+        return False
+    return (min(len(_shingles(a.description)), len(_shingles(b.description))) >= SUMMARY_SHINGLES
+            and _text_similarity(a.description, b.description) >= SUMMARY_TEXT_MATCH)
 
 
 def _tag_agency_repeats(groups: list[JobGroup]) -> None:

@@ -193,7 +193,8 @@ company had jobs in, and whether it also hires outside them).
   page). Jobs come **newest first** with `created_at` (exact), the **full ad text**, company,
   free-text location, `job_types`, `remote` and a link to the job's page there.
 - **Some descriptions arrive with their HTML escaped** (`&lt;p&gt;`), so after conversion the text
-  still holds literal tags (Graphcore's ad, kept for the score check, 2026-09-24).
+  still holds literal tags (Graphcore's ad, kept for the score check, 2026-09-24). Since
+  2026-09-24 `text.html_to_text` unescapes it first.
 - Its jobs come mostly from career systems (Greenhouse, SmartRecruiters, JOIN, Teamtailor,
   Recruitee, Personio), so it reaches many German and British companies Jobcu has no directory
   entry for. About 200 new jobs a day on the German list.

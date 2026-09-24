@@ -97,3 +97,29 @@ def test_a_postcode_or_a_district_is_the_same_place_as_its_town():
         assert len(group_duplicates([uk("reed", "1", a), uk("adzuna", "2", b)], kinds)) == 1, a
     assert len(group_duplicates([uk("reed", "1", "BB113BP"), uk("adzuna", "2", "Leeds")],
                                 kinds)) == 2
+
+
+def test_a_career_sites_label_in_brackets_is_not_part_of_the_company():
+    # Search 9: the directory's "Rolls-Royce (professional)" never merged with "Rolls-Royce plc".
+    assert normal_company("Rolls-Royce (professional)") == normal_company("Rolls-Royce plc")
+    assert normal_company("Acme (UK) Ltd") == normal_company("ACME Ltd")
+
+
+def test_two_summaries_of_one_agency_ad_merge_only_when_nearly_word_for_word_the_same():
+    # Search 9: AMF's ad in Castleford came twice from Adzuna, both summaries, both scored 87.
+    summary = ("Our client, a manufacturer of power supplies, is looking for an electronics "
+               "design engineer to join its growing team in Castleford. You will design analogue "
+               "and power circuits, lay out boards and test prototypes in the lab, working "
+               "closely with production and quality. A degree in electronic engineering and "
+               "some hands-on design experience are needed; training is given.")
+    a = job(job_id="1", company="AMF Recruitment", description=summary)
+    b = job(job_id="2", company="AMF Recruitment", description=summary + " Apply today.")
+    assert len(group_duplicates([a, b], KINDS)) == 1
+    # Different clients' summaries of a similar role stay apart, and so do very short ones.
+    other = summary.replace("power supplies", "medical lasers").replace("Castleford", "Leeds") \
+        .replace("analogue and power circuits", "laser driver boards")
+    c = job(job_id="3", company="AMF Recruitment", description=other)
+    assert len(group_duplicates([a, c], KINDS)) == 2
+    short = [job(job_id=n, company="AMF Recruitment", description="Electronics engineer wanted.")
+             for n in ("4", "5")]
+    assert len(group_duplicates(short, KINDS)) == 2

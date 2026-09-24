@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 483 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 486 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -163,8 +163,8 @@ here.
    stayed at 81 without its town. It reads only languages and years: Rolls-Royce's two Adzuna
    summaries scored 85 and 75, while the same jobs from its own Workday site say UK nationals
    only (30). Read citizenship and clearance (and a required doctorate) too. It took 12 minutes.
-   (e) **Four pairs of the same job shown twice** (the postcode and "Heeley, Sheffield" pairs
-   fixed 2026-09-24; the two summaries and "Rolls-Royce (professional)" still open), each for a
+   (e) **Done (cloud, 2026-09-24):** all four pairs merge now (DECISIONS.md, "Places Jobcu
+   couldn't read in search 9"); check the next search for wrong merges. **Four pairs of the same job shown twice**, each for a
    different reason: Reed's postcode
    ("BB113BP") against Adzuna's "Burnley, Lancashire" (Corriculo, 88 and 82); two Adzuna
    summaries of a recruiter's ad, which must be full ads to merge (AMF in Castleford, 87 twice);
@@ -183,7 +183,7 @@ here.
    the same company counts as found (Zenovo's Bristol test job for its Derby one). It should look
    in the saved pool (every job collected) and say at which step each was lost, match titles
    more strictly, and accept a company's other name (Össur and Embla Medical).
-   (h) Small: Arbeitnow sometimes sends escaped HTML, so the ad text keeps literal tags
+   (h) Done (cloud, 2026-09-24): Arbeitnow sometimes sends escaped HTML, so the ad text keeps literal tags
    (SOURCES.md, Arbeitnow).
    (i) **Cost and time:** 33 minutes and about $1.36 for 72 hours; 70% of the output tokens were
    thinking. Before prices double in January, find where lower thinking keeps the same answers
