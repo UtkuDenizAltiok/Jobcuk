@@ -56,6 +56,8 @@ SITE_INTERVALS = {
     "www.arbeitnow.co.uk": 1.0,
     # Sweden's open job data (CC0, no stated limit): pages are big, so a short pause is enough.
     "jobsearch.api.jobtechdev.se": 0.5,
+    # The German public sector's portal: its robots.txt asks for "Crawl-delay: 30".
+    "www.service.bund.de": 30.0,
 }
 
 

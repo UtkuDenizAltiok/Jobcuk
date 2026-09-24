@@ -232,6 +232,46 @@ company had jobs in, and whether it also hires outside them).
   ReachMee, Visma Recruit, Teamtailor, Recruitee), so it is used as the employer's link.
 - A real check (24 hours, 12 electronics search words): 3 jobs in 17 requests, 10 s.
 
+## service.bund.de, Germany's public sector (`src/jobcu/sources/servicebund.py`), checked 2026-09-24
+
+The federal job portal (Bundesverwaltungsamt) for federal, state and municipal employers,
+universities, research institutes, courts, prisons and the armed forces' civilian jobs:
+administration, social work, law, trades (electricians, painters, chimney sweeps),
+housekeeping, research, engineering.
+
+- **An open RSS feed:** `GET https://www.service.bund.de/Content/Globals/Functions/RSSFeed/
+  RSSGenerator_Stellen.xml` gives the **newest 500 jobs** (348 KB), about **2.5 days** on a
+  weekday (203 on 22 September, 237 on 23 September), so a 24- or 48-hour search is covered in
+  one request. Each item: title, link (with `#track=feed-jobs`, which Jobcu drops), `pubDate`
+  (with zone; 22 of 500 at exactly midnight, which Jobcu treats as "day known only"), and in the
+  description, as escaped HTML inside CDATA ("Universit&#228;t"): the employer
+  ("Arbeitgeber"), the place ("Ort: 65173 Wiesbaden"; a five-digit postcode means Germany) and
+  the closing date ("Bewerbungsfrist"). No filter parameters. The site offers the feed for RSS
+  readers, "ohne Registrierung". Separate feeds exist for training places
+  (`RSSGenerator_Ausbildungsplaetze.xml`, not read).
+- **Job pages** (`/IMPORTE/Stellenangebote/editor/{employer}/{yyyy}/{mm}/{id}.html`): the full ad
+  between the comments `<!--Tätigkeit einfügen-->` and `<!--Tätigkeit ende-->` (Tätigkeitsprofil,
+  Anforderungsprofil); a `section.shortlist` list with Tätigkeitsfeld, Ort (plus a "Karte
+  anschauen" link), **Arbeitszeit** (Vollzeit/Teilzeit), **Anstellungsdauer**
+  (Unbefristet/Befristet), Bewerbungsfrist and "Laufbahn / Entgeltgruppe" (a pay grade such as
+  "E 13 TVöD", or a career track such as "Mittlerer Dienst"); coordinates in
+  `#location-map[data-lat][data-lon]`; often a link "Stellenangebot (HTML-Seite)" to the
+  employer's own application system, and a PDF. **No schema.org JobPosting.**
+- **robots.txt** closes only the search pages (`/Content/DE/Stellen/Suche/`) and
+  `/SiteGlobals/`, and asks for **`Crawl-delay: 30`**. Jobcu waits 30 s between requests and
+  reads at most 12 job pages per search (six minutes); the other jobs keep their summary and are
+  read online by the person's AI when they score 50 or more.
+- **Terms (Impressum):** the texts' copyright stays with the advertising body, and the portal's
+  content may not be reproduced, distributed or exhibited without consent. Reading the feed and
+  showing a job to the one person searching, on their computer, is what an RSS reader does.
+- **Overlap with the Bundesagentur (sample of 25, title and town search, employer matched):**
+  8 found there, 17 not (a ministry's clerk, a county's maintenance clerk, a city's tax clerk,
+  two chimney-sweep districts, a prison archive, a Helmholtz postdoc). So about **two thirds of
+  its jobs are new** to Jobcu, some 150 a day.
+- **Live run (2026-09-24, a made-up social worker, 24 hours):** 5 matching jobs from the feed in
+  1.3 s (Berlin, Lage, Herne); two full ads read 30 s apart (about 5,000 characters each, both
+  fixed-term and part-time).
+
 ## Google Maps, for travel times (`src/jobcu/travel.py`), checked 2026-09-21
 
 Not a job source: used only for conditions like "at most 50 minutes by public transport to a
@@ -416,31 +456,7 @@ What Jobcu already has covers every trade: the Bundesagentur's Jobbörse (all pr
 Arbeitnow and the career systems. The gaps are the public sector and employers on German career
 systems the directory doesn't read.
 
-- **service.bund.de, public-sector jobs (checked 2026-09-24).** The federal job portal
-  (Bundesverwaltungsamt) for federal, state and municipal employers, universities, research
-  institutes, courts, prisons and the armed forces' civilian jobs: administration, social work,
-  law, trades (electricians, painters, chimney sweeps), housekeeping, research, engineering.
-  - **An open RSS feed:** `GET https://www.service.bund.de/Content/Globals/Functions/RSSFeed/
-    RSSGenerator_Stellen.xml` gives the **newest 500 jobs** (348 KB), about **2.5 days** on a
-    weekday (203 on 22 September, 237 on 23 September), so a 24- or 48-hour search is covered in
-    one request. Each item: title, link, `pubDate` (with zone; some at 00:00:00), and in the
-    description the employer ("Arbeitgeber"), place ("Ort: 65173 Wiesbaden") and closing date.
-    No filter parameters. The site offers the feed for RSS readers, "ohne Registrierung".
-    Separate feeds exist for training places (`RSSGenerator_Ausbildungsplaetze.xml`).
-  - **Job pages** (`/IMPORTE/Stellenangebote/editor/{employer}/{yyyy}/{mm}/{id}.html`): the full ad
-    (Tätigkeitsprofil, Anforderungsprofil), field, **Arbeitszeit** (Vollzeit/Teilzeit),
-    **Anstellungsdauer** (Unbefristet/Befristet), pay grade and full address. **No schema.org
-    JobPosting**, so the text is read from the page.
-  - **robots.txt** closes only the search pages (`/Content/DE/Stellen/Suche/`) and
-    `/SiteGlobals/`, and asks for **`Crawl-delay: 30`**: 30 s between requests, so full ads can
-    only be read for the few jobs still in the running. The feed and the job pages are allowed.
-  - **Terms (Impressum):** the texts' copyright stays with the advertising body, and the portal's
-    content may not be reproduced, distributed or exhibited without consent. Reading the feed and
-    showing a job to the one person searching, on their computer, is what an RSS reader does.
-  - **Overlap with the Bundesagentur (sample of 25, title and town search, employer matched):**
-    8 found there, 17 not (a ministry's clerk, a county's maintenance clerk, a city's tax clerk,
-    two chimney-sweep districts, a prison archive, a Helmholtz postdoc). So about **two thirds of
-    its jobs would be new**, some 150 a day.
+- **service.bund.de:** built (above).
 - **Interamt (interamt.de, checked 2026-09-24):** the largest public-sector portal (about 60,000
   jobs a year, run by DVZ Mecklenburg-Vorpommern). robots.txt closes only `/cms/` to every
   crawler and closes the job pages (`/koop/`) to Jooble's, Yandex's, Ahrefs' and Majestic's
