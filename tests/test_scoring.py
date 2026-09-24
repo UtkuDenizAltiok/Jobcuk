@@ -132,6 +132,24 @@ def test_a_language_the_cv_does_not_name_is_not_spoken():
     assert scored(profile=PROFILE, ad_language="German")["parts"]["languages"] == 15
 
 
+def test_languages_named_in_the_cvs_own_language_are_recognised():
+    # A German CV says "Englisch" and "Deutsch"; scoring names the ad's languages in English.
+    german_cv = PROFILE.model_copy(update={"languages": [
+        LanguageSkill(language="Englisch", level_as_written="verhandlungssicher", cefr="C1",
+                      cefr_is_estimate=True),
+        LanguageSkill(language="Deutsch (Muttersprache)", level_as_written="Muttersprache",
+                      cefr="native", cefr_is_estimate=False),
+    ]})
+    result = scored(profile=german_cv, ad_language="German",
+                    languages_asked=[asked("English", "B2"), asked("German", "C2")])
+    assert result["limits"] == [] and result["parts"]["languages"] == 15
+    polish_cv = PROFILE.model_copy(update={"languages": [
+        LanguageSkill(language="niemiecki", level_as_written="A2", cefr="A2",
+                      cefr_is_estimate=False)]})
+    short = scored(profile=polish_cv, languages_asked=[asked("German", "B2")])
+    assert short["limits"] == [{"at": 65, "why": "German B2 required, you have A2"}]
+
+
 def test_the_owners_limits_for_citizenship_doctorate_and_experience():
     blocked = scored(citizenship_or_clearance="required_definitely_out_of_reach",
                      citizenship_or_clearance_words="UK nationals only")

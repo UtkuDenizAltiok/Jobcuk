@@ -293,6 +293,8 @@ tools/cloud_setup.sh         prepares a cloud session (run by .claude/settings.j
 tools/check_employers.py     checks the employer directory and adds new candidates
 tools/update_places.py       rebuilds the shipped town and region lists from GeoNames
 tools/coverage_test.py       how many jobs a person found by hand did Jobcu find, and why not
+tools/universality_check.py  made-up people from other fields through profile, search words,
+                             quick check and scoring, with the search words checked against ESCO
 tools/score_check.py         Jobcu's scores against the owner's own answers, and prompt variants
 .githooks/pre-commit         runs the safety check before every commit
 .claude/settings.json        Claude Code's shared settings: the cloud session setup

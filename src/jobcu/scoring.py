@@ -18,6 +18,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from jobcu.ai.client import AIClient
+from jobcu.countries import language_code
 from jobcu.dedupe import JobGroup
 from jobcu.location import LocationPlan
 from jobcu.profile import Profile
@@ -145,11 +146,14 @@ role_and_skills [40]: how well the job's field, daily tasks and required skills 
 person's experience, skills and target roles.
   36-40 one of the person's target roles, and its main tasks and required skills are the \
 person's main skills
-  28-35 the same kind of role with a few gaps, or a neighbouring specialisation (e.g. RF design \
-for a power electronics engineer)
-  18-27 a related job whose daily tasks are partly different (e.g. test, systems, application \
-or field engineering for a design engineer)
-  8-17 loosely related (e.g. installation, service or IT hardware support for a design engineer)
+  28-35 the same kind of role with a few gaps, or a neighbouring specialisation (e.g. a \
+children's ward for an adult ICU nurse, a secondary-school post for a primary teacher, RF \
+design for a power electronics engineer)
+  18-27 a related job whose daily tasks are partly different (e.g. a nurse educator or case \
+manager for a ward nurse, a catering manager for a sous-chef, test or field engineering for a \
+design engineer)
+  8-17 loosely related (e.g. a care assistant for a registered nurse, a school administrator \
+for a teacher, installation or IT support for a design engineer)
   0-7 a different field
 
 seniority [20]: the level and years the job asks for, compared with the person. Full-time work \
@@ -162,7 +166,8 @@ student experience)
   0-5 very far off (e.g. head of department for a graduate)
 
 hard_requirements [15]: work permit or visa sponsorship statements, citizenship, security \
-clearance, driving licence, a specific degree or certification.
+clearance, driving licence, a specific degree or certification, a professional registration or \
+licence to practise (nursing, teaching, medicine, law, a truck licence class).
   15 the whole ad was read and there's nothing the person clearly lacks
   11-14 something unclear, e.g. "security clearance may be required", or "must have the right \
 to work" when the person's status isn't stated (don't assume they lack it); also when only the \
@@ -174,13 +179,15 @@ and with their stated preferences (work mode, kind of work, industry, type of co
   9-10 fits, and the job matches the person's stated preferences
   6-8 fits, but the preferences are only partly met or can't be judged
   3-5 conflicts with a preference (e.g. a contract role for someone who wants full-time work, \
-travel-heavy field work for someone who wants R&D)
+night shifts for someone who asks for day work, travel-heavy field work for someone who wants \
+R&D)
   0-2 conflicts with a dealbreaker or with where the person wants to work
 
 ALSO FOR EACH JOB
 - reasons: 1 to 3 short phrases (at most 6 words each) that explain the score, most important \
 first, mixing strengths and gaps. Name a blocker first when there is one. Examples: "Strong \
-power electronics match", "German C1 required", "UK nationals only", "Asks for 8+ years".
+intensive care match", "German C1 required", "Needs UK teaching qualification", "UK nationals \
+only", "Asks for 8+ years".
 - job_type: from the ad; "unclear" if it doesn't say.
 - work_mode: from the ad; "unclear" if it doesn't say.
 - fully_remote: true only if the ad says the job is done fully remotely.
@@ -368,8 +375,10 @@ def _your_level(profile: Profile, key: str) -> str:
 
 
 def _language_key(name: str) -> str:
-    """"German (fluent)" and "german" are the same language."""
-    return re.sub(r"\s*\(.*?\)", "", name or "").strip().casefold()
+    """"German (fluent)", "german" and "Deutsch" are the same language: a CV in German names
+    its languages in German, while scoring names them in English."""
+    plain = re.sub(r"\s*\(.*?\)", "", name or "").strip()
+    return language_code(plain) or plain.casefold()
 
 
 def _background(profile: Profile, plan: LocationPlan) -> str:
