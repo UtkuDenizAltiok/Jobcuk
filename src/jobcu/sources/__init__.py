@@ -16,6 +16,7 @@ from jobcu.sources.recruitee import RecruiteeSource
 from jobcu.sources.reed import ReedSource
 from jobcu.sources.servicebund import ServiceBundSource
 from jobcu.sources.successfactors import SuccessFactorsSource
+from jobcu.sources.teachingvacancies import TeachingVacanciesSource
 from jobcu.sources.teamtailor import TeamtailorSource
 from jobcu.sources.workable import WorkableSource
 from jobcu.sources.workday import WorkdaySource
@@ -31,4 +32,4 @@ def all_sources() -> list[JobSource]:
     """Fresh source objects for one search, in the order they're shown."""
     return [AdzunaSource(), ArbeitnowSource(), JobTechSource(), BundesagenturSource(),
             ServiceBundSource(), EuraxessSource(), JobsAcUkSource(), JobsIrelandSource(),
-            ReedSource(), *career_sources()]
+            ReedSource(), TeachingVacanciesSource(), *career_sources()]

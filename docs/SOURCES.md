@@ -272,6 +272,36 @@ housekeeping, research, engineering.
   1.3 s (Berlin, Lage, Herne); two full ads read 30 s apart (about 5,000 characters each, both
   fixed-term and part-time).
 
+## Teaching Vacancies, England's schools (`src/jobcu/sources/teachingvacancies.py`), checked 2026-09-24
+
+The Department for Education's service for jobs in England's schools: teachers, teaching
+assistants, school leaders, office, catering, cleaning and site staff.
+
+- **An official open API:** `GET https://teaching-vacancies.service.gov.uk/api/v1/jobs.json?page=N`,
+  no key, 100 jobs a page, **strictly newest first** (800 checked, none out of order;
+  `meta.count` 6,847 live jobs, `meta.totalPages` 69; about 230 posted by midday on a weekday).
+  Every job is **schema.org JobPosting**: `title`, `datePosted` (day), `description` (HTML, the
+  ad's first part: 194 to 10,236 characters, median about 2,300), `employmentType`
+  (`FULL_TIME`, `PART_TIME`, with `TEMPORARY` for fixed-term contracts), `jobLocation` (one or a
+  list, with street, town, region, postcode and `addressCountry` GB), `hiringOrganization`
+  (`sameAs` is the school's website, not the job), `validThrough` (closing time),
+  `occupationalCategory` (teacher, teaching_assistant, other_support,
+  administration_hr_data_and_finance, catering_cleaning_and_site_management…), `url`.
+- **Job pages** (`/jobs/{slug}`) carry much more than the API's text: **visa sponsorship**
+  ("Visas cannot be sponsored"), key stage and subject, working pattern, **contract type**, pay
+  scale, start date, closing date, what the school offers and the safeguarding checks (a short
+  ad went from 264 to 3,629 characters). Their JobPosting data holds only the API's text, so
+  Jobcu reads the page text (trafilatura).
+- **Terms for API users:** listings may be reused under the **Open Government Licence**, except
+  that no fee may be charged for hiring someone found through them. robots.txt allows everything
+  except search pages with parameters (`/*-jobs*?*`, `/jobs*radius=*`), `/documents/`,
+  `/attachments/` and account pages.
+- Jobcu reads pages until one holds a job older than the window (newest first), at most 30 a
+  search. **Live run (2026-09-24, a made-up primary-school teacher, 24 hours):** 48 matching
+  jobs in 8 requests (7.6 s; day-only dates reach back to the previous day), job types from the
+  API (permanent, part-time, fixed-term); one page read added the visa line (2,184 → 6,222
+  characters).
+
 ## Google Maps, for travel times (`src/jobcu/travel.py`), checked 2026-09-21
 
 Not a job source: used only for conditions like "at most 50 minutes by public transport to a
@@ -489,18 +519,7 @@ What Jobcu already has: Reed, Adzuna (UK only), Arbeitnow's UK list, jobs.ac.uk,
 JobsIreland.ie and the career systems. Missing: schools, the health services and councils,
 which employ a large share of people in both countries and rarely post on commercial boards.
 
-- **Teaching Vacancies (England's schools, Department for Education, checked 2026-09-24).** An
-  **official open API**: `GET https://teaching-vacancies.service.gov.uk/api/v1/jobs.json?page=N`,
-  no key, 100 jobs a page, **newest first** (`meta.count` 6,847 live jobs, 69 pages; about 230
-  posted by midday on a Thursday). Every job is **schema.org JobPosting**: `title`, `datePosted`
-  (day), the **full ad** as HTML in `description`, `employmentType` (`FULL_TIME`, `PART_TIME`…),
-  `jobLocation` with street, town, postcode and `addressCountry` GB, `hiringOrganization`,
-  `validThrough`, `occupationalCategory` (teacher, teaching_assistant, other_support,
-  administration_hr_data_and_finance, catering_cleaning_and_site_management…), `url`.
-  **Terms for API users:** listings may be reused under the **Open Government Licence**, except
-  that no fee may be charged for hiring someone found through them. robots.txt allows everything
-  except search pages with parameters, `/documents/` and a few others. A 24-hour search is about
-  3 requests. Clearly permitted.
+- **Teaching Vacancies:** built (above).
 - **NHS Jobs (the NHS in England and Wales, NHS Business Services Authority, checked
   2026-09-24).** An **open XML search feed**: `GET https://www.jobs.nhs.uk/api/v1/search_xml?
   sort=publicationDateDesc&limit=100&page=N` (without `limit` 10 a page; `pageSize` and `size`
