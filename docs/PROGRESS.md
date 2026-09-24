@@ -6,12 +6,12 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 435 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 440 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
 Jobcu works end to end. A search reads the documents with the person's own AI, collects jobs from
-18 sources (8 of them company career systems, reading 357 employers), removes duplicates, applies
+19 sources (8 of them company career systems, reading 357 employers), removes duplicates, applies
 the rules and the location conditions, and scores what's left. The location box takes any
 condition in the person's own words (sizes, facts the AI looks up per town, per region or per
 country, travel limits to reference places), shows how each was checked, with sources, and can
@@ -38,7 +38,7 @@ reports, or through a local session on his Mac.
 
 - [x] 1. service.bund.de's feed (`servicebund.py`; checked live, 2026-09-24).
 - [x] 2. Teaching Vacancies (`teachingvacancies.py`; checked live, 2026-09-24).
-- [ ] 3. NHS Jobs.
+- [x] 3. NHS Jobs (`nhsjobs.py`; checked live, 2026-09-24).
 - [ ] 4. Closing dates and reposts on cards.
 
 Done when the four are merged; then the rest of task 1's list, one at a time.
@@ -235,10 +235,10 @@ not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the pla
 
 ### Phase 3: Maximum coverage
 
-- [x] 18 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
-      jobs.ac.uk, Teaching Vacancies, EURAXESS, Arbeitnow, Arbetsförmedlingen, and company
-      career sites in 8 systems (Greenhouse, Lever, Ashby, Workable, Recruitee, Workday,
-      Teamtailor, SuccessFactors) for 357 employers
+- [x] 19 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
+      jobs.ac.uk, Teaching Vacancies, NHS Jobs, EURAXESS, Arbeitnow, Arbetsförmedlingen, and
+      company career sites in 8 systems (Greenhouse, Lever, Ashby, Workable, Recruitee,
+      Workday, Teamtailor, SuccessFactors) for 357 employers
 - [x] Per-source status, unique-job counts and on/off switches
 - [ ] A source for every supported country (HANDOVER §9.0)
 - [ ] More career systems and employers; live AI web search for jobs (HANDOVER §9.6)
