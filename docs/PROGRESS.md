@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 0 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 429 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
