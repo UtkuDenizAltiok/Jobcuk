@@ -20,7 +20,7 @@ from datetime import date
 import httpx
 import trafilatura
 
-from jobcu.freshness import day_at_utc, freshness, window_start
+from jobcu.freshness import day_at_utc, freshness, parse_closing, window_start
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget
 from jobcu.sources.http import Blocked
@@ -149,4 +149,5 @@ def to_found_job(item: dict) -> FoundJob | None:
         date_precision="day" if posted else "unknown",
         description=html_to_text(str(item.get("description") or "")),
         job_types=_job_types(item.get("employmentType")),
+        closes_at=parse_closing(str(item.get("validThrough") or "")),
     )

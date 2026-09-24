@@ -76,6 +76,7 @@ def test_reads_newest_pages_until_the_window_ends():
     assert first.job_types == ["full_time_permanent"]
     assert jobs[1].job_types == ["fixed_term", "part_time"]  # "TEMPORARY" is a fixed term
     assert first.description == "We are looking for a caring class teacher."
+    assert first.closes_at == datetime(2026, 10, 16, 22, 59, tzinfo=UTC)
     assert not first.description_is_complete  # the page has the rest
 
 

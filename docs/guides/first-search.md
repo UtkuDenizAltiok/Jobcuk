@@ -43,6 +43,10 @@ or a language level. Without your citizenship, Jobcu never assumes one.
   An ad written in a language you speak below B2 that doesn't say what level it needs scores low
   for languages, but isn't limited. Jobs with a low score still stay in your list.
 - **New:** not seen in an earlier search.
+- **"apply by 8 October":** the closing date, when the job site gives one ("closes soon" in the
+  last two days). Jobs whose closing date has passed are left out.
+- **"first seen by Jobcu on 14 August":** the ad says it's new, but Jobcu showed you this job
+  before that date, so it's probably an old ad posted again.
 - **Understood as:** how Jobcu read where you want to work. If something is wrong, click **Edit**
   to switch a condition off, fix its list of places or its town size, reword it or add one. In a
   list of places, **All of Saxony** means a whole state, county or district, and **Except

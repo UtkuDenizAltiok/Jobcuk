@@ -45,6 +45,7 @@ class FoundJob:
     employer_url: str | None = None  # the employer's own page or career system, if known
     salary_text: str | None = None
     via: str | None = None  # e.g. "Found through Reed" for career-system jobs
+    closes_at: datetime | None = None  # when applications close, if the source says (aware)
 
 
 @dataclass

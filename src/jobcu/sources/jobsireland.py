@@ -22,7 +22,7 @@ import httpx
 from lxml import html as lxml_html
 from lxml.etree import ParserError
 
-from jobcu.freshness import window_start
+from jobcu.freshness import end_of_day, window_start
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget
 from jobcu.sources.matching import matches_places, matches_terms
@@ -152,6 +152,8 @@ def parse_list(markup: str) -> list[FoundJob]:
         logo = block.xpath(".//img[starts-with(@alt, 'Logo of ')]/@alt")
         company = tidy(logo[0][len("Logo of "):]) if logo else None
         posted = _irish_time(_hidden(block, "StartDate"))
+        # The closing date is given as that day at midnight: applications are open all day.
+        closing = _irish_time(_hidden(block, "EndDate"))
         latitude, longitude = coordinates.get(job_id, (None, None))
         jobs.append(FoundJob(
             source="jobsireland",
@@ -166,6 +168,8 @@ def parse_list(markup: str) -> list[FoundJob]:
             posted_at=posted,
             date_precision="exact" if posted else "unknown",
             job_types=list(_VACANCY_TYPES.get(_hidden(block, "VacancyTypeId"), [])),
+            closes_at=end_of_day(closing.astimezone(IRISH_TIME).date(), IRISH_TIME)
+            if closing else None,
         ))
     return jobs
 

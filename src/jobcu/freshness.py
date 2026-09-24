@@ -9,7 +9,7 @@
 """
 
 import math
-from datetime import UTC, date, datetime, time, timedelta
+from datetime import UTC, date, datetime, time, timedelta, tzinfo
 from typing import Literal
 
 Freshness = Literal["fresh", "too_old", "unknown"]
@@ -51,6 +51,23 @@ def freshness(posted_at: datetime | None, precision: str, start: datetime) -> Fr
     if latest is None:
         return "unknown"
     return "fresh" if latest >= start else "too_old"
+
+
+def end_of_day(day: date, zone: tzinfo) -> datetime:
+    """A closing date given only as a day: applications are open until that day's end, where
+    the job is."""
+    return datetime.combine(day, time(23, 59), tzinfo=zone).astimezone(UTC)
+
+
+def parse_closing(text: str | None) -> datetime | None:
+    """A closing date in ISO form. Given as a day only, it lasts until that day's end."""
+    text = (text or "").strip()
+    if len(text) == 10:
+        try:
+            return end_of_day(date.fromisoformat(text), UTC)
+        except ValueError:
+            return None
+    return parse_iso(text)
 
 
 def day_at_utc(day: date) -> datetime:

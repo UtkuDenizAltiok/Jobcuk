@@ -21,7 +21,7 @@ def term(text, kind="job_title"):
 
 
 def job_block(job_id, title, posted, *, company="Fake Devices Ltd", location="Swords, Co. Dublin",
-              vacancy_type="0"):
+              vacancy_type="0", closes="2026-11-05T00:00:00"):
     logo = f'<img src="logo.png" alt="Logo of {company}">' if company else ""
     return f"""
     <div class="job-heading position-box" data-vacancyid = "{job_id}" tabindex="0" >
@@ -29,6 +29,7 @@ def job_block(job_id, title, posted, *, company="Fake Devices Ltd", location="Sw
       <input type="hidden" id="JobTitle" value="{title}" />
       <input type="hidden" id="Location" value="{location}, " />
       <input type="hidden" id="StartDate" value="{posted.astimezone(IRISH):%Y-%m-%dT%H:%M:%S}" />
+      <input type="hidden" id="EndDate" value="{closes}" />
       <input type="hidden" id="VacancyTypeId" value="{vacancy_type}" />
       <div class="flex-item">{logo}</div>
     </div>"""
@@ -96,6 +97,8 @@ def test_reads_the_newest_jobs_and_keeps_matching_titles_until_they_are_too_old(
     assert (job.latitude, job.longitude) == (53.45, -6.22)
     assert job.date_precision == "exact"
     assert abs(job.posted_at - fresh) < timedelta(seconds=1)  # Irish time read correctly
+    # The closing date comes as that day at midnight: open until the day's end (Irish time).
+    assert job.closes_at == datetime(2026, 11, 5, 23, 59, tzinfo=UTC)
 
 
 def test_named_places_are_matched_against_the_address():

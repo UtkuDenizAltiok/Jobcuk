@@ -98,7 +98,7 @@ Update this whenever a source changes or something new is learned. Decisions are
   Each answer takes about 5 s.
 - Each job block (`div.job-heading[data-vacancyid]`) has hidden inputs `JobId`, `JobTitle`,
   `Location` (often starts with the employer's name), `StartDate` (publish time, **Irish local
-  time without a zone**, e.g. `2026-09-16T14:24:50`), `EndDate` (closing date), `VacancyTypeId`
+  time without a zone**, e.g. `2026-09-16T14:24:50`), `EndDate` (closing date, as that day at midnight: "2026-11-05T00:00:00"), `VacancyTypeId`
   (0 paid position, 3 CE scheme, 4 apprenticeship, 6 self-employed, 10 WPEP work placement).
   The employer's name is only in the logo's `alt="Logo of …"`, and not always. `ul#longlats li`
   holds `lat;lon;address;title;id;ref`, several per job with several locations. The page also

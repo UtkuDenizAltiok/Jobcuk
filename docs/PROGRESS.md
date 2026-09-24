@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 440 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 448 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -33,17 +33,16 @@ reports, or through a local session on his Mac.
 
 ### In progress
 
-**Next task 1, building the sources the research ranked highest** (cloud session, started
-2026-09-24). Each item tested, recorded and merged before the next:
-
-- [x] 1. service.bund.de's feed (`servicebund.py`; checked live, 2026-09-24).
-- [x] 2. Teaching Vacancies (`teachingvacancies.py`; checked live, 2026-09-24).
-- [x] 3. NHS Jobs (`nhsjobs.py`; checked live, 2026-09-24).
-- [ ] 4. Closing dates and reposts on cards.
-
-Done when the four are merged; then the rest of task 1's list, one at a time.
+Nothing.
 
 ### Verify before relying on
+
+- **The new public sources inside a full search** (service.bund.de, Teaching Vacancies, NHS
+  Jobs; closing dates and reposts, 2026-09-24): each was checked live on its own with a made-up
+  person, never inside a whole search. On the owner's next search (Germany, the UK): the three
+  appear in Search details with their counts; service.bund.de's full ads (30 s apart, at most
+  12) don't hold the search up much beyond a few minutes; cards show "apply by …"; a "first seen
+  by Jobcu on …" line appears only on ads Jobcu showed before their stated date.
 
 - **Everything from 2026-09-23/24 inside one full search.** Each piece was checked live on its
   own (search 8's jobs, the owner's sentence, a second made-up sentence), never all together.
@@ -121,27 +120,19 @@ not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the pla
 
 1. **Build the sources the research ranked highest** (research done 2026-09-24: SOURCES.md,
    "Candidate sources by country" and "LinkedIn, StepStone and the person's AI"; DECISIONS.md,
-   2026-09-24 evening). Each an isolated adapter with tests and its facts in SOURCES.md, in this
-   order (public services first, every kind of work, clean terms, least effort first):
-   1. **service.bund.de's feed** (Germany's public sector: one request, ~150 new jobs a day that
-      the Bundesagentur lacks; full ads only for the jobs still in the running, 30 s apart).
-   2. **Teaching Vacancies** (England's schools: open API, full ads, Open Government Licence).
-   3. **NHS Jobs** (health in England and Wales: open XML feed, ~1,000 a day; full ad from the
-      job page).
-   4. **Closing dates and reposts** on cards (DECISIONS.md, 2026-09-24 evening): `closes_at`
-      from the sources that give it, "Apply by …", passed deadlines left out, and "First seen by
-      Jobcu on …" from the job memory.
-   5. **Le Forem's open data** (Belgium, also Flanders and Brussels: ~1,200 a day, structured
+   2026-09-24 evening). Done: service.bund.de, Teaching Vacancies, NHS Jobs, closing dates and
+   reposts (2026-09-24). Next, each an isolated adapter with tests and its facts in SOURCES.md:
+   1. **Le Forem's open data** (Belgium, also Flanders and Brussels: ~1,200 a day, structured
       languages, licence and education; no ad text, so read online like Adzuna's summaries).
-   6. **d.vinci and prospective.ch** as career systems, with customers found for the directory
+   2. **d.vinci and prospective.ch** as career systems, with customers found for the directory
       (hospitals, councils, cantons, universities).
-   7. **NAV's stilling-feed** (Norway), then **Werken voor Nederland** (the Dutch government).
-   8. **Interamt** (Germany; measure its overlap with service.bund.de first; reachable only
+   3. **NAV's stilling-feed** (Norway), then **Werken voor Nederland** (the Dutch government).
+   4. **Interamt** (Germany; measure its overlap with service.bund.de first; reachable only
       outside the cloud), and the questions for the owner above as he answers them.
-   9. **Live AI web search for jobs** (HANDOVER §9.6): the person's AI finds fresh jobs anywhere;
+   5. **Live AI web search for jobs** (HANDOVER §9.6): the person's AI finds fresh jobs anywhere;
       each is confirmed at a source Jobcu may read before it is shown (owner's question above).
-2. **Universality audit and fixes** (after the first four items of task 1, so teachers and
-   nurses have sources to find). The AI instructions use engineering examples
+2. **Universality audit and fixes** (teachers and nurses now have sources to find; this can
+   start now, before the rest of task 1). The AI instructions use engineering examples
    (`keywords.py` search words, `scoring.py` role anchors and reasons, `relevance.py` quick
    check, `profile.py` field descriptions) and the employer directory leans to technology
    companies. Rewrite examples across professions, then check with made-up people from other

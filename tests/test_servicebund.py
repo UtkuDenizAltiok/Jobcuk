@@ -99,6 +99,7 @@ def test_reads_the_feed_and_keeps_the_jobs_that_match():
     assert first.date_precision == "exact"
     assert abs((first.posted_at - (NOW - timedelta(hours=2))).total_seconds()) < 2
     assert "Bewerbungsfrist: 23.10.2026 23:59" in first.description
+    assert first.closes_at == datetime(2026, 10, 23, 21, 59, tzinfo=UTC)  # German summer time
     assert not first.description_is_complete
     assert jobs[1].date_precision == "day"  # midnight means only the day is known
 
@@ -153,6 +154,8 @@ def test_the_job_page_gives_the_full_ad_and_its_facts():
     assert (full.latitude, full.longitude) == (52.5, 13.4)
     assert full.employer_url == "https://fake-bewerbung.example/job/1"
     assert full.salary_text == "E 13 TVöD"
+    # The page's closing day, open until its end.
+    assert full.closes_at == datetime(2026, 10, 23, 21, 59, tzinfo=UTC)
 
 
 def test_job_types_and_pay_grades():

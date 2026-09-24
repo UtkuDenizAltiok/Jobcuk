@@ -555,6 +555,7 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
     id_of = dict(zip(shown, job_ids, strict=True))
     new_of = dict(zip(shown, new_flags, strict=True))
     states = jobstore.states(job_ids)
+    first_seen = jobstore.first_seen(job_ids)
     names = job_pool.source_names
 
     def card(index: int) -> dict:
@@ -570,6 +571,7 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
             possible_duplicate_of=id_of.get(duplicate) if duplicate is not None else None,
             started_at=started_at,
             posted_within_hours=form.posted_within_hours,
+            first_seen_at=first_seen.get(id_of[index]),
         )
 
     cards = [card(i) for i in shown]
