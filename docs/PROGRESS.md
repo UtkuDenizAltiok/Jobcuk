@@ -92,7 +92,9 @@ owner is not an expert in job search: research how the best job search works, th
 build. Technical choices are the sessions' own; items marked Decided in HANDOVER.md, anything
 that costs money or touches his accounts, and asking platforms for permission are his. Countries
 in this order: Germany; the UK and Ireland; Switzerland; Belgium; the Netherlands; Italy;
-Scandinavia; Poland; the rest later. Findings go to their homes: source facts (also for sources
+Scandinavia; Poland; the rest later. Cost: at most €25 a month for the owner; free, or under
+€10 a month, for everyone else, so check what a daily 24-hour search costs on the providers'
+free allowances and cheap models, and choose defaults (such as reasoning effort) accordingly. Findings go to their homes: source facts (also for sources
 not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the plan here.
 
 1. **Research, before building more** (one or two sessions, each finding recorded):

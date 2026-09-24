@@ -177,9 +177,11 @@ answering open questions.
 2. Don't miss relevant fresh jobs. Coverage and freshness are Jobcu's main purpose.
 3. Accurate filtering and scoring.
 4. Simplicity for non-technical users.
-5. Reasonable cost: up to €30 a month in total for AI and any other service; lower is better,
-   free is best. Never save money by lowering 2 or 3. Optimise requests cleverly: never fewer
-   fresh jobs or worse scores.
+5. Reasonable cost: free is best, cheaper is better. The owner accepts up to €25 a month in
+   total for AI and any other service (more freely while Jobcu is being developed); his friends
+   and other users want to stay free, and under €10 a month at most, so Jobcu must work well
+   on free allowances and cheap models. Never save money by lowering 2 or 3. Optimise requests
+   cleverly: never fewer fresh jobs or worse scores.
 6. Speed matters least. A search may take minutes, but not hours.
 
 ## How a search works
