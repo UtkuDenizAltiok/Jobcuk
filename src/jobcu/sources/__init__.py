@@ -21,6 +21,7 @@ from jobcu.sources.servicebund import ServiceBundSource
 from jobcu.sources.successfactors import SuccessFactorsSource
 from jobcu.sources.teachingvacancies import TeachingVacanciesSource
 from jobcu.sources.teamtailor import TeamtailorSource
+from jobcu.sources.werkenvoornederland import WerkenVoorNederlandSource
 from jobcu.sources.workable import WorkableSource
 from jobcu.sources.workday import WorkdaySource
 
@@ -37,4 +38,4 @@ def all_sources() -> list[JobSource]:
     return [AdzunaSource(), ArbeitnowSource(), JobTechSource(), BundesagenturSource(),
             ServiceBundSource(), EuraxessSource(), JobsAcUkSource(), JobsIrelandSource(),
             ReedSource(), TeachingVacanciesSource(), NhsJobsSource(), LeForemSource(),
-            *career_sources()]
+            WerkenVoorNederlandSource(), *career_sources()]

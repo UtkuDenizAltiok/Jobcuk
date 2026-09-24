@@ -115,8 +115,11 @@ class RequestBudget:
                 if self.limits.per_search is not None and (
                     self.used_this_search + count > self.limits.per_search
                 ):
+                    # Not always a free allowance (Adzuna's is): some sources only have Jobcu's own
+                    # cap per search, so the message says what happened, not why.
                     raise BudgetExhausted(
-                        f"{self.name}: used this search's share of its free requests."
+                        f"{self.name}: reached the most requests Jobcu sends it in one search, so "
+                        "some of its jobs may not have been read."
                     )
                 if self.limits.per_day is not None and used_today + count > self.limits.per_day:
                     raise BudgetExhausted(

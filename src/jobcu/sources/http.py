@@ -58,6 +58,8 @@ SITE_INTERVALS = {
     "jobsearch.api.jobtechdev.se": 0.5,
     # The German public sector's portal: its robots.txt asks for "Crawl-delay: 30".
     "www.service.bund.de": 30.0,
+    # The Dutch government's job site: its robots.txt allows "Request-rate: 10/1".
+    "www.werkenvoornederland.nl": 0.3,
 }
 
 
