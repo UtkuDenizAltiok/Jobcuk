@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 494 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 495 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -225,6 +225,14 @@ here.
 3. **The best legal routes to the jobs on LinkedIn and StepStone:** the person's AI searches the
    web for fresh jobs (HANDOVER §9.6), and each is shown once Jobcu confirms it at a source it
    may read, above all the employer's own career page (DECISIONS.md, 2026-09-24 evening).
+   **Tried 2026-09-24 (night) for single jobs, not shipped** (DECISIONS.md, "The person's AI
+   searching the web for single jobs"): the addresses a model writes are often wrong, and the
+   search engine's own links may not be followed. **Next: the AI finds employers, not jobs**:
+   it looks up employers hiring for the person's kind of work in the places searched, with their
+   career-site address; Jobcu recognises the career system from that address (Workday,
+   Greenhouse, Lever, Teamtailor, d.vinci…), checks it with one request and reads its jobs like
+   the directory's, remembering the employers found for later searches. For the directory
+   itself, sessions keep adding employers found by web search (SOURCES.md, career systems).
 4. **Fewer jobs depending on Adzuna's summaries:** find the same job at its original (the
    employer's career site, the Bundesagentur) before reading it online, and measure how many
    Adzuna jobs still rely on a summary after steps 2 and 3.

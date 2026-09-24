@@ -47,7 +47,13 @@ def _clean(node: Any, defs: dict) -> Any:
         target = defs[node["$ref"].rsplit("/", 1)[-1]]
         merged = {**target, **{k: v for k, v in node.items() if k != "$ref"}}
         return _clean(merged, defs)
-    cleaned = {k: _clean(v, defs) for k, v in node.items() if k not in _DROP_KEYS}
+    cleaned = {k: _clean(v, defs) for k, v in node.items()
+               if k not in _DROP_KEYS and k != "properties"}
+    if isinstance(node.get("properties"), dict):
+        # These keys are the answer's field names, never schema words to drop: a field called
+        # "title" or "format" must stay (a job's title went missing, 2026-09-24).
+        cleaned["properties"] = {name: _clean(value, defs)
+                                 for name, value in node["properties"].items()}
     if cleaned.get("type") == "object" or "properties" in cleaned:
         cleaned["type"] = "object"
         cleaned.setdefault("properties", {})
