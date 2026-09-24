@@ -15,6 +15,14 @@ job ads from as many sources as possible, removes duplicates, applies the locati
 scores each job against the user's profile with an AI model the user chose, and shows a ranked
 list with short reasons.
 
+**Jobcu is universal.** It is for anyone: any profession (engineers, teachers, nurses, chefs,
+lawyers, drivers…), any of the 30 countries, any way of writing, any AI provider. The owner is
+one user, not the target: never tune prompts, examples, data, sources or defaults to his profile
+or his searches; that is why the person's own AI reads everything. Examples in AI instructions
+come from several professions and countries, and every change to how Jobcu reads people, places
+or ads is tried with made-up people from other fields (a primary-school teacher in Ghent, an ICU
+nurse in Cork, a sous-chef in Zürich) as well as with the owner's own words.
+
 ## Where everything lives
 
 Every kind of information has exactly one home. Record it there once and link to it elsewhere;
@@ -88,6 +96,42 @@ for any reason:
 6. Tell the owner in a few plain lines what was done, what's next, what waits on them, and that
    it's safe to start a new session.
 
+### Working in a cloud session (claude.ai/code)
+
+Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself runs on his Mac.
+
+- A cloud session starts on a fresh Ubuntu machine with a clone of the repository. Python, uv,
+  pytest, ruff and `gh` are pre-installed, and `gh` works without logging in. At the start,
+  `.claude/settings.json` runs `tools/cloud_setup.sh` (the packages, and the safety check before
+  every commit). The environment's network access must be **Full**, so job sites, GeoNames and
+  documentation can be reached; if a site can't be reached, say so rather than guess.
+- **No personal data in the cloud.** The owner's CV, data folder, database and keys stay on his
+  Mac. Never ask him to upload them; work with fake data. What needs his real data (his searches,
+  the score check, the coverage test on his answers) happens on his Mac: ask him to run it and
+  report, or to open a local session for it.
+- **AI tests with a real provider** in the cloud only through an **API credential** the owner
+  saved on the cloud environment: the agent proxy adds the key to requests for that host, and
+  nobody sees it. Save a placeholder key in a scratch data folder so Jobcu's code runs, and check
+  that the first request is answered. Without such a credential, name the checks that must run
+  on his Mac.
+- **Branches and merging.** Work on the session's branch and push after every finished step (the
+  branch is what survives if the session ends). Open a pull request early; when GitHub's tests
+  pass (`gh pr checks`), merge it with a **merge commit** if the owner allowed it in the session,
+  otherwise ask him to merge. Then carry on from an updated main. PROGRESS.md is kept current on
+  the branch and reaches main with each merge.
+- **Budget and the final handover.** The owner's cloud work is paid only by his $100 cloud
+  credit (until 2026-11-05); he never wants to pay more, and afterwards he continues in local
+  sessions on his Mac. A session can't see the credit left, so: merge every finished step at
+  once (a stop at any moment then loses at most the step in hand), work in one session at a
+  time, keep the context lean (read what you need, not whole folders), and spend tokens on what
+  improves Jobcu. When he says the credit is nearly used, or sends the final-handover prompt
+  (CONTRIBUTING.md), stop new work at a safe point and do a complete check-up: `uv run ruff
+  check . && uv run pytest`, GitHub's tests on the last merge, every branch merged or its
+  unfinished work described under In progress, no pull request left open without a reason. Then
+  rewrite "Right now" for a local session on his Mac: the state, what the cloud sessions did,
+  what they couldn't check without his data, and the next tasks in order. Merge, and tell him
+  it's safe to continue locally.
+
 ## Who you are working with
 
 The owner (Utku) and his invited friends. **Assume they have no programming experience**, unless
@@ -99,7 +143,8 @@ answering open questions.
   worked before the next. Remember that some use a Mac and some use Windows.
 - Do the technical work yourself whenever you can.
 - **Never ask anyone to paste an API key or password into the chat.** Keys are entered only in
-  Jobcu's own settings screen. If a person allows it, an assistant running on their own computer
+  Jobcu's own settings screen, or, for cloud development sessions, as an API credential on the
+  cloud environment, which no session can read ("Working in a cloud session"). If a person allows it, an assistant running on their own computer
   may use the keys saved in Jobcu's data folder **through Jobcu's code** for real tests, without
   ever printing, logging or copying them. Keep usage within the budget below, and job-site
   requests modest (their keys have daily limits).
@@ -122,8 +167,8 @@ answering open questions.
    docs. Never hard-code model names: users enter or pick them in settings.
 5. **Never commit keys, CVs or personal data.** Tests use fake data only.
 6. **The repository is private and its history is permanent:** never make it public, force-push,
-   rewrite or squash shared history, or delete commits. Commit dates are the record of the
-   owner's work.
+   rewrite or squash shared history, or delete commits. Pull requests are merged with a merge
+   commit, never squashed or rebased. Commit dates are the record of the owner's work.
 7. English UI only. Supported countries only: the 30 in `countries.py`.
 
 ## When goals conflict, decide in this order
@@ -146,9 +191,10 @@ documents → profile (`profile.py`) → location plan (`location.py`) → searc
 (`filters.py`) → the location conditions that need no measuring → quick relevance check
 (`relevance.py`; it also reads the town from the ad text when the job sites give only a country,
 and the conditions are then applied to those jobs) → travel limits (`travel.py`) → full ads
-(`load_details`) → scoring (`scoring.py`) → the town of the best jobs still without one, found
-online (`jobplace.py`), and the conditions for them → cards and job memory
-(`pipeline.build_card`, `jobstore.py`).
+(`load_details`) → scoring (`scoring.py`: the AI reads the evidence, code applies the limits for
+blockers) → the best jobs looked up online (`jobplace.py`: the town of those without one, and the
+full ad's languages and years for those scored from a summary), then the conditions and limits
+again for them → cards and job memory (`pipeline.build_card`, `jobstore.py`).
 
 Everything after the rules runs in `search._decide`. **Edit** (next to "Understood as") runs it
 again on the same jobs with corrected conditions, reusing every earlier answer (`pool.py`).
@@ -202,7 +248,8 @@ src/jobcu/
   filters.py                 the fixed rules (dates, types, remote, country, dismissed) and
                              conditions
   relevance.py               the quick AI relevance check
-  jobplace.py                the town of the best town-less jobs, found online by the person's AI
+  jobplace.py                the best jobs looked up online by the person's AI: their town, and
+                             their full ad's languages and years when only a summary was read
   scoring.py                 the scoring rubric and prompt
   freshness.py               posting dates and "Posted within"
   jobstore.py                jobs remembered between searches, job states, saved results
@@ -224,11 +271,13 @@ src/jobcu/
   web/                       the screen: plain HTML, CSS, JS (no build step)
 tests/                       pytest; conftest.py gives every test a throwaway data folder
 tools/check_no_secrets.py    safety check against keys and personal data (Git hook and CI)
+tools/cloud_setup.sh         prepares a cloud session (run by .claude/settings.json)
 tools/check_employers.py     checks the employer directory and adds new candidates
 tools/update_places.py       rebuilds the shipped town and region lists from GeoNames
 tools/coverage_test.py       how many jobs a person found by hand did Jobcu find, and why not
 tools/score_check.py         Jobcu's scores against the owner's own answers, and prompt variants
 .githooks/pre-commit         runs the safety check before every commit
+.claude/settings.json        Claude Code's shared settings: the cloud session setup
 .github/workflows/tests.yml  CI: safety check, then tests on macOS and Windows
 docs/                        PROGRESS, DECISIONS, SOURCES, HANDOVER, guides/
 ```
@@ -280,9 +329,11 @@ short script with that `JOBCU_DATA_DIR`.
   with no technical words and no filler, just enough to use Jobcu fully. Developers: this file and
   `docs/`, technical and detailed. When a screen, message or step changes, update the user guides
   in the same commit.
-- **Coverage:** reach as many jobs as possible in **all 30** supported countries, through every
-  legally safe route, not only APIs (see DECISIONS.md). Ireland, the UK and Germany are worked on
-  and tested first; that's an order, not a limit.
+- **Coverage:** reach as many jobs as possible, for every kind of work, in **all 30** supported
+  countries, through every legally safe route, not only APIs (see DECISIONS.md). The order of
+  work (the owner, 2026-09-24): 1. Germany; 2. the UK and Ireland; 3. Switzerland; 4. Belgium;
+  5. the Netherlands; 6. Italy; 7. Scandinavia (Denmark, Norway, Sweden); 8. Poland; the rest
+  later. That's an order, not a limit.
 
 ## Lessons learned (avoid repeating these mistakes)
 
@@ -312,6 +363,13 @@ short script with that `JOBCU_DATA_DIR`.
   arises; the breakdown was there, but only on hover.
 - **Import loops can hide behind a lucky import order.** `tests/test_imports.py` loads key modules
   on their own; import heavy modules inside a function when two modules need each other.
+- **Try AI instructions with someone else's words too.** One made-up person's sentence
+  (Netherlands, trains, a technical university, no rain) found two general faults the owner's
+  own sentence never showed: a cut-off answer and "fit" swapped with "avoid".
+- **Thinking counts as output with every provider.** Raising the reasoning effort cut off a
+  2,000-token answer; `ai/client.py` now adds room for thinking to every request.
+- **A site that blocks Jobcu stays blocked.** Find the data another way (the same job elsewhere,
+  the person's AI reading it online) instead of trying again each search.
 - The secrets check can flag public identifiers. Only if a value is clearly not a secret, add
   `# jobcu-guard: allow` with a comment explaining why.
 

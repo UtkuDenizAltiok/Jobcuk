@@ -59,3 +59,14 @@ def test_the_prompts_for_ai_assistants_point_at_real_sections():
     rules = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
     for section in ("Starting, or resuming after any interruption", "Ending a session"):
         assert section in prompts and f"### {section}" in rules
+
+
+def test_cloud_sessions_are_prepared_by_the_repository():
+    # AGENTS.md, "Working in a cloud session": the hook runs the setup script, which does nothing
+    # on people's own computers.
+    settings = json.loads((ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
+    (hook,) = settings["hooks"]["SessionStart"]
+    assert "tools/cloud_setup.sh" in hook["hooks"][0]["command"]
+    script = (ROOT / "tools" / "cloud_setup.sh").read_text(encoding="utf-8")
+    assert 'if [ "$CLAUDE_CODE_REMOTE" != "true" ]' in script and "uv sync" in script
+    assert "tools/cloud_setup.sh" in _project_map()

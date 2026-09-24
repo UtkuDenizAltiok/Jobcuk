@@ -51,7 +51,9 @@ desktop.ini
 # .aider.conf.yml ARE shared.)
 .vscode/
 .idea/
-.claude/
+# Claude Code: only the shared settings (the cloud session setup) are shared.
+.claude/*
+!.claude/settings.json
 .aider.chat.history.md
 .aider.input.history
 .aider.tags.cache.v*/

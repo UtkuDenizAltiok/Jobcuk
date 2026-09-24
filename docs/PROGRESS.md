@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 418 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 419 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -26,6 +26,10 @@ where the person would live, so a job in one needs no trip; every AI step thinks
 room for thinking on top of each answer. Adzuna stays as the biggest source, but Jobcu no longer
 reads its pages (its firewall refuses them) and merges its "Deutschland" ads with the same job
 elsewhere. Phase 1 waits only on the quality set the owner rates; most of Phase 2 is built.
+
+From 2026-09-24 development runs in Claude Code cloud sessions (AGENTS.md, "Working in a cloud
+session"): no access to the owner's data there, so his searches and ratings come back as his
+reports, or through a local session on his Mac.
 
 ### In progress
 
@@ -63,50 +67,73 @@ Nothing.
 
 ### Waiting on the owner
 
-1. **Restart Jobcu** (the one running was started before these changes), write his citizenship
-   in "Anything your documents don't say", and **run a 24-hour search**. Then look at the items
-   under "Verify" above.
-2. **Rate 30–50 jobs on the Score check screen** (nothing is rated yet). Tuning the quick check
-   and the scoring waits on this.
-3. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
+1. **Set up cloud sessions** (steps given in chat on 2026-09-24): the Claude GitHub App on the
+   repository, the cloud environment's network access set to **Full**, and, strongly
+   recommended, a separate Gemini key saved as an **API credential** on that environment so
+   cloud sessions can test AI instructions with a real provider. He spends only his $100 cloud
+   credit: he watches it at claude.ai, Settings → Usage, and sends the final-handover prompt
+   (CONTRIBUTING.md) at about $85 used.
+2. **Restart Jobcu** on his Mac (the one running was started before these changes), write his
+   citizenship in "Anything your documents don't say", and **run a 24-hour search**. Then report
+   what looks wrong (screenshots are fine), especially the items under "Verify".
+3. **Rate 30–50 jobs on the Score check screen** (nothing is rated yet). Tuning the quick check
+   and the scoring waits on this; it runs on his Mac.
+4. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
    `Company | Job title | Place | link`, for `tools/coverage_test.py`.
-4. **The friend's test:** his feedback on installing and using Jobcu.
-5. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
-   permission ([SOURCES.md](SOURCES.md)), and whether to sign up for Jooble, Careerjet, France
-   Travail, NAV or VDAB keys.
+5. **The friend's test:** his feedback on installing and using Jobcu.
+6. Decisions that come with the research below: whether to ask StepStone (or others) for
+   permission, and whether to sign up for aggregator keys such as Jooble or Careerjet.
 
 ### Next tasks, in order
 
-Tasks 2, 3 and 6 need nothing from the owner and can go ahead while he searches and rates.
+**The mission** (the owner, 2026-09-24): the best job search app possible, **universal** (any
+profession, any of the 30 countries, any wording), clean, reliable and without errors. The
+owner is not an expert in job search: research how the best job search works, then decide and
+build. Technical choices are the sessions' own; items marked Decided in HANDOVER.md, anything
+that costs money or touches his accounts, and asking platforms for permission are his. Countries
+in this order: Germany; the UK and Ireland; Switzerland; Belgium; the Netherlands; Italy;
+Scandinavia; Poland; the rest later. Findings go to their homes: source facts (also for sources
+not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the plan here.
 
-1. **The owner's next search:** check it against "Verify" and fix what it shows.
-2. **Phase 2's "Done when": every example sentence, checked live.** Run each sentence from
-   HANDOVER §6, README.md and the owner's own through `location.interpret_location` with a real
-   provider, twice, and fix what's misread in general terms, never for one sentence. One made-up
-   sentence on 2026-09-24 found two general faults (a cut-off answer, fit and avoid swapped), so
-   this is the cheapest way to find more. Done when every sentence reads as its author means,
-   both times.
-3. **Coverage beyond Adzuna, Germany, the UK and Ireland first.** Adzuna gives over half of the
-   jobs, and only as summaries. Next: the career systems German small and mid-sized employers
-   use (Personio, Softgarden), more Workday and SuccessFactors employers in German engineering,
-   and Teamtailor employers in the UK and Ireland; then national services with open data for
-   the other countries (Czechia's MPSV, Poland's CBOP, Finland, Estonia, Slovenia, Luxembourg).
-   Check terms and robots.txt first and record each in SOURCES.md. Done when a search's unique
-   jobs from sources with full ads grow, and the coverage test (task 4) shows the gaps.
-4. **The coverage test** when the owner's list arrives (`tools/coverage_test.py`): which of his
-   jobs Jobcu finds and why not; that decides the sources after task 3.
-5. **The score check** when jobs are rated (`tools/score_check.py`): first the quick relevance
-   check (it drops some related jobs in batches of similar ones, DECISIONS.md 2026-09-22
-   evening; try one verdict per job or mixed batches), then medium against low thinking and the
-   batch size for scoring, then the scoring prompt (HANDOVER §13). Done when the scores of 80%
-   of rated jobs fall in the region the owner's answer expects.
+1. **Research, before building more** (one or two sessions, each finding recorded):
+   - How the leading job platforms find, rank and present jobs (LinkedIn, Indeed, StepStone,
+     Google's job search, the public employment services), and what makes a job search good for
+     the person (coverage, freshness, duplicates, matching, explanations, alerts). Decide what
+     Jobcu should adopt, and how Jobcu should score (HANDOVER §11 is Decided: propose changes).
+   - **A source map per country**, in the order above and for every kind of work, not only
+     engineering: public employment services and their open data, public-sector portals
+     (teaching, health, civil service), aggregators with an API, the career systems employers
+     there use, and job feeds. For each: what it covers, terms and robots.txt, cost. Include
+     Switzerland's job-room.ch and jobs.ch, Belgium's VDAB, Le Forem and Actiris, the
+     Netherlands' werk.nl, Italy's and Scandinavia's public services, Poland's CBOP.
+   - **LinkedIn and StepStone by legitimate routes only** (DECISIONS.md, 2026-09-24): how much
+     of their jobs is also on employers' own sites and national services; whether the person's
+     AI searching the web (HANDOVER §9.6) finds fresh jobs reliably, and at what cost; whether
+     partner programmes or permissions exist.
+2. **Universality audit and fixes.** The AI instructions use engineering examples
+   (`keywords.py` search words, `scoring.py` role anchors and reasons, `relevance.py` quick
+   check, `profile.py` field descriptions) and the employer directory leans to technology
+   companies. Rewrite examples across professions, then check with made-up people from other
+   fields (a primary-school teacher in Ghent, an ICU nurse in Cork, a sous-chef in Zürich, a
+   lawyer in Munich, a truck driver in Poznań), each twice, with a real provider: the search
+   words, the quick check, the scores and the location reading must make sense for each.
+3. **Phase 2's "Done when":** every example sentence from HANDOVER §6, README.md and the owner's
+   own, read twice with a real provider, as its author means it. Fix in general terms, never for
+   one sentence.
+4. **Build the sources the research ranks highest**, in the country order: each an isolated
+   adapter with tests, its facts in SOURCES.md. Aim for sources that give full ads, so fewer
+   jobs depend on Adzuna's summaries (today over half do).
+5. **The owner's feedback loop:** fix what his searches show; when his ratings exist, the score
+   check (`tools/score_check.py`, on his Mac): the quick check first, then medium against low
+   thinking and the batch size, then the scoring prompt (HANDOVER §13); when his coverage list
+   exists, the coverage test. Consider a way for him to share a search's results with a cloud
+   session without personal data (no CV, no profile).
 6. **Ready for friends (Phase 4):** a first-run setup screen, updating from GitHub while keeping
-   the data folder, the user guides tested on a clean Mac and a clean Windows computer, and the
+   the data folder, the guides tested on a clean Mac and a clean Windows computer, and the
    repository moved to a free GitHub organization, choosing with the owner how friends
    contribute.
-7. **Cost, without losing quality (last, cost is fine now):** the scoring instructions and
-   profile (about 3,000 tokens) go out with each of about 60 requests a search, and Gemini
-   reported no cached tokens; try the provider's context caching (HANDOVER §13, saving 8).
+7. **Cost, last:** the scoring instructions and profile (about 3,000 tokens) go out with each of
+   about 60 requests a search; try the provider's context caching (HANDOVER §13, saving 8).
 
 ### Known limitations
 
