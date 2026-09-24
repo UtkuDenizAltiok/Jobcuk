@@ -229,7 +229,8 @@ answering open questions.
 `search.py` runs these steps in a background thread; the screen asks for progress once a second:
 
 documents → profile (`profile.py`) → location plan (`location.py`) → search words (`keywords.py`)
-→ sources in parallel (`pipeline.collect`, `sources/*`) → duplicates (`dedupe.py`) → fixed rules
+→ sources in parallel (`pipeline.collect`, `sources/*`) → a look by the AI at the career sites'
+titles the search words missed (`relevance.screen_titles`) → duplicates (`dedupe.py`) → fixed rules
 (`filters.py`) → the location conditions that need no measuring → quick relevance check
 (`relevance.py`; it also reads the town from the ad text when the job sites give only a country,
 and the conditions are then applied to those jobs) → travel limits (`travel.py`) → full ads

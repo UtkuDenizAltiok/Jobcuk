@@ -235,10 +235,20 @@ def _town_at(latitude: float, longitude: float, country: str) -> Town | None:
     return inside or (nearest[1] if nearest else None)
 
 
+# Only towns this big reach farther than about 3 km, so only they can contain another town.
+_CONTAINING_PEOPLE = 50_000
+
+
+@cache
+def _big_towns(country: str) -> tuple[Town, ...]:
+    return tuple(town for town in towns_in(country) if town.people >= _CONTAINING_PEOPLE)
+
+
+@cache
 def part_of(town: Town) -> Town | None:
     """The bigger town this one lies inside, when the list names a city's own district as a
     town of its own (Hamburg's Wandsbek and Eimsbüttel, London's boroughs), else None."""
-    for bigger in towns_in(town.country):
+    for bigger in _big_towns(town.country):
         if bigger.people <= town.people:
             return None
         if distance_km(bigger, town) <= reach_km(bigger):
