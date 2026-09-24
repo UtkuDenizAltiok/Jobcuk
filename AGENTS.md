@@ -23,6 +23,17 @@ come from several professions and countries, and every change to how Jobcu reads
 or ads is tried with made-up people from other fields (a primary-school teacher in Ghent, an ICU
 nurse in Cork, a sous-chef in Zürich) as well as with the owner's own words.
 
+**Where the work goes first** (the owner, 2026-09-24, DECISIONS.md): **Germany first, then the
+UK and Ireland**; no more sources for other countries until these three are as strong as
+possible. Jobcu stays universal, but it is **tested first and most with a graduate engineer in
+electronics and power electronics hardware**: what matters most now is that Jobcu finds and
+ranks technical and engineering jobs in these three countries as well as possible (more
+employer career sites of engineering and tech companies, the best legal routes to the jobs on
+LinkedIn and StepStone, fewer jobs depending on Adzuna's summaries). **The owner's own searches
+are the real test**: findings from them arrive in PROGRESS.md from a local session on his Mac
+and come before everything else. That is an order of effort, not a design rule: nothing is
+tuned to the owner's own profile, and nothing may break other kinds of work.
+
 ## Where everything lives
 
 Every kind of information has exactly one home. Record it there once and link to it elsewhere;
@@ -45,7 +56,7 @@ may use a different AI.
 
 When records disagree: the code and tests show what *is*; DECISIONS.md (the newest row on a topic)
 says what was *decided*; items marked **Decided** in HANDOVER.md stand unless DECISIONS.md records
-the owner changing them. Correct the wrong record in the same commit as the change that exposed it.
+a later decision. Correct the wrong record in the same commit as the change that exposed it.
 
 ## Sessions: start, work, stop
 
@@ -164,9 +175,14 @@ answering open questions.
   may use the keys saved in Jobcu's data folder **through Jobcu's code** for real tests, without
   ever printing, logging or copying them. Keep usage within the budget below, and job-site
   requests modest (their keys have daily limits).
-- Items marked **Decided** in HANDOVER.md belong to the owner. Changing one needs the owner's
-  approval (for friends, that happens in the pull request). Also ask before adding any paid
-  service or doing anything that affects someone's accounts or costs.
+- **The sessions own Jobcu's decisions** (the owner, 2026-09-24: "you are the owner of this
+  project so you should decide on everything and also do the merge add remove stuff"): product
+  and technical choices, including changes to items marked **Decided** in HANDOVER.md, are the
+  session's own, recorded in DECISIONS.md with their reasons; merging, adding and removing too.
+  The hard rules below still hold, and some things only the owner can do: anything that costs
+  money or touches his accounts, messages sent in his name (such as asking a platform for
+  permission), his own searches, ratings and coverage list. Friends' changes go through pull
+  requests the session reviews.
 
 ## Hard rules (never break these)
 
@@ -295,6 +311,8 @@ tools/update_places.py       rebuilds the shipped town and region lists from Geo
 tools/coverage_test.py       how many jobs a person found by hand did Jobcu find, and why not
 tools/universality_check.py  made-up people from other fields through profile, search words,
                              quick check and scoring, with the search words checked against ESCO
+tools/made_up_search.py      one complete search for a made-up person (by default a graduate
+                             power-electronics engineer), in its own data folder
 tools/score_check.py         Jobcu's scores against the owner's own answers, and prompt variants
 .githooks/pre-commit         runs the safety check before every commit
 .claude/settings.json        Claude Code's shared settings: the cloud session setup
@@ -353,7 +371,8 @@ short script with that `JOBCU_DATA_DIR`.
   countries, through every legally safe route, not only APIs (see DECISIONS.md). The order of
   work (the owner, 2026-09-24): 1. Germany; 2. the UK and Ireland; 3. Switzerland; 4. Belgium;
   5. the Netherlands; 6. Italy; 7. Scandinavia (Denmark, Norway, Sweden); 8. Poland; the rest
-  later. That's an order, not a limit.
+  later. That's an order, not a limit; for now only Germany, the UK and Ireland get new work
+  (the owner, 2026-09-24, see "Where the work goes first").
 
 ## Lessons learned (avoid repeating these mistakes)
 

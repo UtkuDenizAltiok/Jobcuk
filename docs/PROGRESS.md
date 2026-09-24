@@ -6,12 +6,12 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 465 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 471 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
 Jobcu works end to end. A search reads the documents with the person's own AI, collects jobs from
-23 sources (9 of them company career systems, reading 365 employers), removes duplicates, applies
+24 sources (10 of them company career systems, reading 368 employers), removes duplicates, applies
 the rules and the location conditions, and scores what's left. The location box takes any
 condition in the person's own words (sizes, facts the AI looks up per town, per region or per
 country, travel limits to reference places), shows how each was checked, with sources, and can
@@ -27,6 +27,14 @@ room for thinking on top of each answer. Adzuna stays as the biggest source, but
 reads its pages (its firewall refuses them) and merges its "Deutschland" ads with the same job
 elsewhere. Phase 1 waits only on the quality set the owner rates; most of Phase 2 is built.
 
+The first cloud session (2026-09-24) researched sources for every kind of work per country
+(SOURCES.md, "Candidate sources by country") and built eight: public-sector jobs in Germany
+(service.bund.de), England's schools (Teaching Vacancies), the NHS, Belgium (Le Forem's open data),
+Swiss employers (prospective.ch), the Dutch government (Werken voor Nederland), Norway (NAV) and
+hospitals on d.vinci. Cards show closing dates and reposts. The AI instructions were made universal
+and checked with five made-up people from other fields (`tools/universality_check.py`), which found
+and fixed a language bug that capped good jobs at 65 for anyone with a CV not in English.
+
 From 2026-09-24 development runs in Claude Code cloud sessions (AGENTS.md, "Working in a cloud
 session"): no access to the owner's data there, so his searches and ratings come back as his
 reports, or through a local session on his Mac.
@@ -37,13 +45,13 @@ Nothing.
 
 ### Verify before relying on
 
-- **The new sources inside a full search** (service.bund.de, Teaching Vacancies, NHS Jobs, Le
-  Forem, prospective.ch, Werken voor Nederland, NAV; closing dates and reposts, 2026-09-24):
-  each was checked live on its own with a made-up person, never inside a whole search. On the owner's next search (Germany, the UK): the three
-  appear in Search details with their counts; service.bund.de's full ads (30 s apart, at most
-  12) don't hold the search up much beyond a few minutes; cards show "apply by …"; a "first seen
-  by Jobcu on …" line appears only on ads Jobcu showed before their stated date.
-
+- **The new sources inside a full search** (service.bund.de, Teaching Vacancies, NHS Jobs, Le Forem,
+  prospective.ch, Werken voor Nederland, NAV, d.vinci; closing dates and reposts, 2026-09-24): each
+  was checked live on its own with a made-up person, never inside a whole search. On the owner's
+  next search (Germany, the UK): the new sources for his countries appear in Search details with
+  their counts; service.bund.de's full ads (30 s apart, at most 12) don't hold the search up much
+  beyond a few minutes; cards show "apply by …"; a "first seen by Jobcu on …" line appears only on
+  ads Jobcu showed before their stated date.
 - **Everything from 2026-09-23/24 inside one full search.** Each piece was checked live on its
   own (search 8's jobs, the owner's sentence, a second made-up sentence), never all together.
   On the next search check: German-required jobs stop at 65 with the reason on the card;
@@ -87,76 +95,63 @@ Nothing.
 4. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
    `Company | Job title | Place | link`, for `tools/coverage_test.py`.
 5. **The friend's test:** his feedback on installing and using Jobcu.
-6. **A scoring proposal** (HANDOVER §11 is his): each card lists the ad's must-haves the person
-   meets and lacks (like LinkedIn's Job Match), and a must-have **licence or registration** the
-   person definitely lacks (a nursing registration, a teaching qualification, a truck licence,
-   a doctor's Approbation) limits the score like a missing citizenship (at most 30?), because
-   without it the person can't legally do the job. Yes, no, or another limit. And: a job in a
-   **different field** (role and skills 0–7 of 40) can still reach 40–51 today, because the other
-   parts add points; limit it (at most 35?) or leave it, since the quick check usually removes
-   such jobs first (DECISIONS.md, the universality audit).
-7. **Questions from the source research** (SOURCES.md; none is needed for the next tasks):
-   - **Jobs your AI finds on LinkedIn, StepStone or Indeed:** Jobcu may not open those pages, and
-     the AI's links and details are often wrong. Show such a job only when Jobcu confirms it at
-     the employer or another permitted source (recommended), or also show the rest, marked
-     "Seen by your AI on StepStone, not checked"?
-   - **Asking for access:** Denmark's Jobnet (the labour agency STAR shares its ads by agreement,
-     free), Poland's CBOP (download services under written conditions), a private NAV token for
-     Norway (the public one rotates), and StepStone's written permission. Each needs an e-mail in
-     his name or Jobcu's.
-   - **A free key per person** for VDAB (Flanders), like Adzuna's: fine to ask users for one
-     more key in Settings, or leave Flanders to Le Forem's data?
-   - Aggregator keys such as Jooble or Careerjet (their keys are meant for websites).
+6. **Only if he wants to send them** (messages in his name; DECISIONS.md, 2026-09-24 evening):
+   access requests to StepStone, Denmark's Jobnet, Poland's CBOP, or a private NAV token. None
+   is needed for the current focus.
 
 ### Next tasks, in order
 
 **The mission** (the owner, 2026-09-24): the best job search app possible, **universal** (any
 profession, any of the 30 countries, any wording), clean, reliable and without errors. The
-owner is not an expert in job search: research how the best job search works, then decide and
-build. Technical choices are the sessions' own; items marked Decided in HANDOVER.md, anything
-that costs money or touches his accounts, and asking platforms for permission are his. Countries
-in this order: Germany; the UK and Ireland; Switzerland; Belgium; the Netherlands; Italy;
-Scandinavia; Poland; the rest later. Cost: at most €25 a month for the owner; free, or under
-€10 a month, for everyone else, so check what a daily 24-hour search costs on the providers'
-free allowances and cheap models, and choose defaults (such as reasoning effort) accordingly. Findings go to their homes: source facts (also for sources
-not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the plan here.
+sessions decide everything (DECISIONS.md, 2026-09-24 evening); what costs money, touches his
+accounts or needs a message in his name stays his. **The owner's priorities** (2026-09-24,
+DECISIONS.md "The owner's priorities"): **Germany first, then the UK and Ireland**, and no more
+sources for other countries until these three are as strong as possible; test first and most
+with **a graduate engineer in electronics and power electronics hardware**, so that Jobcu finds
+and ranks technical and engineering jobs there as well as possible; **his own searches are the
+real test**, and their findings (from a local session on his Mac) come before everything else.
+Cost: at most €25 a month for the owner; free, or under €10 a month, for everyone else. Findings
+go to their homes: source facts to SOURCES.md, choices and reasons to DECISIONS.md, the plan
+here.
 
-1. **Build the sources the research ranked highest** (research done 2026-09-24: SOURCES.md,
-   "Candidate sources by country" and "LinkedIn, StepStone and the person's AI"; DECISIONS.md,
-   2026-09-24 evening). Done: service.bund.de, Teaching Vacancies, NHS Jobs, closing dates and
-   reposts, Le Forem, prospective.ch, Werken voor Nederland, NAV (2026-09-24). Next, each an
-   isolated adapter with tests and its facts in SOURCES.md:
-   1. **Belgium's school jobs**: Le Forem has none; find the Flemish and French-speaking
-      education departments' vacancy portals (and VDAB's question for the owner).
-   2. **d.vinci** as a career system, with customers found for the directory (hospitals,
-      councils, universities), and **more prospective.ch employers** (built 2026-09-24 with
-      eight; cantons Bern and St. Gallen, CSS and others answered 400 under their career-centre
-      numbers and need their real list number).
-   3. **Interamt** (Germany; measure its overlap with service.bund.de first; reachable only
-      outside the cloud), and the questions for the owner above as he answers them.
-   4. **Live AI web search for jobs** (HANDOVER §9.6): the person's AI finds fresh jobs anywhere;
-      each is confirmed at a source Jobcu may read before it is shown (owner's question above).
-2. **Universality audit, the rest** (first part done 2026-09-24: prompts, language names and
-   `tools/universality_check.py`, DECISIONS.md): the employer directory still leans to
-   technology companies (find employers for other fields, starting with hospitals, councils and
-   schools on d.vinci and prospective.ch, task 1.2); the location reading for the same made-up
-   people (task 3); and re-run the tool after any change to the AI instructions.
-3. **Phase 2's "Done when":** every example sentence from HANDOVER §6, README.md and the owner's
+1. **Findings from the owner's own searches**, whenever a local session records them here: they
+   come before everything else.
+2. **More employer career sites of engineering and tech companies in Germany, the UK and
+   Ireland.** The first full cloud search (DECISIONS.md, 2026-09-24 evening) found no job at all
+   through the directory's career sites for a hardware engineer around Munich or in Dublin. In
+   order: (a) **Eightfold**, the career system behind jobs.infineon.com (robots.txt allows its
+   career pages; a sitemap lists every job with the title in its address, and job pages carry
+   JobPosting with the exact time, place and full ad; SOURCES.md to be written), then other
+   big electronics employers on it; (b) **Personio** and **softgarden** career pages (many
+   German engineering SMEs; check terms, robots.txt and JobPosting first); (c) more employers on
+   the systems Jobcu reads (Workday, SuccessFactors, Teamtailor, Greenhouse, d.vinci):
+   semiconductors, power electronics, automotive and industrial electronics, drives, defence,
+   medical devices, test and measurement, energy, in Germany first. Measure each step with a
+   full search for the made-up graduate power-electronics engineer.
+3. **The best legal routes to the jobs on LinkedIn and StepStone:** the person's AI searches the
+   web for fresh jobs (HANDOVER §9.6), and each is shown once Jobcu confirms it at a source it
+   may read, above all the employer's own career page (DECISIONS.md, 2026-09-24 evening).
+4. **Fewer jobs depending on Adzuna's summaries:** find the same job at its original (the
+   employer's career site, the Bundesagentur) before reading it online, and measure how many
+   Adzuna jobs still rely on a summary after steps 2 and 3.
+5. **Paused until Germany, the UK and Ireland are as strong as possible:** sources for other
+   countries (the research is in SOURCES.md; Belgium's school jobs, more d.vinci and
+   prospective.ch employers), the licence limit for other professions, and the universality
+   audit's rest (re-run `tools/universality_check.py` after any change to the AI instructions,
+   which stays a rule).
+6. **Phase 2's "Done when":** every example sentence from HANDOVER §6, README.md and the owner's
    own, read twice with a real provider, as its author means it. Fix in general terms, never for
    one sentence.
-4. **More countries' sources** after the list above: Switzerland's other career systems,
-   Scotland's and Northern Ireland's health services, Ireland's HSE and schools, Italy (SIISL),
-   Austria, France and the rest, each checked as in SOURCES.md before building.
-5. **The owner's feedback loop:** fix what his searches show; when his ratings exist, the score
+7. **The owner's feedback loop:** fix what his searches show; when his ratings exist, the score
    check (`tools/score_check.py`, on his Mac): the quick check first, then medium against low
    thinking and the batch size, then the scoring prompt (HANDOVER §13); when his coverage list
    exists, the coverage test. Consider a way for him to share a search's results with a cloud
    session without personal data (no CV, no profile).
-6. **Ready for friends (Phase 4):** a first-run setup screen, updating from GitHub while keeping
+8. **Ready for friends (Phase 4):** a first-run setup screen, updating from GitHub while keeping
    the data folder, the guides tested on a clean Mac and a clean Windows computer, and the
    repository moved to a free GitHub organization, choosing with the owner how friends
    contribute.
-7. **Cost, last:** the scoring instructions and profile (about 3,000 tokens) go out with each of
+9. **Cost, last:** the scoring instructions and profile (about 3,000 tokens) go out with each of
    about 60 requests a search; try the provider's context caching (HANDOVER §13, saving 8).
 
 ### Known limitations
@@ -227,11 +222,11 @@ not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the pla
 
 ### Phase 3: Maximum coverage
 
-- [x] 23 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
+- [x] 24 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
       jobs.ac.uk, Teaching Vacancies, NHS Jobs, Le Forem, Werken voor Nederland, NAV,
-      EURAXESS, Arbeitnow, Arbetsförmedlingen, and company career sites in 9 systems (Greenhouse, Lever,
-      Ashby, Workable, Recruitee, Workday, Teamtailor, SuccessFactors, prospective.ch) for 365
-      employers
+      EURAXESS, Arbeitnow, Arbetsförmedlingen, and company career sites in 10 systems
+      (Greenhouse, Lever, Ashby, Workable, Recruitee, Workday, Teamtailor, SuccessFactors,
+      prospective.ch, d.vinci) for 368 employers
 - [x] Per-source status, unique-job counts and on/off switches
 - [ ] A source for every supported country (HANDOVER §9.0)
 - [ ] More career systems and employers; live AI web search for jobs (HANDOVER §9.6)
