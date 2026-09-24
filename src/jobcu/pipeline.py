@@ -9,6 +9,7 @@ from dataclasses import asdict
 from datetime import datetime, timedelta
 
 from jobcu import jobstore, travel
+from jobcu import places as place_list
 from jobcu.countries import COUNTRIES
 from jobcu.dedupe import JobGroup, group_duplicates, is_agency
 from jobcu.filters import condition_fit
@@ -26,6 +27,7 @@ from jobcu.sources.base import (
     SourceReport,
 )
 from jobcu.sources.http import Blocked, PoliteClient
+from jobcu.text import normalise
 
 log = logging.getLogger(__name__)
 
@@ -160,6 +162,16 @@ def newest_first(groups: list[JobGroup], indexes: list[int]) -> list[int]:
     return sorted(indexes, key=key)
 
 
+def readable_place(job: FoundJob) -> str | None:
+    """The job's place as its job site wrote it, with the town added when that's only a
+    postcode ("CB22 4QR" → "CB22 4QR, near Whittlesford")."""
+    text = job.location_text
+    town = place_list.postcode_town(text, job.country) if text else None
+    if town is None or normalise(town.name) in normalise(text):
+        return text
+    return f"{text}, near {town.name}"
+
+
 def build_card(
     group: JobGroup,
     *,
@@ -255,7 +267,7 @@ def build_card(
         "company": main.company,
         # A town Jobcu found when the job sites gave only a country: in the ad's text
         # (relevance.py) or online (jobplace.py).
-        "location": ", ".join(travel.found_places(group)) or main.location_text,
+        "location": ", ".join(travel.found_places(group)) or readable_place(main),
         "location_from_ad_text": bool(group.place_from_text),
         "location_found_online": bool(group.place_from_web),
         "country": country,

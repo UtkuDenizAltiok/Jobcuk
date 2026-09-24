@@ -138,7 +138,10 @@ Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself run
   that the first request is answered. Python 3.13 rejects the proxy's certificate for that host
   ("CA cert does not include key usage extension"): at the top of the test script, before
   importing Jobcu, wrap `ssl.create_default_context` so it clears `ssl.VERIFY_X509_STRICT`
-  (a cloud-only workaround; never in Jobcu's code). Jobcu's job-site client ignores the
+  (a cloud-only workaround; never in Jobcu's code). The gateway also cuts any AI request after
+  **30 seconds** (502 "upstream request failed"), which web research at medium effort exceeds:
+  set both efforts to "low" in the scratch folder's settings for cloud tests, and judge those
+  steps' quality on his Mac. Jobcu's job-site client ignores the
   environment's settings, so a live source check in the cloud passes
   `PoliteClient(transport=httpx.HTTPTransport(verify=ssl.create_default_context(
   cafile=os.environ["SSL_CERT_FILE"])))`. Without such a credential, name the checks that must run
@@ -306,13 +309,13 @@ src/jobcu/
                              places matched on Jobcu's side), careers.py (company career systems
                              and the employer directory), one module per source
   data/                      shipped reference data: employers.json, places.csv.gz,
-                             regions.csv.gz
+                             regions.csv.gz, postcodes.csv.gz
   web/                       the screen: plain HTML, CSS, JS (no build step)
 tests/                       pytest; conftest.py gives every test a throwaway data folder
 tools/check_no_secrets.py    safety check against keys and personal data (Git hook and CI)
 tools/cloud_setup.sh         prepares a cloud session (run by .claude/settings.json)
 tools/check_employers.py     checks the employer directory and adds new candidates
-tools/update_places.py       rebuilds the shipped town and region lists from GeoNames
+tools/update_places.py       rebuilds the shipped town, region and postcode lists from GeoNames
 tools/coverage_test.py       how many jobs a person found by hand did Jobcu find, and why not
 tools/universality_check.py  made-up people from other fields through profile, search words,
                              quick check and scoring, with the search words checked against ESCO

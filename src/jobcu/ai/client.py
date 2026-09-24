@@ -194,10 +194,12 @@ class AIClient:
         """What is left of this search's allowance of web look-ups (Settings)."""
         return self.settings.limits.web_search_cap - self.web_searches_used
 
-    def allow_more_web_searches(self) -> None:
-        """The person said yes to more web look-ups: another allowance for this search."""
+    def allow_more_web_searches(self, count: int | None = None) -> None:
+        """The person said yes to more web look-ups: this many more for this search (by
+        default another allowance as big as the one in Settings)."""
+        more = self.settings.limits.web_search_cap if count is None else count
         self.web_searches_used = min(self.web_searches_used, self.settings.limits.web_search_cap)
-        self.web_searches_used -= self.settings.limits.web_search_cap
+        self.web_searches_used -= more
 
     def research(
         self,

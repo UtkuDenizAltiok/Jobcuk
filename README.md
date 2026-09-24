@@ -45,7 +45,7 @@ Conditions it can't check are shown as "not checked", never silently dropped.
 ---
 
 Developers: see [CONTRIBUTING.md](CONTRIBUTING.md). © 2026 Utku Deniz Altiok. All rights reserved
-([LICENSE](LICENSE)). Town and region names and coordinates: © [GeoNames](https://www.geonames.org/),
+([LICENSE](LICENSE)). Town, region and postcode names and coordinates: © [GeoNames](https://www.geonames.org/),
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Belgian job offers: © Le Forem, open data,
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). School jobs in England contain
 public sector information licensed under the

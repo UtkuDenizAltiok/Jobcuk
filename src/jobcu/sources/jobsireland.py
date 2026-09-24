@@ -65,6 +65,12 @@ class JobsIrelandSource(JobSource):
                 if ctx.should_stop():
                     return
                 jobs = parse_list(self._get(LIST_URL, _list_params(page), ctx))
+                if page == 1 and not jobs:
+                    # The whole country's list is never empty: the site is having problems
+                    # (2026-09-24 night: "No jobs match this search" for everything, even on
+                    # its own browse page), which must not look like "no jobs for you".
+                    raise SourceError("JobsIreland.ie listed no jobs at all just now, so the "
+                                      "site is probably having problems. Try again later.")
                 for job in jobs:
                     if job.posted_at is not None and job.posted_at < start:
                         return  # newest first: everything after this is older still

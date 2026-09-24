@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 476 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 488 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -143,13 +143,17 @@ here.
    the city, not its centre. City districts that are reference places on their own (Hamburg's
    Wandsbek, Eimsbüttel, and "Marienthal" with 287,101 people) take both "nearest" slots and
    appear on cards ("Marienthal, 53 min by car").
-   (c) **Place names the town list can't read.** Reed gives full UK postcodes as the place
+   (c) **Done (cloud, 2026-09-24): postcodes, state codes and council districts are read**
+   (DECISIONS.md, "Places Jobcu couldn't read in search 9"); check them in the next search.
+   What search 9 showed: **Place names the town list can't read.** Reed gives full UK postcodes as the place
    ("CB224QR", "S336RR": 7 cards "couldn't be checked"); the Bundesagentur sometimes gives a state
    code, shown raw ("BADEN_WUERTTEMBERG"); and 6 of the 32 UK names to avoid were council
    districts that match no town (Thanet, Thurrock, Castle Point, Ashfield, Amber Valley, Cannock
    Chase), so those areas passed without a word. Read postcodes and state codes, and look
    unmatched names up among the regions and districts (`regions.csv.gz`).
-   (d) **The online look-up asks too often and reads too little.** The question about more web
+   (d) **Done (cloud, 2026-09-24): one question in jobs, with time and cost; citizenship,
+   clearance and doctorate read too** (DECISIONS.md, "The online look-up after search 9").
+   What search 9 showed: **The online look-up asks too often and reads too little.** The question about more web
    look-ups came about four times in search 9; the owner said yes to all but the last (his
    answer, 2026-09-24), which fits the 200 web searches exactly (50, then three more
    allowances). Each "yes" read fewer jobs than he expected: the question counts web look-ups
@@ -161,13 +165,17 @@ here.
    stayed at 81 without its town. It reads only languages and years: Rolls-Royce's two Adzuna
    summaries scored 85 and 75, while the same jobs from its own Workday site say UK nationals
    only (30). Read citizenship and clearance (and a required doctorate) too. It took 12 minutes.
-   (e) **Four pairs of the same job shown twice**, each for a different reason: Reed's postcode
+   (e) **Done (cloud, 2026-09-24):** all four pairs merge now (DECISIONS.md, "Places Jobcu
+   couldn't read in search 9"); check the next search for wrong merges. **Four pairs of the same job shown twice**, each for a
+   different reason: Reed's postcode
    ("BB113BP") against Adzuna's "Burnley, Lancashire" (Corriculo, 88 and 82); two Adzuna
    summaries of a recruiter's ad, which must be full ads to merge (AMF in Castleford, 87 twice);
    "Heeley, Sheffield" against "Sheffield" (Adecco); and the directory's company name "Rolls-Royce
    (professional)" with no town. Summaries could merge when one's text is contained in the
    other's (`_text_similarity` already measures containment).
-   (f) **Scoring** (score check, 32 ads rated by Claude): 23 of 32 (72%) where expected with the
+   (f) **Partly done (cloud, 2026-09-24): 3+ years short is limited to 80** (a senior role asking
+   4+ years scored 88 with the owner's CV; DECISIONS.md, "What the owner's CV showed in the
+   cloud"). Still open: neighbouring fields. **Scoring** (score check, 32 ads rated by Claude): 23 of 32 (72%) where expected with the
    scores given at the time, **26 of 32 (81%) re-scored with today's code** (the owner's limits
    now hold 8+ and 10+ years to 60). Still too high: senior jobs asking 4–7 years for someone with
    no full-time years (Tactilia 68, Stark 68, Orbem 64) and neighbouring fields (analog chip design
@@ -179,7 +187,7 @@ here.
    the same company counts as found (Zenovo's Bristol test job for its Derby one). It should look
    in the saved pool (every job collected) and say at which step each was lost, match titles
    more strictly, and accept a company's other name (Össur and Embla Medical).
-   (h) Small: Arbeitnow sometimes sends escaped HTML, so the ad text keeps literal tags
+   (h) Done (cloud, 2026-09-24): Arbeitnow sometimes sends escaped HTML, so the ad text keeps literal tags
    (SOURCES.md, Arbeitnow).
    (i) **Cost and time:** 33 minutes and about $1.36 for 72 hours; 70% of the output tokens were
    thinking. Before prices double in January, find where lower thinking keeps the same answers

@@ -71,6 +71,8 @@ Update this whenever a source changes or something new is learned. Decisions are
   can't read, so their conditions "couldn't be checked" and a Reed copy doesn't merge with the
   same job elsewhere. Others give a county ("Herefordshire", "Northamptonshire"). A Belfast job
   (Ernest Gordon Recruitment) came with the place "Ireland".
+  Since 2026-09-24 Jobcu reads a postcode as the town it lies in (`places.postcode_town`, from
+  GeoNames' postcode districts): "BB113BP" is Burnley, and the card says "BB113BP, near Burnley".
 
 ## Bundesagentur für Arbeit, Jobsuche (`src/jobcu/sources/bundesagentur.py`), checked 2026-09-17
 
@@ -94,7 +96,8 @@ Update this whenever a source changes or something new is learned. Decisions are
   as `stellenlokationen` (`adresse.ort`, `breite`, `laenge`); searching by title and matching
   `firma` found 5 of 42 town-less Adzuna jobs reliably.
 - **Sometimes only a state is given**, as the API's code ("BADEN_WUERTTEMBERG",
-  "SCHLESWIG_HOLSTEIN"), which cards showed as it came (search 9, 2026-09-24).
+  "SCHLESWIG_HOLSTEIN"), which cards showed as it came (search 9, 2026-09-24). Since 2026-09-24
+  it is shown and matched by the state's name ("Baden-Württemberg").
 
 ## JobsIreland.ie (`src/jobcu/sources/jobsireland.py`), checked 2026-09-17
 
@@ -123,6 +126,12 @@ Update this whenever a source changes or something new is learned. Decisions are
   jobseekers searching for suitable employment"; re-publishing or reproducing it needs the
   department's permission. Jobcu only shows jobs to the person searching, on their computer.
 - Jobcu pauses 2 s between requests and reads at most 40 list pages per search.
+- **The list can come back empty for everything** (2026-09-24, about 22:00 to 22:30 Irish
+  time): "No jobs match this search" with `totalCount` 0, on its own browse page too, and
+  answers took up to 35 s; earlier the same evening it listed jobs. Since then Jobcu reports an
+  empty first page as a site problem instead of "0 jobs". The browse page now calls
+  `BrowseJobs/43` with two more parameters (`RemoteOrBlendedJobType`, `NaceCode`); the address
+  Jobcu uses, without them, answered the same way.
 - Many JobsIreland jobs also appear on EURES (IDs like `base64("2470780 18")`, 18 = JobsIreland),
   but EURES showed only ~1,970 of its ~5,100 jobs.
 
@@ -190,7 +199,8 @@ company had jobs in, and whether it also hires outside them).
   page). Jobs come **newest first** with `created_at` (exact), the **full ad text**, company,
   free-text location, `job_types`, `remote` and a link to the job's page there.
 - **Some descriptions arrive with their HTML escaped** (`&lt;p&gt;`), so after conversion the text
-  still holds literal tags (Graphcore's ad, kept for the score check, 2026-09-24).
+  still holds literal tags (Graphcore's ad, kept for the score check, 2026-09-24). Since
+  2026-09-24 `text.html_to_text` unescapes it first.
 - Its jobs come mostly from career systems (Greenhouse, SmartRecruiters, JOIN, Teamtailor,
   Recruitee, Personio), so it reaches many German and British companies Jobcu has no directory
   entry for. About 200 new jobs a day on the German list.

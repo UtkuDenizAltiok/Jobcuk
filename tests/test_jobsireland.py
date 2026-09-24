@@ -4,6 +4,7 @@ from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import httpx
+import pytest
 
 from jobcu.keystore import KeyStore
 from jobcu.keywords import SearchTerm
@@ -166,3 +167,12 @@ def test_a_changed_site_fails_only_this_source():
         assert "JobsIreland.ie" in str(exc)
     else:
         raise AssertionError("expected a SourceError")
+
+
+def test_an_empty_list_for_the_whole_country_is_reported_as_a_site_problem():
+    # 2026-09-24 night: the site answered "No jobs match this search" to everything, and the
+    # search showed JobsIreland.ie as fine with 0 jobs.
+    ctx = context(lambda request: httpx.Response(200, text=list_page([])))
+    query = JobQuery(["IE"], [], [term("Hardware Engineer")], 24, NOW)
+    with pytest.raises(jobsireland.SourceError, match="listed no jobs at all"):
+        list(jobsireland.JobsIrelandSource().search(query, ctx))

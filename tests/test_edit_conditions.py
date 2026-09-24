@@ -118,6 +118,15 @@ def test_with_one_country_searched_a_name_jobcu_doesnt_know_is_still_accepted():
     assert [(town.name, town.country) for town in condition.towns] == [("Kleinstadtdorf", "DE")]
 
 
+def test_a_council_district_typed_like_a_town_counts_as_the_whole_district():
+    plan = plan_with(avoid("Dresden"), countries=("GB",))
+    edit = ConditionEdit(text="no far-right strongholds", original=0,
+                         towns=["Thanet", "Castle Point", "Boston"])
+    condition = apply_edits(ScriptedClient(None), plan, [edit]).conditions[0]
+    assert [r.name for r in condition.regions] == ["Thanet District", "Castle Point District"]
+    assert [t.name for t in condition.towns] == ["Boston"]
+
+
 def test_a_corrected_size_is_used_in_the_unit_it_was_written_in():
     plan = apply_edits(ScriptedClient(None), plan_with(size(people=500_000), size(share=0.003)), [
         ConditionEdit(text="big cities", original=0, min_people=100_000),
@@ -402,7 +411,9 @@ class OnlineAI(PlaceReadingAI):
         jobs = re.findall(r"^(J\d+) \| ([^|]+) \|", request["prompt"], re.MULTILINE)
         answer = [{"id": job_id, "found": title.startswith("PCB"),
                    "towns": ["Garching"] if title.startswith("PCB") else [],
-                   "languages_asked": [], "years_required": None} for job_id, title in jobs]
+                   "languages_asked": [], "years_required": None, "doctorate": "not_required",
+                   "citizenship_or_clearance": "no_such_requirement",
+                   "citizenship_or_clearance_words": ""} for job_id, title in jobs]
         return RawReply(json.dumps({"jobs": answer}), Usage(10, 5))
 
 

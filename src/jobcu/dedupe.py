@@ -26,6 +26,9 @@ TITLE_MATCH = 90
 TITLE_MATCH_WITH_TEXT = 85
 TEXT_MATCH = 0.8
 AGENCY_TEXT_MATCH = 0.5
+# Two summaries count as one job only when nearly the same, and long enough to tell.
+SUMMARY_TEXT_MATCH = 0.9
+SUMMARY_SHINGLES = 40
 NEARBY_KM = 30
 
 SOURCE_KIND_RANK = {"employer": 0, "linkedin": 1, "job_board": 2, "aggregator": 3}
@@ -101,6 +104,8 @@ def fold(text: str | None) -> str:
 
 
 def normal_company(name: str | None) -> str:
+    # A bracket names a career site or a country ("Rolls-Royce (professional)", "Acme (UK)").
+    name = re.sub(r"\([^)]*\)", " ", name or "")
     return " ".join(_LEGAL_FORMS.sub(" ", fold(name).replace("&", " ")).split())
 
 
@@ -184,6 +189,7 @@ def group_duplicates(jobs: list[FoundJob], source_kinds: dict[str, str]) -> list
     companies = [normal_company(j.company) for j in jobs]
     titles = [normal_title(j.title) for j in jobs]
     cities = [_town_part(j.location_text, j.country) for j in jobs]
+    towns = [place_list.locate(j.location_text, j.country) if j.country else None for j in jobs]
 
     # The same ad from the same source is always one job.
     by_source_id: dict[tuple[str, str], int] = {}
@@ -202,7 +208,8 @@ def group_duplicates(jobs: list[FoundJob], source_kinds: dict[str, str]) -> list
     for members in by_company.values():
         for n, a in enumerate(members):
             for b in members[n + 1 :]:
-                if find(a) == find(b) or not _same_place(jobs[a], jobs[b], cities[a], cities[b]):
+                if find(a) == find(b) or not _same_place(
+                        jobs[a], jobs[b], cities[a], cities[b], towns[a], towns[b]):
                     continue
                 title_score = title_similarity(titles[a], titles[b])
                 if is_agency(jobs[a].company):
@@ -237,11 +244,17 @@ def _town_part(location: str | None, country: str | None) -> str:
     return normal_city(location)
 
 
-def _same_place(a: FoundJob, b: FoundJob, city_a: str, city_b: str) -> bool:
+def _same_place(a: FoundJob, b: FoundJob, city_a: str, city_b: str,
+                town_a: place_list.Town | None = None,
+                town_b: place_list.Town | None = None) -> bool:
     if a.country and b.country and a.country != b.country:
         return False
     if None not in (a.latitude, a.longitude, b.latitude, b.longitude):
         return _distance_km(a.latitude, a.longitude, b.latitude, b.longitude) <= NEARBY_KM
+    # Towns found in the town list compare by where they are: "BB11 3BP" is Burnley, and
+    # "Heeley, Sheffield" is Sheffield.
+    if town_a is not None and town_b is not None:
+        return place_list.distance_km(town_a, town_b) <= NEARBY_KM
     # A location like "Germany" or a missing one can't rule a match out.
     return not city_a or not city_b or city_a == city_b or city_a in city_b or city_b in city_a
 
@@ -267,11 +280,15 @@ def _text_similarity(a: str, b: str) -> float:
 
 
 def _both_full_and_similar(a: FoundJob, b: FoundJob, threshold: float) -> bool:
-    return (
-        a.description_is_complete
-        and b.description_is_complete
-        and _text_similarity(a.description, b.description) >= threshold
-    )
+    """The texts say it's one job: two full ads alike, or two summaries (Adzuna's first 500
+    characters) that are nearly word for word the same. Search 9 showed one recruiter's ad
+    twice from two Adzuna summaries."""
+    if a.description_is_complete and b.description_is_complete:
+        return _text_similarity(a.description, b.description) >= threshold
+    if a.description_is_complete or b.description_is_complete:
+        return False
+    return (min(len(_shingles(a.description)), len(_shingles(b.description))) >= SUMMARY_SHINGLES
+            and _text_similarity(a.description, b.description) >= SUMMARY_TEXT_MATCH)
 
 
 def _tag_agency_repeats(groups: list[JobGroup]) -> None:

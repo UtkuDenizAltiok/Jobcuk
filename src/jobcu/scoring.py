@@ -51,9 +51,13 @@ IMPLIED_POINTS_FURTHER = 3
 LIMIT_LANGUAGE = 65  # a must-have language two or more levels above the person's
 LIMIT_CITIZENSHIP = 30  # a citizenship or clearance the person definitely can't get
 LIMIT_DOCTORATE = 50  # a required doctorate the person doesn't have
-LIMITS_YEARS = [(8, 60), (5, 75)]  # this many years short of what the ad asks: at most this
+LIMITS_YEARS = [(8, 60), (5, 75), (3, 80)]  # this many years short of what the ad asks: at most
 
 Level = Literal["A1", "A2", "B1", "B2", "C1", "C2", "not_needed"]
+Doctorate = Literal["not_required", "required_person_has_it", "required_person_lacks_it"]
+CitizenshipOrClearance = Literal[
+    "no_such_requirement", "required_possible_or_unclear", "required_definitely_out_of_reach"
+]
 
 JobTypeAnswer = Literal[
     "full_time_permanent",
@@ -82,10 +86,8 @@ class JobScore(BaseModel):
     ad_language: str = Field(description="The language most of the ad is written in, in English")
     languages_asked: list[LanguageAsked]
     years_required: float | None
-    doctorate: Literal["not_required", "required_person_has_it", "required_person_lacks_it"]
-    citizenship_or_clearance: Literal[
-        "no_such_requirement", "required_possible_or_unclear", "required_definitely_out_of_reach"
-    ]
+    doctorate: Doctorate
+    citizenship_or_clearance: CitizenshipOrClearance
     citizenship_or_clearance_words: str = Field(description="The ad's words, or empty")
     role_and_skills: int
     seniority: int
@@ -114,6 +116,16 @@ the least professional experience the ad requires, in years: the lower end of a 
 years": 3); "several years", "mehrjährige": 3; "many years", "extensive", "langjährige": 5; \
 "first experience", "erste Berufserfahrung": 1. null when the ad states no amount or only calls \
 experience a plus."""
+DOCTORATE_RULES = """\
+required_person_has_it or required_person_lacks_it only when the ad requires a doctorate (PhD); \
+not_required when it's a plus or not mentioned."""
+CITIZENSHIP_RULES = """\
+required_definitely_out_of_reach only when the ad clearly requires a specific citizenship, or a \
+security clearance whose rules clearly exclude the person, AND the person's profile states a \
+citizenship or work status that doesn't qualify. When the profile doesn't state the person's \
+citizenship, or you aren't sure, use required_possible_or_unclear. no_such_requirement when the \
+ad asks for neither. citizenship_or_clearance_words: the ad's words about it, at most 8 words, \
+or empty."""
 
 SYSTEM_PROMPT = f"""\
 You score how well job ads fit one person, for a personal job search app. Score every job \
@@ -131,14 +143,8 @@ it carefully and never guess.
   Leave the list empty when the ad asks for no language. Don't list a language only because the \
 ad is written in it.
 - years_required: {YEARS_RULES}
-- doctorate: required_person_has_it or required_person_lacks_it only when the ad requires a \
-doctorate (PhD); not_required when it's a plus or not mentioned.
-- citizenship_or_clearance: required_definitely_out_of_reach only when the ad clearly requires \
-a specific citizenship, or a security clearance whose rules clearly exclude the person, AND the \
-person's profile states a citizenship or work status that doesn't qualify. When the profile \
-doesn't state the person's citizenship, or you aren't sure, use required_possible_or_unclear. \
-no_such_requirement when the ad asks for neither. citizenship_or_clearance_words: the ad's \
-words about it, at most 8 words, or empty.
+- doctorate: {DOCTORATE_RULES}
+- citizenship_or_clearance: {CITIZENSHIP_RULES}
 
 THEN SCORE THESE PARTS (maximum points in brackets)
 
@@ -268,14 +274,19 @@ def judge(result: dict, profile: Profile, note: str | None = None) -> dict:
     }
 
 
+ONLINE_NOTE = "Languages, experience and other requirements read from the full ad online"
+
+
 def with_ad_read_online(result: dict, profile: Profile, languages: list[LanguageAsked],
-                        years_required: float | None) -> dict:
-    """The score again, with what the full ad found online says about languages and years."""
+                        years_required: float | None, **blockers: str) -> dict:
+    """The score again, with what the full ad found online says about languages, years, and
+    (in `blockers`) a doctorate, citizenship or clearance: a summary rarely says these, and
+    Rolls-Royce's summaries scored 85 while its own ads ask for UK nationals (search 9)."""
     evidence = {**result["evidence"], "languages_asked": [a.model_dump() for a in languages]}
     if years_required is not None:
         evidence["years_required"] = years_required
-    return judge({**result, "evidence": evidence}, profile,
-                 note="Languages and experience read from the full ad online")
+    evidence.update({key: value for key, value in blockers.items() if key in EVIDENCE})
+    return judge({**result, "evidence": evidence}, profile, note=ONLINE_NOTE)
 
 
 def _full_evidence(evidence: dict) -> dict:

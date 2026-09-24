@@ -48,8 +48,10 @@ class UsageLog:
             ).fetchall()
         return {row[0]: Usage(*row[1:]) for row in rows}
 
-    def for_search_by_model(self, search_id: int) -> list[ModelUsage]:
-        """One search's usage per model, so its cost can be estimated."""
+    def for_search_by_model(self, search_id: int, step: str | None = None) -> list[ModelUsage]:
+        """One search's usage per model (of one step, if given), so its cost can be estimated."""
+        if step is not None:
+            return self._by_model("search_id = ? AND step = ?", (search_id, step))
         return self._by_model("search_id = ?", (search_id,))
 
     def _by_model(self, where: str, params: tuple) -> list[ModelUsage]:

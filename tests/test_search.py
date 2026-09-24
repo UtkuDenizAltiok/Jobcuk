@@ -236,6 +236,7 @@ class ResearchingAI(FakeAI):
     def __init__(self):
         super().__init__()
         self.looked_up: list[str] = []
+        self.person_sent: list[str] = []
 
     def complete_json(self, **request):
         if request["schema_name"] == "OnlineAnswer":
@@ -243,8 +244,12 @@ class ResearchingAI(FakeAI):
             answer = [{"id": job_id, "found": True, "towns": ["Berlin"], "years_required": 6,
                        "languages_asked": [
                            {"language": "German", "level": "B2", "must_have": True},
-                           {"language": "English", "level": "B2", "must_have": True}]}
+                           {"language": "English", "level": "B2", "must_have": True}],
+                       "doctorate": "not_required",
+                       "citizenship_or_clearance": "no_such_requirement",
+                       "citizenship_or_clearance_words": ""}
                       for job_id in ids]
+            self.person_sent.append(request["prompt"].split("\n", 1)[0])
             return RawReply(json.dumps({"jobs": answer}), Usage(10, 5))
         if request["schema_name"] == "Profile":
             languages = [{"language": "English", "level_as_written": "fluent", "cefr": "C1",
@@ -277,7 +282,11 @@ def test_summaries_near_the_top_are_read_online_and_the_rules_applied(ready, mon
     card = result["result"]["jobs"]["cards"][0]
     assert card["summary_only"] and card["score"] == 65
     assert card["limits"] == [{"at": 65, "why": "German B2 required, you have A2"}]
-    assert card["score_notes"] == ["Languages and experience read from the full ad online"]
+    assert card["score_notes"] == [
+        "Languages, experience and other requirements read from the full ad online"]
+    # Only what the doctorate and citizenship rules need goes with the look-up.
+    assert ai.person_sent and all("work_authorisation" in line and "skills" not in line
+                                  for line in ai.person_sent)
     assert card["required_languages"] == ["German B2", "English B2"]
 
 
@@ -302,5 +311,6 @@ def test_when_the_web_look_ups_run_out_jobcu_asks_before_leaving_jobs_unread(rea
     assert result["status"] == "finished", result["error"]
     assert [q["kind"] for q in questions] == ["web_search_cap"]
     assert "1 more job could be read online" in questions[0]["message"]
+    assert "about 1 minute" in questions[0]["message"]
     assert len(ai.looked_up) == 2  # both jobs, the second after the yes
     assert result["steps"][-1]["detail"] == "Found online: the requirements of 2 of 2 jobs"

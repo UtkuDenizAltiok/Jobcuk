@@ -84,3 +84,16 @@ def test_named_places_and_unclear_locations():
     jobs = list(arbeitnow.ArbeitnowSource().search(query, context(handler)))
     # "Remote - EMEA" has no country, so no place can rule it out; plain "Remote" is left out.
     assert [job.source_job_id for job in jobs] == ["m", "e"]
+
+
+def test_ad_text_sent_as_escaped_html_is_read_as_text():
+    # Graphcore's ad (2026-09-24) kept literal "<p>" tags after converting.
+    from jobcu.text import html_to_text
+
+    assert html_to_text("&lt;p&gt;Design GaN converters&lt;/p&gt;&lt;ul&gt;&lt;li&gt;PCB"
+                        "&lt;/li&gt;&lt;/ul&gt;") == "Design GaN converters\n• PCB"
+    assert html_to_text("<div>&lt;p&gt;Hello&lt;/p&gt;&lt;p&gt;World&lt;/p&gt;</div>") == \
+        "Hello\nWorld"
+    # Text that only looks a bit like HTML stays as it is.
+    assert html_to_text("Salary <50k and >30k") == "Salary <50k and >30k"
+    assert html_to_text("<p>A &lt; B</p>") == "A < B"
