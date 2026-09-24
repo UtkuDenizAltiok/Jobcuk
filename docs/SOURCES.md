@@ -333,6 +333,37 @@ managers).
   10 requests (9.9 s); a page read took one ad from 153 to 7,194 characters with the person
   specification.
 
+## Le Forem's open data, Belgium (`src/jobcu/sources/leforem.py`), checked 2026-09-24
+
+Every job offer Le Forem (Wallonia's public employment service) distributes, as an **open
+dataset under CC BY-SA 4.0**, updated in real time (Opendatasoft). Credit is in README.md.
+
+- **Export:** `GET https://leforem-digitalwallonia.opendatasoft.com/api/explore/v2.1/catalog/
+  datasets/offres-d-emploi-forem/exports/json?where=datedebutdiffusion>=date'2026-09-23'&
+  select=…&order_by=…` returns **every matching offer in one request** (2,056 offers, 1.5 MB,
+  1.6 s for two days); the paged `/records` address stops at 10,000 and 100 a page.
+- **Volume:** 26,204 live offers; about **1,200 new a day**. Not only Wallonia: 3,656 in
+  Flanders (NUTS BE2) and 1,554 in Brussels (BE1), a few in France and Luxembourg. The biggest
+  contributors are **Jobat** (10,284), Forem's own site (4,130), staffing agencies (Accent,
+  Adecco, Randstad…) and **StepStone Belgium** (402).
+- **Each offer:** `numerooffreforem`, `titreoffre`, towns (`lieuxtravaillocalite`, often in
+  capitals), region names and NUTS codes (the first is the country), **coordinates**,
+  `typecontrat` (in two days: 1,001 "Intérimaire avec option sur durée indéterminée", 535
+  "Durée indéterminée", 247 "Intérimaire", 209 "Durée déterminée", then student, flexi-jobs,
+  replacement, freelance, civil servant), `regimetravail` (Temps plein / Temps partiel),
+  employer, number of posts, education level (ISCED), **languages** (with ISO codes),
+  `experiencerequise` (the occupation in which experience is asked), **driving licence**, sector
+  (NACE), occupation (`metier`, with its code), `datedebutdiffusion` (day), end of publication,
+  source, external reference and the Forem `url`. **No ad text.**
+- The Forem job pages (`/recherche-offres/`) are **closed by robots.txt**: Jobcu never opens
+  them; the person does, through the job's link. Jobcu turns the structured fields into a short
+  summary with English labels (so the scoring doesn't take the ad for a French one), and the
+  best jobs are read online by the person's AI, like other summaries.
+- **Live run (2026-09-24, made-up Belgian searches, 24 hours):** 68 matching offers from one
+  request in 1.5 s: 51 truck drivers, 15 nurses in Wallonia and Brussels, 2 "Verpleegkundige";
+  **no primary-school teacher jobs**, so Flemish and Walloon schools post elsewhere (the
+  education departments' own portals, still to be found).
+
 ## Google Maps, for travel times (`src/jobcu/travel.py`), checked 2026-09-21
 
 Not a job source: used only for conditions like "at most 50 minutes by public transport to a
@@ -587,21 +618,7 @@ systems. No Swiss public or national source yet.
 
 ### Belgium
 
-- **Le Forem, open data (Wallonia's public employment service, checked 2026-09-24).** Every job
-  offer Le Forem distributes, as an **open dataset under CC BY-SA 4.0**, updated in real time
-  (Opendatasoft): `GET https://leforem-digitalwallonia.opendatasoft.com/api/explore/v2.1/catalog
-  /datasets/offres-d-emploi-forem/records?where=…&order_by=…&limit=100&offset=N` (ODSQL filters
-  such as `datedebutdiffusion>=date'2026-09-23'`). **26,204 live offers**; about **1,200 new a
-  day** (1,275 on 21 September, 1,171 on 22 September). Not only Wallonia: 3,656 in Flanders
-  (NUTS BE2) and 1,554 in Brussels (BE1). The biggest contributors are **Jobat** (10,284),
-  Forem's own site (4,130), staffing agencies (Accent, Adecco, Randstad…) and **StepStone
-  Belgium** (402). Each record: title, town(s), postcode, region and NUTS codes, **coordinates**,
-  contract type ("Durée indéterminée", "Intérimaire…"), `regimetravail` (full/part time),
-  employer, number of posts, education level, **languages** (with ISO codes), experience,
-  **driving licence**, sector (NACE), occupation (with its code), `datedebutdiffusion` (day),
-  end date, source, external reference and the Forem `url`. **No ad text.** The Forem job pages
-  (`/recherche-offres/`) are **closed by robots.txt**, so the full ad would come from the same
-  job elsewhere or the person's AI reading it online. CC BY-SA asks for credit (like GeoNames).
+- **Le Forem's open data:** built (above).
 - **VDAB (Flanders' public employment service):** a developer portal (developer.vdab.be) with a
   Vacatures API (search, bulk list of new and changed vacancies; up to 2,000 calls a minute are
   mentioned). Free, but each user needs **an account and a subscription**, like Adzuna's key;

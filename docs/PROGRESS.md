@@ -6,12 +6,12 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 450 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 454 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
 Jobcu works end to end. A search reads the documents with the person's own AI, collects jobs from
-19 sources (8 of them company career systems, reading 357 employers), removes duplicates, applies
+20 sources (8 of them company career systems, reading 357 employers), removes duplicates, applies
 the rules and the location conditions, and scores what's left. The location box takes any
 condition in the person's own words (sizes, facts the AI looks up per town, per region or per
 country, travel limits to reference places), shows how each was checked, with sources, and can
@@ -124,9 +124,10 @@ not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the pla
 1. **Build the sources the research ranked highest** (research done 2026-09-24: SOURCES.md,
    "Candidate sources by country" and "LinkedIn, StepStone and the person's AI"; DECISIONS.md,
    2026-09-24 evening). Done: service.bund.de, Teaching Vacancies, NHS Jobs, closing dates and
-   reposts (2026-09-24). Next, each an isolated adapter with tests and its facts in SOURCES.md:
-   1. **Le Forem's open data** (Belgium, also Flanders and Brussels: ~1,200 a day, structured
-      languages, licence and education; no ad text, so read online like Adzuna's summaries).
+   reposts, Le Forem (2026-09-24). Next, each an isolated adapter with tests and its facts in
+   SOURCES.md:
+   1. **Belgium's school jobs**: Le Forem has none; find the Flemish and French-speaking
+      education departments' vacancy portals (and VDAB's question for the owner).
    2. **d.vinci and prospective.ch** as career systems, with customers found for the directory
       (hospitals, councils, cantons, universities).
    3. **NAV's stilling-feed** (Norway), then **Werken voor Nederland** (the Dutch government).
@@ -225,10 +226,10 @@ not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the pla
 
 ### Phase 3: Maximum coverage
 
-- [x] 19 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
-      jobs.ac.uk, Teaching Vacancies, NHS Jobs, EURAXESS, Arbeitnow, Arbetsförmedlingen, and
-      company career sites in 8 systems (Greenhouse, Lever, Ashby, Workable, Recruitee,
-      Workday, Teamtailor, SuccessFactors) for 357 employers
+- [x] 20 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
+      jobs.ac.uk, Teaching Vacancies, NHS Jobs, Le Forem, EURAXESS, Arbeitnow,
+      Arbetsförmedlingen, and company career sites in 8 systems (Greenhouse, Lever, Ashby,
+      Workable, Recruitee, Workday, Teamtailor, SuccessFactors) for 357 employers
 - [x] Per-source status, unique-job counts and on/off switches
 - [ ] A source for every supported country (HANDOVER §9.0)
 - [ ] More career systems and employers; live AI web search for jobs (HANDOVER §9.6)
