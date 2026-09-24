@@ -50,6 +50,9 @@ Update this whenever a source changes or something new is learned. Decisions are
 - German locations read "Unterhaching, München (Kreis)": the part marked **(Kreis)** is the
   district around a city, not the city, so `places.locate` uses it only when no town is named
   besides it (found in a real test, 2026-09-21: suburbs passed a "1 million people" condition).
+- **Adzuna's own place can be wrong** (search 9, 2026-09-24): TRUMPF's "Entwicklungsingenieur RF
+  Power Amplifier Design", in Freiburg im Breisgau on LinkedIn, came as "Freiburg (Elbe), Stade
+  (Kreis)"; a TechBiz Global ad in Halle came as "Halle, Holzminden (Kreis)".
 
 ## Reed (`src/jobcu/sources/reed.py`), checked 2026-09-17
 
@@ -63,6 +66,11 @@ Update this whenever a source changes or something new is learned. Decisions are
   Temporary), `fullTime`, `partTime`, salaries, `externalUrl` (often the employer's or an
   agency's application page).
 - Many Reed ads come from recruitment agencies.
+- **The place is often a full UK postcode** (search 9, 2026-09-24): 7 of 31 Reed cards had
+  "CB224QR", "S336RR", "NR65DR", "SK102NZ", "BT71JL", "OX281AE" or "BB113BP", which the town list
+  can't read, so their conditions "couldn't be checked" and a Reed copy doesn't merge with the
+  same job elsewhere. Others give a county ("Herefordshire", "Northamptonshire"). A Belfast job
+  (Ernest Gordon Recruitment) came with the place "Ireland".
 
 ## Bundesagentur für Arbeit, Jobsuche (`src/jobcu/sources/bundesagentur.py`), checked 2026-09-17
 
@@ -85,6 +93,8 @@ Update this whenever a source changes or something new is learned. Decisions are
   v6 (even `arbeitgeber=Bayernwerk AG`). Search results carry the employer as `firma` and places
   as `stellenlokationen` (`adresse.ort`, `breite`, `laenge`); searching by title and matching
   `firma` found 5 of 42 town-less Adzuna jobs reliably.
+- **Sometimes only a state is given**, as the API's code ("BADEN_WUERTTEMBERG",
+  "SCHLESWIG_HOLSTEIN"), which cards showed as it came (search 9, 2026-09-24).
 
 ## JobsIreland.ie (`src/jobcu/sources/jobsireland.py`), checked 2026-09-17
 
@@ -148,6 +158,16 @@ company had jobs in, and whether it also hires outside them).
   are included as…"), Rohde & Schwarz's own jobboard (job.rohde-schwarz.com), Renesas
   (jobs.renesas.com, which closes `/jobs?*`), Arm (careers.arm.com, which closes
   `/search-jobs/`), Bosch (jobs.bosch.com closes `/en/`); Bayer runs SuccessFactors.
+- **Employers behind fresh fitting jobs Jobcu missed** (the owner's coverage list, 2026-09-24):
+  Moog runs **Workday** (`moog.wd5.myworkdayjobs.com/MOOG_External_Career_Site`, power electronics
+  and servo drives in Carrigaline, Cork); Tektronix posts on `careers.ralliant.com`, Nordex on
+  `jobs.nordex-online.com`, ASSA ABLOY on `assaabloy.com/career`; Advanced Energy, Vishay, Ei
+  Electronics, Cambridge Consultants, Saab, Luxinar and COMPACT DYNAMICS not checked yet. Robots
+  and terms of each still to be read before adding them.
+- **Eightfold's 0 jobs in search 9 was real:** Infineon's sitemap (1,311 jobs) had 35 changed in
+  the 72 hours, 2 of them in Germany (a working student in Regensburg, a planning job in Dresden).
+- **Rolls-Royce's Workday entry** is named "Rolls-Royce (professional)" (the site's name), and its
+  jobs came without a town, so they never merged with the same jobs on Adzuna (search 9).
 - **Finding SuccessFactors sites** (2026-09-21): their robots.txt has the tell-tale
   `Disallow: /services/`, `/applybutton/`, `/talentcommunity/` lines. Probing `jobs.{company}.com`
   for 50 big German engineering employers found 13; `check_employers.py --only-new` kept 11,
@@ -169,6 +189,8 @@ company had jobs in, and whether it also hires outside them).
   and neighbours, 250 jobs a page) and `https://www.arbeitnow.co.uk/api/job-board-api` (UK, 100 a
   page). Jobs come **newest first** with `created_at` (exact), the **full ad text**, company,
   free-text location, `job_types`, `remote` and a link to the job's page there.
+- **Some descriptions arrive with their HTML escaped** (`&lt;p&gt;`), so after conversion the text
+  still holds literal tags (Graphcore's ad, kept for the score check, 2026-09-24).
 - Its jobs come mostly from career systems (Greenhouse, SmartRecruiters, JOIN, Teamtailor,
   Recruitee, Personio), so it reaches many German and British companies Jobcu has no directory
   entry for. About 200 new jobs a day on the German list.
@@ -576,6 +598,10 @@ Legitimate routes only (DECISIONS.md, 2026-09-24 later): Jobcu never opens their
   no API to search or read listings. StepStone publishes no partner API for reading jobs either
   (only third-party scrapers exist, which Jobcu never uses). Written permission from the Stepstone
   Group stays the only direct route (above, "Job boards on hold").
+- **For the local check's coverage list only** (a person's own browsing, never Jobcu): LinkedIn's
+  public job search (`linkedin.com/jobs/search?keywords=…&location=…&f_TPR=r259200`, the last 3
+  days) and StepStone's lists (`stepstone.de/jobs/{words}?ag=age_3`) could be read on 2026-09-24,
+  60 and 25 jobs a page, with company, place and "2 days ago".
 - **Some StepStone jobs already arrive legitimately:** Le Forem's open data carries 402 StepStone
   Belgium ads and 10,284 from Jobat (Belgium, above).
 - **How many StepStone jobs Jobcu misses (a sample):** of 7 fresh StepStone nursing jobs in

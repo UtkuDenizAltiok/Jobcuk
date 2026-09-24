@@ -15,7 +15,7 @@ Jobcu works end to end. A search reads the documents with the person's own AI, c
 the rules and the location conditions, and scores what's left. The location box takes any
 condition in the person's own words (sizes, facts the AI looks up per town, per region or per
 country, travel limits to reference places), shows how each was checked, with sources, and can
-be corrected with Edit. The owner has run four real searches on his Mac (2026-09-22/23); his
+be corrected with Edit. The owner has run five real searches on his Mac (2026-09-22 to 24); his
 normal use will be one 24-hour search a day.
 
 After search 8 (DECISIONS.md, 2026-09-23 evening and 2026-09-24): the AI reads the evidence in
@@ -25,7 +25,7 @@ look-ups run out); facts about places can be decided for whole regions; a refere
 where the person would live, so a job in one needs no trip; every AI step thinks at medium, with
 room for thinking on top of each answer. Adzuna stays as the biggest source, but Jobcu no longer
 reads its pages (its firewall refuses them) and merges its "Deutschland" ads with the same job
-elsewhere. Phase 1 waits only on the quality set the owner rates; most of Phase 2 is built.
+elsewhere. Phase 1 waits only on tuning the scoring with the quality set; most of Phase 2 is built.
 
 The first cloud session (2026-09-24) researched sources per country (SOURCES.md, "Candidate sources
 by country") and built public-sector and national sources (service.bund.de, Teaching Vacancies, NHS
@@ -42,6 +42,16 @@ From 2026-09-24 development runs in Claude Code cloud sessions (AGENTS.md, "Work
 session"): no access to the owner's data there, so his searches and ratings come back as his
 reports, or through a local session on his Mac.
 
+**The owner's search 9** (2026-09-24, DE/IE/GB, 72 hours, his far-right and 40-minutes-by-car
+sentence; studied in a local session the same evening): it ran end to end without errors, but
+took **33 minutes** (scoring 8, the online look-up 12) and cost about **$1.36** at today's Gemini
+prices (search 8: $0.54). 890 ads, 774 jobs, 239 cards: 132 in Germany, 105 in the UK, **2 in
+Ireland**. Adzuna 443 ads (121 unique), the Bundesagentur 171 (53), Reed 155 (38), jobs.ac.uk 72,
+the career sites 15 (Workday 11 from 734 requests). The first **quality set** is rated (32 ads and
+39 left-out titles, by Claude) and the first **coverage list** (25 fresh jobs from LinkedIn and
+StepStone) was tested: Jobcu showed **3 of 25**, and 20 were never collected by any source. The
+findings, with examples, are Next task 1.
+
 ### In progress
 
 Nothing.
@@ -51,35 +61,30 @@ Nothing.
 - **The robots.txt reader** (RFC 9309, 2026-09-24): Workday and SuccessFactors companies now
   read differently where their robots.txt has Allow lines after a Disallow. Check that no
   company newly read is one that clearly forbids it (the next `tools/check_employers.py` run).
-- **The new sources inside a full search** (service.bund.de, Teaching Vacancies, NHS Jobs, Le Forem,
-  prospective.ch, Werken voor Nederland, NAV, d.vinci; closing dates and reposts, 2026-09-24): each
-  was checked live on its own with a made-up person, never inside a whole search. On the owner's
-  next search (Germany, the UK): the new sources for his countries appear in Search details with
-  their counts; service.bund.de's full ads (30 s apart, at most 12) don't hold the search up much
-  beyond a few minutes; cards show "apply by …"; a "first seen by Jobcu on …" line appears only on
-  ads Jobcu showed before their stated date.
-- **Everything from 2026-09-23/24 inside one full search.** Each piece was checked live on its
-  own (search 8's jobs, the owner's sentence, a second made-up sentence), never all together.
-  On the next search check: German-required jobs stop at 65 with the reason on the card;
-  "Languages and experience read from the full ad online" appears on summaries; Radeberg and
-  Dresden stay out; a job inside a big city says "in Munich" rather than a drive to it; the
-  question about more web look-ups appears if they run out.
-- **Merging "Deutschland" ads with the same job elsewhere** (same company and title): search 8
-  regrouped without a wrong merge seen, but a company with the same title in two towns could
-  now show one card. Look for a card whose town doesn't match its ad.
+- **The new sources inside a full search** (2026-09-24): search 9 showed service.bund.de,
+  Teaching Vacancies and NHS Jobs in Search details with their counts, without slowing the search
+  (service.bund.de: 1 request, 0 jobs, "reaches back only to 22 September"). "First seen by Jobcu
+  on …" is right (12 cards, all Adzuna reposts). Still unseen: "apply by …" on a card (1 of 239 had
+  a closing date) and the non-German sources (Le Forem, prospective.ch, Werken voor Nederland,
+  NAV, d.vinci) inside a search of their countries.
+- **The web look-ups question:** search 9 used 200 web searches with a cap of 50, so the question
+  must have come several times; the saved search doesn't show how often or what was answered.
+  Ask the owner, or read it in the next search's Search details.
+- **Merging "Deutschland" ads with the same job elsewhere:** no wrong merge seen in search 9
+  (not checked card by card). The opposite fault is common (Next task 1e).
 - **The regions answer varies from search to search:** search 7 excluded Dresden, search 8's
-  town list didn't, and three region answers on 2026-09-24 gave five or six eastern states.
-  Compare the next searches' "Understood as".
-- **Cost with medium everywhere:** estimated €0.45 for a 72-hour search like search 8, about a
-  third of that for the usual 24-hour one (DECISIONS.md, 2026-09-24). Read the real figure in
-  Settings → Usage after the next search.
-- **Google Maps against the AI's estimates:** search 8 used Google's car times, but no one has
-  compared them with the AI's estimates yet.
-- **Towns found online:** search 8 found 44 of 53; the look-up is now two steps and asks for the
-  place of the work, never an agency's office. Check a few "(found online)" towns. It has never
-  run with another provider.
-- **Teamtailor and SuccessFactors** were tested live source by source (2026-09-21), not yet
-  confirmed inside a full search.
+  town list didn't; search 9 gave Brandenburg, Mecklenburg-Vorpommern, Saxony, Saxony-Anhalt,
+  Thuringia and Wales, except Potsdam and Cardiff. Compare the next searches' "Understood as".
+- **Cost with medium everywhere:** search 9 (72 hours) came to about $1.36 at $0.75/$3.75 per
+  million tokens (SOURCES.md, Gemini): 398k input, 282k output tokens, of which 199k thinking,
+  and 200 web searches (within Gemini's 5,000 free a month). One 24-hour search a day at that rate
+  is about $14 a month now, about $27 after the prices double on 1 January 2027, which is above
+  the €23 AI budget. Jobcu shows no cost because no prices are entered in Settings.
+- **Google Maps against the AI's estimates:** search 9 measured every trip with Google (88 cards)
+  or by distance; still no comparison with the AI's estimates.
+- **Towns found online:** search 9 found 17 of 41 (search 8: 44 of 53). The ones checked look
+  right (Leonardo in Edinburgh, Helmut-Schmidt-Universität in Hamburg, iCuTech in Lauf an der
+  Pegnitz, Ralliant in Bracknell). It has never run with another provider.
 - **Maps billing SKU:** Billing → Reports should show only "Compute Route Matrix Essentials" at
   €0. Anything else means the limits need another look.
 - **Caching under the EEA terms:** the storing rules in SOURCES.md come from the global Maps
@@ -92,14 +97,16 @@ Nothing.
    final-handover prompt (CONTRIBUTING.md) at about $85 used. (Cloud setup works: checked
    2026-09-24, with Full network access and the Gemini credential answering.)
 2. **Searches while Jobcu is developed:** close Jobcu and start it again with the launcher (it
-   now updates itself from GitHub first), write his citizenship in "Anything your documents
-   don't say", and run a **72-hour search every two or three days**. After each, a short local
+   now updates itself from GitHub first) and run a **72-hour search every two or three days**. After each, a short local
    session with the prompt "Check my latest search" (CONTRIBUTING.md) records what it shows for
    the cloud sessions. Screenshots in the cloud chat are fine for anything that looks wrong.
 3. Nothing to rate or list by hand: the owner handed the quality set (30–50 rated ads) and the
    coverage list (15–25 jobs he'd want) to the local check, Prompt D in CONTRIBUTING.md
    (DECISIONS.md, 2026-09-24).
 4. **The friend's test:** his feedback on installing and using Jobcu.
+5. **So that Settings → Usage shows what each search costs:** enter the model's prices there
+   ($0.75 input and $3.75 output per million tokens until 31 December 2026). Without them Jobcu
+   shows tokens only.
 6. **Only if he wants to send them** (messages in his name; DECISIONS.md, 2026-09-24 evening):
    access requests to StepStone, Denmark's Jobnet, Poland's CBOP, or a private NAV token. None
    is needed for the current focus.
@@ -120,7 +127,60 @@ go to their homes: source facts to SOURCES.md, choices and reasons to DECISIONS.
 here.
 
 1. **Findings from the owner's own searches**, whenever a local session records them here: they
-   come before everything else.
+   come before everything else. **From search 9** (local check, 2026-09-24), most important first:
+   (a) **Sources miss most fresh jobs.** Of 25 fresh jobs that fit his CV (LinkedIn and StepStone,
+   posted within the window), Jobcu showed 3 (Amadeus Fire in Hanover, Jobactive in Bremen, Össur
+   in Livingston as "Embla Medical"), 2 were collected and rightly left out by his conditions
+   (Great Yarmouth, Bridgend), and **20 were never collected**: all 5 in Ireland (Moog and
+   Advanced Energy in Cork, Stryker's "RF Power Engineer - R&D" in Cork, Ei Electronics in
+   Shannon), employers not in the directory (Nordex in Hamburg, Tektronix in Viersen, Saab in
+   Nuremberg, Bosch in Renningen, Luxinar in Krailling, Cambridge Consultants, ASSA ABLOY, Zenovo
+   in Derby) and agencies seen only on LinkedIn or StepStone (HILL, Next Ventures, XTENDED,
+   Actana, IC Resources' graduate job in Cambridge). Search 9 had only 2 Irish cards. So task 2
+   (the directory: Moog runs Workday; the others' systems are in SOURCES.md) and task 3 (the AI
+   searching the web) matter most, with Ireland first among the two.
+   (b) **Travel limits measured to a city's centre leave jobs out wrongly.** Google gave Weichs →
+   Munich 53 minutes (Munich's centre), so three PCB-layout jobs in Weichs were left out at
+   "Augsburg, 50 min"; Forchheim → Nuremberg 44, Schrobenhausen → Augsburg 41. A reference place
+   is where the person would live (DECISIONS.md, 2026-09-24), so measure to the nearest part of
+   the city, not its centre. City districts that are reference places on their own (Hamburg's
+   Wandsbek, Eimsbüttel, and "Marienthal" with 287,101 people) take both "nearest" slots and
+   appear on cards ("Marienthal, 53 min by car").
+   (c) **Place names the town list can't read.** Reed gives full UK postcodes as the place
+   ("CB224QR", "S336RR": 7 cards "couldn't be checked"); the Bundesagentur sometimes gives a state
+   code, shown raw ("BADEN_WUERTTEMBERG"); and 6 of the 32 UK names to avoid were council
+   districts that match no town (Thanet, Thurrock, Castle Point, Ashfield, Amber Valley, Cannock
+   Chase), so those areas passed without a word. Read postcodes and state codes, and look
+   unmatched names up among the regions and districts (`regions.csv.gz`).
+   (d) **The online look-up reads too little and too few.** It read 85 of 130 summaries and found
+   17 of 41 towns; 44 summary cards scoring 50+ never got "read from the full ad online". JAT in
+   Jena (a region he excludes) stayed at 81 because its town wasn't found. It reads only languages
+   and years: Rolls-Royce's two Adzuna summaries scored 85 and 75, while the same jobs from its own
+   Workday site say UK nationals only (30). Read citizenship and clearance (and a required
+   doctorate) too. It took 12 minutes and all 200 web searches, against a cap of 50.
+   (e) **Four pairs of the same job shown twice**, each for a different reason: Reed's postcode
+   ("BB113BP") against Adzuna's "Burnley, Lancashire" (Corriculo, 88 and 82); two Adzuna
+   summaries of a recruiter's ad, which must be full ads to merge (AMF in Castleford, 87 twice);
+   "Heeley, Sheffield" against "Sheffield" (Adecco); and the directory's company name "Rolls-Royce
+   (professional)" with no town. Summaries could merge when one's text is contained in the
+   other's (`_text_similarity` already measures containment).
+   (f) **Scoring** (score check, 32 ads rated by Claude): 23 of 32 (72%) where expected with the
+   scores given at the time, **26 of 32 (81%) re-scored with today's code** (the owner's limits
+   now hold 8+ and 10+ years to 60). Still too high: senior jobs asking 4–7 years for someone with
+   no full-time years (Tactilia 68, Stark 68, Orbem 64) and neighbouring fields (analog chip design
+   71, PLC commissioning 70). The quick check left out 2 of 39 titles worth a look (a university
+   lab lead for electric drives, a quality engineer at a hardware company). No ad in the set is a
+   good fit yet, so the check can't tell whether good jobs score high enough.
+   (g) **`tools/coverage_test.py` gives wrong reasons:** it looks only at the cards, so a job that
+   was never collected is blamed on the quick check or the search words, and a different job of
+   the same company counts as found (Zenovo's Bristol test job for its Derby one). It should look
+   in the saved pool (every job collected) and say at which step each was lost, match titles
+   more strictly, and accept a company's other name (Össur and Embla Medical).
+   (h) Small: Arbeitnow sometimes sends escaped HTML, so the ad text keeps literal tags
+   (SOURCES.md, Arbeitnow).
+   (i) **Cost and time:** 33 minutes and about $1.36 for 72 hours; 70% of the output tokens were
+   thinking. Before prices double in January, find where lower thinking keeps the same answers
+   (task 7's order).
 2. **More employer career sites of engineering and tech companies in Germany, the UK and
    Ireland.** The first full cloud searches (DECISIONS.md, 2026-09-24 evening) found no job at
    all through the directory's career sites for a hardware engineer around Munich or in Dublin.
@@ -154,10 +214,10 @@ here.
 6. **Phase 2's "Done when":** every example sentence from HANDOVER §6, README.md and the owner's
    own, read twice with a real provider, as its author means it. Fix in general terms, never for
    one sentence.
-7. **The owner's feedback loop:** fix what his searches show; when his ratings exist, the score
-   check (`tools/score_check.py`, on his Mac): the quick check first, then medium against low
-   thinking and the batch size, then the scoring prompt (HANDOVER §13); when his coverage list
-   exists, the coverage test. Consider a way for him to share a search's results with a cloud
+7. **The owner's feedback loop:** fix what his searches show; with the ratings (32 ads and 39
+   titles, rated by Claude on his behalf since 2026-09-24), the score check (`tools/score_check.py`,
+   on his Mac): the quick check first, then medium against low thinking and the batch size, then
+   the scoring prompt (HANDOVER §13); the coverage test with each local check's new list. Consider a way for him to share a search's results with a cloud
    session without personal data (no CV, no profile).
 8. **Ready for friends (Phase 4):** a first-run setup screen, updating from GitHub while keeping
    the data folder, the guides tested on a clean Mac and a clean Windows computer, and the
@@ -198,7 +258,7 @@ here.
 | Phase | What it delivers | Status |
 |---|---|---|
 | 0. Foundations | Project set-up; Jobcu starts with a double-click | ✅ Done (2026-09-17) |
-| 1. Usable first version | A real search with ranked, deduplicated results and reasons | 🔨 Real searches work; waiting on the quality set the owner rates |
+| 1. Usable first version | A real search with ranked, deduplicated results and reasons | 🔨 Real searches work; the first quality set is rated, the scoring prompt not tuned yet |
 | 2. Smart location filter | Understands sentences like "a city by the seaside" | 🔨 Mostly built |
 | 3. Maximum coverage | Many more job sources in every supported country | 🔨 Started |
 | 4. Ready for friends | Complete guides, first-run setup, tested on real Mac and Windows computers | Planned |
@@ -215,8 +275,9 @@ here.
       relevance check; scoring with reasons; a scoring limit that asks before doing more
 - [x] Results: Save, Applied, Not interested, "New", Saved and Applied lists, sorting, "Posting
       date unknown"
-- [ ] A quality set of 30–50 real ads judged by the owner (the Score check screen collects them)
-      and a tuned scoring prompt (HANDOVER §13)
+- [ ] A quality set of 30–50 real ads judged for the owner (the Score check screen collects them;
+      32 ads and 39 titles rated by Claude on 2026-09-24, none of the ads a good fit yet) and a
+      tuned scoring prompt (HANDOVER §13)
 - [x] **Done when:** the owner runs a real search on his Mac and gets a ranked, deduplicated list
       with reasons (2026-09-22 and 2026-09-23).
 
