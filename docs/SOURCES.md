@@ -367,6 +367,248 @@ Group**, so one written permission could cover them all.
   User-Agent time out, and a browser-like request gets a web-application-firewall page ("Something
   went wrong"). That's bot protection, so Jobcu doesn't use it.
 
+## LinkedIn, StepStone and the person's AI searching the web (checked 2026-09-24)
+
+Legitimate routes only (DECISIONS.md, 2026-09-24 later): Jobcu never opens their pages.
+
+- **No partner route to read jobs.** LinkedIn's only job API is the Job Posting API, for
+  approved ATS and staffing partners to **post** jobs, and it isn't taking new partners; there is
+  no API to search or read listings. StepStone publishes no partner API for reading jobs either
+  (only third-party scrapers exist, which Jobcu never uses). Written permission from the Stepstone
+  Group stays the only direct route (above, "Job boards on hold").
+- **Some StepStone jobs already arrive legitimately:** Le Forem's open data carries 402 StepStone
+  Belgium ads and 10,284 from Jobat (Belgium, above).
+- **How many StepStone jobs Jobcu misses (a sample):** of 7 fresh StepStone nursing jobs in
+  Hamburg (Schön Klinik, B. Braun, Israelitisches Krankenhaus, a care provider, an agency), the
+  Bundesagentur had **1** (B. Braun's). Employers' own sites are varied (hospital sites, two of
+  which didn't even answer), so no single career system reaches them.
+- **The person's AI searching the web (Gemini `gemini-3.8-flash`, Google Search grounding, medium
+  thinking), four made-up people, "posted in the last 3 days":**
+
+  | Person | Web searches | Jobs listed | Sites | Output tokens | Time |
+  |---|---|---|---|---|---|
+  | ICU nurse, Cork | 8 | 7 | healthcarejobs.ie, IrishJobs, Indeed, Rezoomo (HSE), JobLeads | 3,253 | 18 s |
+  | Primary-school teacher, Ghent | 5 | 9 | VDAB (8), Indeed | 5,830 | 22 s |
+  | Sous-chef, Zürich | 5 | 15 | hotelcareer.ch, jobs.ch, Jooble, Indeed | 4,379 | 13 s |
+  | Nurse, Hamburg | 4 | 7+ | StepStone (all) | 8,176 | 27 s |
+
+  **The jobs were real and fresh** (titles, employers and "1 day ago", "Online sinds 23 sep."
+  as the search results show them), **but the links weren't reliable:** Indeed links with made-up
+  IDs (`jk=clinical-nurse-manager-2-icu-mater-private-cork`), one VDAB ID given for two different
+  schools, list pages instead of job pages (jobs.ch, hotelcareer.ch, Jooble), and for Hamburg only
+  Google's grounding redirect links. So an AI-found job needs checking before it is shown
+  (HANDOVER §9.6): reading its page where Jobcu may read it, or finding the same job at the
+  employer or another permitted source. Cost per person and query: about 3,000–8,000 output
+  tokens (≈ $0.01–0.03) and 4–8 grounded searches (Gemini's 5,000 free a month, then $14 per
+  1,000).
+- **Cloud check note:** Python 3.13 needed a relaxed certificate flag for the proxy (AGENTS.md,
+  "Working in a cloud session").
+
+## Candidate sources by country (research from 2026-09-24, not built yet)
+
+Found while mapping sources for every kind of work, in the owner's order of countries. Each entry
+says what was checked live and what still needs checking. When one is built, its facts move to
+its own section above. The ranking and what waits on the owner are in PROGRESS.md.
+
+### Germany
+
+What Jobcu already has covers every trade: the Bundesagentur's Jobbörse (all professions), Adzuna,
+Arbeitnow and the career systems. The gaps are the public sector and employers on German career
+systems the directory doesn't read.
+
+- **service.bund.de, public-sector jobs (checked 2026-09-24).** The federal job portal
+  (Bundesverwaltungsamt) for federal, state and municipal employers, universities, research
+  institutes, courts, prisons and the armed forces' civilian jobs: administration, social work,
+  law, trades (electricians, painters, chimney sweeps), housekeeping, research, engineering.
+  - **An open RSS feed:** `GET https://www.service.bund.de/Content/Globals/Functions/RSSFeed/
+    RSSGenerator_Stellen.xml` gives the **newest 500 jobs** (348 KB), about **2.5 days** on a
+    weekday (203 on 22 September, 237 on 23 September), so a 24- or 48-hour search is covered in
+    one request. Each item: title, link, `pubDate` (with zone; some at 00:00:00), and in the
+    description the employer ("Arbeitgeber"), place ("Ort: 65173 Wiesbaden") and closing date.
+    No filter parameters. The site offers the feed for RSS readers, "ohne Registrierung".
+    Separate feeds exist for training places (`RSSGenerator_Ausbildungsplaetze.xml`).
+  - **Job pages** (`/IMPORTE/Stellenangebote/editor/{employer}/{yyyy}/{mm}/{id}.html`): the full ad
+    (Tätigkeitsprofil, Anforderungsprofil), field, **Arbeitszeit** (Vollzeit/Teilzeit),
+    **Anstellungsdauer** (Unbefristet/Befristet), pay grade and full address. **No schema.org
+    JobPosting**, so the text is read from the page.
+  - **robots.txt** closes only the search pages (`/Content/DE/Stellen/Suche/`) and
+    `/SiteGlobals/`, and asks for **`Crawl-delay: 30`**: 30 s between requests, so full ads can
+    only be read for the few jobs still in the running. The feed and the job pages are allowed.
+  - **Terms (Impressum):** the texts' copyright stays with the advertising body, and the portal's
+    content may not be reproduced, distributed or exhibited without consent. Reading the feed and
+    showing a job to the one person searching, on their computer, is what an RSS reader does.
+  - **Overlap with the Bundesagentur (sample of 25, title and town search, employer matched):**
+    8 found there, 17 not (a ministry's clerk, a county's maintenance clerk, a city's tax clerk,
+    two chimney-sweep districts, a prison archive, a Helmholtz postdoc). So about **two thirds of
+    its jobs would be new**, some 150 a day.
+- **Interamt (interamt.de, checked 2026-09-24):** the largest public-sector portal (about 60,000
+  jobs a year, run by DVZ Mecklenburg-Vorpommern). robots.txt closes only `/cms/` to every
+  crawler and closes the job pages (`/koop/`) to Jooble's, Yandex's, Ahrefs' and Majestic's
+  crawlers. The terms of use say nothing about automated reading; they describe searching job
+  offers and applying. Said to offer RSS feeds (not found yet). **Not reachable from cloud
+  sessions:** its certificate chains to "Telekom Security TLS RSA Root 2023", which the cloud
+  proxy's bundle lacks (certifi has it, so Jobcu on a computer can reach it). Overlap with
+  service.bund.de still to be measured.
+- **d.vinci (career system of many hospitals, councils and mid-sized employers, checked
+  2026-09-24):** an official **public Job Publication API**: `GET https://{customer}.dvinci-hr.com
+  /jobPublication/list.json` (or `/portal/{portal}/jobPublication/list.json`, also `.xml`),
+  "since ATS version 2022.11 … always public", documented for "job aggregators" among others
+  (static.dvinci-easy.com/files/d.vinci job-publication-api.html). Gives the position, start and
+  end dates, places with addresses, coordinates and country, the ad's parts in HTML (tasks,
+  profile, offer), contract period and working time. `fields=small` makes lists lighter. Needs a
+  list of customers, like the other career systems. **Checked live** on two customers (a
+  consultancy with 70 jobs, a UK staffing firm with 47; 80–125 KB with `fields=small`): no key,
+  robots.txt `Allow: /` (only some agency portals closed); each job has `position`, `language`,
+  `jobPublicationURL`, and `jobOpening` with `createdDate`, `locations` (town, ISO country code,
+  coordinates, address), `workingTimes` (`FULL_TIME`…) and `contractPeriod` (`UNLIMITED` =
+  permanent). `startDate` (publication date) was empty in both, so freshness would come from
+  `createdDate`. d.vinci is used in the UK and elsewhere too, not only in Germany.
+- **softgarden:** its Jobs API needs OAuth credentials from softgarden's support, so it isn't
+  usable; its career pages (`{company}.softgarden.io`) could be read through `jobposting.py` if
+  they carry JobPosting data (not checked).
+
+### The UK and Ireland
+
+What Jobcu already has: Reed, Adzuna (UK only), Arbeitnow's UK list, jobs.ac.uk, EURAXESS,
+JobsIreland.ie and the career systems. Missing: schools, the health services and councils,
+which employ a large share of people in both countries and rarely post on commercial boards.
+
+- **Teaching Vacancies (England's schools, Department for Education, checked 2026-09-24).** An
+  **official open API**: `GET https://teaching-vacancies.service.gov.uk/api/v1/jobs.json?page=N`,
+  no key, 100 jobs a page, **newest first** (`meta.count` 6,847 live jobs, 69 pages; about 230
+  posted by midday on a Thursday). Every job is **schema.org JobPosting**: `title`, `datePosted`
+  (day), the **full ad** as HTML in `description`, `employmentType` (`FULL_TIME`, `PART_TIME`…),
+  `jobLocation` with street, town, postcode and `addressCountry` GB, `hiringOrganization`,
+  `validThrough`, `occupationalCategory` (teacher, teaching_assistant, other_support,
+  administration_hr_data_and_finance, catering_cleaning_and_site_management…), `url`.
+  **Terms for API users:** listings may be reused under the **Open Government Licence**, except
+  that no fee may be charged for hiring someone found through them. robots.txt allows everything
+  except search pages with parameters, `/documents/` and a few others. A 24-hour search is about
+  3 requests. Clearly permitted.
+- **NHS Jobs (the NHS in England and Wales, NHS Business Services Authority, checked
+  2026-09-24).** An **open XML search feed**: `GET https://www.jobs.nhs.uk/api/v1/search_xml?
+  sort=publicationDateDesc&limit=100&page=N` (without `limit` 10 a page; `pageSize` and `size`
+  are ignored), also `keyword=…`. `totalResults` 12,712 live jobs; the newest ten were posted
+  within 12 minutes, so roughly **1,000 a day** (about 10 requests for a 24-hour search, fewer
+  with keywords). Each `vacancyDetails`: `id`, `reference`, `title`, a ~150-character
+  `description`, `employer`, `type` (Permanent, Fixed-Term, Bank…), `salary`, `closeDate`,
+  **`postDate` (exact time)**, `url`, `locations` ("Bradford, BD9 6RJ"). `location=Leeds&
+  distance=10` with a keyword returned 0 (to test again). **Job pages**
+  (`/candidate/jobadvert/{reference}`) carry the full ad, date posted, contract, working pattern
+  and pay band, **no** JobPosting data. **No robots.txt** (the address answers an HTML page).
+  **Terms** (Candidate Terms and Conditions, 22 July 2025) are about accounts, applications and
+  data protection; nothing about automated reading. Its jobs include GP practices, hospices and
+  charities, not only NHS trusts.
+- **To check when building for the UK:** NHS Scotland (`apply.jobs.scot.nhs.uk`, no robots.txt);
+  myjobscotland (Scotland's councils: robots.txt closes `/api/`; its sitemap lists categories and
+  organisations, not single jobs); HSC jobs in Northern Ireland (`jobs.hscni.net`, no
+  robots.txt).
+- **Ireland, to check when building:** the HSE's CareerHub (`careerhub.hse.ie`, a WordPress site
+  whose RSS feed is its WordPress posts, not jobs; robots.txt empty); **educationposts.ie** (Irish school jobs; robots.txt closes
+  `/api/`, `/teacher/` and account pages; its job list address wasn't found at `/posts/`).
+  publicjobs.ie refuses automated requests (above).
+
+### Switzerland
+
+What Jobcu already has: Adzuna (CH), Arbeitnow's list (some Swiss jobs), EURAXESS and the career
+systems. No Swiss public or national source yet.
+
+- **Job-Room (job-room.ch, SECO's public employment service, checked 2026-09-24):** its
+  robots.txt closes `/job-search/` to every crawler, and its official **Jobs API is for
+  employers posting jobs** (access by e-mail to jobroom-api@seco.admin.ch), not for reading them.
+  Not usable. (Jobs under the Swiss registration duty are shown only to registered job seekers
+  for their first five working days anyway.)
+- **prospective.ch (a Swiss career system, checked 2026-09-24):** the Swiss federal
+  administration's job site (jobs.admin.ch) reads its jobs from `GET https://ohws.prospective.ch
+  /public/v1/medium/{medium}/jobs?lang=de&offset=N&limit=N` (the federal medium is `1000624`:
+  **454 jobs**). No key; **robots.txt allows everything**. Each job: `title`, `start_date`
+  (publication, exact), `end_date`, `last_modification_timestamp`, `language`,
+  `links.directlink`, and `szas` with the **ad's parts** (`sza_tasks`, `sza_requirements`,
+  `sza_benefits`, HTML), `sza_location.city`/`.region`/`.country`, `sza_pensum.min`/`.max`
+  (workload in %), plus `attributes` (field of activity, pay class, region). Used by many Swiss
+  employers (the robots.txt names Inselspital and SIX); each has its own medium number, so it
+  needs a directory like the other career systems. The federal jobs' apply links lead to
+  SuccessFactors.
+- **jobs.ch (JobCloud):** robots.txt closes `/api/`, `/external/` and many paths; a commercial
+  board, not checked further.
+
+### Belgium
+
+- **Le Forem, open data (Wallonia's public employment service, checked 2026-09-24).** Every job
+  offer Le Forem distributes, as an **open dataset under CC BY-SA 4.0**, updated in real time
+  (Opendatasoft): `GET https://leforem-digitalwallonia.opendatasoft.com/api/explore/v2.1/catalog
+  /datasets/offres-d-emploi-forem/records?where=…&order_by=…&limit=100&offset=N` (ODSQL filters
+  such as `datedebutdiffusion>=date'2026-09-23'`). **26,204 live offers**; about **1,200 new a
+  day** (1,275 on 21 September, 1,171 on 22 September). Not only Wallonia: 3,656 in Flanders
+  (NUTS BE2) and 1,554 in Brussels (BE1). The biggest contributors are **Jobat** (10,284),
+  Forem's own site (4,130), staffing agencies (Accent, Adecco, Randstad…) and **StepStone
+  Belgium** (402). Each record: title, town(s), postcode, region and NUTS codes, **coordinates**,
+  contract type ("Durée indéterminée", "Intérimaire…"), `regimetravail` (full/part time),
+  employer, number of posts, education level, **languages** (with ISO codes), experience,
+  **driving licence**, sector (NACE), occupation (with its code), `datedebutdiffusion` (day),
+  end date, source, external reference and the Forem `url`. **No ad text.** The Forem job pages
+  (`/recherche-offres/`) are **closed by robots.txt**, so the full ad would come from the same
+  job elsewhere or the person's AI reading it online. CC BY-SA asks for credit (like GeoNames).
+- **VDAB (Flanders' public employment service):** a developer portal (developer.vdab.be) with a
+  Vacatures API (search, bulk list of new and changed vacancies; up to 2,000 calls a minute are
+  mentioned). Free, but each user needs **an account and a subscription**, like Adzuna's key;
+  the terms show only after signing in. Not tested.
+- **Actiris (Brussels):** not checked; Le Forem's data already carries 1,554 Brussels offers.
+
+### The Netherlands
+
+- **Werken voor Nederland (the Dutch central government's jobs, checked 2026-09-24):**
+  `GET https://www.werkenvoornederland.nl/sitemap-vacatures.xml` lists **1,281** job pages with
+  `lastmod` (last change, not publication). Job pages carry **schema.org JobPosting** (title,
+  `datePosted`, `validThrough`, `employmentType`, place with postcode, employer, salary range).
+  robots.txt closes only `/login` and allows `Request-rate: 10/1`. data.overheid.nl lists the
+  jobs as open data ("Vacatures Overheid", with a CSO vacancy API); its page timed out in this
+  check.
+- **werk.nl (UWV):** robots.txt closes only `/webpublicaties`; how its vacancies can be read
+  wasn't checked (a request for them as open data exists on data.overheid.nl, so there is none).
+- **Nationale Vacaturebank (DPG Media):** its firewall refuses Jobcu's requests ("Access Denied"),
+  even for robots.txt. Not usable.
+
+### Italy
+
+- **InPA (inpa.gov.it, the public administration's recruitment portal, checked 2026-09-24):** the
+  notices page loads its data from `portale.inpa.gov.it/concorsi-smart/api/concorso-public-area/
+  search-better`, and **portale.inpa.gov.it's robots.txt disallows everything**. Not usable.
+- Italy's public employment service (SIISL, formerly Cliclavoro/MyANPAL) wasn't checked. Adzuna
+  covers Italy today.
+
+### Denmark, Norway and Sweden
+
+- **Sweden:** built (Arbetsförmedlingen, above).
+- **NAV Arbeidsplassen, Norway's public employment service (checked 2026-09-24).** The
+  **stilling-feed API** (navikt.github.io/pam-stilling-feed): `GET https://pam-stilling-feed.nav
+  .no/api/v1/feed` with `Authorization: Bearer <token>`, `If-Modified-Since` for "changed since",
+  then `next_url` page by page (1,000 entries a page). A **public token** is served at
+  `/api/publicToken` ("for experimentation", it rotates at irregular intervals); a **private
+  token** is issued on request by e-mail with a name, contact and written acceptance of the terms.
+  Since yesterday noon: **2,394 new or changed ads in 4 requests** (495 KB a page). Each entry:
+  `title`, `businessName`, `municipal`, `status` (ACTIVE/INACTIVE), `date_modified`; the full ad
+  (description, places, published and expiry dates, employment type, extent, occupation codes,
+  application link) is one request per ad at `/api/v1/feedentry/{uuid}`. **Terms**
+  (arbeidsplassen.nav.no/vilkar-api): "Alle kan bruke tenesta", free; ads must be removed when
+  they become inactive and updated when they change; the apply function must deep-link to the
+  original application system; Norwegian data protection rules apply to personal data in ads.
+  The old public-feed API was switched off on 1 May 2025.
+- **Jobnet, Denmark's public job service (STAR, checked 2026-09-24):** every address answers a
+  redirect to MitID login, even robots.txt, for automated requests. STAR offers a **Jobnet web
+  service** to import its job ads into one's own portal, free, by agreement (spoc@star.dk). Asking
+  would be the owner's decision.
+
+### Poland
+
+- **CBOP (Centralna Baza Ofert Pracy, the labour offices' central database, checked
+  2026-09-24):** the ministry provides **two web services for outside parties to download job
+  offers automatically**, under "Warunki udostępniania informacji o ofertach pracy z CBOP" and an
+  instruction PDF (`oferty.praca.gov.pl/portal/instrukcja_pobierania_danych_z_cbop.pdf`, which
+  now returns the portal's page instead of the PDF). Since the 2025 labour market law the portal
+  is ePraca (a JavaScript app); no robots.txt. Whether the web services need an agreement, and
+  what they return today, is still to be checked.
+
 ## General observations
 
 - In 815 real ads (Reed + Bundesagentur, one week, electronics roles), **employer links almost

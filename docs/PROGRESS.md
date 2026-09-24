@@ -67,12 +67,9 @@ Nothing.
 
 ### Waiting on the owner
 
-1. **Set up cloud sessions** (steps given in chat on 2026-09-24): the Claude GitHub App on the
-   repository, the cloud environment's network access set to **Full**, and, strongly
-   recommended, a separate Gemini key saved as an **API credential** on that environment so
-   cloud sessions can test AI instructions with a real provider. He spends only his $100 cloud
-   credit: he watches it at claude.ai, Settings → Usage, and sends the final-handover prompt
-   (CONTRIBUTING.md) at about $85 used.
+1. **The cloud credit:** he watches it at claude.ai, Settings → Usage, and sends the
+   final-handover prompt (CONTRIBUTING.md) at about $85 used. (Cloud setup works: checked
+   2026-09-24, with Full network access and the Gemini credential answering.)
 2. **Searches while Jobcu is developed:** close Jobcu and start it again with the launcher (it
    now updates itself from GitHub first), write his citizenship in "Anything your documents
    don't say", and run a **72-hour search every two or three days**. After each, a short local
@@ -83,8 +80,23 @@ Nothing.
 4. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
    `Company | Job title | Place | link`, for `tools/coverage_test.py`.
 5. **The friend's test:** his feedback on installing and using Jobcu.
-6. Decisions that come with the research below: whether to ask StepStone (or others) for
-   permission, and whether to sign up for aggregator keys such as Jooble or Careerjet.
+6. **A scoring proposal** (HANDOVER §11 is his): each card lists the ad's must-haves the person
+   meets and lacks (like LinkedIn's Job Match), and a must-have **licence or registration** the
+   person definitely lacks (a nursing registration, a teaching qualification, a truck licence,
+   a doctor's Approbation) limits the score like a missing citizenship (at most 30?), because
+   without it the person can't legally do the job. Yes, no, or another limit.
+7. **Questions from the source research** (SOURCES.md; none is needed for the next tasks):
+   - **Jobs your AI finds on LinkedIn, StepStone or Indeed:** Jobcu may not open those pages, and
+     the AI's links and details are often wrong. Show such a job only when Jobcu confirms it at
+     the employer or another permitted source (recommended), or also show the rest, marked
+     "Seen by your AI on StepStone, not checked"?
+   - **Asking for access:** Denmark's Jobnet (the labour agency STAR shares its ads by agreement,
+     free), Poland's CBOP (download services under written conditions), a private NAV token for
+     Norway (the public one rotates), and StepStone's written permission. Each needs an e-mail in
+     his name or Jobcu's.
+   - **A free key per person** for VDAB (Flanders), like Adzuna's: fine to ask users for one
+     more key in Settings, or leave Flanders to Le Forem's data?
+   - Aggregator keys such as Jooble or Careerjet (their keys are meant for websites).
 
 ### Next tasks, in order
 
@@ -99,34 +111,42 @@ Scandinavia; Poland; the rest later. Cost: at most €25 a month for the owner; 
 free allowances and cheap models, and choose defaults (such as reasoning effort) accordingly. Findings go to their homes: source facts (also for sources
 not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the plan here.
 
-1. **Research, before building more** (one or two sessions, each finding recorded):
-   - How the leading job platforms find, rank and present jobs (LinkedIn, Indeed, StepStone,
-     Google's job search, the public employment services), and what makes a job search good for
-     the person (coverage, freshness, duplicates, matching, explanations, alerts). Decide what
-     Jobcu should adopt, and how Jobcu should score (HANDOVER §11 is Decided: propose changes).
-   - **A source map per country**, in the order above and for every kind of work, not only
-     engineering: public employment services and their open data, public-sector portals
-     (teaching, health, civil service), aggregators with an API, the career systems employers
-     there use, and job feeds. For each: what it covers, terms and robots.txt, cost. Include
-     Switzerland's job-room.ch and jobs.ch, Belgium's VDAB, Le Forem and Actiris, the
-     Netherlands' werk.nl, Italy's and Scandinavia's public services, Poland's CBOP.
-   - **LinkedIn and StepStone by legitimate routes only** (DECISIONS.md, 2026-09-24): how much
-     of their jobs is also on employers' own sites and national services; whether the person's
-     AI searching the web (HANDOVER §9.6) finds fresh jobs reliably, and at what cost; whether
-     partner programmes or permissions exist.
-2. **Universality audit and fixes.** The AI instructions use engineering examples
+1. **Build the sources the research ranked highest** (research done 2026-09-24: SOURCES.md,
+   "Candidate sources by country" and "LinkedIn, StepStone and the person's AI"; DECISIONS.md,
+   2026-09-24 evening). Each an isolated adapter with tests and its facts in SOURCES.md, in this
+   order (public services first, every kind of work, clean terms, least effort first):
+   1. **service.bund.de's feed** (Germany's public sector: one request, ~150 new jobs a day that
+      the Bundesagentur lacks; full ads only for the jobs still in the running, 30 s apart).
+   2. **Teaching Vacancies** (England's schools: open API, full ads, Open Government Licence).
+   3. **NHS Jobs** (health in England and Wales: open XML feed, ~1,000 a day; full ad from the
+      job page).
+   4. **Closing dates and reposts** on cards (DECISIONS.md, 2026-09-24 evening): `closes_at`
+      from the sources that give it, "Apply by …", passed deadlines left out, and "First seen by
+      Jobcu on …" from the job memory.
+   5. **Le Forem's open data** (Belgium, also Flanders and Brussels: ~1,200 a day, structured
+      languages, licence and education; no ad text, so read online like Adzuna's summaries).
+   6. **d.vinci and prospective.ch** as career systems, with customers found for the directory
+      (hospitals, councils, cantons, universities).
+   7. **NAV's stilling-feed** (Norway), then **Werken voor Nederland** (the Dutch government).
+   8. **Interamt** (Germany; measure its overlap with service.bund.de first; reachable only
+      outside the cloud), and the questions for the owner above as he answers them.
+   9. **Live AI web search for jobs** (HANDOVER §9.6): the person's AI finds fresh jobs anywhere;
+      each is confirmed at a source Jobcu may read before it is shown (owner's question above).
+2. **Universality audit and fixes** (after the first four items of task 1, so teachers and
+   nurses have sources to find). The AI instructions use engineering examples
    (`keywords.py` search words, `scoring.py` role anchors and reasons, `relevance.py` quick
    check, `profile.py` field descriptions) and the employer directory leans to technology
    companies. Rewrite examples across professions, then check with made-up people from other
    fields (a primary-school teacher in Ghent, an ICU nurse in Cork, a sous-chef in Zürich, a
    lawyer in Munich, a truck driver in Poznań), each twice, with a real provider: the search
-   words, the quick check, the scores and the location reading must make sense for each.
+   words, the quick check, the scores and the location reading must make sense for each. Check
+   the search words against ESCO's occupation names (DECISIONS.md, 2026-09-24 evening).
 3. **Phase 2's "Done when":** every example sentence from HANDOVER §6, README.md and the owner's
    own, read twice with a real provider, as its author means it. Fix in general terms, never for
    one sentence.
-4. **Build the sources the research ranks highest**, in the country order: each an isolated
-   adapter with tests, its facts in SOURCES.md. Aim for sources that give full ads, so fewer
-   jobs depend on Adzuna's summaries (today over half do).
+4. **More countries' sources** after the list above: Switzerland's other career systems,
+   Scotland's and Northern Ireland's health services, Ireland's HSE and schools, Italy (SIISL),
+   Austria, France and the rest, each checked as in SOURCES.md before building.
 5. **The owner's feedback loop:** fix what his searches show; when his ratings exist, the score
    check (`tools/score_check.py`, on his Mac): the quick check first, then medium against low
    thinking and the batch size, then the scoring prompt (HANDOVER §13); when his coverage list
