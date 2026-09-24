@@ -17,7 +17,9 @@ from datetime import datetime
 
 from rapidfuzz import fuzz
 
+from jobcu import places as place_list
 from jobcu.freshness import earliest_possible
+from jobcu.placenames import countries_in
 from jobcu.sources.base import FoundJob
 
 TITLE_MATCH = 90
@@ -174,7 +176,7 @@ def group_duplicates(jobs: list[FoundJob], source_kinds: dict[str, str]) -> list
 
     companies = [normal_company(j.company) for j in jobs]
     titles = [normal_title(j.title) for j in jobs]
-    cities = [normal_city(j.location_text) for j in jobs]
+    cities = [_town_part(j.location_text, j.country) for j in jobs]
 
     # The same ad from the same source is always one job.
     by_source_id: dict[tuple[str, str], int] = {}
@@ -216,6 +218,16 @@ def group_duplicates(jobs: list[FoundJob], source_kinds: dict[str, str]) -> list
               for members in grouped.values()]
     _tag_agency_repeats(groups)
     return groups
+
+
+def _town_part(location: str | None, country: str | None) -> str:
+    """The town a location starts with, or "" when it names only a country or a region
+    ("Deutschland", "Sachsen", "UK"): that can't rule a match out. Most of Adzuna's ads say only
+    "Deutschland", and the same job on another site gives its town and full ad (search 8)."""
+    first = (location or "").split(",")[0]
+    if countries_in(first) and place_list.locate(first, country) is None:
+        return ""
+    return normal_city(location)
 
 
 def _same_place(a: FoundJob, b: FoundJob, city_a: str, city_b: str) -> bool:

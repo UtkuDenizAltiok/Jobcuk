@@ -26,10 +26,10 @@ Update this whenever a source changes or something new is learned. Decisions are
   (before: ~1,500 ads, ~7% related, budget used up before the precise searches ran).
 - **Answers:** exact posting time (`created`, UTC), company, location with coordinates, contract
   type/time, `redirect_url`. The description is only the **first ~500 characters**.
-- **Full ads:** `redirect_url` leads to `www.adzuna.<country>/details/<id>`, which carries
-  schema.org JobPosting JSON-LD with the full text. Read at a 3 s pace, only for jobs that passed
-  the quick relevance check (owner's decision). **Some single ads answer 403 "Zugriff verweigert"**
-  while others load: skip that ad; stop only after 3 refusals in a row or a robot check.
+- **Full ads: not read (decided 2026-09-24).** `redirect_url` leads to
+  `www.adzuna.<country>/details/<id>` (or `/land/ad/<id>` for town-less ads), which carries
+  schema.org JobPosting JSON-LD with the full text, but Adzuna's firewall refuses Jobcu (below).
+  The full ad comes from the same job on another site, or from the person's AI reading it online.
 - Adzuna's website answered 403 to `robots.txt` and its terms page for Jobcu's User-Agent.
 - Adzuna often lists the same job twice under different IDs.
 - **Single queries answer 5xx now and then** (503 on 2026-09-23, after Jobcu's three polite
@@ -39,16 +39,14 @@ Update this whenever a source changes or something new is learned. Decisions are
   `www.adzuna.de/land/ad/<id>` (not `/details/`); that page answers 403 to Jobcu. Their text
   usually names the place ("am Standort in Wietmarschen-Lohne"), which the quick relevance check
   reads. The other 16 had a full `area` list and coordinates.
-- **The same ad's `www.adzuna.<country>/details/<id>` works (checked 2026-09-23):** 200 with
-  JobPosting JSON-LD and the full text (KLA, 1,958 characters instead of 500), but its
-  `jobLocation` repeats "Deutschland", so the town still comes from the text. Jobcu reads that
-  page for `/land/ad/` links. Before this, three `/land/ad/` refusals in a row stopped all page
-  reading, so from search 4 to search 8 no Adzuna ad was read in full (search 8: 164 of 164).
-- **Adzuna's firewall blocks Jobcu's page requests at times (2026-09-23, 21:55 CEST):** three
-  `/details/` pages loaded at 21:15; at 21:50 every page answered CloudFront's 403 "Request
-  blocked. We can't connect to the server for this app or website at this time". Jobcu treats
-  that page as a block and stops reading pages for the search at once. The API is unaffected.
-  Still blocked at 2026-09-24 03:20 CEST. Whether it lifts is under "Verify" in PROGRESS.md.
+- **Adzuna's pages and Jobcu (history):** `/land/ad/<id>` always answered 403; the same ad's
+  `/details/<id>` gave the full text (KLA, 1,958 characters instead of 500) on 2026-09-23 at
+  21:15, but from 21:50 every page answered CloudFront's 403 "Request blocked", still so at
+  2026-09-24 03:20. A bug had also stopped all page reading since search 4 (three `/land/ad/`
+  refusals in a row). The API itself is unaffected.
+- **How much Adzuna brings (search 8, DE/IE/GB, 72 hours):** 351 of 774 ads; 136 of the 242
+  jobs worth scoring came from Adzuna alone; 240 of its 298 jobs gave only "Deutschland" or "UK"
+  as the place.
 - German locations read "Unterhaching, München (Kreis)": the part marked **(Kreis)** is the
   district around a city, not the city, so `places.locate` uses it only when no town is named
   besides it (found in a real test, 2026-09-21: suburbs passed a "1 million people" condition).

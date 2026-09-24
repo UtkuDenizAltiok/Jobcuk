@@ -39,7 +39,7 @@ the other conditions. Adzuna "causes problems all the time": decide what to do w
    München" as 27 minutes to Munich). Say in the AI's instructions, for any wording, that
    reference places are usually where the person would live, so conditions about the kind of
    place apply to them. Real check with the owner's sentence.
-3. [ ] Adzuna, decided with search 8's figures (136 of 242 scored jobs came only from Adzuna,
+3. [x] Adzuna, decided with search 8's figures (136 of 242 scored jobs came only from Adzuna,
    240 of its 298 jobs had no town, 0 of 164 full ads could be read): keep it as the biggest
    source; stop reading its pages (its firewall and robots.txt refuse Jobcu); let a
    country-only place ("Deutschland") never block merging with the same job on another site;

@@ -116,11 +116,11 @@ def test_an_answer_given_without_searching_the_web_is_asked_again_then_ignored()
     assert [g.place_from_web for g in groups] == [[], []]  # asked, nothing to trust
 
 
-def test_only_summaries_near_the_top_are_looked_up_for_their_requirements():
+def test_summaries_that_could_make_the_list_are_looked_up_for_their_requirements():
     group = jobs(("Dresden", "DE"))[0]
-    scored = {"score": 80, "evidence": {}}
+    scored = {"score": 50, "evidence": {}}
     assert jobplace.needs_requirements(group, scored)
-    assert not jobplace.needs_requirements(group, {**scored, "score": 69})
+    assert not jobplace.needs_requirements(group, {**scored, "score": 49})
     assert not jobplace.needs_requirements(group, {**scored, "read_online": True})
     assert not jobplace.needs_requirements(group, {"score": 80})  # scored by an older Jobcu
     group.copies[0].description_is_complete = True

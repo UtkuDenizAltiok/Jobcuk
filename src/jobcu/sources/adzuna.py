@@ -11,28 +11,24 @@ ran out before the precise searches did):
 - results come by relevance within the window, and each search gets a fair part of what is left
   of this search's requests, so a broad one reads its best ads instead of the newest noise.
 
-The API gives only the start of each ad. With the owner's approval, the full ad is read
-from the job's page (the page a person sees when clicking the job), but only for jobs that
-passed the quick relevance check, one page at a time, and never again in that search once
-Adzuna refuses.
+The API gives only the start of each ad (~500 characters). Jobcu doesn't read Adzuna's own job
+pages: its firewall and robots.txt refuse Jobcu (SOURCES.md, DECISIONS.md 2026-09-24). The full
+ad comes from the same job on another site when Jobcu finds one (dedupe.py), and for the jobs
+worth it, from the person's AI reading it online (jobplace.py).
 """
 
-import dataclasses
 import logging
-import re
 from collections.abc import Iterator
-from urllib.parse import urlsplit
 
 import httpx
 
 from jobcu.countries import COUNTRIES
 from jobcu.freshness import days_back, parse_iso, window_start
-from jobcu.jobposting import find_job_posting
 from jobcu.keystore import KeyStore
 from jobcu.keywords import SearchTerm
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget, share_of_month
-from jobcu.sources.http import Blocked, KeyCheck, client
+from jobcu.sources.http import KeyCheck, client
 from jobcu.text import normalise
 
 log = logging.getLogger(__name__)
@@ -48,9 +44,6 @@ MAX_FAILED_SEARCHES = 3
 # A little below Adzuna's limits (250 a day, 2,500 a month), as a safety margin. How many one
 # search may use is worked out from what is left this month (see budget.share_of_month).
 LIMITS = Limits(per_day=240, per_month=2400)
-
-
-_LANDING_PATH = re.compile(r"/land/ad/(\d+)/?")
 # Salaries come in the country's own money.
 _CURRENCIES = {"GB": "£", "CH": "CHF ", "PL": "PLN "}
 
@@ -65,59 +58,10 @@ class AdzunaSource(JobSource):
     kind = "aggregator"
     countries = COUNTRIES_COVERED
 
-    # Stop reading job pages after this many refusals in a row (one refused ad is normal).
-    MAX_REFUSALS_IN_A_ROW = 3
-
-    def __init__(self) -> None:
-        self.pages_refused = False
-        self._refusals_in_a_row = 0
-
     def unavailable_reason(self, keys: KeyStore) -> str | None:
         if not keys.get(KEY_APP_ID) or not keys.get(KEY_APP_KEY):
             return "Adzuna: no keys saved in Settings."
         return None
-
-    def load_details(self, job: FoundJob, ctx: SourceContext) -> FoundJob:
-        if self.pages_refused or not job.url:
-            return job
-        try:
-            response = ctx.http.get(details_page(job.url))
-        except Blocked:
-            return self._stop_reading_pages(job, ctx)
-        except httpx.HTTPError:
-            return job
-        if response.status_code == 429:
-            return self._stop_reading_pages(job, ctx)
-        if response.status_code == 403:
-            # This ad's page is refused: skip it, never retry it.
-            self._refusals_in_a_row += 1
-            if self._refusals_in_a_row >= self.MAX_REFUSALS_IN_A_ROW:
-                return self._stop_reading_pages(job, ctx)
-            return job
-        if response.status_code != 200:
-            return job
-        self._refusals_in_a_row = 0
-        posting = find_job_posting(response.text)
-        if posting is None or len(posting.description) <= len(job.description):
-            return job
-        final_host = response.url.host or ""
-        return dataclasses.replace(
-            job,
-            description=posting.description,
-            description_is_complete=True,
-            job_types=job.job_types or posting.job_types,
-            work_mode="remote" if posting.remote else job.work_mode,
-            # When the link leads to the employer's own site, that becomes the main link.
-            employer_url=None if "adzuna." in final_host else str(response.url),
-        )
-
-    def _stop_reading_pages(self, job: FoundJob, ctx: SourceContext) -> FoundJob:
-        self.pages_refused = True
-        ctx.note(
-            "Adzuna didn't allow reading more full ads right now, so some of its jobs were "
-            "scored from a short summary."
-        )
-        return job
 
     def search(self, query: JobQuery, ctx: SourceContext) -> Iterator[FoundJob]:
         limits = share_of_month(self.id, LIMITS)
@@ -284,16 +228,6 @@ def to_found_job(item: dict, country: str) -> FoundJob:
         job_types=_CONTRACT_TYPES.get((item.get("contract_type"), item.get("contract_time")), []),
         salary_text=salary,
     )
-
-
-def details_page(url: str) -> str:
-    """The page with the full ad. Ads without a town link to `/land/ad/<id>`, which always
-    refuses Jobcu, while `/details/<id>` of the same ad carries its full text (SOURCES.md)."""
-    parts = urlsplit(url)
-    match = _LANDING_PATH.fullmatch(parts.path)
-    if not match or not parts.netloc.startswith("www.adzuna."):
-        return url
-    return f"{parts.scheme}://{parts.netloc}/details/{match.group(1)}"
 
 
 def check_keys(keys: KeyStore) -> KeyCheck:

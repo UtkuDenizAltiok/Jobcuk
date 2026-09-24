@@ -1,13 +1,8 @@
 import json
 from datetime import UTC, datetime
 
-import httpx
-
 from jobcu.jobposting import find_job_posting
-from jobcu.keystore import KeyStore
-from jobcu.sources.adzuna import AdzunaSource, details_page
-from jobcu.sources.base import FoundJob, SourceContext, SourceReport
-from jobcu.sources.http import PoliteClient
+from jobcu.sources.adzuna import AdzunaSource
 
 
 def page(posting: dict, wrap_in_graph=False) -> str:
@@ -44,98 +39,9 @@ def test_pages_without_job_data_give_nothing():
     assert find_job_posting(page({"@type": "Organization"})) is None
 
 
-def adzuna_job():
-    return FoundJob(source="adzuna", source_job_id="1", url="https://www.adzuna.de/land/ad/1",
-                    title="Power Electronics Engineer", company="Acme GmbH",
-                    description="Short start of the ad")
+def test_adzuna_never_reads_its_own_job_pages():
+    # Its firewall and robots.txt refuse Jobcu (DECISIONS.md 2026-09-24): the full ad comes from
+    # the same job on another site, or from the person's AI reading it online.
+    from jobcu.sources.base import JobSource
 
-
-def context(handler):
-    http = PoliteClient(min_intervals={}, sleep=lambda s: None,
-                        transport=httpx.MockTransport(handler))
-    return SourceContext(http, KeyStore(), SourceReport("adzuna", "Adzuna"), lambda: False,
-                         lambda message: None)
-
-
-def test_adzuna_full_ad_is_read_from_the_details_page_even_for_landing_links():
-    # Ads without a town link to /land/ad/<id>, which always refuses Jobcu; the same ad's
-    # /details/<id> page carries the full text (checked live, 2026-09-23).
-    asked = []
-
-    def handler(request):
-        asked.append(request.url.path)
-        if request.url.path.startswith("/land/"):
-            return httpx.Response(403, text="Zugriff verweigert")
-        return httpx.Response(200, text=page(POSTING))
-
-    source = AdzunaSource()
-    ctx = context(handler)
-    for _ in range(4):
-        full = source.load_details(adzuna_job(), ctx)
-    assert full.description_is_complete and "inverters" in full.description
-    assert full.url == "https://www.adzuna.de/land/ad/1"  # the person's link stays as it was
-    assert full.employer_url is None and full.work_mode == "remote"
-    assert set(asked) == {"/details/1"} and not source.pages_refused
-
-
-def test_adzuna_details_page_leading_to_the_employer_makes_that_the_main_link():
-    def handler(request):
-        if request.url.host == "www.adzuna.de":
-            return httpx.Response(302, headers={"location": "https://careers.acme.example/42"})
-        return httpx.Response(200, text=page(POSTING))
-
-    job = FoundJob(**{**adzuna_job().__dict__, "url": "https://www.adzuna.de/details/42?x=1"})
-    full = AdzunaSource().load_details(job, context(handler))
-    assert full.description_is_complete
-    assert full.employer_url == "https://careers.acme.example/42"
-
-
-def test_adzuna_details_page_address():
-    assert details_page("https://www.adzuna.de/land/ad/5894110270?se=a&v=B") == (
-        "https://www.adzuna.de/details/5894110270")
-    assert details_page("https://www.adzuna.co.uk/land/ad/12/") == (
-        "https://www.adzuna.co.uk/details/12")
-    for unchanged in ("https://www.adzuna.de/details/5?utm_medium=api",
-                      "https://example.com/land/ad/5", "https://www.adzuna.de/land/ad/x"):
-        assert details_page(unchanged) == unchanged
-
-
-def test_one_refused_page_is_skipped_but_others_are_still_read():
-    def handler(request):
-        if request.url.path.endswith("/refused"):
-            return httpx.Response(403, text="Zugriff verweigert")
-        return httpx.Response(200, text=page(POSTING))
-
-    source = AdzunaSource()
-    ctx = context(handler)
-    refused = source.load_details(
-        FoundJob(**{**adzuna_job().__dict__, "url": "https://www.adzuna.de/land/ad/refused"}), ctx
-    )
-    assert not refused.description_is_complete and not source.pages_refused
-    assert source.load_details(adzuna_job(), ctx).description_is_complete
-
-
-def test_adzuna_pages_stop_after_repeated_refusals_or_a_robot_check():
-    calls = []
-
-    def handler(request):
-        calls.append(request.url)
-        return httpx.Response(403, text="Forbidden")
-
-    source = AdzunaSource()
-    ctx = context(handler)
-    for _ in range(5):
-        source.load_details(adzuna_job(), ctx)
-    assert len(calls) == 3 and source.pages_refused
-
-    robot = AdzunaSource()
-    robot_ctx = context(lambda request: httpx.Response(403, text="Please solve the CAPTCHA"))
-    robot.load_details(adzuna_job(), robot_ctx)
-    assert robot.pages_refused
-
-    # Amazon CloudFront's firewall answer (seen live, 2026-09-23) is a block: stop at once.
-    firewall = AdzunaSource()
-    firewall_ctx = context(lambda request: httpx.Response(
-        403, text="<H1>403 ERROR</H1> The request could not be satisfied. Request blocked."))
-    firewall.load_details(adzuna_job(), firewall_ctx)
-    assert firewall.pages_refused
+    assert AdzunaSource.load_details is JobSource.load_details

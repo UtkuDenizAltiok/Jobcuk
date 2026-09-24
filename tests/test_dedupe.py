@@ -68,3 +68,17 @@ def test_agency_repeat_of_an_employer_ad_is_flagged_not_merged():
     assert len(groups) == 2
     flagged = [g for g in groups if g.possible_duplicate_of is not None]
     assert len(flagged) == 1 and flagged[0].main.company == "Brunel GmbH"
+
+
+def test_a_country_or_region_alone_never_stops_a_match():
+    # Search 8: most Adzuna ads say only "Deutschland"; the same job on another site gives its
+    # town and full ad, but "Deutschland" had counted as a town, so almost none merged.
+    kinds = {"adzuna": "aggregator", "board": "job_board"}
+    for place in ("Deutschland", "Sachsen", ""):
+        groups = group_duplicates([job("adzuna", "1", city=place),
+                                   job("board", "9", city="Radeberg")], kinds)
+        assert len(groups) == 1, place
+    # Two towns still keep two jobs apart, big cities included.
+    groups = group_duplicates([job("adzuna", "1", city="Munich"), job("board", "9", city="Berlin")],
+                              kinds)
+    assert len(groups) == 2

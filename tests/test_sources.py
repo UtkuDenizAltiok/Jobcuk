@@ -269,9 +269,14 @@ def test_polite_client_waits_as_asked_and_remembers_answers():
     assert len(calls) == 2  # the second request came from memory
 
 
-def test_bot_protection_is_never_worked_around():
+@pytest.mark.parametrize("page", [
+    "<html>Please complete the CAPTCHA</html>",
+    # Amazon CloudFront's firewall, as Adzuna's pages answered (2026-09-23).
+    "<H1>403 ERROR</H1> The request could not be satisfied. Request blocked.",
+])
+def test_bot_protection_is_never_worked_around(page):
     def handler(request):
-        return httpx.Response(403, text="<html>Please complete the CAPTCHA</html>")
+        return httpx.Response(403, text=page)
 
     http = PoliteClient(min_intervals={}, sleep=lambda s: None,
                         transport=httpx.MockTransport(handler))

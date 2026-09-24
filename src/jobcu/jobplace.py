@@ -26,10 +26,8 @@ from jobcu.travel import job_country, job_point
 
 log = logging.getLogger(__name__)
 
-# Only jobs that could make the list are worth looking up for their town, and only jobs near
-# the top for their requirements, as each look-up costs AI.
+# Only jobs that could make the list are worth looking up, for their town or their full ad.
 MIN_SCORE = 50
-MIN_SCORE_FOR_REQUIREMENTS = 70
 # Jobs per request: few enough for the model to look each one up properly.
 BATCH_SIZE = 5
 MAX_PLACES = 3
@@ -103,10 +101,11 @@ def needs_looking_up(group: JobGroup) -> bool:
 
 
 def needs_requirements(group: JobGroup, scored: dict | None) -> bool:
-    """True for a job near the top that was scored from a short summary, and not looked up yet."""
+    """True for a job that could make the list, scored from a short summary, and not looked up
+    yet."""
     return (scored is not None and "evidence" in scored and not scored.get("read_online")
             and not group.best_description_copy.description_is_complete
-            and scored["score"] >= MIN_SCORE_FOR_REQUIREMENTS)
+            and scored["score"] >= MIN_SCORE)
 
 
 def find_online(client: AIClient, groups: list[JobGroup], indexes: list[int]) -> LookedUp:

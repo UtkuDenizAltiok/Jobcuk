@@ -1,8 +1,8 @@
 # Get your keys
 
 A key is a long code that lets Jobcu use a service on your account. You need one: an **AI key**.
-The free **Adzuna** and **Reed** keys are optional and add two more job sites; everything else
-Jobcu searches needs no key. A **Google Maps** key is optional too: it gives real travel times. **Never share keys or paste them into a chat**; save them in a
+The free **Adzuna** and **Reed** keys are optional, but worth it: Adzuna brings the most jobs in
+Germany and the UK, and Reed adds UK jobs. Everything else Jobcu searches needs no key. A **Google Maps** key is optional too: it gives real travel times. **Never share keys or paste them into a chat**; save them in a
 password manager, then enter them in Jobcu's **Settings**.
 
 ## AI key (your choice of provider)
