@@ -22,6 +22,24 @@ uv run pytest && uv run ruff check .
 uv run jobcu
 ```
 
+## Cloud sessions (claude.ai/code)
+
+One-time setup; how sessions work there is in AGENTS.md, "Working in a cloud session".
+
+1. At claude.ai, **Settings → Usage**: check your credit balance. If paid **Usage credits** are on,
+   set the monthly spend limit to the lowest amount, so nothing beyond a credit is charged.
+2. At claude.ai/code, connect GitHub, and install the **Claude GitHub App** on this repository
+   only ("Only select repositories").
+3. In the environment menu, open **Default**'s settings (the icon next to it), set **Network
+   access** to **Full**, and save.
+4. Recommended: in the same dialog, **API credentials → Add credential** with a separate key of
+   your AI provider, so sessions can test with a real AI without seeing the key. For Gemini:
+   **Allowed websites** `generativelanguage.googleapis.com`, header **Name** `x-goog-api-key`,
+   **Prefix** empty, the key as **Value**, then **Connect**. Never paste a key into a chat.
+
+Each session: pick this repository and branch **main**, the model and effort you want, the mode
+**Auto** (or **Accept edits**), and paste the start prompt below. Run one session at a time.
+
 ## Working with an AI assistant
 
 Any capable AI coding assistant works: Claude Code (on your computer, or in a cloud session at
