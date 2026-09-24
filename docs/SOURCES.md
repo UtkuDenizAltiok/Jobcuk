@@ -48,7 +48,7 @@ Update this whenever a source changes or something new is learned. Decisions are
   `/details/` pages loaded at 21:15; at 21:50 every page answered CloudFront's 403 "Request
   blocked. We can't connect to the server for this app or website at this time". Jobcu treats
   that page as a block and stops reading pages for the search at once. The API is unaffected.
-  Whether the block lifts again is under "Verify" in PROGRESS.md.
+  Still blocked at 2026-09-24 03:20 CEST. Whether it lifts is under "Verify" in PROGRESS.md.
 - German locations read "Unterhaching, München (Kreis)": the part marked **(Kreis)** is the
   district around a city, not the city, so `places.locate` uses it only when no town is named
   besides it (found in a real test, 2026-09-21: suburbs passed a "1 million people" condition).

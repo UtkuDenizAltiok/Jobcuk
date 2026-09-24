@@ -6,110 +6,94 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-23. All 390 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 417 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
 Jobcu works end to end. A search reads the documents with the person's own AI, collects jobs from
 16 sources (8 of them company career systems, reading 357 employers), removes duplicates, applies
 the rules and the location conditions, and scores what's left. The location box takes any
-condition in the person's own words (sizes, facts the AI looks up per town or per country, travel
-limits to reference places), shows how each was checked, with sources, and can be corrected with
-Edit. The owner has run three real searches on his Mac (2026-09-22/23): ranked, deduplicated
-results with reasons, real Google travel times, conditions checked per town, and towns found in
-the ad text or online where the job sites gave none. Phase 1 now waits only on the quality set
-he rates; most of Phase 2 is built.
+condition in the person's own words (sizes, facts the AI looks up per town, per region or per
+country, travel limits to reference places), shows how each was checked, with sources, and can
+be corrected with Edit. The owner has run four real searches on his Mac (2026-09-22/23).
+
+Search 8 (2026-09-23 evening) led to a scoring overhaul: the AI reads the evidence in each ad
+first, and code applies the owner's limits for clear blockers (a language two levels short: at
+most 65; a citizenship or clearance out of reach: 30; a missing required PhD: 50; 5+ / 8+ more
+years: 75 / 60). The best summary-only jobs are read online for their languages and years.
+Facts about places can be decided for whole regions ("all of Saxony except Jena"). A new
+optional line takes what the documents don't say (citizenship). Every AI step thinks at medium
+(the owner's choice). Adzuna's firewall blocks Jobcu's page requests since 2026-09-23 evening.
+Phase 1 waits only on the quality set the owner rates; most of Phase 2 is built.
 
 ### In progress
 
-**Fixing what search 8 showed (2026-09-23 evening).** The owner: German-required jobs scored
-80–90, too many high scores overall, and Dresden was used although the far-right condition
-should rule it out. Found: Adzuna's full ads were never read since search 4 (its town-less
-`/land/ad/` links always refuse, three refusals stop all page reading), so 120 of 216 cards
-were scored from ~500-character summaries, which scored higher than full ads. The owner's
-rules for blockers are in DECISIONS.md (2026-09-23 evening). Steps:
-
-1. [x] Adzuna: read `/land/ad/<id>` ads through `/details/<id>` (tested live: full text), and
-   never count a link that can't work as a refusal. SOURCES.md.
-2. [x] Scoring: the AI reads the evidence first (ad language, required languages with CEFR
-   levels, required years, required doctorate, citizenship or clearance); code works out the
-   language points and the owner's limits (language 2+ levels short: 0 and at most 65; ad only
-   in a language the person speaks below B2, no level stated: low, no limit; citizenship or
-   clearance definitely out of reach: 30; required doctorate missing: 50; 5+ more years: 75;
-   8+ more years: 60). Tighter anchors so unknown isn't treated as fine. Cards show the limit
-   and why. DECISIONS.md, guides.
-3. [x] An optional note about the person (citizenship, work permits) read with the documents,
-   so the citizenship limit can work for anyone. Guides.
-4. [x] Real check: re-score search 8's jobs with the owner's AI on a copy of his data folder,
-   compare the scores before and after (DECISIONS.md). Adzuna's firewall now blocks its pages,
-   so 68 German ads stayed summaries at up to 85 ("written in German, no level" rule).
-4b. [x] Keep the evidence with each score, and let the online look-up (jobplace.py) also read
-   the language, years and blockers of the best summary-only jobs, then re-apply the rules.
-4c. [x] Adzuna's "contract" means several job types: let the ad text decide (a UK "contract
-   outside IR35" job passed the full-time filter at 83).
-5. [x] Location: facts decided per region (region names in the town list), so a condition can
-   rule out all of Saxony except the towns that fit; Radeberg and Dresden out. Real check with
-   the owner's sentence.
-6. [ ] Update "Right now", tell the owner what to do next.
-
-Done when: tests pass on GitHub, and the re-scored search 8 has no German-required job above
-65 and no clearly blocked job near the top.
+Nothing.
 
 ### Verify before relying on
 
-- **Google Maps inside a real search:** the key test works (Freising → Munich 69 minutes by
-  train, door to door) and car trips answer since the fix (Stuttgart → Mannheim 102 min), but
-  no full search has used it yet: compare Google's times with the AI's estimates there.
-- **Finding towns online:** in search 7 it found 18 of 20, several of them agency ads where the
-  agency's own office would be the wrong answer; the instructions now ask for the place of the
-  work. Check the towns on the next search's cards, and it has never run with another provider.
-- **Precise Adzuna searches inside a full search:** the new search words and Adzuna plan were
-  run for Germany on their own (192 ads, 78% related); search 6 (before them) confirmed the
-  towns from the ad text, the far-right towns to avoid and Google's car times together.
-- **Teamtailor and SuccessFactors** were tested live source by source (2026-09-21), not yet inside
-  a full search.
-- **Maps billing SKU:** after the first real searches, Billing → Reports should show only
-  "Compute Route Matrix Essentials" at €0. Anything else means the limits need another look.
-- **Google's daily quota has never been reached.** When it is, Google presumably answers 429 and
-  Jobcu falls back to AI estimates with "asked Jobcu to slow down"; check the wording then.
+- **The new scoring, the online requirements and the regions inside a full search.** Each was
+  checked live on search 8's jobs and the owner's sentence (DECISIONS.md, 2026-09-23 evening and
+  2026-09-24), never all together: check that German-required jobs stop at 65 with the reason on
+  the card, that "Languages and experience read from the full ad online" appears on summaries
+  near the top, and that Radeberg and Dresden stay out.
+- **The regions answer varies from search to search:** search 7 excluded Dresden, search 8's
+  town list didn't, and the first region answer gave six eastern states. Compare the next
+  searches' "Understood as".
+- **Cost with medium everywhere:** estimated €0.45 a search (DECISIONS.md, 2026-09-24). Read the
+  real figure in Settings → Usage after the next search.
+- **Adzuna's page firewall:** "Request blocked" since 2026-09-23 21:50, still at 2026-09-24 03:20
+  (SOURCES.md). If the note "Adzuna didn't allow reading more full ads" disappears, it lifted.
+- **Google Maps against the AI's estimates:** search 8 used Google's car times (Munich 27 min
+  from Moosach), but no one has compared them with the AI's estimates yet.
+- **Towns found online:** search 8 found 44 of 53; the look-up is now two steps and asks for the
+  place of the work, never an agency's office. Check a few "(found online)" towns. It has never
+  run with another provider.
+- **Teamtailor and SuccessFactors** were tested live source by source (2026-09-21), not yet
+  confirmed inside a full search.
+- **Maps billing SKU:** Billing → Reports should show only "Compute Route Matrix Essentials" at
+  €0. Anything else means the limits need another look.
 - **Caching under the EEA terms:** the storing rules in SOURCES.md come from the global Maps
   Service Specific Terms. Jobcu keeps nothing from Google, so this likely changes nothing; confirm
   in the EEA Service Specific Terms when touching `travel.py`.
 
 ### Waiting on the owner
 
-1. **Run a search on the newest version** (the fixes from searches 6 and 7 are in it) and look at
-   a few cards marked "(found online)": is the town right? Several such jobs are agency ads,
-   where the agency's own office would be wrong.
-2. **Rate 30–50 jobs on the Score check screen** (nothing is rated yet). Everything about tuning
-   the quick check and the scoring waits on this.
-3. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
+1. **Restart Jobcu** (the one running was started before these changes), write his citizenship
+   in "Anything your documents don't say", and **run a search**. Then look at the items under
+   "Verify" above, especially the German-required jobs and the "(found online)" towns.
+2. **Cost:** with medium everywhere a search costs about €0.45, so the €23 AI budget holds
+   about 50 searches a month. If he searches more, the options are low thinking for the quick
+   check and the online look-up (about €0.35), or a higher budget.
+3. **Rate 30–50 jobs on the Score check screen** (nothing is rated yet). Tuning the quick check
+   and checking medium against low wait on this.
+4. **A coverage list:** 15–25 jobs he'd want Jobcu to find, one per line as
    `Company | Job title | Place | link`, for `tools/coverage_test.py`.
-4. **The friend's test:** his feedback on installing and using Jobcu.
-5. Optional: a generic cover letter (the uploaded one is written for Tesla).
+5. **The friend's test:** his feedback on installing and using Jobcu.
 6. Once the coverage numbers exist: keep the Stepstone Group boards on hold or ask them for
    permission ([SOURCES.md](SOURCES.md)), and whether to sign up for Jooble, Careerjet, France
    Travail, NAV or VDAB keys.
 
 ### Next tasks, in order
 
-1. Check the next search: Google's travel times against the AI's estimates, and the towns found
-   online (both under "Verify"). Fix what it shows.
+1. Check the next search against "Verify" and fix what it shows.
 2. Once jobs are rated: the quick relevance check first. It drops some related jobs when a batch
    holds many similar ones (42 of 147 in the real check, 19 in mixed batches; DECISIONS.md
-   2026-09-22 evening): try one verdict per job, mixed batches, or medium thinking, measured
-   against the owner's ratings. Scoring now thinks at **medium** (the owner's choice,
-   2026-09-24): check with the ratings that it scores better than low. Then the score-check
-   loop (`tools/score_check.py` to compare; `--rescore` to tune the quick check, batch size and
+   2026-09-22 evening): try one verdict per job or mixed batches, measured against the owner's
+   ratings. Check that medium scores better than low. Then the score-check loop
+   (`tools/score_check.py` to compare; `--rescore` to tune the quick check, batch size and
    scoring prompt, HANDOVER §13).
-3. More coverage, Ireland, the UK and Germany first: Teamtailor employers in Ireland and the UK,
+3. Cost without lowering quality: the scoring instructions and profile (about 3,000 tokens) go
+   out with each of about 60 requests a search, and Gemini reported no cached tokens for them.
+   Try the provider's context caching (HANDOVER §13, saving 8).
+4. More coverage, Ireland, the UK and Germany first: Teamtailor employers in Ireland and the UK,
    SuccessFactors sites of German engineering firms, more career systems (Personio, Softgarden,
    BambooHR, Comeet, Oracle), and national employment services with open data and no key
    (candidates: Czechia's MPSV open data, Poland's CBOP, Finland, Estonia, Slovenia, Luxembourg).
    Check terms and robots.txt first; record each in SOURCES.md.
-4. The rest of Phase 2: kinds of places near the job itself (a train station) if the owner
+5. The rest of Phase 2: kinds of places near the job itself (a train station) if the owner
    wants them.
-5. Keep the user guides in step, fix what the tester reports, and confirm Phase 1's "Done when"
+6. Keep the user guides in step, fix what the tester reports, and confirm Phase 1's "Done when"
    with the owner.
 
 ### Known limitations
@@ -122,7 +106,9 @@ Done when: tests pass on GitHub, and the re-scored search 8 has no German-requir
 - Facts about places are looked up fresh in every search. Only the AI's travel estimates are
   remembered (30 days); Google's travel times may not be kept (Routes API terms).
 - About a third of Adzuna's town-less ads name no town in their first ~700 characters (KLA,
-  HAPEKO…); they stay in the results, marked. Their full pages refuse Jobcu.
+  HAPEKO…); the online look-up finds most of the best ones. While Adzuna's firewall blocks
+  Jobcu, its jobs are scored from ~500-character summaries; those scoring 70 or more are read
+  online.
 - A fact the AI can only answer per constituency ("Leipzig II") is kept as the AI wrote it; the
   town list doesn't know constituencies, so such an exception doesn't match its town. Edit fixes
   it ("Except Leipzig").
