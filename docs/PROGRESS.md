@@ -42,7 +42,7 @@ recorded in its home and merged before the next:
 - [x] B. The same for the UK and Ireland.
 - [x] C. Switzerland, Belgium, the Netherlands.
 - [x] D. Italy, Denmark, Norway (Sweden is built), Poland.
-- [ ] E. How the leading platforms find, rank and present jobs; what Jobcu adopts, and any
+- [x] E. How the leading platforms find, rank and present jobs; what Jobcu adopts, and any
       proposal for scoring (HANDOVER §11 is Decided) in DECISIONS.md.
 - [ ] F. LinkedIn and StepStone by legitimate routes: overlap with employers' sites and national
       services, the person's AI searching the web, partner programmes.
@@ -100,6 +100,11 @@ Done when every step is recorded and the build list is ranked.
 5. **The friend's test:** his feedback on installing and using Jobcu.
 6. Decisions that come with the research below: whether to ask StepStone (or others) for
    permission, and whether to sign up for aggregator keys such as Jooble or Careerjet.
+7. **A scoring proposal** (HANDOVER §11 is his): each card lists the ad's must-haves the person
+   meets and lacks (like LinkedIn's Job Match), and a must-have **licence or registration** the
+   person definitely lacks (a nursing registration, a teaching qualification, a truck licence,
+   a doctor's Approbation) limits the score like a missing citizenship (at most 30?), because
+   without it the person can't legally do the job. Yes, no, or another limit.
 
 ### Next tasks, in order
 
