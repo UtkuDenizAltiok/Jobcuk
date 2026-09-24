@@ -55,8 +55,11 @@ the next session exactly where things stand.
 
 ### Starting, or resuming after any interruption
 
-1. Read **"Right now"** at the top of `docs/PROGRESS.md`.
-2. Compare it with reality: `git status` (changes that aren't committed mean an interrupted task),
+1. Bring this copy up to date: `git status` first (changes that aren't committed mean an
+   interrupted task: read them before anything else), then `git pull` and `uv sync`. Work done in
+   cloud sessions or by friends arrives only through GitHub, so a copy on the owner's Mac can be
+   far behind after a cloud period.
+2. Read **"Right now"** at the top of `docs/PROGRESS.md`, and compare it with reality:
    `git log --oneline -5`, `gh run list --limit 3` (did the last push pass on GitHub?) and
    `uv run pytest`.
 3. If **In progress** names a task, check each of its steps against the code and tests, then finish
@@ -130,7 +133,10 @@ Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself run
   unfinished work described under In progress, no pull request left open without a reason. Then
   rewrite "Right now" for a local session on his Mac: the state, what the cloud sessions did,
   what they couldn't check without his data, and the next tasks in order. Merge, and tell him
-  it's safe to continue locally.
+  it's safe to continue locally. The owner then continues in Claude Code on his Mac (the start
+  routine pulls the cloud work first) and restarts Jobcu there to use the new version. Every
+  cloud session works with that return in mind: nothing it needs later may live only in the
+  cloud session or its chat.
 
 ## Who you are working with
 
