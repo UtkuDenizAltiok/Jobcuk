@@ -98,8 +98,8 @@ Done when: tests pass on GitHub, and the re-scored search 8 has no German-requir
 2. Once jobs are rated: the quick relevance check first. It drops some related jobs when a batch
    holds many similar ones (42 of 147 in the real check, 19 in mixed batches; DECISIONS.md
    2026-09-22 evening): try one verdict per job, mixed batches, or medium thinking, measured
-   against the owner's ratings. Also try scoring at **medium** thinking (the owner leans to
-   medium everywhere, 2026-09-22; decide with the score check, not before). Then the score-check
+   against the owner's ratings. Scoring now thinks at **medium** (the owner's choice,
+   2026-09-24): check with the ratings that it scores better than low. Then the score-check
    loop (`tools/score_check.py` to compare; `--rescore` to tune the quick check, batch size and
    scoring prompt, HANDOVER §13).
 3. More coverage, Ireland, the UK and Germany first: Teamtailor employers in Ireland and the UK,

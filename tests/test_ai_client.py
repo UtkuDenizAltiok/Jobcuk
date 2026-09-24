@@ -106,7 +106,7 @@ def test_unsupported_reasoning_setting_is_dropped_and_remembered(settings):
     adapter = ScriptedAdapter(AIBadRequest("no effort"), GOOD, GOOD)
     client, _ = make_client(settings, adapter)
     generate(client)
-    assert adapter.calls[0]["effort"] == "low"
+    assert adapter.calls[0]["effort"] == "medium"  # the default for every step
     assert adapter.calls[1]["effort"] is None
     generate(client)
     assert adapter.calls[2]["effort"] is None
@@ -281,8 +281,9 @@ def test_web_research_asks_again_without_a_thinking_setting_the_model_refuses():
 
     adapter = NoEffort()
     client = AIClient(research_settings(), adapter=adapter, usage_log=UsageLog())
-    client.research(step="job_places", system="Rules", prompt="Find it", effort="low")
-    assert [call.get("effort") for call in adapter.calls] == ["low", None]
+    client.research(step="job_places", system="Rules", prompt="Find it")
+    # The person's reasoning setting (medium by default), then without it.
+    assert [call.get("effort") for call in adapter.calls] == ["medium", None]
     # Remembered: the next look-up doesn't try the setting again.
     client.research(step="job_places", system="Rules", prompt="Find it", effort="low")
-    assert [call.get("effort") for call in adapter.calls] == ["low", None, None]
+    assert [call.get("effort") for call in adapter.calls] == ["medium", None, None]

@@ -154,9 +154,6 @@ def _look_up(client: AIClient, lines: list[str], jobs: int) -> dict[str, OnlineJ
             prompt="Jobs:\n" + "\n".join(lines),
             max_searches=2 * jobs,
             max_output_tokens=6000,
-            # Reading a few ads needs little thinking: "low" searched as well as the default in a
-            # real test, with a seventh of the tokens (2026-09-23).
-            effort="low",
         )
         if reply.usage.web_searches:
             break

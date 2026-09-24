@@ -10,7 +10,7 @@ import tempfile
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, model_validator
 
 from jobcu.paths import ensure_data_dir
 
@@ -28,9 +28,11 @@ class AISettings(BaseModel):
     reasoning_model: str = ""
     # Only for "Other (OpenAI-compatible)" providers.
     base_url: str = ""
-    # Reasoning effort per kind of step. Tuned with the quality test set; models
-    # that don't support a setting simply ignore it (see ai/client.py).
-    scoring_effort: Effort | None = "low"
+    # Reasoning effort per kind of step: medium everywhere, the owner's choice (2026-09-24).
+    # `scoring_effort` is for the many small steps (quick check, scoring), `reasoning_effort` for
+    # reading documents and places and for web look-ups. Models that don't support a setting
+    # simply ignore it (see ai/client.py).
+    scoring_effort: Effort | None = "medium"
     reasoning_effort: Effort | None = "medium"
 
 
@@ -79,7 +81,13 @@ class SearchForm(BaseModel):
     exclude_remote: bool = False
 
 
+# Settings files from before version 2 hold "low" for scoring, the old default nobody could change
+# on screen; the owner then chose medium everywhere (DECISIONS.md, 2026-09-24).
+SETTINGS_VERSION = 2
+
+
 class Settings(BaseModel):
+    version: int = SETTINGS_VERSION
     ai: AISettings = AISettings()
     search_form: SearchForm = SearchForm()
     limits: LimitSettings = LimitSettings()
@@ -87,6 +95,16 @@ class Settings(BaseModel):
     use_web_search: bool = True
     # Sources are all on unless switched off here.
     sources_disabled: list[str] = []
+
+    @model_validator(mode="before")
+    @classmethod
+    def _upgrade(cls, data):
+        if isinstance(data, dict) and data.get("version", 1) < SETTINGS_VERSION:
+            ai = data.get("ai")
+            if isinstance(ai, dict) and ai.get("scoring_effort") == "low":
+                data = {**data, "ai": {**ai, "scoring_effort": "medium"}}
+            data = {**data, "version": SETTINGS_VERSION}
+        return data
 
 
 def settings_path(folder: Path | None = None) -> Path:

@@ -187,7 +187,8 @@ class AIClient:
         max_output_tokens: int = 3000,
         effort: Effort | None = None,
     ) -> ResearchReply:
-        """Ask the AI to look something up on the web and say which pages it used.
+        """Ask the AI to look something up on the web and say which pages it used. The
+        reasoning effort is the person's setting for reasoning steps unless `effort` says.
 
         Used for conditions Jobcu can only answer by checking current information (HANDOVER
         section 6 and 9.6). The user's own AI provider does the searching; Jobcu never contacts
@@ -210,6 +211,7 @@ class AIClient:
         if not adapter.can_search_the_web:
             raise AIError(MSG_NO_WEB_SEARCH)
         self._check_monthly_limit()
+        effort = effort or self.settings.ai.reasoning_effort
         if (provider, model) in self._effort_unsupported:
             effort = None
         waits = outages = 0
