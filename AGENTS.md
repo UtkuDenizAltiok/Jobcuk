@@ -119,7 +119,10 @@ Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself run
 - **AI tests with a real provider** in the cloud only through an **API credential** the owner
   saved on the cloud environment: the agent proxy adds the key to requests for that host, and
   nobody sees it. Save a placeholder key in a scratch data folder so Jobcu's code runs, and check
-  that the first request is answered. Without such a credential, name the checks that must run
+  that the first request is answered. Python 3.13 rejects the proxy's certificate for that host
+  ("CA cert does not include key usage extension"): at the top of the test script, before
+  importing Jobcu, wrap `ssl.create_default_context` so it clears `ssl.VERIFY_X509_STRICT`
+  (a cloud-only workaround; never in Jobcu's code). Without such a credential, name the checks that must run
   on his Mac.
 - **Branches and merging.** Work on the session's branch and push after every finished step (the
   branch is what survives if the session ends). Open a pull request early; when GitHub's tests

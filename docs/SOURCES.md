@@ -367,6 +367,43 @@ Group**, so one written permission could cover them all.
   User-Agent time out, and a browser-like request gets a web-application-firewall page ("Something
   went wrong"). That's bot protection, so Jobcu doesn't use it.
 
+## LinkedIn, StepStone and the person's AI searching the web (checked 2026-09-24)
+
+Legitimate routes only (DECISIONS.md, 2026-09-24 later): Jobcu never opens their pages.
+
+- **No partner route to read jobs.** LinkedIn's only job API is the Job Posting API, for
+  approved ATS and staffing partners to **post** jobs, and it isn't taking new partners; there is
+  no API to search or read listings. StepStone publishes no partner API for reading jobs either
+  (only third-party scrapers exist, which Jobcu never uses). Written permission from the Stepstone
+  Group stays the only direct route (above, "Job boards on hold").
+- **Some StepStone jobs already arrive legitimately:** Le Forem's open data carries 402 StepStone
+  Belgium ads and 10,284 from Jobat (Belgium, above).
+- **How many StepStone jobs Jobcu misses (a sample):** of 7 fresh StepStone nursing jobs in
+  Hamburg (Schön Klinik, B. Braun, Israelitisches Krankenhaus, a care provider, an agency), the
+  Bundesagentur had **1** (B. Braun's). Employers' own sites are varied (hospital sites, two of
+  which didn't even answer), so no single career system reaches them.
+- **The person's AI searching the web (Gemini `gemini-3.8-flash`, Google Search grounding, medium
+  thinking), four made-up people, "posted in the last 3 days":**
+
+  | Person | Web searches | Jobs listed | Sites | Output tokens | Time |
+  |---|---|---|---|---|---|
+  | ICU nurse, Cork | 8 | 7 | healthcarejobs.ie, IrishJobs, Indeed, Rezoomo (HSE), JobLeads | 3,253 | 18 s |
+  | Primary-school teacher, Ghent | 5 | 9 | VDAB (8), Indeed | 5,830 | 22 s |
+  | Sous-chef, Zürich | 5 | 15 | hotelcareer.ch, jobs.ch, Jooble, Indeed | 4,379 | 13 s |
+  | Nurse, Hamburg | 4 | 7+ | StepStone (all) | 8,176 | 27 s |
+
+  **The jobs were real and fresh** (titles, employers and "1 day ago", "Online sinds 23 sep."
+  as the search results show them), **but the links weren't reliable:** Indeed links with made-up
+  IDs (`jk=clinical-nurse-manager-2-icu-mater-private-cork`), one VDAB ID given for two different
+  schools, list pages instead of job pages (jobs.ch, hotelcareer.ch, Jooble), and for Hamburg only
+  Google's grounding redirect links. So an AI-found job needs checking before it is shown
+  (HANDOVER §9.6): reading its page where Jobcu may read it, or finding the same job at the
+  employer or another permitted source. Cost per person and query: about 3,000–8,000 output
+  tokens (≈ $0.01–0.03) and 4–8 grounded searches (Gemini's 5,000 free a month, then $14 per
+  1,000).
+- **Cloud check note:** Python 3.13 needed a relaxed certificate flag for the proxy (AGENTS.md,
+  "Working in a cloud session").
+
 ## Candidate sources by country (research from 2026-09-24, not built yet)
 
 Found while mapping sources for every kind of work, in the owner's order of countries. Each entry
