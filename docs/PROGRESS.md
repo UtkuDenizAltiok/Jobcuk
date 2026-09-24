@@ -39,8 +39,29 @@ whole search for such a person, and showed that the directory's career sites sti
 nothing for him.
 
 From 2026-09-24 development runs in Claude Code cloud sessions (AGENTS.md, "Working in a cloud
-session"): no access to the owner's data there, so his searches and ratings come back as his
-reports, or through a local session on his Mac.
+session"): no access to the owner's data folder there, so his searches and ratings come back as
+his reports, or through a local session on his Mac. He may attach his CV to a cloud session for
+testing (kept only in a scratch folder, deleted at the end).
+
+The second cloud session (2026-09-24 night, with the owner's CV attached) fixed search 9's
+findings (b) to (h) (task 1 below, each marked Done), ran two 72-hour searches with his CV
+(DECISIONS.md, "What the owner's CV showed in the cloud"), and found and fixed more:
+- trips to reference places now end at the nearest edge of the place;
+- postcodes, Eircodes, state codes and council districts are read;
+- one question, in jobs, before more web look-ups, which now also read citizenship and
+  clearance;
+- 3+ years short is limited to 80;
+- 17 engineering employers were added;
+- the person's AI now looks at career-site titles the search words miss (2,377 fresh titles had
+  been dropped unseen);
+- Workday no longer reads repeated pages;
+- JobsIreland.ie's empty list is reported, not shown as fine;
+- a schema bug in the AI layer was fixed.
+
+The second search with his CV gave 171 cards instead of 86, and 21 in Ireland instead of 2.
+A source where the AI searches the web for single jobs was tried and not shipped (task 3).
+In the cloud, AI requests over 30 seconds fail, so web research is tested there at low effort
+only (AGENTS.md).
 
 **The owner's search 9** (2026-09-24, DE/IE/GB, 72 hours, his far-right and 40-minutes-by-car
 sentence; studied in a local session the same evening): it ran end to end without errors, but
@@ -108,6 +129,9 @@ Nothing.
    now updates itself from GitHub first) and run a **72-hour search every two or three days**. After each, a short local
    session with the prompt "Check my latest search" (CONTRIBUTING.md) records what it shows for
    the cloud sessions. Screenshots in the cloud chat are fine for anything that looks wrong.
+   **The next one matters most:** it is the first with the second cloud session's fixes and the
+   AI's look at career-site titles, on medium effort with Adzuna, Reed and Google Maps; its
+   local check goes through "Verify before relying on" and notes the cost.
 3. Nothing to rate or list by hand: the owner handed the quality set (30–50 rated ads) and the
    coverage list (15–25 jobs he'd want) to the local check, Prompt D in CONTRIBUTING.md
    (DECISIONS.md, 2026-09-24).
@@ -136,7 +160,11 @@ here.
 
 1. **Findings from the owner's own searches**, whenever a local session records them here: they
    come before everything else. **From search 9** (local check, 2026-09-24), most important first:
-   (a) **Sources miss most fresh jobs.** Of 25 fresh jobs that fit his CV (LinkedIn and StepStone,
+   (a) **Partly addressed (cloud, 2026-09-24 night):** 17 engineering employers added (Moog in
+   Cork among them), career-site titles the search words miss now get a look from the AI, and
+   Stryker's Cork job turned out to be 9 days old on its own site (LinkedIn showed a repost
+   date). Still open: the agencies seen only on LinkedIn and StepStone (task 3), and more
+   employers (task 2). What search 9 showed: **Sources miss most fresh jobs.** Of 25 fresh jobs that fit his CV (LinkedIn and StepStone,
    posted within the window), Jobcu showed 3 (Amadeus Fire in Hanover, Jobactive in Bremen, Össur
    in Livingston as "Embla Medical"), 2 were collected and rightly left out by his conditions
    (Great Yarmouth, Bridgend), and **20 were never collected**: all 5 in Ireland (Moog and
@@ -206,7 +234,9 @@ here.
    more strictly, and accept a company's other name (Össur and Embla Medical).
    (h) Done (cloud, 2026-09-24): Arbeitnow sometimes sends escaped HTML, so the ad text keeps literal tags
    (SOURCES.md, Arbeitnow).
-   (i) **Cost and time:** 33 minutes and about $1.36 for 72 hours; 70% of the output tokens were
+   (i) **Cost and time** (more jobs reach scoring since the AI looks at career-site titles:
+   watch the cost of the next search on the Mac, and consider scoring fewer, e.g. only jobs
+   the quick check calls a good fit): 33 minutes and about $1.36 for 72 hours; 70% of the output tokens were
    thinking. Before prices double in January, find where lower thinking keeps the same answers
    (task 7's order).
 2. **More employer career sites of engineering and tech companies in Germany, the UK and
@@ -229,6 +259,10 @@ here.
    electronics, drives, defence, medical devices, test and measurement, energy; Germany first,
    then the UK and Ireland (Cork, Limerick, Galway, Dublin; Cambridge, Bristol, Manchester…).
    Candidates already seen: Rohde & Schwarz, Renesas, Arm, Bosch (SOURCES.md, career systems).
+   (d) The real Workday addresses of the 30 employers whose guessed sites answered 422 (AMD,
+   Dell, Keysight, onsemi, TE Connectivity, Honeywell, Schneider Electric, Zeiss, Continental…;
+   SOURCES.md): a web search per company for its `myworkdayjobs.com` site, then
+   `tools/check_employers.py --only-new --write`.
 3. **The best legal routes to the jobs on LinkedIn and StepStone:** the person's AI searches the
    web for fresh jobs (HANDOVER §9.6), and each is shown once Jobcu confirms it at a source it
    may read, above all the employer's own career page (DECISIONS.md, 2026-09-24 evening).
