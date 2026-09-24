@@ -126,6 +126,12 @@ Update this whenever a source changes or something new is learned. Decisions are
   jobseekers searching for suitable employment"; re-publishing or reproducing it needs the
   department's permission. Jobcu only shows jobs to the person searching, on their computer.
 - Jobcu pauses 2 s between requests and reads at most 40 list pages per search.
+- **The list can come back empty for everything** (2026-09-24, about 22:00 to 22:30 Irish
+  time): "No jobs match this search" with `totalCount` 0, on its own browse page too, and
+  answers took up to 35 s; earlier the same evening it listed jobs. Since then Jobcu reports an
+  empty first page as a site problem instead of "0 jobs". The browse page now calls
+  `BrowseJobs/43` with two more parameters (`RemoteOrBlendedJobType`, `NaceCode`); the address
+  Jobcu uses, without them, answered the same way.
 - Many JobsIreland jobs also appear on EURES (IDs like `base64("2470780 18")`, 18 = JobsIreland),
   but EURES showed only ~1,970 of its ~5,100 jobs.
 

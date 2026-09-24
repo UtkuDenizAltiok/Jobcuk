@@ -263,6 +263,11 @@ def test_web_research_stops_at_the_cap_and_when_switched_off():
     client.research(step="location", system="Rules", prompt="Which cities?")
     with pytest.raises(AILimitReached):
         client.research(step="location", system="Rules", prompt="And which towns?")
+    # A yes for 5 more jobs' look-ups allows exactly those, on top of what was left.
+    client.allow_more_web_searches(5)
+    assert client.web_searches_left() == 5
+    client.allow_more_web_searches()
+    assert client.web_searches_left() == 7  # another allowance as big as the one in Settings
 
     settings = research_settings()
     settings.use_web_search = False

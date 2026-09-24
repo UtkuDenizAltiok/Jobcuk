@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 486 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 488 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -151,7 +151,9 @@ here.
    districts that match no town (Thanet, Thurrock, Castle Point, Ashfield, Amber Valley, Cannock
    Chase), so those areas passed without a word. Read postcodes and state codes, and look
    unmatched names up among the regions and districts (`regions.csv.gz`).
-   (d) **The online look-up asks too often and reads too little.** The question about more web
+   (d) **Done (cloud, 2026-09-24): one question in jobs, with time and cost; citizenship,
+   clearance and doctorate read too** (DECISIONS.md, "The online look-up after search 9").
+   What search 9 showed: **The online look-up asks too often and reads too little.** The question about more web
    look-ups came about four times in search 9; the owner said yes to all but the last (his
    answer, 2026-09-24), which fits the 200 web searches exactly (50, then three more
    allowances). Each "yes" read fewer jobs than he expected: the question counts web look-ups

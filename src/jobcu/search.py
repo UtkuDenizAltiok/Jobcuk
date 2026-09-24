@@ -9,6 +9,7 @@ import dataclasses
 import json
 import logging
 import threading
+import time
 from collections import Counter
 from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
@@ -19,7 +20,7 @@ from jobcu import db, documents, jobplace, jobstore, pipeline, quality, scoring,
 from jobcu import pool as search_pool
 from jobcu.ai.base import AIError
 from jobcu.ai.client import AIClient
-from jobcu.ai.usage import UsageLog
+from jobcu.ai.usage import UsageLog, estimate_cost
 from jobcu.countries import COUNTRIES, LANGUAGE_NAMES, languages_for
 from jobcu.documents import DocumentError
 from jobcu.filters import REASONS, apply_rules, fails_a_condition
@@ -489,24 +490,32 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
                          if jobplace.needs_requirements(groups[i], job_pool.jobs[i].scored)]
     worth_it = sorted(set(need_town) | set(need_requirements),
                       key=lambda i: -job_pool.jobs[i].scored["score"])
-    looked_up = (jobplace.find_online(client, groups, worth_it) if worth_it
+    looking_since = time.monotonic()
+    looked_up = (jobplace.find_online(client, groups, worth_it, profile) if worth_it
                  else jobplace.LookedUp())
-    while looked_up.not_asked and client.web_searches_left() <= 0:
+    if looked_up.not_asked and client.web_searches_left() <= 0:
+        # One question for every job left, counted in jobs (search 9 asked four times, each
+        # "yes" adding web look-ups for only about 25 of the jobs its button promised).
         left = len(looked_up.not_asked)
         jobs, their = ("job", "its") if left == 1 else ("jobs", "their")
         wants_more = run.ask({
             "kind": "web_search_cap",
             "message": (
                 f"Jobcu has used this search's {settings.limits.web_search_cap} web look-ups. "
-                f"{left} more {jobs} could be read online, for {their} town or full ad. Look "
-                "them up too? This uses more AI."),
+                f"{left} more {jobs} could be read online, for {their} town or full ad ("
+                + _look_up_estimate(client, settings, time.monotonic() - looking_since,
+                                    len(looked_up.asked), left)
+                + "). Look them up too?"),
             "yes": f"Look up {left} more",
             "no": "Show results now",
         })
-        if not wants_more:
-            break
-        client.allow_more_web_searches()
-        looked_up = looked_up.add(jobplace.find_online(client, groups, looked_up.not_asked))
+        while wants_more and looked_up.not_asked:
+            waiting = len(looked_up.not_asked)
+            client.allow_more_web_searches(jobplace.SEARCHES_PER_JOB * waiting)
+            looked_up = looked_up.add(
+                jobplace.find_online(client, groups, looked_up.not_asked, profile))
+            if len(looked_up.not_asked) >= waiting:
+                break  # no progress: stop rather than loop
     for index in looked_up.asked:
         scored = job_pool.jobs[index].scored
         found = looked_up.requirements.get(index)
@@ -515,7 +524,7 @@ def _decide(run, client, keys, http, settings, plan, job_pool, collected, hidden
             summary = not groups[index].best_description_copy.description_is_complete
             if found is not None and summary:
                 scored = scoring.with_ad_read_online(scored, profile, found.languages,
-                                                     found.years_required)
+                                                     found.years_required, **found.blockers)
             job_pool.jobs[index].scored = {**scored, "read_online": True}
     placed = [i for i in need_town if groups[i].place_from_web]
     fails = [i for i in placed if fails_a_condition(groups[i], at_once)]
@@ -682,3 +691,17 @@ def _keep_for_the_score_check(groups, shown, scored, unrelated) -> None:
 
 
 manager = SearchManager()
+
+
+def _look_up_estimate(client: AIClient, settings, seconds: float, asked: int, left: int) -> str:
+    """Roughly how long looking up `left` more jobs takes, and what it costs when the model's
+    prices are entered in Settings, from the jobs looked up so far in this search."""
+    minutes = max(1, round(seconds / max(asked, 1) * left / 60))
+    text = f"about {minutes} minute{'' if minutes == 1 else 's'}"
+    if asked and client.usage_log is not None and client.search_id is not None:
+        used = client.usage_log.for_search_by_model(client.search_id, step="job_places")
+        cost, complete = estimate_cost(used, settings.prices)
+        currencies = {price.currency for price in settings.prices}
+        if cost and complete and len(currencies) == 1:
+            text += f", about {cost / asked * left:.2f} {currencies.pop()}"
+    return text

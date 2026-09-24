@@ -411,7 +411,9 @@ class OnlineAI(PlaceReadingAI):
         jobs = re.findall(r"^(J\d+) \| ([^|]+) \|", request["prompt"], re.MULTILINE)
         answer = [{"id": job_id, "found": title.startswith("PCB"),
                    "towns": ["Garching"] if title.startswith("PCB") else [],
-                   "languages_asked": [], "years_required": None} for job_id, title in jobs]
+                   "languages_asked": [], "years_required": None, "doctorate": "not_required",
+                   "citizenship_or_clearance": "no_such_requirement",
+                   "citizenship_or_clearance_words": ""} for job_id, title in jobs]
         return RawReply(json.dumps({"jobs": answer}), Usage(10, 5))
 
 

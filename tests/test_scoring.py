@@ -306,13 +306,31 @@ def test_the_full_ad_found_online_replaces_what_the_summary_suggested():
                                  [LanguageAsked(language="German", level="B2", must_have=True)],
                                  years_required=3)
     assert online["score"] == 65 and online["parts"]["languages"] == 0
-    assert online["notes"] == ["Languages and experience read from the full ad online"]
+    assert online["notes"] == [
+        "Languages, experience and other requirements read from the full ad online"]
     assert online["evidence"]["years_required"] == 3
     # Or it says English is the working language: the summary's guess goes away.
     english = with_ad_read_online(
         summary, SPEAKER, [LanguageAsked(language="German", level="not_needed", must_have=True)],
         years_required=None)
     assert english["parts"]["languages"] == 15 and english["score"] == summary["score"] + 10
+
+
+def test_a_citizenship_found_in_the_full_ad_online_limits_the_score():
+    # Search 9: Rolls-Royce's two Adzuna summaries scored 85 and 75; its own ads say UK
+    # nationals only (30).
+    from jobcu.scoring import LanguageAsked, with_ad_read_online
+
+    summary = scored(ad_language="English")
+    online = with_ad_read_online(
+        summary, SPEAKER, [LanguageAsked(language="English", level="C1", must_have=True)],
+        years_required=None, citizenship_or_clearance="required_definitely_out_of_reach",
+        citizenship_or_clearance_words="UK nationals only", doctorate="required_person_lacks_it",
+        unrelated_key="ignored")
+    assert online["score"] == 30
+    assert [limit["why"] for limit in online["limits"]] == [
+        "UK nationals only: out of reach for you", "A doctorate (PhD) is required"]
+    assert "unrelated_key" not in online["evidence"]
 
 
 def test_the_ad_text_decides_the_job_type_when_the_job_site_leaves_it_open():

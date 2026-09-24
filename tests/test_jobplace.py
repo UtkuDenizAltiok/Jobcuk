@@ -46,7 +46,8 @@ def online(job_id, towns=(), languages=(), years=None, found=True):
     return {"id": job_id, "found": found, "towns": list(towns),
             "languages_asked": [{"language": language, "level": level, "must_have": must}
                                 for language, level, must in languages],
-            "years_required": years}
+            "years_required": years, "doctorate": "not_required",
+            "citizenship_or_clearance": "no_such_requirement", "citizenship_or_clearance_words": ""}
 
 
 def test_only_jobs_nothing_places_are_looked_up():
@@ -95,6 +96,9 @@ def test_the_full_ad_found_online_gives_its_languages_and_years():
         ("German", "B2", True), ("English", "B2", False)]
     assert found[0].years_required == 3
     assert found[1].languages == [] and found[1].years_required is None
+    assert found[0].blockers == {"doctorate": "not_required",
+                                 "citizenship_or_clearance": "no_such_requirement",
+                                 "citizenship_or_clearance_words": ""}
     # Only the job without a town gets one from the answer; the others keep theirs.
     assert groups[0].place_from_web == ["Radeberg"]
     assert all(g.place_from_web is None for g in groups[1:])
