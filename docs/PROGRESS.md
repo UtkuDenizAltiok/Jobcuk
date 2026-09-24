@@ -67,9 +67,6 @@ Nothing.
   on …" is right (12 cards, all Adzuna reposts). Still unseen: "apply by …" on a card (1 of 239 had
   a closing date) and the non-German sources (Le Forem, prospective.ch, Werken voor Nederland,
   NAV, d.vinci) inside a search of their countries.
-- **The web look-ups question:** search 9 used 200 web searches with a cap of 50, so the question
-  must have come several times; the saved search doesn't show how often or what was answered.
-  Ask the owner, or read it in the next search's Search details.
 - **Merging "Deutschland" ads with the same job elsewhere:** no wrong merge seen in search 9
   (not checked card by card). The opposite fault is common (Next task 1e).
 - **The regions answer varies from search to search:** search 7 excluded Dresden, search 8's
@@ -152,12 +149,18 @@ here.
    districts that match no town (Thanet, Thurrock, Castle Point, Ashfield, Amber Valley, Cannock
    Chase), so those areas passed without a word. Read postcodes and state codes, and look
    unmatched names up among the regions and districts (`regions.csv.gz`).
-   (d) **The online look-up reads too little and too few.** It read 85 of 130 summaries and found
-   17 of 41 towns; 44 summary cards scoring 50+ never got "read from the full ad online". JAT in
-   Jena (a region he excludes) stayed at 81 because its town wasn't found. It reads only languages
-   and years: Rolls-Royce's two Adzuna summaries scored 85 and 75, while the same jobs from its own
-   Workday site say UK nationals only (30). Read citizenship and clearance (and a required
-   doctorate) too. It took 12 minutes and all 200 web searches, against a cap of 50.
+   (d) **The online look-up asks too often and reads too little.** The question about more web
+   look-ups came about four times in search 9; the owner said yes to all but the last (his
+   answer, 2026-09-24), which fits the 200 web searches exactly (50, then three more
+   allowances). Each "yes" read fewer jobs than he expected: the question counts web look-ups
+   (50) while its button counts jobs, and each job takes about two look-ups, so one allowance
+   reads about 25 jobs. Ask once, in jobs, for everything left (with a rough cost), and size the
+   allowance by jobs, not searches. Of the jobs it asked about it found most (requirements for 85
+   of 130 needing them, towns for 17 of 41); the rest were never asked because the owner stopped,
+   so 44 summary cards scoring 50+ kept their summary, and JAT in Jena (a region he excludes)
+   stayed at 81 without its town. It reads only languages and years: Rolls-Royce's two Adzuna
+   summaries scored 85 and 75, while the same jobs from its own Workday site say UK nationals
+   only (30). Read citizenship and clearance (and a required doctorate) too. It took 12 minutes.
    (e) **Four pairs of the same job shown twice**, each for a different reason: Reed's postcode
    ("BB113BP") against Adzuna's "Burnley, Lancashire" (Corriculo, 88 and 82); two Adzuna
    summaries of a recruiter's ad, which must be full ads to merge (AMF in Castleford, 87 twice);

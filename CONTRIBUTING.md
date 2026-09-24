@@ -40,6 +40,19 @@ One-time setup; how sessions work there is in AGENTS.md, "Working in a cloud ses
 Each session: pick this repository and branch **main**, the model and effort you want, the mode
 **Auto** (or **Accept edits**), and paste the start prompt below. Run one session at a time.
 
+Optional, to test with your own CV (DECISIONS.md, 2026-09-24 night): attach your CV and cover
+letter with the **+** and add this paragraph to the start prompt:
+
+```text
+Attached are my real CV and cover letter, for testing only. Save them only in a scratch folder
+outside the repository and delete it when you finish. Never put them, or any personal detail from
+them, in the repository, a commit, a branch name, a pull request, an issue, a comment, a test or
+CI output: friends and others with access to the repository must never see them. Use them as the
+main test person with the AI credential, next to made-up people from other fields: check how Jobcu
+reads them, which jobs it finds for me in my priority countries and how it scores them, and
+improve what falls short.
+```
+
 ## Working with an AI assistant
 
 Any capable AI coding assistant works: Claude Code (on your computer, or in a cloud session at
