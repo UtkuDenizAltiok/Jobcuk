@@ -41,7 +41,7 @@ recorded in its home and merged before the next:
       "Candidate sources by country".
 - [x] B. The same for the UK and Ireland.
 - [x] C. Switzerland, Belgium, the Netherlands.
-- [ ] D. Italy, Denmark, Norway (Sweden is built), Poland.
+- [x] D. Italy, Denmark, Norway (Sweden is built), Poland.
 - [ ] E. How the leading platforms find, rank and present jobs; what Jobcu adopts, and any
       proposal for scoring (HANDOVER §11 is Decided) in DECISIONS.md.
 - [ ] F. LinkedIn and StepStone by legitimate routes: overlap with employers' sites and national

@@ -532,6 +532,46 @@ systems. No Swiss public or national source yet.
 - **Nationale Vacaturebank (DPG Media):** its firewall refuses Jobcu's requests ("Access Denied"),
   even for robots.txt. Not usable.
 
+### Italy
+
+- **InPA (inpa.gov.it, the public administration's recruitment portal, checked 2026-09-24):** the
+  notices page loads its data from `portale.inpa.gov.it/concorsi-smart/api/concorso-public-area/
+  search-better`, and **portale.inpa.gov.it's robots.txt disallows everything**. Not usable.
+- Italy's public employment service (SIISL, formerly Cliclavoro/MyANPAL) wasn't checked. Adzuna
+  covers Italy today.
+
+### Denmark, Norway and Sweden
+
+- **Sweden:** built (Arbetsförmedlingen, above).
+- **NAV Arbeidsplassen, Norway's public employment service (checked 2026-09-24).** The
+  **stilling-feed API** (navikt.github.io/pam-stilling-feed): `GET https://pam-stilling-feed.nav
+  .no/api/v1/feed` with `Authorization: Bearer <token>`, `If-Modified-Since` for "changed since",
+  then `next_url` page by page (1,000 entries a page). A **public token** is served at
+  `/api/publicToken` ("for experimentation", it rotates at irregular intervals); a **private
+  token** is issued on request by e-mail with a name, contact and written acceptance of the terms.
+  Since yesterday noon: **2,394 new or changed ads in 4 requests** (495 KB a page). Each entry:
+  `title`, `businessName`, `municipal`, `status` (ACTIVE/INACTIVE), `date_modified`; the full ad
+  (description, places, published and expiry dates, employment type, extent, occupation codes,
+  application link) is one request per ad at `/api/v1/feedentry/{uuid}`. **Terms**
+  (arbeidsplassen.nav.no/vilkar-api): "Alle kan bruke tenesta", free; ads must be removed when
+  they become inactive and updated when they change; the apply function must deep-link to the
+  original application system; Norwegian data protection rules apply to personal data in ads.
+  The old public-feed API was switched off on 1 May 2025.
+- **Jobnet, Denmark's public job service (STAR, checked 2026-09-24):** every address answers a
+  redirect to MitID login, even robots.txt, for automated requests. STAR offers a **Jobnet web
+  service** to import its job ads into one's own portal, free, by agreement (spoc@star.dk). Asking
+  would be the owner's decision.
+
+### Poland
+
+- **CBOP (Centralna Baza Ofert Pracy, the labour offices' central database, checked
+  2026-09-24):** the ministry provides **two web services for outside parties to download job
+  offers automatically**, under "Warunki udostępniania informacji o ofertach pracy z CBOP" and an
+  instruction PDF (`oferty.praca.gov.pl/portal/instrukcja_pobierania_danych_z_cbop.pdf`, which
+  now returns the portal's page instead of the PDF). Since the 2025 labour market law the portal
+  is ePraca (a JavaScript app); no robots.txt. Whether the web services need an agreement, and
+  what they return today, is still to be checked.
+
 ## General observations
 
 - In 815 real ads (Reed + Bundesagentur, one week, electronics roles), **employer links almost
