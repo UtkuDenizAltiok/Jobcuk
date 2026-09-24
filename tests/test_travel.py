@@ -72,8 +72,10 @@ class FakeMaps:
         elements = []
         for index, destination in enumerate(body["destinations"]):
             point = destination["waypoint"]["location"]["latLng"]
-            town = min(places.towns_in("DE"), key=lambda t: places.km(
-                t.latitude, t.longitude, point["latitude"], point["longitude"]))
+            # The town whose built-up area reaches the point: trips go to a town's nearest edge.
+            town = min(places.towns_in("DE"), key=lambda t: (round(max(0.0, places.km(
+                t.latitude, t.longitude, point["latitude"], point["longitude"])
+                - places.reach_km(t)), 2), -t.people))
             minutes = self.minutes.get(town.name)
             elements.append({"originIndex": 0, "destinationIndex": index,
                              **({"duration": f"{minutes * 60}s", "condition": "ROUTE_EXISTS"}
@@ -628,3 +630,90 @@ def test_reference_places_can_be_limited_to_countries_by_a_fact():
     anchor = Anchor(min_people=500_000, countries_fit=["NL"])
     assert travel.anchor_towns(anchor, "DE") == []
     assert {"Amsterdam", "Rotterdam"} <= {t.name for t in travel.anchor_towns(anchor, "NL")}
+
+
+def test_trips_go_to_the_nearest_edge_of_a_city_not_its_centre():
+    # Search 9: Google gave Weichs to Munich's centre 53 minutes, so three PCB jobs there were
+    # left out at "50 min"; the owner's search in the cloud left out four jobs in Weßling at
+    # "Munich, 45 min". A reference place is where the person would live: any part of it.
+    fake = FakeMaps({"Munich": 22})
+    condition = near(minutes=40)
+    job = group("Weßling, Oberbayern")
+    meter(fake).measure([condition], [job], [0])
+    assert condition_fit(condition, job) == "yes"
+    (_, body, _), = fake.requests
+    sent = body["destinations"][0]["waypoint"]["location"]["latLng"]
+    wessling, munich = places.find("Weßling", "DE"), places.find("Munich", "DE")
+    to_centre = places.distance_km(wessling, munich)
+    to_sent = places.km(wessling.latitude, wessling.longitude, sent["latitude"],
+                        sent["longitude"])
+    assert to_sent == pytest.approx(to_centre - places.reach_km(munich), abs=0.1)
+
+
+def test_the_ai_estimates_the_trip_to_the_nearest_edge_too():
+    class GuessingClient:
+        def __init__(self):
+            self.requests = []
+
+        def generate(self, output, **request):
+            self.requests.append(request)
+            return TravelGuesses(answers=[TravelGuess(id="P0", town="Munich", minutes=20)])
+
+    client = GuessingClient()
+    condition = near(minutes=40)
+    meter(key=False, client=client).measure([condition], [group("Weßling")], [0])
+    assert "nearest edge" in client.requests[0]["system"]
+    assert "Munich (edge 14 km)" in client.requests[0]["prompt"]
+    # Estimates remembered to a town's centre before this change are not reused.
+    assert travel._destination("DE", "Munich") == "DE:Munich:edge"
+
+
+def test_a_citys_own_districts_are_not_reference_places_of_their_own():
+    # Search 9: Hamburg's Wandsbek, Eimsbüttel and "Marienthal" (287,101 people) took both
+    # "nearest" slots and showed on cards as "Marienthal, 53 min by car".
+    towns = [town.name for town in travel.anchor_towns(near().anchor, "DE")]
+    assert "Hamburg" in towns and "Munich" in towns and "Augsburg" in towns
+    assert not {"Wandsbek", "Eimsbüttel", "Marienthal"} & set(towns)
+    assert "London" in [town.name for town in travel.anchor_towns(near().anchor, "GB")]
+    assert "Croydon" not in [town.name for town in travel.anchor_towns(
+        near(share=0.001).anchor, "GB")]
+    # Named places stay as the person named them.
+    named = Anchor(named=[TownRef(name="Wandsbek", country="DE")])
+    assert [town.name for town in travel.anchor_towns(named, "DE")] == ["Wandsbek"]
+
+
+def test_a_job_within_a_citys_built_up_area_is_in_the_city():
+    condition = near(minutes=10)
+    pasing = group("Somewhere", latitude=48.150, longitude=11.460)  # 9 km west of the centre
+    meter().measure([condition], [pasing], [0])  # no Google request
+    assert travel.detail(condition, pasing)[0] == "in Munich"
+
+
+def test_a_distance_limit_counts_from_the_citys_edge():
+    condition = Condition(text="within 10 km of a big city", understood_as="Within 10 km",
+                          status="applied", kind="near", max_km=10,
+                          anchor=Anchor(named=[TownRef(name="Munich", country="DE")]))
+    assert condition_fit(condition, group("Dachau")) == "yes"  # 17 km from the centre
+    assert condition_fit(condition, group("Freising")) == "no"  # 33 km
+
+
+def test_a_trip_to_the_city_centre_ends_at_the_centre_when_the_person_says_so():
+    # README's own example: "not more than 50 minutes by public transport from a city centre".
+    fake = FakeMaps({"Munich": 30})
+    condition = near(minutes=40)
+    condition.anchor.to_centre = True
+    job = group("Weßling, Oberbayern")
+    meter(fake).measure([condition], [job], [0])
+    (_, body, _), = fake.requests
+    sent = body["destinations"][0]["waypoint"]["location"]["latLng"]
+    munich = places.find("Munich", "DE")
+    assert (sent["latitude"], sent["longitude"]) == (munich.latitude, munich.longitude)
+    # A job 9 km from the centre is measured too, not counted as in the city.
+    pasing = group("Somewhere", "2", latitude=48.150, longitude=11.460)
+    assert travel.home_town(travel.job_point(pasing), [munich], to_centre=True) is None
+    assert travel.home_town(travel.job_point(pasing), [munich]) == munich
+    by_km = Condition(text="within 10 km of Munich city centre", understood_as="…",
+                      status="applied", kind="near", max_km=10,
+                      anchor=Anchor(named=[TownRef(name="Munich", country="DE")], to_centre=True))
+    assert condition_fit(by_km, group("Dachau")) == "no"  # 17 km from the centre
+    assert travel._destination("DE", "Munich", centre=True) == "DE:Munich:centre"

@@ -173,6 +173,17 @@ company had jobs in, and whether it also hires outside them).
   `jobs.nordex-online.com`, ASSA ABLOY on `assaabloy.com/career`; Advanced Energy, Vishay, Ei
   Electronics, Cambridge Consultants, Saab, Luxinar and COMPACT DYNAMICS not checked yet. Robots
   and terms of each still to be read before adding them.
+- **Added 2026-09-24 (night), Workday, for engineering in Ireland, the UK and Germany:** Moog
+  (IE 14, GB 27, DE 18), Microchip (DE 24, GB 13, IE 9), Flex (GB 20, IE 14, DE 10), Hitachi
+  including Hitachi Energy (DE 195, GB 109, IE 18), AtkinsRéalis (GB 713, IE 49), Carrier
+  (DE 147, GB 28), Valeo (DE 54, IE 9), Magna (DE 89, GB 12, IE 5), Spectris's HBK, Servomex
+  and Malvern Panalytical, Rockwell Automation, Trimble, Cognex, Viavi, Sensata and Nidec
+  (counts: jobs when checked). Stryker's missed Cork job (the coverage list) was posted 9 days
+  earlier on its own site: LinkedIn showed a newer date, so it was rightly outside 72 hours.
+- **A Workday site answering 422 is a wrong site name**, or a site that moved (Dell's own
+  `External` page answers 500): 30 guessed sites answered this way (AMD, Dell, Keysight, onsemi,
+  TE Connectivity, Honeywell, Schneider Electric, Zeiss, Continental…). Their real addresses are
+  still to be found. Siemens Healthineers' and Western Digital's robots.txt close the job list.
 - **Eightfold's 0 jobs in search 9 was real:** Infineon's sitemap (1,311 jobs) had 35 changed in
   the 72 hours, 2 of them in Germany (a working student in Regensburg, a planning job in Dresden).
 - **Rolls-Royce's Workday entry** is named "Rolls-Royce (professional)" (the site's name), and its

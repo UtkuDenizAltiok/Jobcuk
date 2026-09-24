@@ -214,21 +214,36 @@ def postcode_town(text: str | None, country: str | None = None) -> Town | None:
     return None
 
 
+def reach_km(town: Town) -> float:
+    """How far a town's built-up area reaches from its centre, roughly, from its population:
+    about 1.5 km for a village, 6 km for Augsburg, 11 km for Munich, 23 km for London."""
+    return max(1.5, 0.6 * (town.people / 1000) ** 0.4)
+
+
 @cache
 def _town_at(latitude: float, longitude: float, country: str) -> Town | None:
-    """The town a point lies in: the biggest town whose built-up area reaches it (roughly, from
-    its population: about 1.5 km for a village, 8 km for Sheffield, 23 km for London), or else
-    the nearest town. A city's own districts in the list must not win over the city."""
+    """The town a point lies in: the biggest town whose built-up area reaches it, or else the
+    nearest town. A city's own districts in the list must not win over the city."""
     nearest: tuple[float, Town] | None = None
     inside: Town | None = None
     for town in towns_in(country):
         distance = km(latitude, longitude, town.latitude, town.longitude)
         if nearest is None or distance < nearest[0]:
             nearest = (distance, town)
-        reach = max(1.5, 0.6 * (town.people / 1000) ** 0.4)
-        if distance <= reach and (inside is None or town.people > inside.people):
+        if distance <= reach_km(town) and (inside is None or town.people > inside.people):
             inside = town
     return inside or (nearest[1] if nearest else None)
+
+
+def part_of(town: Town) -> Town | None:
+    """The bigger town this one lies inside, when the list names a city's own district as a
+    town of its own (Hamburg's Wandsbek and Eimsbüttel, London's boroughs), else None."""
+    for bigger in towns_in(town.country):
+        if bigger.people <= town.people:
+            return None
+        if distance_km(bigger, town) <= reach_km(bigger):
+            return bigger
+    return None
 
 
 _HYPHENATED = re.compile(r"\b(\w+)-(\w+(?:-\w+)*)\b")

@@ -122,6 +122,10 @@ class SortedAnchor(BaseModel):
         "complete enough to stand on its own, e.g. 'far-right parties polled below the national "
         "average at the last election'. When another condition asks about the same fact, copy "
         "that condition's words exactly.")
+    to_centre: bool = Field(
+        default=False, description="True only when the person says the trip ends at the "
+        "centre ('city centre', 'downtown', 'Stadtmitte', 'Innenstadt'). Otherwise the trip "
+        "counts to any part of the place, since the person could live anywhere in it.")
 
 
 class SortedCondition(BaseModel):
@@ -202,6 +206,9 @@ class Anchor(BaseModel):
     countries_avoided: list[str] = []
     looked_up: bool = False  # the towns come from a web look-up
     look_up: str = ""  # the fact that was looked up
+    # Trips end at the centre only when the person said so; otherwise at the nearest edge of the
+    # place, where the person could live (travel.py).
+    to_centre: bool = False
 
 
 class Condition(BaseModel):
@@ -583,6 +590,7 @@ def _near_condition(
         min_people=wanted.min_people,
         min_share_of_country=wanted.min_share_of_country,
         named=[town for town in wanted.named if town.country in countries],
+        to_centre=wanted.to_centre,
     )
     sources: list[Source] = []
     notes: list[str] = []
