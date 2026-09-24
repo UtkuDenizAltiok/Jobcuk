@@ -6,6 +6,7 @@ from jobcu.sources.ashby import AshbySource
 from jobcu.sources.base import JobSource
 from jobcu.sources.bundesagentur import BundesagenturSource
 from jobcu.sources.careers import CareerSystemSource
+from jobcu.sources.dvinci import DvinciSource
 from jobcu.sources.euraxess import EuraxessSource
 from jobcu.sources.greenhouse import GreenhouseSource
 from jobcu.sources.jobsacuk import JobsAcUkSource
@@ -29,7 +30,7 @@ from jobcu.sources.workday import WorkdaySource
 
 def career_sources() -> list[CareerSystemSource]:
     """Company career systems, read for the employers in the employer directory."""
-    return [AshbySource(), GreenhouseSource(), LeverSource(), ProspectiveSource(),
+    return [AshbySource(), DvinciSource(), GreenhouseSource(), LeverSource(), ProspectiveSource(),
             RecruiteeSource(), SuccessFactorsSource(), TeamtailorSource(), WorkableSource(),
             WorkdaySource()]
 

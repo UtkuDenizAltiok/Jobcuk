@@ -132,6 +132,7 @@ company had jobs in, and whether it also hires outside them).
 | Recruitee | `GET {board}.recruitee.com/api/offers/` | full ad, `published_at` (exact), places with `country_code`, `employment_type_code`, remote/hybrid | Public Careers Site API. Each company has its own address, so several are read at once. |
 | SuccessFactors (added 2026-09-21) | `GET {host}/sitemap.xml`, then the job's page `{host}/job/…/{id}/` | Either an RSS job feed (SAP: full ad, place "Walldorf, DE, 69190", **no date**) or a sitemap of job addresses `/job/{Town}-{Title}-{postcode}/{id}/` (Schaeffler, Festo, SICK, KUKA, MTU, ZF and most others; every entry has the same `lastmod`). The job page carries `itemprop` data: `datePosted` ("Wed Sep 09 02:00:00 UTC 2026"), `streetAddress` ("Bühl, DE, 77815"), `title`, `hiringOrganization`, `description` | SAP's Career Site Builder. robots.txt normally closes `/services/` (SuccessFactors' own RSS search, so it isn't used) and allows the sitemap and job pages; Jobcu checks each company's robots.txt anyway. In a search only the pages whose title matches the search words are opened (Schaeffler: 3 requests in a live test). SAP's feed is 16 MB. Hitachi Energy's and Lenze's sitemaps weren't job lists. **Only sites whose job pages carry the date, place and ad text are in the directory** (SAP, Schaeffler, ZF, KUKA, Festo, Endress+Hauser). Danfoss, SICK, Vitesco and Wacker pages show only the title (the rest needs JavaScript), and MTU's job pages redirect elsewhere: left out for now. |
 | Teamtailor (added 2026-09-21) | `GET {board}.teamtailor.com/jobs.rss`, or `{own domain}/jobs.rss` for companies with their own career-site address | RSS: full ad (HTML), `pubDate` (exact, with zone), `remoteStatus` (`none`/`onsite`, `hybrid`, `fully`, `temporary`), `tt:locations` with city and English country name, department, role | Every Teamtailor career site publishes this feed. robots.txt allows it for every crawler (only `/app/`, `/messages/`, `/jobs/internal/` and one AI crawler are closed) and declares `ai-train=no, ai-input=yes`: Jobcu doesn't train anything. No job type in the feed. Popular in Sweden, Norway, the UK and Ireland. |
+| d.vinci (added 2026-09-24) | `GET {board}.dvinci-hr.com/jobPublication/list.json` | `position`, `jobPublicationURL`, the ad in parts (`introduction`, `tasks`, `profile`, `weOffer`, `closingText`, HTML), `jobOpening` with `createdDate`, `locations` (name, coordinates, `country.isoA2`), `workingTimes` (`FULL_TIME`, `PART_TIME`), `contractPeriod` (`UNLIMITED` = permanent), `type`; `startDate` usually empty | Public "since ATS version 2022.11", documented for aggregators. The full list is about 12 KB a job (550 KB for 46). Used by German hospitals and mid-sized employers, also abroad. In the directory since 2026-09-24: Klinikum Neumarkt (45 jobs), Kreiskliniken Reutlingen (55), INVERTO (in ten countries). Customers are found with web searches for `dvinci-hr.com`. |
 | prospective.ch (added 2026-09-24) | `GET ohws.prospective.ch/public/v1/medium/{board}/jobs?lang=de&offset=N&limit=100` (the board is the employer's career-centre number, as in `/public/v1/careercenter/{board}/`) | title, `start_date` (exact publication), the ad's parts in `szas` (`sza_tasks`, `sza_requirements`, `sza_benefits`, `sza_company_profil`), `sza_location.city`/`.country`/`.zip`, `sza_pensum.min`/`.max` (workload in %), `links.directlink` (the employer's own job page) | A Swiss system. No key; robots.txt allows everything. Not sorted by date, so every page is read (the federal administration: 5 pages). Some employers give no place at all (University Hospital Basel), so a job without one counts as Swiss. Career-centre numbers are found with web searches for `ohws.prospective.ch/public/v1/careercenter`; some numbers answer 400 (CSS, Kanton Bern, Kanton St. Gallen, HSG, SV Group: their job lists live under another number). In the directory since 2026-09-24: the federal administration (454 jobs), Stadler Rail (362, also in DE, PL, CZ, AT, NL…), University Hospital Basel (128), University of Zurich (126), Canton Basel-Landschaft (66), EKZ (63), ZHAW (25), EMS-Chemie (16). |
 | Workday | `POST {host}/wday/cxs/{tenant}/{site}/jobs` with `{"appliedFacets": …, "limit": 20, "offset": N, "searchText": ""}`, full ad from `GET {host}/wday/cxs/{tenant}/{site}{externalPath}` | title, `locationsText`, **relative** date ("Posted Today", "Posted 3 Days Ago", "Posted 30+ Days Ago"); the full ad has `startDate` (day), `timeType`, `remoteType` | Not documented, so Jobcu reads each site's robots.txt first and skips the company if it disallows these addresses. Newest first, 20 per page. The answer's filters give each country an ID, so Jobcu asks per searched country. |
 
@@ -612,20 +613,7 @@ systems the directory doesn't read.
   sessions:** its certificate chains to "Telekom Security TLS RSA Root 2023", which the cloud
   proxy's bundle lacks (certifi has it, so Jobcu on a computer can reach it). Overlap with
   service.bund.de still to be measured.
-- **d.vinci (career system of many hospitals, councils and mid-sized employers, checked
-  2026-09-24):** an official **public Job Publication API**: `GET https://{customer}.dvinci-hr.com
-  /jobPublication/list.json` (or `/portal/{portal}/jobPublication/list.json`, also `.xml`),
-  "since ATS version 2022.11 … always public", documented for "job aggregators" among others
-  (static.dvinci-easy.com/files/d.vinci job-publication-api.html). Gives the position, start and
-  end dates, places with addresses, coordinates and country, the ad's parts in HTML (tasks,
-  profile, offer), contract period and working time. `fields=small` makes lists lighter. Needs a
-  list of customers, like the other career systems. **Checked live** on two customers (a
-  consultancy with 70 jobs, a UK staffing firm with 47; 80–125 KB with `fields=small`): no key,
-  robots.txt `Allow: /` (only some agency portals closed); each job has `position`, `language`,
-  `jobPublicationURL`, and `jobOpening` with `createdDate`, `locations` (town, ISO country code,
-  coordinates, address), `workingTimes` (`FULL_TIME`…) and `contractPeriod` (`UNLIMITED` =
-  permanent). `startDate` (publication date) was empty in both, so freshness would come from
-  `createdDate`. d.vinci is used in the UK and elsewhere too, not only in Germany.
+- **d.vinci:** built as a career system (above).
 - **softgarden:** its Jobs API needs OAuth credentials from softgarden's support, so it isn't
   usable; its career pages (`{company}.softgarden.io`) could be read through `jobposting.py` if
   they carry JobPosting data (not checked).
@@ -669,6 +657,16 @@ systems. No Swiss public or national source yet.
   mentioned). Free, but each user needs **an account and a subscription**, like Adzuna's key;
   the terms show only after signing in. Not tested.
 - **Actiris (Brussels):** not checked; Le Forem's data already carries 1,554 Brussels offers.
+- **School jobs (checked 2026-09-24):** Le Forem's data had no primary-teacher jobs in a day.
+  **Flemish schools** enter their vacancies in **VDAB's database** ("My VDAB"), from where they
+  also reach the Department of Education's own list: VDAB showed 2,479 education and 1,656
+  teacher vacancies. So VDAB's API is the route to Flemish school jobs (the per-person key
+  question in PROGRESS.md). Other Flemish boards named by KU Leuven's guide: Onderwijsvacatures,
+  Lesgeven in Vlaanderen, Katholiek Onderwijs Vlaanderen, GO! Onderwijs, city school boards.
+  **French-speaking schools** (Fédération Wallonie-Bruxelles) recruit differently: yearly calls
+  for candidates each January (published in the Moniteur belge and on enseignement.be), and
+  **Primoweb**, where teachers declare they are available and schools offer them hours; free
+  (Catholic) schools also post on jobecole.be. None of these checked for automated reading yet.
 
 ### The Netherlands
 
