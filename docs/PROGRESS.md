@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 448 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 450 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -91,7 +91,10 @@ Nothing.
    meets and lacks (like LinkedIn's Job Match), and a must-have **licence or registration** the
    person definitely lacks (a nursing registration, a teaching qualification, a truck licence,
    a doctor's Approbation) limits the score like a missing citizenship (at most 30?), because
-   without it the person can't legally do the job. Yes, no, or another limit.
+   without it the person can't legally do the job. Yes, no, or another limit. And: a job in a
+   **different field** (role and skills 0–7 of 40) can still reach 40–51 today, because the other
+   parts add points; limit it (at most 35?) or leave it, since the quick check usually removes
+   such jobs first (DECISIONS.md, the universality audit).
 7. **Questions from the source research** (SOURCES.md; none is needed for the next tasks):
    - **Jobs your AI finds on LinkedIn, StepStone or Indeed:** Jobcu may not open those pages, and
      the AI's links and details are often wrong. Show such a job only when Jobcu confirms it at
@@ -131,15 +134,11 @@ not built yet) to SOURCES.md, choices and their reasons to DECISIONS.md, the pla
       outside the cloud), and the questions for the owner above as he answers them.
    5. **Live AI web search for jobs** (HANDOVER §9.6): the person's AI finds fresh jobs anywhere;
       each is confirmed at a source Jobcu may read before it is shown (owner's question above).
-2. **Universality audit and fixes** (teachers and nurses now have sources to find; this can
-   start now, before the rest of task 1). The AI instructions use engineering examples
-   (`keywords.py` search words, `scoring.py` role anchors and reasons, `relevance.py` quick
-   check, `profile.py` field descriptions) and the employer directory leans to technology
-   companies. Rewrite examples across professions, then check with made-up people from other
-   fields (a primary-school teacher in Ghent, an ICU nurse in Cork, a sous-chef in Zürich, a
-   lawyer in Munich, a truck driver in Poznań), each twice, with a real provider: the search
-   words, the quick check, the scores and the location reading must make sense for each. Check
-   the search words against ESCO's occupation names (DECISIONS.md, 2026-09-24 evening).
+2. **Universality audit, the rest** (first part done 2026-09-24: prompts, language names and
+   `tools/universality_check.py`, DECISIONS.md): the employer directory still leans to
+   technology companies (find employers for other fields, starting with hospitals, councils and
+   schools on d.vinci and prospective.ch, task 1.2); the location reading for the same made-up
+   people (task 3); and re-run the tool after any change to the AI instructions.
 3. **Phase 2's "Done when":** every example sentence from HANDOVER §6, README.md and the owner's
    own, read twice with a real provider, as its author means it. Fix in general terms, never for
    one sentence.

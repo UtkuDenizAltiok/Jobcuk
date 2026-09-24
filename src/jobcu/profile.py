@@ -28,13 +28,16 @@ WorkMode = Literal["remote", "hybrid", "on_site", "flexible", "not_stated"]
 
 
 class Education(BaseModel):
-    degree: str = Field(description="Degree and subject, e.g. 'MSc Power Engineering'")
+    degree: str = Field(
+        description="Degree or qualification and subject, e.g. 'BSc Nursing', 'MSc Power "
+        "Engineering', 'Chef apprenticeship (EFZ)'"
+    )
     institution: str | None
     finished: str | None = Field(description="End year, or 'in progress'")
 
 
 class LanguageSkill(BaseModel):
-    language: str
+    language: str = Field(description="The language's name in English, e.g. 'German', 'Dutch'")
     level_as_written: str | None = Field(description="The level exactly as the documents say it")
     cefr: CEFR | None
     cefr_is_estimate: bool = Field(
@@ -49,7 +52,10 @@ class Profile(BaseModel):
     current_or_last_role: str | None
     field: str
     skills: list[str]
-    technical_areas: list[str]
+    technical_areas: list[str] = Field(
+        description="The person's specialist areas, e.g. 'intensive care', 'early years', "
+        "'employment law', 'power electronics'"
+    )
     years_full_time_experience: float | None = Field(
         description="Full-time jobs only: not internships, working-student jobs or theses"
     )
@@ -65,8 +71,8 @@ class Profile(BaseModel):
     )
     target_fields: list[str]
     preferences: list[str] = Field(
-        description="General preferences about the work itself, e.g. 'full-time', 'hands-on "
-        "hardware work', 'product development'. No places or countries."
+        description="General preferences about the work itself, e.g. 'full-time', 'day shifts', "
+        "'working with children', 'hands-on hardware work'. No places or countries."
     )
     work_mode_preference: WorkMode
     dealbreakers: list[str]

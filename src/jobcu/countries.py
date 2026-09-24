@@ -7,6 +7,7 @@ Monaco, plus Poland, Portugal, Romania, Greece, Hungary, Croatia, Slovakia, Esto
 Lithuania. Ireland, the United Kingdom and Germany are worked on first.
 """
 
+import unicodedata
 from dataclasses import dataclass
 
 
@@ -81,6 +82,118 @@ LANGUAGE_NAMES: dict[str, str] = {
     "sl": "Slovenian",
     "sv": "Swedish",
 }
+
+
+# Other names of the same languages, as CVs and ads across Europe write them: the language's own
+# name, and its name in the other main languages of the supported countries. A German CV says
+# "Englisch", a French one "anglais", a Polish one "angielski"; all of them are English
+# (`language_code`). Checked in scoring, where the person's languages meet the ad's.
+LANGUAGE_ALIASES: dict[str, tuple[str, ...]] = {
+    "en": ("english", "englisch", "anglais", "engels", "inglés", "inglese", "angielski",
+           "engelska", "inglês", "engelsk", "angol", "angličtina", "angleščina", "engleski",
+           "anglų", "angļu", "inglise", "englanti", "αγγλικά", "engleză", "béarla"),
+    "de": ("german", "deutsch", "allemand", "duits", "alemán", "tedesco", "niemiecki", "tyska",
+           "alemão", "tysk", "német", "němčina", "nemčina", "nemščina", "njemački", "vokiečių",
+           "vācu", "saksa", "γερμανικά", "germană"),
+    "fr": ("french", "français", "französisch", "frans", "francés", "francese", "francuski",
+           "franska", "francês", "fransk", "francia", "francouzština", "francúzština",
+           "francoščina", "prancūzų", "franču", "prantsuse", "ranska", "γαλλικά", "franceză"),
+    "nl": ("dutch", "nederlands", "niederländisch", "holländisch", "néerlandais", "neerlandés",
+           "olandese", "niderlandzki", "holenderski", "nederländska", "holandês", "neerlandês",
+           "nederlandsk", "hollandsk", "flemish", "vlaams", "flämisch", "flamand", "holland",
+           "nizozemština", "holandčina", "nizozemščina", "nizozemski", "olandų", "holandiešu",
+           "hollandi", "hollanti", "ολλανδικά", "neerlandeză"),
+    "es": ("spanish", "español", "castellano", "spanisch", "espagnol", "spaans", "spagnolo",
+           "hiszpański", "spanska", "espanhol", "spansk", "spanyol", "španělština",
+           "španielčina", "španščina", "španjolski", "ispanų", "spāņu", "hispaania", "espanja",
+           "ισπανικά", "spaniolă"),
+    "it": ("italian", "italiano", "italienisch", "italien", "italiaans", "włoski", "italienska",
+           "italiensk", "olasz", "italština", "taliančina", "italijanščina", "talijanski",
+           "italų", "itāļu", "itaalia", "italia", "ιταλικά", "italiană"),
+    "pl": ("polish", "polski", "polnisch", "polonais", "pools", "polaco", "polacco", "polska",
+           "polonês", "polsk", "lengyel", "polština", "poľština", "poljščina", "poljski",
+           "lenkų", "poļu", "poola", "puola", "πολωνικά", "poloneză"),
+    "pt": ("portuguese", "português", "portugiesisch", "portugais", "portugees", "portugués",
+           "portoghese", "portugalski", "portugisiska", "portugisisk", "portugál",
+           "portugalština", "portugalčina", "portugalščina", "portugalų", "portugāļu",
+           "portugali", "πορτογαλικά", "portugheză"),
+    "sv": ("swedish", "svenska", "schwedisch", "suédois", "zweeds", "sueco", "svedese",
+           "szwedzki", "svensk", "svéd", "švédština", "švédčina", "švedščina", "švedski",
+           "švedų", "zviedru", "rootsi", "ruotsi", "σουηδικά", "suedeză"),
+    "da": ("danish", "dansk", "dänisch", "danois", "deens", "danés", "danese", "duński",
+           "danska", "dinamarquês", "dán", "dánština", "dánčina", "danščina", "danski", "danų",
+           "dāņu", "taani", "tanska", "δανικά", "daneză"),
+    "no": ("norwegian", "norsk", "bokmål", "nynorsk", "norwegisch", "norvégien", "noors",
+           "noruego", "norvegese", "norweski", "norska", "norueguês", "norvég", "norština",
+           "nórčina", "norveščina", "norveški", "norvegų", "norvēģu", "norra", "norja",
+           "νορβηγικά", "norvegiană"),
+    "fi": ("finnish", "suomi", "finnisch", "finnois", "fins", "finlandés", "finlandese",
+           "fiński", "finska", "finlandês", "finsk", "finn", "finština", "fínčina", "finščina",
+           "finski", "suomių", "somu", "soome", "φινλανδικά", "finlandeză"),
+    "cs": ("czech", "čeština", "tschechisch", "tchèque", "tsjechisch", "checo", "ceco", "czeski",
+           "tjeckiska", "tjekkisk", "tsjekkisk", "cseh", "češčina", "češki", "čekų", "čehu",
+           "tšehhi", "tšekki", "τσεχικά", "cehă"),
+    "sk": ("slovak", "slovenčina", "slowakisch", "slovaque", "slowaaks", "eslovaco", "slovacco",
+           "słowacki", "slovakiska", "slovakisk", "szlovák", "slovenština", "slovaščina",
+           "slovački", "slovakų", "slovāku", "slovaki", "slovakki", "σλοβακικά", "slovacă"),
+    "sl": ("slovenian", "slovene", "slovenščina", "slowenisch", "slovène", "sloveens", "esloveno",
+           "sloveno", "słoweński", "slovenska", "slovensk", "szlovén", "slovinština",
+           "slovinčina", "slovenski", "slovėnų", "slovēņu", "sloveeni", "σλοβενικά", "slovenă"),
+    "hr": ("croatian", "hrvatski", "kroatisch", "croate", "croata", "croato", "chorwacki",
+           "kroatiska", "kroatisk", "horvát", "chorvatština", "chorvátčina", "hrvaščina",
+           "kroatų", "horvātu", "horvaadi", "kroatia", "κροατικά", "croată"),
+    "hu": ("hungarian", "magyar", "ungarisch", "hongrois", "hongaars", "húngaro", "ungherese",
+           "węgierski", "ungerska", "ungarsk", "maďarština", "maďarčina", "madžarščina",
+           "mađarski", "vengrų", "ungāru", "ungari", "unkari", "ουγγρικά", "maghiară"),
+    "ro": ("romanian", "română", "rumänisch", "roumain", "roemeens", "rumano", "rumeno",
+           "rumuński", "rumänska", "romeno", "rumænsk", "rumensk", "román", "rumunština",
+           "rumunčina", "romunščina", "rumunjski", "rumunų", "rumāņu", "rumeenia", "romania",
+           "ρουμανικά"),
+    "el": ("greek", "ελληνικά", "griechisch", "grec", "grieks", "griego", "greco", "grecki",
+           "grekiska", "grego", "græsk", "gresk", "görög", "řečtina", "gréčtina", "grščina",
+           "grčki", "graikų", "grieķu", "kreeka", "kreikka", "greacă"),
+    "et": ("estonian", "eesti", "estnisch", "estonien", "ests", "estonio", "estone", "estoński",
+           "estniska", "estoniano", "estisk", "észt", "estonština", "estónčina", "estonščina",
+           "estonski", "estų", "igauņu", "viro", "estoniană"),
+    "lv": ("latvian", "latviešu", "lettisch", "letton", "lets", "letón", "lettone", "łotewski",
+           "lettiska", "letão", "lettisk", "lett", "lotyština", "latvijščina", "latvijski",
+           "latvių", "läti", "latvia", "λετονικά", "letonă"),
+    "lt": ("lithuanian", "lietuvių", "litauisch", "lituanien", "litouws", "lituano", "litewski",
+           "litauiska", "litauisk", "litván", "litevština", "litovčina", "litovščina",
+           "litavski", "leišu", "leedu", "liettua", "λιθουανικά", "lituaniană"),
+    "is": ("icelandic", "íslenska", "isländisch", "islandais", "ijslands", "islandés",
+           "islandese", "islandzki", "isländska", "islandês", "islandsk", "izlandi",
+           "islandština", "islandčina", "islandščina", "islandski", "islandų", "islandiešu",
+           "islandi", "islanti", "ισλανδικά", "islandeză"),
+    "ga": ("irish", "gaeilge", "irish gaelic", "irisch", "irlandais", "iers", "irlandés",
+           "irlandese", "irlandzki", "iriska", "irlandês", "irsk"),
+    "mt": ("maltese", "malti", "maltesisch", "maltais", "maltees", "maltés", "maltański"),
+    "lb": ("luxembourgish", "lëtzebuergesch", "luxemburgisch", "luxembourgeois", "luxemburgs",
+           "luksemburski"),
+    "cy": ("welsh", "cymraeg", "walisisch", "gallois", "welsh (cymraeg)"),
+    "ca": ("catalan", "català", "katalanisch", "catalán", "catalano", "kataloński"),
+    "tr": ("turkish", "türkçe", "türkisch", "turc", "turks", "turco", "turecki", "turkiska"),
+    "ru": ("russian", "русский", "russisch", "russe", "ruso", "russo", "rosyjski", "ryska"),
+    "uk": ("ukrainian", "українська", "ukrainisch", "ukrainien", "oekraïens", "ucraniano",
+           "ucraino", "ukraiński", "ukrainska"),
+    "ar": ("arabic", "العربية", "arabisch", "arabe", "árabe", "arabo", "arabski", "arabiska"),
+    "zh": ("chinese", "mandarin", "中文", "chinesisch", "chinois", "chinees", "chino", "cinese",
+           "chiński", "kinesiska"),
+}
+
+
+def _plain(name: str) -> str:
+    """For comparing names: lower case, accents removed ("Français" and "francais" are alike)."""
+    decomposed = unicodedata.normalize("NFKD", name.casefold())
+    return "".join(c for c in decomposed if not unicodedata.combining(c)).strip()
+
+
+_CODE_OF = {_plain(name): code for code, names in LANGUAGE_ALIASES.items() for name in names}
+
+
+def language_code(name: str | None) -> str | None:
+    """The ISO code of a language named in any of the ways above, or None if unknown."""
+    return _CODE_OF.get(_plain(name or ""))
 
 
 def languages_for(country_codes: list[str], places=()) -> list[str]:
