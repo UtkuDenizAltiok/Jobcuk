@@ -56,3 +56,21 @@ def test_json_is_read_from_common_reply_shapes(reply):
 def test_non_json_reply_raises():
     with pytest.raises(ValueError):
         extract_json("sorry, no")
+
+
+def test_fields_named_like_schema_words_are_kept():
+    # A field called "title" was dropped with the schema's own "title" annotations, so the
+    # model never gave a job's title (2026-09-24).
+    from pydantic import BaseModel
+
+    from jobcu.ai.schema import strict_json_schema
+
+    class Ad(BaseModel):
+        title: str
+        format: str
+        default: int | None
+
+    schema = strict_json_schema(Ad)
+    assert set(schema["properties"]) == {"title", "format", "default"}
+    assert schema["required"] == ["title", "format", "default"]
+    assert "title" not in schema  # the model's own annotation still goes

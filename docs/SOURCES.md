@@ -619,6 +619,12 @@ Legitimate routes only (DECISIONS.md, 2026-09-24 later): Jobcu never opens their
   no API to search or read listings. StepStone publishes no partner API for reading jobs either
   (only third-party scrapers exist, which Jobcu never uses). Written permission from the Stepstone
   Group stays the only direct route (above, "Job boards on hold").
+- **The person's AI searching the web for single jobs** (tried 2026-09-24, not shipped;
+  DECISIONS.md): Gemini's answers come with its sources as
+  `vertexaisearch.cloud.google.com/grounding-api-redirect/…` links, and that site's robots.txt
+  disallows `/grounding-api-redirect` for every crawler, so Jobcu may not follow them; the
+  addresses the model writes itself are often altered (an ID left out). At low effort (the cloud)
+  it searched only once or twice per country.
 - **For the local check's coverage list only** (a person's own browsing, never Jobcu): LinkedIn's
   public job search (`linkedin.com/jobs/search?keywords=…&location=…&f_TPR=r259200`, the last 3
   days) and StepStone's lists (`stepstone.de/jobs/{words}?ag=age_3`) could be read on 2026-09-24,
