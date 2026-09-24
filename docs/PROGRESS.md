@@ -40,7 +40,7 @@ recorded in its home and merged before the next:
       general boards): candidates checked live (terms, robots.txt, format, cost) in SOURCES.md,
       "Candidate sources by country".
 - [x] B. The same for the UK and Ireland.
-- [ ] C. Switzerland, Belgium, the Netherlands.
+- [x] C. Switzerland, Belgium, the Netherlands.
 - [ ] D. Italy, Denmark, Norway (Sweden is built), Poland.
 - [ ] E. How the leading platforms find, rank and present jobs; what Jobcu adopts, and any
       proposal for scoring (HANDOVER §11 is Decided) in DECISIONS.md.

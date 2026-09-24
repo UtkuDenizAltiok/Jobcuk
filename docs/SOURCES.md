@@ -471,6 +471,67 @@ which employ a large share of people in both countries and rarely post on commer
   `/api/`, `/teacher/` and account pages; its job list address wasn't found at `/posts/`).
   publicjobs.ie refuses automated requests (above).
 
+### Switzerland
+
+What Jobcu already has: Adzuna (CH), Arbeitnow's list (some Swiss jobs), EURAXESS and the career
+systems. No Swiss public or national source yet.
+
+- **Job-Room (job-room.ch, SECO's public employment service, checked 2026-09-24):** its
+  robots.txt closes `/job-search/` to every crawler, and its official **Jobs API is for
+  employers posting jobs** (access by e-mail to jobroom-api@seco.admin.ch), not for reading them.
+  Not usable. (Jobs under the Swiss registration duty are shown only to registered job seekers
+  for their first five working days anyway.)
+- **prospective.ch (a Swiss career system, checked 2026-09-24):** the Swiss federal
+  administration's job site (jobs.admin.ch) reads its jobs from `GET https://ohws.prospective.ch
+  /public/v1/medium/{medium}/jobs?lang=de&offset=N&limit=N` (the federal medium is `1000624`:
+  **454 jobs**). No key; **robots.txt allows everything**. Each job: `title`, `start_date`
+  (publication, exact), `end_date`, `last_modification_timestamp`, `language`,
+  `links.directlink`, and `szas` with the **ad's parts** (`sza_tasks`, `sza_requirements`,
+  `sza_benefits`, HTML), `sza_location.city`/`.region`/`.country`, `sza_pensum.min`/`.max`
+  (workload in %), plus `attributes` (field of activity, pay class, region). Used by many Swiss
+  employers (the robots.txt names Inselspital and SIX); each has its own medium number, so it
+  needs a directory like the other career systems. The federal jobs' apply links lead to
+  SuccessFactors.
+- **jobs.ch (JobCloud):** robots.txt closes `/api/`, `/external/` and many paths; a commercial
+  board, not checked further.
+
+### Belgium
+
+- **Le Forem, open data (Wallonia's public employment service, checked 2026-09-24).** Every job
+  offer Le Forem distributes, as an **open dataset under CC BY-SA 4.0**, updated in real time
+  (Opendatasoft): `GET https://leforem-digitalwallonia.opendatasoft.com/api/explore/v2.1/catalog
+  /datasets/offres-d-emploi-forem/records?where=…&order_by=…&limit=100&offset=N` (ODSQL filters
+  such as `datedebutdiffusion>=date'2026-09-23'`). **26,204 live offers**; about **1,200 new a
+  day** (1,275 on 21 September, 1,171 on 22 September). Not only Wallonia: 3,656 in Flanders
+  (NUTS BE2) and 1,554 in Brussels (BE1). The biggest contributors are **Jobat** (10,284),
+  Forem's own site (4,130), staffing agencies (Accent, Adecco, Randstad…) and **StepStone
+  Belgium** (402). Each record: title, town(s), postcode, region and NUTS codes, **coordinates**,
+  contract type ("Durée indéterminée", "Intérimaire…"), `regimetravail` (full/part time),
+  employer, number of posts, education level, **languages** (with ISO codes), experience,
+  **driving licence**, sector (NACE), occupation (with its code), `datedebutdiffusion` (day),
+  end date, source, external reference and the Forem `url`. **No ad text.** The Forem job pages
+  (`/recherche-offres/`) are **closed by robots.txt**, so the full ad would come from the same
+  job elsewhere or the person's AI reading it online. CC BY-SA asks for credit (like GeoNames).
+- **VDAB (Flanders' public employment service):** a developer portal (developer.vdab.be) with a
+  Vacatures API (search, bulk list of new and changed vacancies; up to 2,000 calls a minute are
+  mentioned). Free, but each user needs **an account and a subscription**, like Adzuna's key;
+  the terms show only after signing in. Not tested.
+- **Actiris (Brussels):** not checked; Le Forem's data already carries 1,554 Brussels offers.
+
+### The Netherlands
+
+- **Werken voor Nederland (the Dutch central government's jobs, checked 2026-09-24):**
+  `GET https://www.werkenvoornederland.nl/sitemap-vacatures.xml` lists **1,281** job pages with
+  `lastmod` (last change, not publication). Job pages carry **schema.org JobPosting** (title,
+  `datePosted`, `validThrough`, `employmentType`, place with postcode, employer, salary range).
+  robots.txt closes only `/login` and allows `Request-rate: 10/1`. data.overheid.nl lists the
+  jobs as open data ("Vacatures Overheid", with a CSO vacancy API); its page timed out in this
+  check.
+- **werk.nl (UWV):** robots.txt closes only `/webpublicaties`; how its vacancies can be read
+  wasn't checked (a request for them as open data exists on data.overheid.nl, so there is none).
+- **Nationale Vacaturebank (DPG Media):** its firewall refuses Jobcu's requests ("Access Denied"),
+  even for robots.txt. Not usable.
+
 ## General observations
 
 - In 815 real ads (Reed + Bundesagentur, one week, electronics roles), **employer links almost
