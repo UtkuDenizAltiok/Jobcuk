@@ -122,7 +122,10 @@ Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself run
   that the first request is answered. Python 3.13 rejects the proxy's certificate for that host
   ("CA cert does not include key usage extension"): at the top of the test script, before
   importing Jobcu, wrap `ssl.create_default_context` so it clears `ssl.VERIFY_X509_STRICT`
-  (a cloud-only workaround; never in Jobcu's code). Without such a credential, name the checks that must run
+  (a cloud-only workaround; never in Jobcu's code). Jobcu's job-site client ignores the
+  environment's settings, so a live source check in the cloud passes
+  `PoliteClient(transport=httpx.HTTPTransport(verify=ssl.create_default_context(
+  cafile=os.environ["SSL_CERT_FILE"])))`. Without such a credential, name the checks that must run
   on his Mac.
 - **Branches and merging.** Work on the session's branch and push after every finished step (the
   branch is what survives if the session ends). Open a pull request early; when GitHub's tests
