@@ -9,6 +9,7 @@
 
 import logging
 import random
+import re
 import threading
 import time
 from collections.abc import Callable
@@ -75,6 +76,63 @@ class KeyCheck:
 
 class Blocked(Exception):
     """The site refused Jobcu (e.g. bot protection). Jobcu never tries to get around this."""
+
+
+class RobotsRules:
+    """A site's robots.txt, read as the standard says (RFC 9309): the group for Jobcu's name,
+    or else the one for every robot; within it the most specific rule (the longest path)
+    decides, and an Allow wins a tie. Python's own reader takes the first matching rule instead,
+    so "Disallow: /" followed by "Allow: /careers" wrongly shut Jobcu out of pages the site
+    allows."""
+
+    def __init__(self, text: str = "", *, allow_all: bool = False, disallow_all: bool = False):
+        self.allow_all, self.disallow_all = allow_all, disallow_all
+        self._rules: list[tuple[bool, str]] = []
+        groups: list[tuple[list[str], list[tuple[bool, str]]]] = []
+        agents: list[str] = []
+        rules: list[tuple[bool, str]] = []
+        for raw in text.splitlines():
+            line = raw.split("#", 1)[0].strip()
+            if ":" not in line:
+                continue
+            field, value = (part.strip() for part in line.split(":", 1))
+            field = field.lower()
+            if field == "user-agent":
+                if rules:  # a new group starts
+                    groups.append((agents, rules))
+                    agents, rules = [], []
+                agents.append(value.lower())
+            elif field in ("allow", "disallow") and agents:
+                if value:  # an empty Disallow allows everything
+                    rules.append((field == "allow", value))
+        if agents:
+            groups.append((agents, rules))
+        mine = [r for names, r in groups if any(n.split("/")[0] == "jobcu" for n in names)]
+        anyone = [r for names, r in groups if "*" in names]
+        for chosen in mine or anyone:
+            self._rules.extend(chosen)
+
+    @staticmethod
+    def _matches(pattern: str, path: str) -> bool:
+        anchored = pattern.endswith("$")
+        expression = "".join(".*" if c == "*" else re.escape(c)
+                             for c in (pattern[:-1] if anchored else pattern))
+        return re.match(expression + ("$" if anchored else ""), path) is not None
+
+    def allows(self, url: str) -> bool:
+        if self.disallow_all:
+            return False
+        if self.allow_all:
+            return True
+        parts = urlsplit(url)
+        path = (parts.path or "/") + (f"?{parts.query}" if parts.query else "")
+        best: tuple[int, bool] | None = None
+        for allow, pattern in self._rules:
+            if self._matches(pattern, path):
+                key = (len(pattern), allow)
+                if best is None or key > best:
+                    best = key
+        return True if best is None else best[1]
 
 
 class PoliteClient:

@@ -1403,6 +1403,344 @@
    }
   },
   {
+   "name": "Ericsson",
+   "system": "eightfold",
+   "board": "jobs.ericsson.com/ericsson.com",
+   "countries": [
+    "DE",
+    "EE",
+    "ES",
+    "FI",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "DE": [
+     "Herzogenrath",
+     "Rosenheim"
+    ],
+    "EE": [
+     "Tallinn"
+    ],
+    "ES": [
+     "Madrid",
+     "Málaga"
+    ],
+    "FI": [
+     "Kirkkonummi"
+    ],
+    "FR": [
+     "Massy"
+    ],
+    "GB": [
+     "Reading"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Athlone"
+    ],
+    "IT": [
+     "Milan",
+     "Rome"
+    ],
+    "NL": [
+     "Maastricht",
+     "Noord"
+    ],
+    "NO": [
+     "Oslo"
+    ],
+    "PL": [
+     "Warsaw"
+    ],
+    "PT": [
+     "Lisbon",
+     "Porto"
+    ],
+    "RO": [
+     "Bucharest"
+    ],
+    "SE": [
+     "Lund",
+     "Stockholm"
+    ]
+   }
+  },
+  {
+   "name": "Infineon",
+   "system": "eightfold",
+   "board": "jobs.infineon.com/infineon.com",
+   "countries": [
+    "AT",
+    "CH",
+    "DE",
+    "FR",
+    "GB",
+    "HU",
+    "IE",
+    "IT",
+    "PT",
+    "RO"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "AT": [
+     "Graz",
+     "Klagenfurt am Wörthersee",
+     "Linz",
+     "Villach"
+    ],
+    "CH": [
+     "Zürich"
+    ],
+    "DE": [
+     "Augsburg",
+     "Dresden",
+     "Duisburg",
+     "Ettlingen",
+     "Frankfurt am Main",
+     "Hannover",
+     "Ilmenau",
+     "Munich",
+     "Regensburg",
+     "Stuttgart",
+     "Warstein"
+    ],
+    "GB": [
+     "Bristol",
+     "Redhill",
+     "Warwick"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Cork",
+     "Dublin"
+    ],
+    "IT": [
+     "Milan",
+     "Padua",
+     "Pavia"
+    ],
+    "PT": [
+     "Porto"
+    ],
+    "RO": [
+     "Bucharest",
+     "Iaşi"
+    ]
+   }
+  },
+  {
+   "name": "Qualcomm",
+   "system": "eightfold",
+   "board": "careers.qualcomm.com/qualcomm.com",
+   "countries": [
+    "BE",
+    "DE",
+    "ES",
+    "FR",
+    "GB",
+    "GR",
+    "IE",
+    "IT",
+    "NL",
+    "RO",
+    "SE"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "BE": [
+     "Brussels"
+    ],
+    "DE": [
+     "Berlin",
+     "Ingolstadt",
+     "Munich",
+     "Sulzbach"
+    ],
+    "FR": [
+     "Grenoble",
+     "Guyancourt",
+     "Issy-les-Moulineaux"
+    ],
+    "GB": [
+     "Cambridge",
+     "Farnborough",
+     "London"
+    ],
+    "GR": [
+     "Athens"
+    ],
+    "IE": [
+     "Cork"
+    ],
+    "IT": [
+     "Rome",
+     "Turin"
+    ],
+    "NL": [
+     "Amsterdam"
+    ],
+    "RO": [
+     "Timişoara"
+    ],
+    "SE": [
+     "Linköping",
+     "Malmö"
+    ]
+   }
+  },
+  {
+   "name": "Vodafone",
+   "system": "eightfold",
+   "board": "jobs.vodafone.com/vodafone.com",
+   "countries": [
+    "CH",
+    "CZ",
+    "DE",
+    "ES",
+    "GB",
+    "GR",
+    "HU",
+    "IE",
+    "IT",
+    "LU",
+    "PT",
+    "RO"
+   ],
+   "elsewhere": true,
+   "towns": {
+    "CH": [
+     "Baden",
+     "Ins"
+    ],
+    "CZ": [
+     "Prague"
+    ],
+    "DE": [
+     "Augsburg",
+     "Bautzen",
+     "Berlin",
+     "Bielefeld",
+     "Bonn",
+     "Brand",
+     "Braunschweig",
+     "Bremen",
+     "Chemnitz",
+     "Dortmund",
+     "Dresden",
+     "Erfurt",
+     "Eschborn",
+     "Frankfurt am Main",
+     "Freiburg",
+     "Gelsenkirchen",
+     "HafenCity",
+     "Hagen",
+     "Hamburg",
+     "Hannover",
+     "Jena",
+     "Kaiserslautern",
+     "Karlsruhe",
+     "Kassel",
+     "Kerpen",
+     "Kleve",
+     "Koblenz",
+     "Konstanz",
+     "Leipzig",
+     "Magdeburg",
+     "Mainz",
+     "Mannheim",
+     "Minden",
+     "Oberhausen",
+     "Oldenburg",
+     "Pforzheim",
+     "Ratingen",
+     "Ravensburg",
+     "Regensburg",
+     "Reutlingen"
+    ],
+    "ES": [
+     "Madrid",
+     "Málaga",
+     "Valencia",
+     "Zamudio"
+    ],
+    "GB": [
+     "Andover",
+     "Ballymena",
+     "Broadstairs",
+     "Chester-le-Street",
+     "Church Street",
+     "Crewe",
+     "Farnborough",
+     "Glasgow",
+     "London",
+     "Manchester",
+     "Newbury",
+     "Newcastle upon Tyne",
+     "Reading",
+     "Sale",
+     "Sheffield",
+     "South Shields",
+     "Stockport",
+     "Stoke-on-Trent",
+     "Swindon",
+     "Woking"
+    ],
+    "GR": [
+     "Athens",
+     "Irákleio",
+     "Irákleion",
+     "Thessaloníki"
+    ],
+    "HU": [
+     "Budapest"
+    ],
+    "IE": [
+     "Dublin"
+    ],
+    "IT": [
+     "Milan",
+     "Rome",
+     "Vizzola Ticino"
+    ],
+    "LU": [
+     "Luxembourg"
+    ],
+    "PT": [
+     "Lisbon",
+     "Porto"
+    ],
+    "RO": [
+     "Bacău",
+     "Braşov",
+     "Bucharest",
+     "Cluj-Napoca",
+     "Constanţa",
+     "Călăraşi",
+     "Galaţi",
+     "Giurgiu",
+     "Iaşi",
+     "Timişoara",
+     "Târgu Jiu"
+    ]
+   }
+  },
+  {
    "name": "Adyen",
    "system": "greenhouse",
    "board": "adyen",
