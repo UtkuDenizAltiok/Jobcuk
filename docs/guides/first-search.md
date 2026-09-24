@@ -44,8 +44,10 @@ or a language level. Without your citizenship, Jobcu never assumes one.
   for languages, but isn't limited. Jobs with a low score still stay in your list.
 - **New:** not seen in an earlier search.
 - **Understood as:** how Jobcu read where you want to work. If something is wrong, click **Edit**
-  to switch a condition off, fix its list of places or its town size, reword it or add one.
-  Your changes are applied to the jobs already found, without searching again.
+  to switch a condition off, fix its list of places or its town size, reword it or add one. In a
+  list of places, **All of Saxony** means a whole state, county or district, and **Except
+  Leipzig** a town inside it that is the other way. Your changes are applied to the jobs already
+  found, without searching again.
 - **Left out by your conditions** (at the bottom) lists the jobs a condition ruled out.
 - **"(from the ad text)"** or **"(found online)"** after a town: the job site didn't say where the
   job is, so Jobcu read the town from the ad, or your AI found the ad online (for the best jobs).

@@ -24,6 +24,7 @@ different things.
 """
 
 import logging
+import re
 from collections.abc import Callable
 from typing import Literal
 
@@ -64,6 +65,19 @@ class Place(BaseModel):
 class TownRef(BaseModel):
     name: str = Field(description="The town's name")
     country: CountryCode
+
+
+class RegionAnswer(BaseModel):
+    name: str = Field(description="The state, province, nation, county or district")
+    country: CountryCode
+
+
+class PlaceRegion(BaseModel):
+    """A state, province, nation, county or district from Jobcu's town list (`places.py`)."""
+
+    code: str
+    name: str
+    country: str
 
 
 class LocationUnderstanding(BaseModel):
@@ -142,6 +156,11 @@ class CheckedCondition(BaseModel):
     towns: list[TownRef] = Field(
         default=[], description="For towns_that_fit or towns_to_avoid: the towns, with countries"
     )
+    regions: list[RegionAnswer] = Field(
+        default=[], description="For towns_that_fit or towns_to_avoid: whole states, provinces, "
+        "nations, counties or districts where every town is on the listed side")
+    exceptions: list[TownRef] = Field(
+        default=[], description="Towns inside those regions that are on the other side")
     countries: list[CountryCode] = Field(
         default=[], description="For countries_that_fit or countries_to_avoid: the countries"
     )
@@ -173,6 +192,11 @@ class Anchor(BaseModel):
     named: list[TownRef] = []
     researched: list[TownRef] = []
     avoided: list[TownRef] = []  # places that fail a looked-up fact ("far-right strongholds")
+    # Whole regions the looked-up fact decides ("all of Saxony"), and the towns inside them that
+    # are the other way.
+    researched_regions: list[PlaceRegion] = []
+    avoided_regions: list[PlaceRegion] = []
+    exceptions: list[TownRef] = []
     # Facts decided country by country ("a top-10 work-life-balance country").
     countries_fit: list[str] = []
     countries_avoided: list[str] = []
@@ -189,6 +213,10 @@ class Condition(BaseModel):
     kind: Literal["towns_that_fit", "towns_to_avoid", "countries_that_fit", "countries_to_avoid",
                   "town_size", "near", "could_not_check", "about_job"]
     towns: list[TownRef] = []
+    # Whole regions for the town kinds ("all of Saxony"), and the towns inside them that are the
+    # other way ("except Leipzig").
+    regions: list[PlaceRegion] = []
+    exceptions: list[TownRef] = []
     countries: list[str] = []  # for the country kinds
     min_people: int | None = None
     min_share_of_country: float | None = None
@@ -331,8 +359,14 @@ when the condition holds for most places ("below the national average", "not a s
 list the towns where it FAILS, as towns to avoid; when it holds for few places ("a university \
 town", "above the national average"), list the towns that fit. Never answer a condition that \
 most places meet with a short list of examples that fit.
-- Only name real towns, and only in the countries given. If the condition is about how big a \
-town is, say the threshold instead of listing towns: the app has population figures itself.
+- When the answer is the same for a WHOLE state, province, nation, county or district (for \
+example every constituency in it, or every district of a state), say so for the whole region \
+instead of listing its towns, and name the towns inside it that are the exception. Do this \
+wherever the sources allow: a list of towns never includes every small town, while the app \
+knows which region each town is in. Check every big city on its own.
+- Only name real towns and regions, and only in the countries given. If the condition is about \
+how big a town is, say the threshold instead of listing towns: the app has population figures \
+itself.
 - If the condition is decided country by country (rankings, laws, languages, citizenship rules, \
 national figures), name the countries that fit, or the ones to avoid, instead of towns.
 - Party labels ("far-right", "fascist supporters") mean the parties that reliable current \
@@ -357,6 +391,9 @@ min_share_of_country (0.003 for 0.3% of the country's people), and leave towns e
 town fails it).
 - kind "towns_to_avoid" when the notes name the towns that fail it (the rest of the country is \
 fine).
+- For both, a whole state, province, nation, county or district the notes decide goes in \
+regions (its usual name, with its country), and the towns inside it that the notes say are the \
+other way go in exceptions. Towns outside those regions go in towns.
 - kind "countries_that_fit" or "countries_to_avoid" when the condition is decided for whole \
 countries: fill countries (two-letter codes) and leave towns empty.
 - kind "could_not_check" only when the notes give nothing usable. A rule the notes reason out \
@@ -544,10 +581,12 @@ def _near_condition(
             anchor.min_people = found.min_people or anchor.min_people
             anchor.min_share_of_country = (found.min_share_of_country
                                            or anchor.min_share_of_country)
-        elif found.kind == "towns_that_fit" and found.towns:
-            anchor.researched, anchor.looked_up = found.towns, True
-        elif found.kind == "towns_to_avoid" and found.towns:
-            anchor.avoided, anchor.looked_up = found.towns, True
+        elif found.kind == "towns_that_fit" and (found.towns or found.regions):
+            anchor.researched, anchor.researched_regions = found.towns, found.regions
+            anchor.exceptions, anchor.looked_up = found.exceptions, True
+        elif found.kind == "towns_to_avoid" and (found.towns or found.regions):
+            anchor.avoided, anchor.avoided_regions = found.towns, found.regions
+            anchor.exceptions, anchor.looked_up = found.exceptions, True
         elif found.kind == "countries_that_fit":
             anchor.countries_fit, anchor.looked_up = found.countries, True
         elif found.kind == "countries_to_avoid":
@@ -564,14 +603,15 @@ def _near_condition(
                              note=found.note or "Jobcu couldn't find which places are meant.",
                              sources=sources)
         notes.append(found.note)
-    only_rules_out = anchor.avoided or anchor.countries_fit or anchor.countries_avoided
+    only_rules_out = (anchor.avoided or anchor.avoided_regions or anchor.countries_fit
+                      or anchor.countries_avoided)
     if only_rules_out and not (anchor.min_people or anchor.min_share_of_country or anchor.named
-                               or anchor.researched):
+                               or anchor.researched or anchor.researched_regions):
         anchor.min_people = DEFAULT_CITY_PEOPLE
         notes.append(f"No size was given, so towns with at least {DEFAULT_CITY_PEOPLE:,} people "
                      "count as cities.")
     if not (anchor.min_people or anchor.min_share_of_country or anchor.named
-            or anchor.researched):
+            or anchor.researched or anchor.researched_regions):
         return Condition(text=text, understood_as=sorted_condition.understood_as or text,
                          status="not_checked", kind="could_not_check",
                          note="Jobcu couldn't tell which places the limit is measured to.")
@@ -624,9 +664,14 @@ def _as_condition(
     text: str, answer: CheckedCondition, sources: list[Source], countries: list[str]
 ) -> Condition:
     towns = [town for town in answer.towns if town.country in countries][:MAX_TOWNS_PER_CONDITION]
+    regions, unknown = _known_regions(answer.regions, countries)
     kind = answer.kind
-    if kind in ("towns_that_fit", "towns_to_avoid") and not towns:
+    if kind in ("towns_that_fit", "towns_to_avoid") and not towns and not regions:
         kind = "could_not_check"
+    note = answer.note
+    if unknown and kind in TOWN_KINDS:
+        note = (f"{note} Jobcu doesn't know {', '.join(unknown)} as a region, so "
+                f"{'it wasn' if len(unknown) == 1 else 'they weren'}'t used.").strip()
     if kind in COUNTRY_KINDS and not answer.countries:
         kind = "could_not_check"
     if kind == "town_size" and not (answer.min_people or answer.min_share_of_country):
@@ -640,13 +685,34 @@ def _as_condition(
         status=status,
         kind=kind,
         towns=towns,
+        regions=regions if kind in TOWN_KINDS else [],
+        exceptions=[town for town in answer.exceptions if town.country in countries]
+        [:MAX_TOWNS_PER_CONDITION] if kind in TOWN_KINDS and regions else [],
         countries=[code for code in answer.countries if code in countries]
         if kind in COUNTRY_KINDS else [],
         min_people=answer.min_people,
         min_share_of_country=answer.min_share_of_country,
-        note=answer.note,
+        note=note,
         sources=sources[:8],
     )
+
+
+def _known_regions(
+    answers: list[RegionAnswer], countries: list[str]
+) -> tuple[list[PlaceRegion], list[str]]:
+    """The regions Jobcu's town list knows, and the names it doesn't."""
+    regions: list[PlaceRegion] = []
+    unknown: list[str] = []
+    for answer in answers:
+        if answer.country not in countries:
+            continue
+        region = place_list.find_region(answer.name, answer.country)
+        if region is None:
+            unknown.append(answer.name)
+        elif all(known.code != region.code for known in regions):
+            regions.append(PlaceRegion(code=region.code, name=region.name,
+                                       country=region.country))
+    return regions, unknown
 
 
 TOWN_KINDS = ("towns_that_fit", "towns_to_avoid")
@@ -675,12 +741,14 @@ def check_edits(plan: LocationPlan, edits: list[ConditionEdit]) -> None:
             _check_near_edit(condition, edit, plan.countries)
             continue
         if condition.kind in TOWN_KINDS and edit.towns is not None:
-            towns, unknown = _town_refs(edit.towns, condition.towns, plan.countries)
+            towns, regions, _, unknown = _place_entries(
+                edit.towns, condition.towns, condition.regions, condition.exceptions,
+                plan.countries)
             if unknown:
                 raise EditProblem(
                     f"Jobcu doesn't know {', '.join(unknown)} in the countries searched. "
                     "Please check the spelling.")
-            if not towns:
+            if not towns and not regions:
                 raise EditProblem(f"Leave at least one place in \"{condition.text}\", or switch "
                                   "the condition off.")
         if condition.kind == "town_size" and not (
@@ -693,16 +761,19 @@ def check_edits(plan: LocationPlan, edits: list[ConditionEdit]) -> None:
 
 def _check_near_edit(condition: Condition, edit: ConditionEdit, countries: list[str]) -> None:
     anchor = condition.anchor or Anchor()
-    if edit.towns is not None and (anchor.named or anchor.researched):
-        towns, unknown = _town_refs(edit.towns, [*anchor.named, *anchor.researched], countries)
+    if edit.towns is not None and (anchor.named or anchor.researched or anchor.researched_regions):
+        towns, regions, _, unknown = _place_entries(
+            edit.towns, [*anchor.named, *anchor.researched], anchor.researched_regions,
+            anchor.exceptions, countries)
         if unknown:
             raise EditProblem(f"Jobcu doesn't know {', '.join(unknown)} in the countries "
                               "searched. Please check the spelling.")
-        if not towns:
+        if not towns and not regions:
             raise EditProblem(f"Leave at least one place in \"{condition.text}\", or switch "
                               "the condition off.")
-    if edit.avoided is not None and anchor.avoided:
-        _, unknown = _town_refs(edit.avoided, anchor.avoided, countries)
+    if edit.avoided is not None and (anchor.avoided or anchor.avoided_regions):
+        *_, unknown = _place_entries(edit.avoided, anchor.avoided, anchor.avoided_regions,
+                                     anchor.exceptions, countries)
         if unknown:
             raise EditProblem(f"Jobcu doesn't know {', '.join(unknown)} in the countries "
                               "searched. Please check the spelling.")
@@ -750,9 +821,13 @@ def _corrected(condition: Condition, edit: ConditionEdit, countries: list[str]) 
         return _corrected_near(condition, edit, countries)
     changed = False
     if condition.kind in TOWN_KINDS and edit.towns is not None:
-        towns, _ = _town_refs(edit.towns, condition.towns, countries)
-        if _town_keys(towns) != _town_keys(condition.towns):
-            condition.towns, changed = towns, True
+        towns, regions, exceptions, _ = _place_entries(
+            edit.towns, condition.towns, condition.regions, condition.exceptions, countries)
+        if (_town_keys(towns), _town_keys(exceptions), {r.code for r in regions}) != (
+                _town_keys(condition.towns), _town_keys(condition.exceptions),
+                {r.code for r in condition.regions}):
+            condition.towns, condition.regions, condition.exceptions = towns, regions, exceptions
+            changed = True
     if condition.kind == "town_size":
         if edit.min_people is not None and edit.min_people != (condition.min_people or 0):
             condition.min_people, changed = edit.min_people or None, True
@@ -783,16 +858,24 @@ def _corrected_near(condition: Condition, edit: ConditionEdit, countries: list[s
         edit.min_share_of_country != (anchor.min_share_of_country or 0)
     ):
         anchor.min_share_of_country, changed = edit.min_share_of_country or None, True
-    if edit.towns is not None and (anchor.named or anchor.researched):
+    if edit.towns is not None and (anchor.named or anchor.researched or anchor.researched_regions):
         known = [*anchor.named, *anchor.researched]
-        towns, _ = _town_refs(edit.towns, known, countries)
-        if _town_keys(towns) != _town_keys(known):
+        towns, regions, exceptions, _ = _place_entries(
+            edit.towns, known, anchor.researched_regions, anchor.exceptions, countries)
+        if (_town_keys(towns), _town_keys(exceptions), {r.code for r in regions}) != (
+                _town_keys(known), _town_keys(anchor.exceptions),
+                {r.code for r in anchor.researched_regions}):
             anchor.named, anchor.researched, anchor.looked_up = towns, [], False
+            anchor.researched_regions, anchor.exceptions = regions, exceptions
             changed = True
-    if edit.avoided is not None and anchor.avoided:
-        avoided, _ = _town_refs(edit.avoided, anchor.avoided, countries)
-        if _town_keys(avoided) != _town_keys(anchor.avoided):
-            anchor.avoided, changed = avoided, True
+    if edit.avoided is not None and (anchor.avoided or anchor.avoided_regions):
+        avoided, regions, exceptions, _ = _place_entries(
+            edit.avoided, anchor.avoided, anchor.avoided_regions, anchor.exceptions, countries)
+        if (_town_keys(avoided), _town_keys(exceptions), {r.code for r in regions}) != (
+                _town_keys(anchor.avoided), _town_keys(anchor.exceptions),
+                {r.code for r in anchor.avoided_regions}):
+            anchor.avoided, anchor.avoided_regions = avoided, regions
+            anchor.exceptions, changed = exceptions, True
     condition.anchor = anchor
     condition.changed_by_you = condition.changed_by_you or changed
     return condition
@@ -829,6 +912,45 @@ def _town_refs(
     return list(unique.values()), unknown
 
 
+_ALL_OF = re.compile(r"^\s*all of\s+", re.IGNORECASE)
+_EXCEPT = re.compile(r"^\s*except\s+", re.IGNORECASE)
+
+
+def _place_entries(
+    names: list[str], known_towns: list[TownRef], known_regions: list[PlaceRegion],
+    known_exceptions: list[TownRef], countries: list[str],
+) -> tuple[list[TownRef], list[PlaceRegion], list[TownRef], list[str]]:
+    """What the person left in a list of places: towns, whole regions ("All of Saxony") and
+    towns inside them that are the other way ("Except Leipzig"), and the names Jobcu doesn't
+    know."""
+    typed_towns: list[str] = []
+    typed_exceptions: list[str] = []
+    regions: list[PlaceRegion] = []
+    unknown: list[str] = []
+    for name in (name.strip() for name in names):
+        if _ALL_OF.match(name):
+            wanted = _ALL_OF.sub("", name).strip()
+            region = next((known for known in known_regions
+                           if normalise(known.name) == normalise(wanted)), None)
+            if region is None:
+                found = next((r for country in countries
+                              if (r := place_list.find_region(wanted, country))), None)
+                region = found and PlaceRegion(code=found.code, name=found.name,
+                                               country=found.country)
+            if region is None:
+                unknown.append(wanted)
+            elif all(known.code != region.code for known in regions):
+                regions.append(region)
+        elif _EXCEPT.match(name):
+            typed_exceptions.append(_EXCEPT.sub("", name).strip())
+        elif name:
+            typed_towns.append(name)
+    towns, unknown_towns = _town_refs(typed_towns, known_towns, countries)
+    exceptions, unknown_exceptions = _town_refs(typed_exceptions, known_exceptions, countries)
+    return towns, regions, exceptions if regions else [], unknown + unknown_towns + (
+        unknown_exceptions if regions else [])
+
+
 def _town_keys(towns: list[TownRef]) -> set[tuple[str, str]]:
     return {(normalise(town.name), town.country) for town in towns}
 
@@ -858,12 +980,27 @@ def fits(condition: Condition, country: str | None, location_text: str | None) -
         return "yes" if town.people >= smallest_town(condition, country) else "no"
     wanted = {normalise(town.name) for town in condition.towns
               if country is None or town.country == country}
-    if not wanted:
+    regions = {region.code for region in condition.regions
+               if country is None or region.country == country}
+    # Towns to avoid that name nothing in this country leave all of it fine (Ireland, when the
+    # far right is strong nowhere there); towns that fit must name something here.
+    if not wanted and not regions and (
+            condition.kind == "towns_that_fit" or not (condition.towns or condition.regions)):
         return "unknown"
     found = place_list.locate(location_text, country)
+    parts = (location_text or "").replace(";", ",").split(",")
     names = {normalise(found.name)} if found else set()
-    names |= {normalise(part) for part in (location_text or "").replace(";", ",").split(",")}
+    names |= {normalise(part) for part in parts}
     hit = bool(names & wanted)
+    if not hit and regions:
+        if found is not None:
+            # A town inside a region the condition decides, unless it's one of the exceptions.
+            excepted = {normalise(town.name) for town in condition.exceptions}
+            hit = any(found.lies_in(code) for code in regions) and not names & excepted
+        else:
+            # Only a region is known ("Sachsen"): it decides when it's one of those regions.
+            hit = any((region := place_list.find_region(part, country)) is not None
+                      and region.code in regions for part in parts)
     if condition.kind == "towns_that_fit":
         return "yes" if hit else ("no" if found is not None else "unknown")
     # Towns to avoid: a place that is only a country or a region ("Deutschland", "Bayern") may

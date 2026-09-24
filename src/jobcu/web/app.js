@@ -393,10 +393,9 @@ function conditionLine(condition) {
     }),
   ];
   if (condition.note) parts.push(el("p", { class: "muted", text: condition.note }));
-  if (condition.towns?.length) {
-    const names = condition.towns.slice(0, 12).map((town) => town.name).join(", ");
-    const more = condition.towns.length > 12 ? ` and ${condition.towns.length - 12} more` : "";
-    parts.push(el("p", { class: "muted", text: `${how}: ${names}${more}` }));
+  if (condition.towns?.length || condition.regions?.length) {
+    parts.push(el("p", { class: "muted", text:
+      `${how}: ${placesText(condition.towns, condition.regions, condition.exceptions)}` }));
   } else if (condition.kind === "near") {
     parts.push(el("p", { class: "muted", text: nearSummary(condition) }));
   } else if (condition.kind === "countries_that_fit" || condition.kind === "countries_to_avoid") {
@@ -436,13 +435,42 @@ const TRAVEL_MODES = {
 const COUNTRY_NAMES = new Intl.DisplayNames(["en"], { type: "region" });
 const countryList = (codes) => codes.map((code) => COUNTRY_NAMES.of(code) || code).join(", ");
 
+/** A list of names, cut short: "Dresden, Leipzig and 40 more". */
+function listOf(names, most = 12) {
+  return names.slice(0, most).join(", ") + (names.length > most ? ` and ${names.length - most} more` : "");
+}
+
+/** Whole regions and towns: "all of Saxony, Thuringia (except Leipzig); Gelsenkirchen". */
+function placesText(towns, regions, exceptions) {
+  const parts = [];
+  if ((regions || []).length) {
+    const except = (exceptions || []).length
+      ? ` (except ${listOf(exceptions.map((town) => town.name))})` : "";
+    parts.push(`all of ${regions.map((region) => region.name).join(", ")}${except}`);
+  }
+  if ((towns || []).length) parts.push(listOf(towns.map((town) => town.name)));
+  return parts.join("; ");
+}
+
+/** The same places as entries of an Edit list: towns, "All of Saxony", "Except Leipzig". */
+function placeEntries(towns, regions, exceptions) {
+  return [
+    ...(towns || []).map((town) => town.name),
+    ...(regions || []).map((region) => `All of ${region.name}`),
+    ...((regions || []).length ? exceptions || [] : []).map((town) => `Except ${town.name}`),
+  ].join(", ");
+}
+
+const PLACE_LIST_HINT = "Separate places with commas. \u201CAll of …\u201D is a whole state, " +
+  "county or district; \u201CExcept …\u201D is a town inside it that is the other way.";
+
 /** "towns with at least 250,500 people" or "Munich, Augsburg" for a "near" condition. */
 function anchorText(anchor) {
   if (!anchor) return "the places you named";
   const parts = [];
-  const towns = [...(anchor.named || []), ...(anchor.researched || [])].map((t) => t.name);
-  if (towns.length) {
-    parts.push(towns.slice(0, 12).join(", ") + (towns.length > 12 ? ` and ${towns.length - 12} more` : ""));
+  const towns = [...(anchor.named || []), ...(anchor.researched || [])];
+  if (towns.length || (anchor.researched_regions || []).length) {
+    parts.push(placesText(towns, anchor.researched_regions, anchor.exceptions));
   }
   if (anchor.min_share_of_country) {
     parts.push(`towns with at least ${+(anchor.min_share_of_country * 100).toPrecision(6)}% of the country's people`);
@@ -453,10 +481,8 @@ function anchorText(anchor) {
   if ((anchor.countries_avoided || []).length) {
     parts.push(`not in ${countryList(anchor.countries_avoided)}`);
   }
-  const avoided = (anchor.avoided || []).map((t) => t.name);
-  const except = avoided.length
-    ? ` except ${avoided.slice(0, 12).join(", ")}${avoided.length > 12 ? ` and ${avoided.length - 12} more` : ""}`
-    : "";
+  const avoided = placesText(anchor.avoided, anchor.avoided_regions, anchor.exceptions);
+  const except = avoided ? `, but never ${avoided}` : "";
   return (parts.join("; ") || anchor.description || "the places you named") + except;
 }
 
@@ -529,8 +555,9 @@ function conditionEditor(condition, index) {
     block.append(el("div", { class: "field" },
       el("label", { for: `${id}-towns`, text: TOWN_LIST_LABELS[condition.kind] }),
       el("textarea", { id: `${id}-towns`, name: "towns", rows: "3", spellcheck: "false",
-                       text: condition.towns.map((town) => town.name).join(", ") }),
-      el("small", { class: "muted", text: "Separate places with commas. Remove a place or add one." }),
+                       text: placeEntries(condition.towns, condition.regions,
+                                          condition.exceptions) }),
+      el("small", { class: "muted", text: `${PLACE_LIST_HINT} Remove a place or add one.` }),
     ));
   }
   if (condition.kind === "town_size") {
@@ -595,20 +622,22 @@ function nearEditor(condition, id) {
     ));
   }
   const towns = [...(anchor.named || []), ...(anchor.researched || [])];
-  if (towns.length) {
+  const regions = anchor.researched_regions || [];
+  if (towns.length || regions.length) {
     fields.push(el("div", { class: "field" },
       el("label", { for: `${id}-towns`, text: "Measured to these places" }),
       el("textarea", { id: `${id}-towns`, name: "towns", rows: "3", spellcheck: "false",
-                       text: towns.map((town) => town.name).join(", ") }),
-      el("small", { class: "muted", text: "Separate places with commas." }),
+                       text: placeEntries(towns, regions, anchor.exceptions) }),
+      el("small", { class: "muted", text: PLACE_LIST_HINT }),
     ));
   }
-  if ((anchor.avoided || []).length) {
+  const avoidedRegions = anchor.avoided_regions || [];
+  if ((anchor.avoided || []).length || avoidedRegions.length) {
     fields.push(el("div", { class: "field" },
       el("label", { for: `${id}-avoided`, text: "Never measured to these places" }),
       el("textarea", { id: `${id}-avoided`, name: "avoided", rows: "3", spellcheck: "false",
-                       text: anchor.avoided.map((town) => town.name).join(", ") }),
-      el("small", { class: "muted", text: "Found on the web. Separate places with commas." }),
+                       text: placeEntries(anchor.avoided, avoidedRegions, anchor.exceptions) }),
+      el("small", { class: "muted", text: `Found on the web. ${PLACE_LIST_HINT}` }),
     ));
   }
   return fields;

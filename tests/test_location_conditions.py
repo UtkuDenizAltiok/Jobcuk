@@ -15,6 +15,8 @@ from jobcu.location import (
     CheckedCondition,
     Condition,
     LocationPlan,
+    PlaceRegion,
+    RegionAnswer,
     SortedCondition,
     SortedConditions,
     TownRef,
@@ -100,6 +102,50 @@ def test_towns_to_avoid_and_towns_that_fit():
     assert fits(only, "DE", "Berlin, Germany") == "yes"
     assert fits(only, "DE", "München") == "no"
     assert fits(only, "DE", "A village nobody lists") == "unknown"
+
+
+SAXONY = PlaceRegion(code="DE.13", name="Saxony", country="DE")
+
+
+def test_a_whole_region_decides_its_small_towns_except_the_ones_named():
+    # Search 8: Radeberg (Landkreis Bautzen, Saxony) passed because no list of towns names it.
+    avoid = Condition(text="no far-right cities", understood_as="Not where the far right is "
+                      "above the national average", status="applied", kind="towns_to_avoid",
+                      towns=[TownRef(name="Gelsenkirchen", country="DE")], regions=[SAXONY],
+                      exceptions=[TownRef(name="Leipzig", country="DE")])
+    assert fits(avoid, "DE", "Radeberg, Bautzen (Kreis)") == "no"
+    assert fits(avoid, "DE", "Dresden") == "no"
+    assert fits(avoid, "DE", "Leipzig") == "yes"  # the exception
+    assert fits(avoid, "DE", "Gelsenkirchen") == "no" and fits(avoid, "DE", "München") == "yes"
+    assert fits(avoid, "DE", "Sachsen") == "no"  # only the region is known, and it's avoided
+    assert fits(avoid, "DE", "Deutschland") == "unknown"
+    # Nothing to avoid in Ireland: every Irish town is fine, but a bare country still isn't a town.
+    assert fits(avoid, "IE", "Cork") == "yes" and fits(avoid, "IE", "Ireland") == "unknown"
+
+    fit = Condition(text="in the east", understood_as="Eastern states", status="applied",
+                    kind="towns_that_fit", regions=[SAXONY])
+    assert fits(fit, "DE", "Radeberg") == "yes" and fits(fit, "DE", "München") == "no"
+
+
+def test_regions_in_the_answer_are_kept_and_unknown_ones_are_named():
+    answer = CheckedCondition(
+        understood_as="Places where the AfD was above its national share are left out",
+        kind="towns_to_avoid", towns=[TownRef(name="Gelsenkirchen", country="DE")],
+        regions=[RegionAnswer(name="Sachsen", country="DE"),
+                 RegionAnswer(name="Landkreis Bautzen", country="DE"),
+                 RegionAnswer(name="Atlantis", country="DE"),
+                 RegionAnswer(name="Wales", country="GB")],  # not a country searched
+        exceptions=[TownRef(name="Leipzig", country="DE")],
+        confidence="checked", note="From the 2025 federal election results.")
+    (condition,) = check_conditions(ScriptedClient(answer), ["no far-right cities"], ["DE"])
+    assert [(r.code, r.name) for r in condition.regions] == [
+        ("DE.13", "Saxony"), ("DE.K.14625", "Landkreis Bautzen")]
+    assert [t.name for t in condition.exceptions] == ["Leipzig"]
+    assert "doesn't know Atlantis as a region" in condition.note
+
+    only_regions = answer.model_copy(update={"towns": [], "regions": answer.regions[:1]})
+    (condition,) = check_conditions(ScriptedClient(only_regions), ["no far-right cities"], ["DE"])
+    assert condition.status == "applied" and condition.kind == "towns_to_avoid"
 
 
 def test_conditions_that_could_not_be_checked_never_rule_a_job_out():

@@ -47,7 +47,7 @@ rules for blockers are in DECISIONS.md (2026-09-23 evening). Steps:
    the language, years and blockers of the best summary-only jobs, then re-apply the rules.
 4c. [x] Adzuna's "contract" means several job types: let the ad text decide (a UK "contract
    outside IR35" job passed the full-time filter at 83).
-5. [ ] Location: facts decided per region (region names in the town list), so a condition can
+5. [x] Location: facts decided per region (region names in the town list), so a condition can
    rule out all of Saxony except the towns that fit; Radeberg and Dresden out. Real check with
    the owner's sentence.
 6. [ ] Update "Right now", tell the owner what to do next.
@@ -107,9 +107,8 @@ Done when: tests pass on GitHub, and the re-scored search 8 has no German-requir
    BambooHR, Comeet, Oracle), and national employment services with open data and no key
    (candidates: Czechia's MPSV open data, Poland's CBOP, Finland, Estonia, Slovenia, Luxembourg).
    Check terms and robots.txt first; record each in SOURCES.md.
-4. The rest of Phase 2: facts decided per region (needs region names in the town list,
-   `tools/update_places.py` with GeoNames admin1 codes), and kinds of places near the job itself
-   (a train station) if the owner wants them.
+4. The rest of Phase 2: kinds of places near the job itself (a train station) if the owner
+   wants them.
 5. Keep the user guides in step, fix what the tester reports, and confirm Phase 1's "Done when"
    with the owner.
 
@@ -124,8 +123,9 @@ Done when: tests pass on GitHub, and the re-scored search 8 has no German-requir
   remembered (30 days); Google's travel times may not be kept (Routes API terms).
 - About a third of Adzuna's town-less ads name no town in their first ~700 characters (KLA,
   HAPEKO…); they stay in the results, marked. Their full pages refuse Jobcu.
-- A list of towns to avoid can't hold every small town (at most 400). A job in an unlisted small
-  town where the fact fails still passes; facts decided per region (next tasks) would fix that.
+- A fact the AI can only answer per constituency ("Leipzig II") is kept as the AI wrote it; the
+  town list doesn't know constituencies, so such an exception doesn't match its town. Edit fixes
+  it ("Except Leipzig").
 
 ## Owner's setup and reference numbers
 
@@ -172,7 +172,8 @@ Done when: tests pass on GitHub, and the re-scored search 8 has no German-requir
       rules; answers per town or per country
 - [x] Travel limits to reference places: Google Maps with the person's key, otherwise AI estimates
 - [x] "Understood as" with sources, labelled estimates and Edit
-- [ ] Facts decided per region; other reference data as needed (boundaries, coastlines, the UK
+- [x] Facts decided per region
+- [ ] Other reference data as needed (boundaries, coastlines, the UK
       sponsor register)
 - [ ] **Done when:** the example sentences in HANDOVER §6, in README.md and the owner's own
       examples behave as described, each with its working shown.

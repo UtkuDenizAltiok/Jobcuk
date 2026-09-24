@@ -22,6 +22,7 @@ from jobcu.location import (
     Condition,
     ConditionEdit,
     LocationPlan,
+    PlaceRegion,
     SortedAnchor,
     SortedCondition,
     TownRef,
@@ -434,6 +435,21 @@ def test_places_that_fail_a_fact_are_never_reference_places():
     assert "Leipzig" in towns and "Dresden" not in towns
 
 
+def test_a_whole_region_that_fails_a_fact_gives_no_reference_places_but_its_exceptions():
+    # Search 8 measured Radeberg to Dresden although Dresden should have been avoided.
+    anchor = Anchor(min_share_of_country=0.003, looked_up=True,
+                    avoided_regions=[PlaceRegion(code="DE.13", name="Saxony", country="DE")],
+                    exceptions=[TownRef(name="Leipzig", country="DE")])
+    towns = {town.name for town in travel.anchor_towns(anchor, "DE")}
+    assert "Dresden" not in towns and "Chemnitz" not in towns
+    assert "Leipzig" in towns and "Munich" in towns
+
+    fitting = Anchor(researched_regions=[PlaceRegion(code="DE.13", name="Saxony", country="DE")],
+                     min_people=100_000, looked_up=True)
+    assert {town.name for town in travel.anchor_towns(fitting, "DE")} == {
+        "Dresden", "Leipzig", "Chemnitz"}
+
+
 def test_one_fact_is_looked_up_once_for_the_job_town_and_the_reference_places():
     far_right = "no cities where far-right parties polled above the national average"
     commute = "at most 50 minutes by public transport to a city with at least 0.3% of people"
@@ -528,6 +544,22 @@ def test_places_to_avoid_can_be_corrected():
     assert [t.name for t in corrected.anchor.avoided] == ["Dresden"]
     assert corrected.changed_by_you
     assert "Leipzig" in {t.name for t in travel.anchor_towns(corrected.anchor, "DE")}
+
+
+def test_whole_regions_to_avoid_can_be_corrected_too():
+    condition = near()
+    condition.anchor.avoided_regions = [PlaceRegion(code="DE.13", name="Saxony", country="DE")]
+    plan = LocationPlan(text="", understood_as="", countries=["DE"], places=[],
+                        conditions=[condition], not_checked_yet=[], outside_supported_area=[],
+                        broad=False)
+    edit = ConditionEdit(text=OWNERS_TEXT, original=0,
+                         avoided=["All of Saxony", "All of Thüringen", "Except Leipzig", "Gera"])
+    corrected = apply_edits(ScriptedClient(None), plan, [edit]).conditions[0]
+    assert [r.name for r in corrected.anchor.avoided_regions] == ["Saxony", "Thuringia"]
+    assert [t.name for t in corrected.anchor.exceptions] == ["Leipzig"]
+    assert [t.name for t in corrected.anchor.avoided] == ["Gera"]
+    towns = {t.name for t in travel.anchor_towns(corrected.anchor, "DE")}
+    assert "Leipzig" in towns and "Dresden" not in towns and "Erfurt" not in towns
 
 
 # --- Facts decided country by country -----------------------------------------------------

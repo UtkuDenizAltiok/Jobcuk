@@ -154,12 +154,24 @@ def anchor_towns(anchor: Anchor | None, country: str) -> list[place_list.Town]:
                        round((anchor.min_share_of_country or 0) * COUNTRIES[country].people))
         chosen = {town for town in place_list.towns_in(country) if town.people >= smallest}
     listed = [ref for ref in [*anchor.named, *anchor.researched] if ref.country == country]
-    if anchor.named or anchor.researched:
+    excepted = {normalise(ref.name) for ref in anchor.exceptions if ref.country == country}
+
+    def in_regions(regions) -> set[place_list.Town]:
+        """The towns of these whole regions, except the towns that are the other way."""
+        codes = [region.code for region in regions if region.country == country]
+        if not codes:
+            return set()
+        return {town for town in place_list.towns_in(country)
+                if any(town.lies_in(code) for code in codes)
+                and normalise(town.name) not in excepted}
+
+    if anchor.named or anchor.researched or anchor.researched_regions:
         found = {town for ref in listed if (town := place_list.find(ref.name, country))}
+        found |= in_regions(anchor.researched_regions)
         chosen = found if chosen is None else chosen & found
     # Places that fail a looked-up fact ("far-right strongholds") never count.
     avoided = {place_list.find(ref.name, country) for ref in anchor.avoided
-               if ref.country == country}
+               if ref.country == country} | in_regions(anchor.avoided_regions)
     return sorted((chosen or set()) - avoided, key=lambda town: -town.people)
 
 

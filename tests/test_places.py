@@ -92,3 +92,24 @@ def test_the_shipped_list_covers_every_supported_country():
     towns = {town for entries in places._towns().values() for town in entries}
     assert len(towns) > 50_000
     assert {town.country for town in towns} == set(COUNTRIES)
+
+
+def test_every_town_knows_its_state_and_district():
+    radeberg = places.find("Radeberg", "DE")
+    assert radeberg.lies_in("DE.13")  # Saxony
+    assert radeberg.lies_in("DE.K.14625") and not radeberg.lies_in("DE.K.14612")  # Bautzen
+    assert places.find("Clacton-on-Sea", "GB").lies_in(places.find_region("Essex", "GB").code)
+    assert places.find("Cork", "IE").lies_in(places.find_region("County Cork", "IE").code)
+
+
+def test_regions_are_found_by_their_english_local_and_short_names():
+    for name in ("Saxony", "Sachsen", "Freistaat Sachsen"):
+        assert places.find_region(name, "DE").code == "DE.13"
+    for name in ("Landkreis Bautzen", "Bautzen district", "Kreis Bautzen", "Bautzen"):
+        assert places.find_region(name, "DE").name == "Landkreis Bautzen"
+    # A state wins over a district of the same name, and the country must match.
+    assert places.find_region("Brandenburg", "DE").level == "region"
+    assert places.find_region("Wales", "GB").level == "region"
+    assert places.find_region("Saxony", "GB") is None
+    assert places.find_region("Atlantis", "DE") is None
+    assert places.region_name("DE.K.14612") == "Kreisfreie Stadt Dresden"

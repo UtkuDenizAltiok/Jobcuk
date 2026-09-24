@@ -21,6 +21,7 @@ from pathlib import Path
 from jobcu.text import normalise
 
 DATA = Path(__file__).resolve().parent / "data" / "places.csv.gz"
+REGIONS = Path(__file__).resolve().parent / "data" / "regions.csv.gz"
 MAX_NAME_WORDS = 4  # "Frankfurt am Main", "'s-Hertogenbosch"
 EARTH_RADIUS_KM = 6371.0
 # Job ads shorten names: "Ottobrunn" for "Ottobrunn bei München", "Halle" for "Halle (Saale)".
@@ -60,6 +61,21 @@ class Town:
     latitude: float
     longitude: float
     people: int
+    # The state, province or nation, and the county or district, as codes in `regions.csv.gz`
+    # ("DE.13" is Saxony, "DE.K.14625" Landkreis Bautzen).
+    region: str = ""
+    district: str = ""
+
+    def lies_in(self, code: str) -> bool:
+        return code in (self.region, self.district)
+
+
+@dataclass(frozen=True)
+class Region:
+    code: str
+    level: str  # "region" (a state, province or nation) or "district" (a county or district)
+    country: str
+    name: str
 
 
 @cache
@@ -68,9 +84,10 @@ def _towns(path: Path = DATA) -> dict[str, tuple[Town, ...]]:
     index: dict[str, list[Town]] = {}
     with gzip.open(path, "rt", encoding="utf-8") as file:
         for row in csv.reader(line for line in file if not line.startswith("#")):
-            names, country, latitude, longitude, people = row
+            names, country, latitude, longitude, people, *codes = row
             spellings = names.split("|")
-            town = Town(spellings[0], country, float(latitude), float(longitude), int(people))
+            town = Town(spellings[0], country, float(latitude), float(longitude), int(people),
+                        *codes)
             written = {normalise(name) for name in spellings}
             short = {normalise(_QUALIFIERS.sub("", name)) for name in spellings}
             for spelling in (written | short) - {""}:
@@ -84,6 +101,57 @@ def towns_in(country: str) -> tuple[Town, ...]:
     """Every town of one country in the list, biggest first."""
     unique = {town for towns in _towns().values() for town in towns if town.country == country}
     return tuple(sorted(unique, key=lambda town: -town.people))
+
+
+# Words that say what kind of region a name is, not which one: "Landkreis Bautzen", "Bautzen
+# district" and "Bautzen" are the same district; "Free State of Saxony" is Saxony.
+_REGION_WORDS = re.compile(
+    r"\b(?:landkreis|kreisfreie stadt|stadtkreis|kreis|bezirk|regierungsbezirk|district|"
+    r"county|borough|royal borough|city and county|city|metropolitan|unitary authority|council|"
+    r"region|province|provincia|provincie|state|free state|freistaat|land|bundesland|"
+    r"department|departement|département|voivodeship|województwo|of|the|de|di|del|du|la|le)\b"
+)
+
+
+def _region_key(name: str | None) -> str:
+    return " ".join(_REGION_WORDS.sub(" ", normalise(name)).split())
+
+
+@cache
+def _regions(path: Path = REGIONS) -> dict[str, tuple[Region, ...]]:
+    """Every state, province, nation, county and district by its normalised names, with and
+    without words like "Landkreis" or "County"."""
+    index: dict[str, list[Region]] = {}
+    with gzip.open(path, "rt", encoding="utf-8") as file:
+        for row in csv.reader(line for line in file if not line.startswith("#")):
+            code, level, country, names = row
+            spellings = names.split("|")
+            region = Region(code, level, country, spellings[0])
+            keys = {normalise(name) for name in spellings} | {_region_key(n) for n in spellings}
+            for key in keys - {""}:
+                index.setdefault(key, []).append(region)
+    return {key: tuple(regions) for key, regions in index.items()}
+
+
+def find_region(name: str | None, country: str | None = None) -> Region | None:
+    """The state, province, nation, county or district with this name, in the given country.
+    A whole name wins over a shortened one, and a state over a district of the same name."""
+    for key in (normalise(name), _region_key(name)):
+        found = [region for region in _regions().get(key, ())
+                 if country is None or region.country == country]
+        if found:
+            return min(found, key=lambda region: region.level != "region")
+    return None
+
+
+@cache
+def _regions_by_code() -> dict[str, Region]:
+    return {region.code: region for regions in _regions().values() for region in regions}
+
+
+def region_name(code: str) -> str:
+    region = _regions_by_code().get(code)
+    return region.name if region else code
 
 
 def find(name: str | None, country: str | None = None) -> Town | None:

@@ -219,12 +219,13 @@ src/jobcu/
                              requests), budget.py (usage limits), matching.py (titles and
                              places matched on Jobcu's side), careers.py (company career systems
                              and the employer directory), one module per source
-  data/                      shipped reference data: employers.json, places.csv.gz
+  data/                      shipped reference data: employers.json, places.csv.gz,
+                             regions.csv.gz
   web/                       the screen: plain HTML, CSS, JS (no build step)
 tests/                       pytest; conftest.py gives every test a throwaway data folder
 tools/check_no_secrets.py    safety check against keys and personal data (Git hook and CI)
 tools/check_employers.py     checks the employer directory and adds new candidates
-tools/update_places.py       rebuilds the shipped town list from GeoNames
+tools/update_places.py       rebuilds the shipped town and region lists from GeoNames
 tools/coverage_test.py       how many jobs a person found by hand did Jobcu find, and why not
 tools/score_check.py         Jobcu's scores against the owner's own answers, and prompt variants
 .githooks/pre-commit         runs the safety check before every commit

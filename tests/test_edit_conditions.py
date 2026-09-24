@@ -24,6 +24,7 @@ from jobcu.location import (
     ConditionEdit,
     EditProblem,
     LocationPlan,
+    PlaceRegion,
     TownRef,
     apply_edits,
     check_edits,
@@ -89,6 +90,24 @@ def test_unknown_towns_and_empty_lists_are_explained_before_any_ai_is_used():
         check_edits(plan, [ConditionEdit(text="no far-right strongholds", original=0, towns=[])])
     with pytest.raises(EditProblem, match="open it again"):
         check_edits(plan, [ConditionEdit(text="gone", original=3)])
+
+
+def test_whole_regions_and_their_exceptions_can_be_corrected_in_the_list():
+    saxony = PlaceRegion(code="DE.13", name="Saxony", country="DE")
+    plan = plan_with(avoid("Gelsenkirchen").model_copy(update={"regions": [saxony]}))
+    edit = ConditionEdit(text="no far-right strongholds", original=0,
+                         towns=["Gelsenkirchen", "All of Saxony", "All of Sachsen-Anhalt",
+                                "Except Leipzig"])
+    condition = apply_edits(ScriptedClient(None), plan, [edit]).conditions[0]
+    assert [r.code for r in condition.regions] == ["DE.13", "DE.14"]
+    assert [t.name for t in condition.exceptions] == ["Leipzig"]
+    assert condition.changed_by_you
+    with pytest.raises(EditProblem, match="doesn't know Atlantis"):
+        check_edits(plan, [ConditionEdit(text="no far-right strongholds", original=0,
+                                         towns=["All of Atlantis"])])
+    # Only a region left is still a list of places.
+    check_edits(plan, [ConditionEdit(text="no far-right strongholds", original=0,
+                                     towns=["All of Saxony"])])
 
 
 def test_with_one_country_searched_a_name_jobcu_doesnt_know_is_still_accepted():
