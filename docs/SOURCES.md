@@ -367,6 +367,69 @@ Group**, so one written permission could cover them all.
   User-Agent time out, and a browser-like request gets a web-application-firewall page ("Something
   went wrong"). That's bot protection, so Jobcu doesn't use it.
 
+## Candidate sources by country (research from 2026-09-24, not built yet)
+
+Found while mapping sources for every kind of work, in the owner's order of countries. Each entry
+says what was checked live and what still needs checking. When one is built, its facts move to
+its own section above. The ranking and what waits on the owner are in PROGRESS.md.
+
+### Germany
+
+What Jobcu already has covers every trade: the Bundesagentur's Jobbörse (all professions), Adzuna,
+Arbeitnow and the career systems. The gaps are the public sector and employers on German career
+systems the directory doesn't read.
+
+- **service.bund.de, public-sector jobs (checked 2026-09-24).** The federal job portal
+  (Bundesverwaltungsamt) for federal, state and municipal employers, universities, research
+  institutes, courts, prisons and the armed forces' civilian jobs: administration, social work,
+  law, trades (electricians, painters, chimney sweeps), housekeeping, research, engineering.
+  - **An open RSS feed:** `GET https://www.service.bund.de/Content/Globals/Functions/RSSFeed/
+    RSSGenerator_Stellen.xml` gives the **newest 500 jobs** (348 KB), about **2.5 days** on a
+    weekday (203 on 22 September, 237 on 23 September), so a 24- or 48-hour search is covered in
+    one request. Each item: title, link, `pubDate` (with zone; some at 00:00:00), and in the
+    description the employer ("Arbeitgeber"), place ("Ort: 65173 Wiesbaden") and closing date.
+    No filter parameters. The site offers the feed for RSS readers, "ohne Registrierung".
+    Separate feeds exist for training places (`RSSGenerator_Ausbildungsplaetze.xml`).
+  - **Job pages** (`/IMPORTE/Stellenangebote/editor/{employer}/{yyyy}/{mm}/{id}.html`): the full ad
+    (Tätigkeitsprofil, Anforderungsprofil), field, **Arbeitszeit** (Vollzeit/Teilzeit),
+    **Anstellungsdauer** (Unbefristet/Befristet), pay grade and full address. **No schema.org
+    JobPosting**, so the text is read from the page.
+  - **robots.txt** closes only the search pages (`/Content/DE/Stellen/Suche/`) and
+    `/SiteGlobals/`, and asks for **`Crawl-delay: 30`**: 30 s between requests, so full ads can
+    only be read for the few jobs still in the running. The feed and the job pages are allowed.
+  - **Terms (Impressum):** the texts' copyright stays with the advertising body, and the portal's
+    content may not be reproduced, distributed or exhibited without consent. Reading the feed and
+    showing a job to the one person searching, on their computer, is what an RSS reader does.
+  - **Overlap with the Bundesagentur (sample of 25, title and town search, employer matched):**
+    8 found there, 17 not (a ministry's clerk, a county's maintenance clerk, a city's tax clerk,
+    two chimney-sweep districts, a prison archive, a Helmholtz postdoc). So about **two thirds of
+    its jobs would be new**, some 150 a day.
+- **Interamt (interamt.de, checked 2026-09-24):** the largest public-sector portal (about 60,000
+  jobs a year, run by DVZ Mecklenburg-Vorpommern). robots.txt closes only `/cms/` to every
+  crawler and closes the job pages (`/koop/`) to Jooble's, Yandex's, Ahrefs' and Majestic's
+  crawlers. The terms of use say nothing about automated reading; they describe searching job
+  offers and applying. Said to offer RSS feeds (not found yet). **Not reachable from cloud
+  sessions:** its certificate chains to "Telekom Security TLS RSA Root 2023", which the cloud
+  proxy's bundle lacks (certifi has it, so Jobcu on a computer can reach it). Overlap with
+  service.bund.de still to be measured.
+- **d.vinci (career system of many hospitals, councils and mid-sized employers, checked
+  2026-09-24):** an official **public Job Publication API**: `GET https://{customer}.dvinci-hr.com
+  /jobPublication/list.json` (or `/portal/{portal}/jobPublication/list.json`, also `.xml`),
+  "since ATS version 2022.11 … always public", documented for "job aggregators" among others
+  (static.dvinci-easy.com/files/d.vinci job-publication-api.html). Gives the position, start and
+  end dates, places with addresses, coordinates and country, the ad's parts in HTML (tasks,
+  profile, offer), contract period and working time. `fields=small` makes lists lighter. Needs a
+  list of customers, like the other career systems. **Checked live** on two customers (a
+  consultancy with 70 jobs, a UK staffing firm with 47; 80–125 KB with `fields=small`): no key,
+  robots.txt `Allow: /` (only some agency portals closed); each job has `position`, `language`,
+  `jobPublicationURL`, and `jobOpening` with `createdDate`, `locations` (town, ISO country code,
+  coordinates, address), `workingTimes` (`FULL_TIME`…) and `contractPeriod` (`UNLIMITED` =
+  permanent). `startDate` (publication date) was empty in both, so freshness would come from
+  `createdDate`. d.vinci is used in the UK and elsewhere too, not only in Germany.
+- **softgarden:** its Jobs API needs OAuth credentials from softgarden's support, so it isn't
+  usable; its career pages (`{company}.softgarden.io`) could be read through `jobposting.py` if
+  they carry JobPosting data (not checked).
+
 ## General observations
 
 - In 815 real ads (Reed + Bundesagentur, one week, electronics roles), **employer links almost

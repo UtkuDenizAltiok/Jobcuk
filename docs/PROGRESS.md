@@ -33,7 +33,22 @@ reports, or through a local session on his Mac.
 
 ### In progress
 
-Nothing.
+**Next task 1, research before building more** (cloud session, started 2026-09-24). Each step
+recorded in its home and merged before the next:
+
+- [ ] A. Source map for Germany (public-sector, teaching, health and trade routes as well as
+      general boards): candidates checked live (terms, robots.txt, format, cost) in SOURCES.md,
+      "Candidate sources by country".
+- [ ] B. The same for the UK and Ireland.
+- [ ] C. Switzerland, Belgium, the Netherlands.
+- [ ] D. Italy, Denmark, Norway (Sweden is built), Poland.
+- [ ] E. How the leading platforms find, rank and present jobs; what Jobcu adopts, and any
+      proposal for scoring (HANDOVER §11 is Decided) in DECISIONS.md.
+- [ ] F. LinkedIn and StepStone by legitimate routes: overlap with employers' sites and national
+      services, the person's AI searching the web, partner programmes.
+- [ ] G. A ranked build list in "Next tasks" (task 4), with what waits on the owner.
+
+Done when every step is recorded and the build list is ranked.
 
 ### Verify before relying on
 
