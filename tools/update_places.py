@@ -12,6 +12,12 @@ small towns too. The lists come from GeoNames' free exports, narrowed to the sup
   counties and districts.
 - `DE`: Germany's own export, for its districts (Kreise), which GeoNames keeps one level lower
   than other countries' counties.
+- `GB`: the UK's own export, for England's council districts (Thanet, Castle Point, Cannock
+  Chase…), which lie inside its counties: a fact looked up for a council district must reach
+  the towns in it.
+- The postal-code exports `GB` and `IE` (`export/zip`): the UK's postcode districts ("CB22") and
+  Ireland's Eircode routing keys ("T12"), with a point each, because some job sites give only a
+  postcode as the place ("CB22 4QR"). Written to `postcodes.csv.gz`.
 - `alternateNamesV2`: each place's and region's name in other languages, so "München" and
   "Munich", "Sachsen" and "Saxony" all work. This download is about 200 MB and is only read here,
   never shipped.
@@ -39,13 +45,19 @@ sys.path.insert(0, str(ROOT / "src"))
 from jobcu.countries import COUNTRIES  # noqa: E402
 
 DUMP = "https://download.geonames.org/export/dump"
+POSTAL = "https://download.geonames.org/export/zip"
 DATA = ROOT / "src" / "jobcu" / "data"
 TARGET = DATA / "places.csv.gz"
 REGIONS = DATA / "regions.csv.gz"
+POSTCODES = DATA / "postcodes.csv.gz"
 CREDIT = ("# Towns with at least 1,000 inhabitants in the countries Jobcu supports, with their "
           "names in the local languages. Data © GeoNames (geonames.org), licensed CC BY 4.0. "
           "Rebuilt with tools/update_places.py. Columns: names (separated by |),country,lat,lon,"
-          "people,region,district")
+          "people,region,district,area")
+POSTCODE_CREDIT = ("# The UK's postcode districts and Ireland's Eircode routing keys, with the "
+                   "middle of the places each covers. Data © GeoNames (geonames.org), licensed "
+                   "CC BY 4.0. Rebuilt with tools/update_places.py. Columns: code,country,lat,"
+                   "lon")
 REGION_CREDIT = ("# The states, provinces, counties and districts of the countries Jobcu supports, "
                  "with their names in the local languages. Data © GeoNames (geonames.org), "
                  "licensed CC BY 4.0. Rebuilt with tools/update_places.py. Columns: code,level,"
@@ -55,12 +67,16 @@ MAX_REGION_NAMES = 8
 # Countries whose districts GeoNames keeps at its third level: there the second level is a unit
 # nobody uses for facts (Germany's Regierungsbezirke).
 THIRD_LEVEL_DISTRICTS = ("DE",)
+# Countries whose third level holds council districts inside the counties of the second level;
+# they become a town's "area".
+THIRD_LEVEL_AREAS = ("GB",)
+POSTCODE_COUNTRIES = ("GB", "IE")
 
 
-def download(client: httpx.Client, name: str) -> Path:
-    target = Path(tempfile.gettempdir()) / name
-    print(f"Downloading {DUMP}/{name} …")
-    with client.stream("GET", f"{DUMP}/{name}") as response, target.open("wb") as file:
+def download(client: httpx.Client, name: str, base: str = DUMP) -> Path:
+    target = Path(tempfile.gettempdir()) / (name if base == DUMP else f"postal-{name}")
+    print(f"Downloading {base}/{name} …")
+    with client.stream("GET", f"{base}/{name}") as response, target.open("wb") as file:
         response.raise_for_status()
         for chunk in response.iter_bytes(1 << 20):
             file.write(chunk)
@@ -83,7 +99,10 @@ def main() -> int:
         cities = download(client, "cities1000.zip")
         admin1 = download(client, "admin1CodesASCII.txt")
         admin2 = download(client, "admin2Codes.txt")
-        third = {country: download(client, f"{country}.zip") for country in THIRD_LEVEL_DISTRICTS}
+        third = {country: download(client, f"{country}.zip")
+                 for country in (*THIRD_LEVEL_DISTRICTS, *THIRD_LEVEL_AREAS)}
+        postal = {country: download(client, f"{country}.zip", POSTAL)
+                  for country in POSTCODE_COUNTRIES}
         alternates = download(client, "alternateNamesV2.zip")
 
     # Regions: code → [level, country, names]; GeoNames id → code, for their other names.
@@ -101,10 +120,14 @@ def main() -> int:
             region_ids[line[3]] = line[0]
     for country, archive in third.items():
         for line in rows_of(archive, f"{country}.txt"):
-            if line[7] == "ADM3" and line[12]:
-                code = f"{country}.K.{line[12]}"
-                regions[code] = ["district", country, [line[1], line[2]]]
-                region_ids[line[0]] = code
+            if line[7] != "ADM3" or not line[12]:
+                continue
+            if country in THIRD_LEVEL_DISTRICTS:
+                code, level = f"{country}.K.{line[12]}", "district"
+            else:
+                code, level = _area_code(country, line[10], line[11], line[12]), "area"
+            regions[code] = [level, country, [line[1], line[2]]]
+            region_ids[line[0]] = code
 
     towns: dict[str, list] = {}
     languages: dict[str, set[str]] = {}
@@ -118,8 +141,10 @@ def main() -> int:
             district = f"{country}.K.{line[12]}" if line[12] else ""
         else:
             district = f"{country}.{line[10]}.{line[11]}" if line[11] else ""
+        area = _area_code(country, line[10], line[11], line[12]) if line[12] else ""
         towns[line[0]] = [names, country, f"{float(line[4]):.3f}", f"{float(line[5]):.3f}",
-                          line[14] or "0", region, district if district in regions else ""]
+                          line[14] or "0", region, district if district in regions else "",
+                          area if area in regions else ""]
         languages[line[0]] = {"en", *COUNTRIES[country].ad_languages}
     for code, (_, country, _) in regions.items():
         languages[code] = {"en", *COUNTRIES[country].ad_languages}
@@ -138,14 +163,14 @@ def main() -> int:
         extra.setdefault(key, set()).add(row[3])
 
     written = []
-    for town_id, (names, country, latitude, longitude, people, region, district) in towns.items():
+    for town_id, (names, country, latitude, longitude, people, *codes) in towns.items():
         all_names = dict.fromkeys([*names, *sorted(extra.get(town_id, ()))])
         written.append(["|".join(list(all_names)[:MAX_NAMES]), country, latitude, longitude,
-                        people, region, district])
+                        people, *codes])
     written.sort(key=lambda row: (row[1], row[0]))
     _write(TARGET, CREDIT, written)
 
-    used = {row[5] for row in written} | {row[6] for row in written}
+    used = {code for row in written for code in row[5:]}
     region_rows = []
     for code, (level, country, names) in regions.items():
         if code not in used:
@@ -155,11 +180,28 @@ def main() -> int:
                             "|".join(name for name in list(all_names)[:MAX_REGION_NAMES] if name)])
     region_rows.sort()
     _write(REGIONS, REGION_CREDIT, region_rows)
+
+    postcode_rows = []
+    for country, archive in postal.items():
+        points: dict[str, list[tuple[float, float]]] = {}
+        for line in rows_of(archive, f"{country}.txt"):
+            if line[9] and line[10]:
+                points.setdefault(line[1].upper(), []).append((float(line[9]), float(line[10])))
+        for code, spots in sorted(points.items()):
+            latitude = sum(spot[0] for spot in spots) / len(spots)
+            longitude = sum(spot[1] for spot in spots) / len(spots)
+            postcode_rows.append([code, country, f"{latitude:.3f}", f"{longitude:.3f}"])
+    _write(POSTCODES, POSTCODE_CREDIT, postcode_rows)
     print(f"{len(written):,} towns in {len({row[1] for row in written})} countries → "
           f"{TARGET.relative_to(ROOT)} ({TARGET.stat().st_size / 1024:.0f} KB); "
           f"{len(region_rows):,} regions → {REGIONS.relative_to(ROOT)} "
-          f"({REGIONS.stat().st_size / 1024:.0f} KB)")
+          f"({REGIONS.stat().st_size / 1024:.0f} KB); {len(postcode_rows):,} postcodes → "
+          f"{POSTCODES.relative_to(ROOT)} ({POSTCODES.stat().st_size / 1024:.0f} KB)")
     return 0
+
+
+def _area_code(country: str, admin1: str, admin2: str, admin3: str) -> str:
+    return f"{country}.{admin1}.{admin2}.{admin3}"
 
 
 def _write(target: Path, credit: str, rows: list[list[str]]) -> None:

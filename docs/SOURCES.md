@@ -71,6 +71,8 @@ Update this whenever a source changes or something new is learned. Decisions are
   can't read, so their conditions "couldn't be checked" and a Reed copy doesn't merge with the
   same job elsewhere. Others give a county ("Herefordshire", "Northamptonshire"). A Belfast job
   (Ernest Gordon Recruitment) came with the place "Ireland".
+  Since 2026-09-24 Jobcu reads a postcode as the town it lies in (`places.postcode_town`, from
+  GeoNames' postcode districts): "BB113BP" is Burnley, and the card says "BB113BP, near Burnley".
 
 ## Bundesagentur für Arbeit, Jobsuche (`src/jobcu/sources/bundesagentur.py`), checked 2026-09-17
 
@@ -94,7 +96,8 @@ Update this whenever a source changes or something new is learned. Decisions are
   as `stellenlokationen` (`adresse.ort`, `breite`, `laenge`); searching by title and matching
   `firma` found 5 of 42 town-less Adzuna jobs reliably.
 - **Sometimes only a state is given**, as the API's code ("BADEN_WUERTTEMBERG",
-  "SCHLESWIG_HOLSTEIN"), which cards showed as it came (search 9, 2026-09-24).
+  "SCHLESWIG_HOLSTEIN"), which cards showed as it came (search 9, 2026-09-24). Since 2026-09-24
+  it is shown and matched by the state's name ("Baden-Württemberg").
 
 ## JobsIreland.ie (`src/jobcu/sources/jobsireland.py`), checked 2026-09-17
 

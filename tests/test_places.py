@@ -112,3 +112,44 @@ def test_regions_are_found_by_their_english_local_and_short_names():
     assert places.find_region("Wales", "GB").level == "region"
     assert places.find_region("Saxony", "GB") is None
     assert places.find_region("Atlantis", "DE") is None
+
+
+def test_english_council_districts_are_areas_inside_their_county():
+    # Search 9: "Thanet" and "Castle Point" were answered as far-right places to avoid, but no
+    # town has those names, so Margate and Canvey Island passed.
+    thanet = places.find_region("Thanet", "GB")
+    assert thanet.level == "area" and thanet.name == "Thanet District"
+    margate = places.find("Margate", "GB")
+    assert margate.lies_in(thanet.code) and margate.lies_in(places.find_region("Kent", "GB").code)
+    assert not places.find("Canterbury", "GB").lies_in(thanet.code)
+    for name in ("Castle Point", "Ashfield", "Amber Valley", "Cannock Chase"):
+        assert places.find_region(name, "GB").level == "area", name
+
+
+def test_a_uk_postcode_or_an_eircode_is_the_town_it_lies_in():
+    # Search 9: Reed gave "BB113BP" and "OX281AE" as the place, so no condition could be checked.
+    assert places.locate("BB113BP", "GB").name == "Burnley"
+    assert places.locate("OX28 1AE", "GB").name == "Witney"
+    assert places.locate("BT71JL", "GB").name == "Belfast"
+    assert places.locate("S2 4AB", "GB").name == "Sheffield"  # a city's district stays the city
+    assert places.locate("CB22", "GB") is not None  # a postcode district alone
+    assert places.locate("Cork T12 X70A", "IE").name == "Cork"
+    assert places.locate("D02 XY45", "IE").name == "Dublin"
+    # A town named in the text wins over its postcode, and a postcode only counts in its country.
+    assert places.locate("Watford WD17 1AA", "GB").name == "Watford"
+    assert places.locate("BB113BP", "DE") is None
+    assert places.locate("Great Britain", "GB") is None
+
+
+def test_a_card_adds_the_town_to_a_bare_postcode():
+    from jobcu.pipeline import readable_place
+    from jobcu.sources.base import FoundJob
+
+    def card_place(text):
+        return readable_place(FoundJob(source="reed", source_job_id="1", url="u", title="t",
+                                       location_text=text, country="GB"))
+
+    assert card_place("BB113BP") == "BB113BP, near Burnley"
+    assert card_place("Burnley BB11 3BP") == "Burnley BB11 3BP"
+    assert card_place("Burnley, Lancashire") == "Burnley, Lancashire"
+    assert card_place(None) is None

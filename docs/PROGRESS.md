@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 476 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 483 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -143,7 +143,9 @@ here.
    the city, not its centre. City districts that are reference places on their own (Hamburg's
    Wandsbek, Eimsbüttel, and "Marienthal" with 287,101 people) take both "nearest" slots and
    appear on cards ("Marienthal, 53 min by car").
-   (c) **Place names the town list can't read.** Reed gives full UK postcodes as the place
+   (c) **Done (cloud, 2026-09-24): postcodes, state codes and council districts are read**
+   (DECISIONS.md, "Places Jobcu couldn't read in search 9"); check them in the next search.
+   What search 9 showed: **Place names the town list can't read.** Reed gives full UK postcodes as the place
    ("CB224QR", "S336RR": 7 cards "couldn't be checked"); the Bundesagentur sometimes gives a state
    code, shown raw ("BADEN_WUERTTEMBERG"); and 6 of the 32 UK names to avoid were council
    districts that match no town (Thanet, Thurrock, Castle Point, Ashfield, Amber Valley, Cannock
@@ -161,7 +163,9 @@ here.
    stayed at 81 without its town. It reads only languages and years: Rolls-Royce's two Adzuna
    summaries scored 85 and 75, while the same jobs from its own Workday site say UK nationals
    only (30). Read citizenship and clearance (and a required doctorate) too. It took 12 minutes.
-   (e) **Four pairs of the same job shown twice**, each for a different reason: Reed's postcode
+   (e) **Four pairs of the same job shown twice** (the postcode and "Heeley, Sheffield" pairs
+   fixed 2026-09-24; the two summaries and "Rolls-Royce (professional)" still open), each for a
+   different reason: Reed's postcode
    ("BB113BP") against Adzuna's "Burnley, Lancashire" (Corriculo, 88 and 82); two Adzuna
    summaries of a recruiter's ad, which must be full ads to merge (AMF in Castleford, 87 twice);
    "Heeley, Sheffield" against "Sheffield" (Adecco); and the directory's company name "Rolls-Royce

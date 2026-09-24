@@ -231,6 +231,17 @@ def test_bundesagentur_reads_country_types_and_first_publication_date():
     assert full.description == "Full ad text" and full.description_is_complete
 
 
+def test_bundesagentur_names_a_state_given_only_as_a_code():
+    # Search 9: cards showed "BADEN_WUERTTEMBERG" as the place.
+    item = {"referenznummer": "10001-2", "stellenangebotsTitel": "Elektroniker (m/w/d)",
+            "stellenlokationen": [{"adresse": {"region": "BADEN_WUERTTEMBERG",
+                                               "land": "DEUTSCHLAND"}}]}
+    assert bundesagentur.to_found_job(item).location_text == "Baden-Württemberg"
+    assert bundesagentur.state_name("THUERINGEN") == "Thüringen"
+    assert bundesagentur.state_name("UEBERREGIONAL") == "Ueberregional"
+    assert bundesagentur.state_name(None) is None
+
+
 def test_bundesagentur_changed_interface_is_reported_plainly():
     ctx = context(lambda request: httpx.Response(404, json={}), "bundesagentur")
     query = JobQuery(["DE"], [], [term("Hardwareentwickler", "de")], 24, NOW)

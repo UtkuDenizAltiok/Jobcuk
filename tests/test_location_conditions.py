@@ -127,6 +127,23 @@ def test_a_whole_region_decides_its_small_towns_except_the_ones_named():
     assert fits(fit, "DE", "Radeberg") == "yes" and fits(fit, "DE", "München") == "no"
 
 
+def test_council_districts_answered_as_towns_become_areas():
+    # Search 9: 6 of 32 UK places to avoid were council districts (Thanet, Castle Point…) that
+    # match no town, so jobs there passed without a word.
+    answer = CheckedCondition(
+        understood_as="Places where Reform UK came first are left out", kind="towns_to_avoid",
+        towns=[TownRef(name="Thanet", country="GB"), TownRef(name="Castle Point", country="GB"),
+               TownRef(name="Boston", country="GB")],  # a town as well: stays a town
+        confidence="checked", note="From the 2024 general election results.")
+    (condition,) = check_conditions(ScriptedClient(answer), ["no far-right towns"], ["GB"])
+    assert [t.name for t in condition.towns] == ["Boston"]
+    assert [r.name for r in condition.regions] == ["Thanet District", "Castle Point District"]
+    assert fits(condition, "GB", "Margate, Kent") == "no"
+    assert fits(condition, "GB", "Canvey Island") == "no"
+    assert fits(condition, "GB", "Boston, Lincolnshire") == "no"
+    assert fits(condition, "GB", "Canterbury") == "yes"
+
+
 def test_regions_in_the_answer_are_kept_and_unknown_ones_are_named():
     answer = CheckedCondition(
         understood_as="Places where the AfD was above its national share are left out",

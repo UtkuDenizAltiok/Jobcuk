@@ -676,8 +676,17 @@ def _research_condition(
 def _as_condition(
     text: str, answer: CheckedCondition, sources: list[Source], countries: list[str]
 ) -> Condition:
-    towns = [town for town in answer.towns if town.country in countries][:MAX_TOWNS_PER_CONDITION]
+    towns = [town for town in answer.towns if town.country in countries]
     regions, unknown = _known_regions(answer.regions, countries)
+    # Council districts are often answered as towns ("Thanet", "Castle Point"): they match no
+    # town, so without this every job in them would pass unnoticed.
+    for town in list(towns):
+        region = _region_named_like_town(town.name, [town.country])
+        if region is not None:
+            towns.remove(town)
+            if all(known.code != region.code for known in regions):
+                regions.append(region)
+    towns = towns[:MAX_TOWNS_PER_CONDITION]
     kind = answer.kind
     if kind in ("towns_that_fit", "towns_to_avoid") and not towns and not regions:
         kind = "could_not_check"
@@ -708,6 +717,18 @@ def _as_condition(
         note=note,
         sources=sources[:8],
     )
+
+
+def _region_named_like_town(name: str, countries: list[str]) -> PlaceRegion | None:
+    """A county or council district named like a town ("Thanet", "Castle Point"), when no
+    town in these countries has that name."""
+    if any(place_list.find(name, country) is not None for country in countries):
+        return None
+    for country in countries:
+        region = place_list.find_region(name, country)
+        if region is not None:
+            return PlaceRegion(code=region.code, name=region.name, country=region.country)
+    return None
 
 
 def _known_regions(
@@ -956,6 +977,10 @@ def _place_entries(
                 regions.append(region)
         elif _EXCEPT.match(name):
             typed_exceptions.append(_EXCEPT.sub("", name).strip())
+        elif name and all(normalise(known.name) != normalise(name) for known in known_towns) \
+                and (region := _region_named_like_town(name, countries)) is not None:
+            if all(known.code != region.code for known in regions):
+                regions.append(region)
         elif name:
             typed_towns.append(name)
     towns, unknown_towns = _town_refs(typed_towns, known_towns, countries)

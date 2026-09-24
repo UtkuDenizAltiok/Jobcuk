@@ -142,6 +142,24 @@ def _job_types(item: dict) -> list[str]:
     return []
 
 
+# Some jobs give only their state, as a code ("BADEN_WUERTTEMBERG"): shown and matched by name.
+_STATES = {
+    "BADEN_WUERTTEMBERG": "Baden-Württemberg", "BAYERN": "Bayern", "BERLIN": "Berlin",
+    "BRANDENBURG": "Brandenburg", "BREMEN": "Bremen", "HAMBURG": "Hamburg", "HESSEN": "Hessen",
+    "MECKLENBURG_VORPOMMERN": "Mecklenburg-Vorpommern", "NIEDERSACHSEN": "Niedersachsen",
+    "NORDRHEIN_WESTFALEN": "Nordrhein-Westfalen", "RHEINLAND_PFALZ": "Rheinland-Pfalz",
+    "SAARLAND": "Saarland", "SACHSEN": "Sachsen", "SACHSEN_ANHALT": "Sachsen-Anhalt",
+    "SCHLESWIG_HOLSTEIN": "Schleswig-Holstein", "THUERINGEN": "Thüringen",
+}
+
+
+def state_name(code: str | None) -> str | None:
+    """"BADEN_WUERTTEMBERG" → "Baden-Württemberg"; anything else as it came, made readable."""
+    if not code:
+        return None
+    return _STATES.get(code.upper(), code.replace("_", " ").title() if code.isupper() else code)
+
+
 def to_found_job(item: dict, details: dict | None = None) -> FoundJob:
     source = details or item
     ref = item.get("referenznummer") or ""
@@ -161,7 +179,7 @@ def to_found_job(item: dict, details: dict | None = None) -> FoundJob:
         url=f"https://www.arbeitsagentur.de/jobsuche/jobdetail/{ref}",
         title=(source.get("stellenangebotsTitel") or "").strip(),
         company=source.get("firma") or None,
-        location_text=", ".join(towns) or address.get("region"),
+        location_text=", ".join(towns) or state_name(address.get("region")),
         country=country,
         latitude=first.get("breite"),
         longitude=first.get("laenge"),

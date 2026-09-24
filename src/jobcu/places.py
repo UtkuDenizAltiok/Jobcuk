@@ -7,7 +7,9 @@ and measures the distance itself.
 
 The list holds every town with at least 1,000 inhabitants in the supported countries, so small
 villages and company sites are missed; those jobs are kept only when their text names the place
-(see `sources/matching.py`).
+(see `sources/matching.py`). Some job sites give only a postcode ("CB22 4QR", "T12 X70A"), so the
+UK's postcode districts and Ireland's Eircode areas are shipped too (`data/postcodes.csv.gz`),
+each with a point, and a postcode stands for the town it lies in.
 """
 
 import csv
@@ -22,6 +24,7 @@ from jobcu.text import normalise
 
 DATA = Path(__file__).resolve().parent / "data" / "places.csv.gz"
 REGIONS = Path(__file__).resolve().parent / "data" / "regions.csv.gz"
+POSTCODES = Path(__file__).resolve().parent / "data" / "postcodes.csv.gz"
 MAX_NAME_WORDS = 4  # "Frankfurt am Main", "'s-Hertogenbosch"
 EARTH_RADIUS_KM = 6371.0
 # Job ads shorten names: "Ottobrunn" for "Ottobrunn bei München", "Halle" for "Halle (Saale)".
@@ -61,19 +64,23 @@ class Town:
     latitude: float
     longitude: float
     people: int
-    # The state, province or nation, and the county or district, as codes in `regions.csv.gz`
-    # ("DE.13" is Saxony, "DE.K.14625" Landkreis Bautzen).
+    # The state, province or nation, the county or district, and (in England) the council
+    # district inside a county, as codes in `regions.csv.gz` ("DE.13" is Saxony, "DE.K.14625"
+    # Landkreis Bautzen, "GB.ENG.G5.2636057" Thanet in Kent).
     region: str = ""
     district: str = ""
+    area: str = ""
 
     def lies_in(self, code: str) -> bool:
-        return code in (self.region, self.district)
+        return code in (self.region, self.district, self.area)
 
 
 @dataclass(frozen=True)
 class Region:
     code: str
-    level: str  # "region" (a state, province or nation) or "district" (a county or district)
+    # "region" (a state, province or nation), "district" (a county or district) or "area" (a
+    # council district inside a county)
+    level: str
     country: str
     name: str
 
@@ -160,19 +167,68 @@ def locate(text: str | None, country: str | None = None) -> Town | None:
 
     Longer names win ("Frankfurt am Main" over "Frankfurt"), then the bigger town. A district
     or county counts only when no town is named besides it ("Unterhaching, München (Kreis)" is
-    Unterhaching), and a state or nation never counts ("Sachsen" is no town).
+    Unterhaching), and a state or nation never counts ("Sachsen" is no town). A location with
+    no town name but a UK postcode or an Eircode is the town that postcode lies in.
     """
     parts = [_town_of_district(part) for part in re.split(r"[,;|]", text or "")
              if normalise(part) not in _REGIONS]
     if not any(part.strip() for part in parts):
         return None
-    text = ", ".join(parts)
+    joined = ", ".join(parts)
     precise = [part for part in parts if not _DISTRICT.search(part)]
     if precise and len(precise) < len(parts):
         town = _locate(", ".join(precise), country)
         if town is not None:
             return town
-    return _locate(text, country)
+    return _locate(joined, country) or postcode_town(text, country)
+
+
+# A full UK postcode ("CB22 4QR", "S336RR") or one standing alone ("CB22"), and a full Eircode
+# ("T12 X70A"): the part before the space is the district or routing key.
+_UK_POSTCODE = re.compile(r"\b([A-Z]{1,2}\d[A-Z\d]?)\s*\d[A-Z]{2}\b")
+_UK_DISTRICT_ONLY = re.compile(r"\s*([A-Z]{1,2}\d[A-Z\d]?)\s*")
+_EIRCODE = re.compile(r"\b([AC-FHKNPRTV-Y]\d{2}|D6W)\s*[0-9AC-FHKNPRTV-Y]{4}\b")
+
+
+@cache
+def _postcodes(path: Path = POSTCODES) -> dict[tuple[str, str], tuple[float, float]]:
+    with gzip.open(path, "rt", encoding="utf-8") as file:
+        return {(country, code): (float(latitude), float(longitude))
+                for code, country, latitude, longitude
+                in csv.reader(line for line in file if not line.startswith("#"))}
+
+
+def postcode_town(text: str | None, country: str | None = None) -> Town | None:
+    """The town a UK postcode or an Eircode in the text lies in, or None."""
+    text = (text or "").upper()
+    candidates = []
+    if country in (None, "GB"):
+        candidates += [("GB", m.group(1)) for m in _UK_POSTCODE.finditer(text)]
+        if (alone := _UK_DISTRICT_ONLY.fullmatch(text)) is not None:
+            candidates.append(("GB", alone.group(1)))
+    if country in (None, "IE"):
+        candidates += [("IE", m.group(1)) for m in _EIRCODE.finditer(text)]
+    for key in candidates:
+        if key in _postcodes():
+            return _town_at(*_postcodes()[key], key[0])
+    return None
+
+
+@cache
+def _town_at(latitude: float, longitude: float, country: str) -> Town | None:
+    """The town a point lies in: the biggest town whose built-up area reaches it (roughly, from
+    its population: about 1.5 km for a village, 8 km for Sheffield, 23 km for London), or else
+    the nearest town. A city's own districts in the list must not win over the city."""
+    nearest: tuple[float, Town] | None = None
+    inside: Town | None = None
+    for town in towns_in(country):
+        distance = km(latitude, longitude, town.latitude, town.longitude)
+        if nearest is None or distance < nearest[0]:
+            nearest = (distance, town)
+        reach = max(1.5, 0.6 * (town.people / 1000) ** 0.4)
+        if distance <= reach and (inside is None or town.people > inside.people):
+            inside = town
+    return inside or (nearest[1] if nearest else None)
 
 
 _HYPHENATED = re.compile(r"\b(\w+)-(\w+(?:-\w+)*)\b")

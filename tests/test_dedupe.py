@@ -82,3 +82,18 @@ def test_a_country_or_region_alone_never_stops_a_match():
     groups = group_duplicates([job("adzuna", "1", city="Munich"), job("board", "9", city="Berlin")],
                               kinds)
     assert len(groups) == 2
+
+
+def test_a_postcode_or_a_district_is_the_same_place_as_its_town():
+    # Search 9: Reed's "BB113BP" and Adzuna's "Burnley, Lancashire" were shown as two jobs, and
+    # so were "Heeley, Sheffield" and "Sheffield".
+    def uk(source, job_id, city):
+        return FoundJob(source=source, source_job_id=job_id, url=f"https://{source}/{job_id}",
+                        title="Electronics Design Engineer", company="Corriculo Ltd",
+                        location_text=city, country="GB")
+
+    kinds = {"adzuna": "aggregator", "reed": "job_board"}
+    for a, b in (("BB113BP", "Burnley, Lancashire"), ("Heeley, Sheffield", "Sheffield")):
+        assert len(group_duplicates([uk("reed", "1", a), uk("adzuna", "2", b)], kinds)) == 1, a
+    assert len(group_duplicates([uk("reed", "1", "BB113BP"), uk("adzuna", "2", "Leeds")],
+                                kinds)) == 2
