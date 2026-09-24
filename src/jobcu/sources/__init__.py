@@ -13,6 +13,7 @@ from jobcu.sources.jobsireland import JobsIrelandSource
 from jobcu.sources.jobtech import JobTechSource
 from jobcu.sources.leforem import LeForemSource
 from jobcu.sources.lever import LeverSource
+from jobcu.sources.nav import NavSource
 from jobcu.sources.nhsjobs import NhsJobsSource
 from jobcu.sources.prospective import ProspectiveSource
 from jobcu.sources.recruitee import RecruiteeSource
@@ -38,4 +39,4 @@ def all_sources() -> list[JobSource]:
     return [AdzunaSource(), ArbeitnowSource(), JobTechSource(), BundesagenturSource(),
             ServiceBundSource(), EuraxessSource(), JobsAcUkSource(), JobsIrelandSource(),
             ReedSource(), TeachingVacanciesSource(), NhsJobsSource(), LeForemSource(),
-            WerkenVoorNederlandSource(), *career_sources()]
+            WerkenVoorNederlandSource(), NavSource(), *career_sources()]
