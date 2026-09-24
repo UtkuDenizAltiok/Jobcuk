@@ -210,6 +210,23 @@ def test_clear_cases_need_no_route_look_up():
     assert travel.detail(condition, far_away)[0].startswith("nearest is Munich")
 
 
+def test_a_job_anywhere_in_an_eligible_city_needs_no_trip():
+    # Search 8 measured "Moosach, München" (an address 7 km from the centre) as 27 minutes to
+    # Munich. A reference place is where the person would live: a job in one needs nothing more.
+    condition = near(minutes=10)
+    moosach = group("Moosach, München", "1", latitude=48.180, longitude=11.510)
+    augsburg = group("Augsburg", "2", latitude=48.330, longitude=10.960)  # an outer district
+    meter().measure([condition], [moosach, augsburg], [0, 1])  # no Google request at all
+    assert condition_fit(condition, moosach) == "yes"
+    assert travel.detail(condition, moosach)[0] == "in Munich"
+    assert condition_fit(condition, augsburg) == "yes"
+    # By distance too, and a town of the same name far away is another town.
+    by_km = near(max_km=1, minutes=None)
+    assert condition_fit(by_km, moosach) == "yes"
+    other = travel.Point(47.49, 11.10, "DE", "address", "Munich")  # in Garmisch
+    assert travel.home_town(other, travel.anchor_towns(by_km.anchor, "DE")) is None
+
+
 def test_a_close_call_is_measured_from_the_ads_own_place_only():
     # A company can have several sites with the same name, so Jobcu never looks up a company's
     # address elsewhere: the place the ad names is what counts (the owner's decision).

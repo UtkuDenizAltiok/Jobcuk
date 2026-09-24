@@ -56,6 +56,9 @@ MODE_WORDS = {"transit": "by public transport", "drive": "by car", "walk": "on f
 FASTEST_KMH = {"transit": 220, "drive": 120, "bicycle": 25, "walk": 7}
 # A job this close to a reference town's centre is in that town.
 IN_TOWN_KM = 3.0
+# A job whose ad names a reference town is in it, wherever in the town its address is ("Moosach,
+# München" is Munich), unless the address is this far away: then it's another town of that name.
+HOME_TOWN_KM = 30.0
 # How many of the nearest reference places are asked about for each job. The nearest by straight
 # line is almost always the fastest; a second keeps a margin without doubling Google's use.
 NEAREST = 2
@@ -184,6 +187,8 @@ def answer(condition: Condition, group: JobGroup) -> str:
         if point is None:
             return "unknown"
         towns = anchor_towns(condition.anchor, point.country)
+        if home_town(point, towns) is not None:
+            return "yes"
         near = [town for town in towns if distance(point, town) <= condition.max_km]
         return "yes" if near else "no"
     entry = condition.travel.get(job_key(group))
@@ -193,6 +198,19 @@ def answer(condition: Condition, group: JobGroup) -> str:
     if minutes and min(minutes) <= (condition.max_minutes or 0):
         return "yes"
     return "no"
+
+
+def home_town(point: Point, towns: list[place_list.Town]) -> place_list.Town | None:
+    """The reference place the job is in, if it's in one: then there is no trip to measure. A
+    reference place is where the person would live (the owner, 2026-09-24), so a job in one
+    needs nothing more."""
+    if point.town:
+        named = normalise(point.town)
+        for town in towns:
+            if normalise(town.name) == named and distance(point, town) <= HOME_TOWN_KM:
+                return town
+    nearest = min(towns, key=lambda town: distance(point, town), default=None)
+    return nearest if nearest is not None and distance(point, nearest) <= IN_TOWN_KM else None
 
 
 def detail(condition: Condition, group: JobGroup) -> tuple[str, str] | None:
@@ -346,8 +364,9 @@ class TravelMeter:
             if not ranked:
                 condition.travel[key] = {"minutes": {}, "by": "distance", "from": point.how}
                 continue
-            if ranked[0][0] <= IN_TOWN_KM:
-                condition.travel[key] = {"minutes": {ranked[0][1].name: 0}, "by": "distance",
+            home = home_town(point, towns)
+            if home is not None:
+                condition.travel[key] = {"minutes": {home.name: 0}, "by": "distance",
                                          "from": point.how}
                 continue
             reachable = [town for km, town in ranked if km <= reach_km][:NEAREST]

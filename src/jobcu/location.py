@@ -321,22 +321,25 @@ at least 0.3% of the country's people", "at least 100,000 inhabitants", "a big c
 min_people, or min_share_of_country as a fraction (0.003 for 0.3%). For vague wording like "a \
 big city", use a sensible number and say so in understood_as. The app has the figures itself.
 - "near" when the job must be within reach of some OTHER place: a travel time or a distance TO \
-reference places. Give max_minutes with travel_mode (transit for public transport, drive, walk, \
-bicycle; transit when they say "by train" or "commute" without a car), or max_km for a \
-distance. In anchor, describe the reference places: min_people or min_share_of_country for \
-towns of a size ("a city" without a size: a sensible number, said in understood_as), named for \
-towns they name (with countries), needs_the_web with look_up for any fact about the places \
-that must be looked up (a university, an international airport, election results, anything). \
-These can be combined: the places must fit every part. Example: "at most 50 minutes by public \
-transport to a city with at least 0.3% of the country's people" is near, max_minutes 50, \
-transit, anchor min_share_of_country 0.003: a job in a small town next to a big city fits. \
-"Within 30 km of Dublin" is near, max_km 30, anchor named Dublin.
-- Conditions can belong together. When the person also sets a condition about kinds of places \
-(for example "no cities where far-right parties are strong") and a travel limit to other \
-places, think about where they mean it: the job's own town, the places they'd travel from, or \
-both. For the places they'd travel from, add it to that near condition's anchor (needs_the_web, \
-look_up in the other condition's exact words); for the job's own town, keep it as its own \
-condition. When unsure, apply it to both, and say so in understood_as.
+reference places. Every travel time or distance is "near", also when the reference places must \
+be looked up first: the app measures the travel itself. Give max_minutes with travel_mode \
+(transit for public transport, drive, walk, bicycle; transit when they say "by train" or \
+"commute" without a car), or max_km for a distance. In anchor, describe the reference places: \
+min_people or min_share_of_country for towns of a size ("a city" without a size: a sensible \
+number, said in understood_as), named for towns they name (with countries), needs_the_web with \
+look_up for any fact about the places that must be looked up (a university, an international \
+airport, election results, anything). These can be combined: the places must fit every part. \
+Example: "at most 50 minutes by public transport to a city with at least 0.3% of the country's \
+people" is near, max_minutes 50, transit, anchor min_share_of_country 0.003: a job in a small \
+town next to a big city fits, and a job in such a city fits without any trip (the app works that \
+out). "Within 30 km of Dublin" is near, max_km 30, anchor named Dublin.
+- Conditions can belong together. The reference places of a travel limit are usually where the \
+person would live and commute from. So when they also set a condition about the kind of place \
+(for example "no cities where far-right parties are strong", "a city with a university"), it \
+belongs to the reference places: add it to that near condition's anchor (needs_the_web, \
+look_up in the other condition's exact words), so a place that fails it is never one they'd \
+commute from. Keep it as its own condition for the job's own town as well, unless their words \
+limit it to where they live. Say in understood_as where it applies.
 - "needs_the_web" when facts about the job's own town, region or country must be looked up: \
 election results, opening hours, shops, students, universities, weather, rankings, laws, \
 anything at all.
@@ -351,8 +354,10 @@ You check ONE condition about places for a personal job search app, using live w
 
 - Work out what the condition means, then find the facts that decide it, from current, reliable \
 sources (official statistics, election results, the places' own websites, quality news).
-- Answer with: how you read the condition; the towns in the countries given that satisfy it, OR \
-the towns to avoid; the figures you used; and the sources.
+- Answer with: how you read the condition; the towns in the countries given that the PERSON \
+WOULD ACCEPT, OR the towns the PERSON DOESN'T WANT, saying plainly which of the two your list \
+is ("I don't want a lot of rain": the rainy towns are ones they don't want); the figures you \
+used; and the sources.
 - The app treats every town you don't list as the opposite, so a list must be complete. List the \
 side that is the MINORITY of places, as completely as the sources allow, small towns included: \
 when the condition holds for most places ("below the national average", "not a stronghold"), \
@@ -385,6 +390,11 @@ your answer, so be brief and concrete.
 STRUCTURE_SYSTEM = """\
 Turn the research notes into the app's format. Use only what the notes say.
 
+Decide the kind from the PERSON'S wish in the condition, not from the fact: towns the person \
+would accept are towns_that_fit, towns they don't want are towns_to_avoid. For "I don't want to \
+live somewhere with a lot of rain", a list of rainy towns is towns_to_avoid; for "a town with a \
+university", a list of university towns is towns_that_fit.
+
 - kind "town_size" when the condition is about how big a town must be: fill min_people, or \
 min_share_of_country (0.003 for 0.3% of the country's people), and leave towns empty.
 - kind "towns_that_fit" when the notes name the towns that satisfy the condition (every other \
@@ -394,6 +404,9 @@ fine).
 - For both, a whole state, province, nation, county or district the notes decide goes in \
 regions (its usual name, with its country), and the towns inside it that the notes say are the \
 other way go in exceptions. Towns outside those regions go in towns.
+- towns and exceptions are town names, never constituencies or wards: "Boston and Skegness" is \
+Boston and Skegness, "Leipzig II" is part of Leipzig (name Leipzig only if the notes say it \
+holds for the whole town).
 - kind "countries_that_fit" or "countries_to_avoid" when the condition is decided for whole \
 countries: fill countries (two-letter codes) and leave towns empty.
 - kind "could_not_check" only when the notes give nothing usable. A rule the notes reason out \

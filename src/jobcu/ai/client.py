@@ -47,6 +47,19 @@ MAX_OUTAGE_RETRIES = 4
 MAX_WAIT_SECONDS = 300
 
 
+# Thinking counts towards the output limit with every provider, but only what is used is paid
+# for. Each request gets this room on top of its answer: without it, medium thinking cut off the
+# answer of the step that sorts location conditions (2,000 tokens), and Jobcu fell back to
+# looking everything up on the web (2026-09-24).
+THINKING_ROOM = {"minimal": 1_000, "low": 4_000, "medium": 12_000, "high": 16_000}
+MAX_OUTPUT_TOKENS = 32_000  # within every current provider's own limit
+
+
+def with_thinking_room(max_output_tokens: int, effort: Effort | None) -> int:
+    return min(max_output_tokens + THINKING_ROOM.get(effort or "", 0),
+               max(max_output_tokens, MAX_OUTPUT_TOKENS))
+
+
 class AIClient:
     # Models that rejected a reasoning setting, remembered while Jobcu runs.
     _effort_unsupported: ClassVar[set[tuple[str, str]]] = set()
@@ -131,7 +144,7 @@ class AIClient:
                     schema=schema,
                     schema_name=output.__name__,
                     effort=effort,
-                    max_output_tokens=max_output_tokens,
+                    max_output_tokens=with_thinking_room(max_output_tokens, effort),
                 )
             except AIRateLimited as exc:
                 rate_waits += 1
@@ -222,7 +235,7 @@ class AIClient:
                     system=system,
                     prompt=prompt,
                     max_searches=min(max_searches, left),
-                    max_output_tokens=max_output_tokens,
+                    max_output_tokens=with_thinking_room(max_output_tokens, effort),
                     effort=effort,
                 )
                 break

@@ -16,7 +16,7 @@ from jobcu.ai.base import (
     Source,
     Usage,
 )
-from jobcu.ai.client import AIClient, check_setup
+from jobcu.ai.client import THINKING_ROOM, AIClient, check_setup, with_thinking_room
 from jobcu.ai.usage import UsageLog, total_tokens
 from jobcu.keystore import KeyStore
 from jobcu.settings import Settings
@@ -136,7 +136,17 @@ def test_cut_off_answer_retries_with_more_room(settings):
     adapter = ScriptedAdapter(AIOutputTruncated("cut"), GOOD)
     client, _ = make_client(settings, adapter)
     generate(client)
-    assert adapter.calls[1]["max_output_tokens"] == 2 * adapter.calls[0]["max_output_tokens"]
+    room = THINKING_ROOM[settings.ai.scoring_effort]
+    first, second = (call["max_output_tokens"] - room for call in adapter.calls)
+    assert second == 2 * first  # the answer's own room doubles; thinking keeps its room
+
+
+def test_thinking_gets_room_on_top_of_the_answer(settings):
+    # Medium thinking cut off a 2,000-token answer (2026-09-24): thinking counts as output.
+    assert with_thinking_room(2_000, "medium") == 2_000 + THINKING_ROOM["medium"]
+    assert with_thinking_room(2_000, None) == 2_000
+    assert with_thinking_room(30_000, "high") == 32_000  # within the providers' own limits
+    assert with_thinking_room(40_000, "high") == 40_000
 
 
 def test_monthly_token_limit_stops_ai_work(settings):

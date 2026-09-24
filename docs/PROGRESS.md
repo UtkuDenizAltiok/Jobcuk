@@ -34,7 +34,7 @@ city he'd live in: a job in such a city needs no trip, and the cities commuted f
 the other conditions. Adzuna "causes problems all the time": decide what to do with it. Steps:
 
 1. [x] Record the usage and the cost answer (DECISIONS.md; drop the cost question).
-2. [ ] Travel limits: a job whose own town is an eligible reference place is in it (0 minutes,
+2. [x] Travel limits: a job whose own town is an eligible reference place is in it (0 minutes,
    no Google request), wherever in that town its address is (search 8 measured "Moosach,
    München" as 27 minutes to Munich). Say in the AI's instructions, for any wording, that
    reference places are usually where the person would live, so conditions about the kind of
