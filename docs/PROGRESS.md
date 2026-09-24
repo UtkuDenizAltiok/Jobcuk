@@ -36,10 +36,10 @@ reports, or through a local session on his Mac.
 **Next task 1, research before building more** (cloud session, started 2026-09-24). Each step
 recorded in its home and merged before the next:
 
-- [ ] A. Source map for Germany (public-sector, teaching, health and trade routes as well as
+- [x] A. Source map for Germany (public-sector, teaching, health and trade routes as well as
       general boards): candidates checked live (terms, robots.txt, format, cost) in SOURCES.md,
       "Candidate sources by country".
-- [ ] B. The same for the UK and Ireland.
+- [x] B. The same for the UK and Ireland.
 - [ ] C. Switzerland, Belgium, the Netherlands.
 - [ ] D. Italy, Denmark, Norway (Sweden is built), Poland.
 - [ ] E. How the leading platforms find, rank and present jobs; what Jobcu adopts, and any

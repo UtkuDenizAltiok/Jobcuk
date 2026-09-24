@@ -430,6 +430,47 @@ systems the directory doesn't read.
   usable; its career pages (`{company}.softgarden.io`) could be read through `jobposting.py` if
   they carry JobPosting data (not checked).
 
+### The UK and Ireland
+
+What Jobcu already has: Reed, Adzuna (UK only), Arbeitnow's UK list, jobs.ac.uk, EURAXESS,
+JobsIreland.ie and the career systems. Missing: schools, the health services and councils,
+which employ a large share of people in both countries and rarely post on commercial boards.
+
+- **Teaching Vacancies (England's schools, Department for Education, checked 2026-09-24).** An
+  **official open API**: `GET https://teaching-vacancies.service.gov.uk/api/v1/jobs.json?page=N`,
+  no key, 100 jobs a page, **newest first** (`meta.count` 6,847 live jobs, 69 pages; about 230
+  posted by midday on a Thursday). Every job is **schema.org JobPosting**: `title`, `datePosted`
+  (day), the **full ad** as HTML in `description`, `employmentType` (`FULL_TIME`, `PART_TIME`…),
+  `jobLocation` with street, town, postcode and `addressCountry` GB, `hiringOrganization`,
+  `validThrough`, `occupationalCategory` (teacher, teaching_assistant, other_support,
+  administration_hr_data_and_finance, catering_cleaning_and_site_management…), `url`.
+  **Terms for API users:** listings may be reused under the **Open Government Licence**, except
+  that no fee may be charged for hiring someone found through them. robots.txt allows everything
+  except search pages with parameters, `/documents/` and a few others. A 24-hour search is about
+  3 requests. Clearly permitted.
+- **NHS Jobs (the NHS in England and Wales, NHS Business Services Authority, checked
+  2026-09-24).** An **open XML search feed**: `GET https://www.jobs.nhs.uk/api/v1/search_xml?
+  sort=publicationDateDesc&limit=100&page=N` (without `limit` 10 a page; `pageSize` and `size`
+  are ignored), also `keyword=…`. `totalResults` 12,712 live jobs; the newest ten were posted
+  within 12 minutes, so roughly **1,000 a day** (about 10 requests for a 24-hour search, fewer
+  with keywords). Each `vacancyDetails`: `id`, `reference`, `title`, a ~150-character
+  `description`, `employer`, `type` (Permanent, Fixed-Term, Bank…), `salary`, `closeDate`,
+  **`postDate` (exact time)**, `url`, `locations` ("Bradford, BD9 6RJ"). `location=Leeds&
+  distance=10` with a keyword returned 0 (to test again). **Job pages**
+  (`/candidate/jobadvert/{reference}`) carry the full ad, date posted, contract, working pattern
+  and pay band, **no** JobPosting data. **No robots.txt** (the address answers an HTML page).
+  **Terms** (Candidate Terms and Conditions, 22 July 2025) are about accounts, applications and
+  data protection; nothing about automated reading. Its jobs include GP practices, hospices and
+  charities, not only NHS trusts.
+- **To check when building for the UK:** NHS Scotland (`apply.jobs.scot.nhs.uk`, no robots.txt);
+  myjobscotland (Scotland's councils: robots.txt closes `/api/`; its sitemap lists categories and
+  organisations, not single jobs); HSC jobs in Northern Ireland (`jobs.hscni.net`, no
+  robots.txt).
+- **Ireland, to check when building:** the HSE's CareerHub (`careerhub.hse.ie`, a WordPress site
+  whose RSS feed is its WordPress posts, not jobs; robots.txt empty); **educationposts.ie** (Irish school jobs; robots.txt closes
+  `/api/`, `/teacher/` and account pages; its job list address wasn't found at `/posts/`).
+  publicjobs.ie refuses automated requests (above).
+
 ## General observations
 
 - In 815 real ads (Reed + Bundesagentur, one week, electronics roles), **employer links almost
