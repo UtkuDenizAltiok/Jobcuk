@@ -6,12 +6,12 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 471 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 476 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
 Jobcu works end to end. A search reads the documents with the person's own AI, collects jobs from
-24 sources (10 of them company career systems, reading 368 employers), removes duplicates, applies
+25 sources (11 of them company career systems, reading 372 employers), removes duplicates, applies
 the rules and the location conditions, and scores what's left. The location box takes any
 condition in the person's own words (sizes, facts the AI looks up per town, per region or per
 country, travel limits to reference places), shows how each was checked, with sources, and can
@@ -27,13 +27,16 @@ room for thinking on top of each answer. Adzuna stays as the biggest source, but
 reads its pages (its firewall refuses them) and merges its "Deutschland" ads with the same job
 elsewhere. Phase 1 waits only on the quality set the owner rates; most of Phase 2 is built.
 
-The first cloud session (2026-09-24) researched sources for every kind of work per country
-(SOURCES.md, "Candidate sources by country") and built eight: public-sector jobs in Germany
-(service.bund.de), England's schools (Teaching Vacancies), the NHS, Belgium (Le Forem's open data),
-Swiss employers (prospective.ch), the Dutch government (Werken voor Nederland), Norway (NAV) and
-hospitals on d.vinci. Cards show closing dates and reposts. The AI instructions were made universal
-and checked with five made-up people from other fields (`tools/universality_check.py`), which found
-and fixed a language bug that capped good jobs at 65 for anyone with a CV not in English.
+The first cloud session (2026-09-24) researched sources per country (SOURCES.md, "Candidate sources
+by country") and built public-sector and national sources (service.bund.de, Teaching Vacancies, NHS
+Jobs, Le Forem, Werken voor Nederland, NAV) and career systems (prospective.ch, d.vinci, Eightfold
+with Infineon, Qualcomm, Ericsson and Vodafone). Cards show closing dates and reposts. The AI
+instructions were made universal (`tools/universality_check.py`), which fixed a language bug that
+capped good jobs at 65 for anyone with a CV not in English. robots.txt is now read as the standard
+says. Then the owner set the priorities (DECISIONS.md, "The owner's priorities"): Germany, the UK
+and Ireland, and a graduate power-electronics engineer first; `tools/made_up_search.py` measures a
+whole search for such a person, and showed that the directory's career sites still find almost
+nothing for him.
 
 From 2026-09-24 development runs in Claude Code cloud sessions (AGENTS.md, "Working in a cloud
 session"): no access to the owner's data there, so his searches and ratings come back as his
@@ -45,6 +48,9 @@ Nothing.
 
 ### Verify before relying on
 
+- **The robots.txt reader** (RFC 9309, 2026-09-24): Workday and SuccessFactors companies now
+  read differently where their robots.txt has Allow lines after a Disallow. Check that no
+  company newly read is one that clearly forbids it (the next `tools/check_employers.py` run).
 - **The new sources inside a full search** (service.bund.de, Teaching Vacancies, NHS Jobs, Le Forem,
   prospective.ch, Werken voor Nederland, NAV, d.vinci; closing dates and reposts, 2026-09-24): each
   was checked live on its own with a made-up person, never inside a whole search. On the owner's
@@ -117,17 +123,24 @@ here.
 1. **Findings from the owner's own searches**, whenever a local session records them here: they
    come before everything else.
 2. **More employer career sites of engineering and tech companies in Germany, the UK and
-   Ireland.** The first full cloud search (DECISIONS.md, 2026-09-24 evening) found no job at all
-   through the directory's career sites for a hardware engineer around Munich or in Dublin. In
-   order: (a) **Eightfold**, the career system behind jobs.infineon.com (robots.txt allows its
-   career pages; a sitemap lists every job with the title in its address, and job pages carry
-   JobPosting with the exact time, place and full ad; SOURCES.md to be written), then other
-   big electronics employers on it; (b) **Personio** and **softgarden** career pages (many
-   German engineering SMEs; check terms, robots.txt and JobPosting first); (c) more employers on
-   the systems Jobcu reads (Workday, SuccessFactors, Teamtailor, Greenhouse, d.vinci):
-   semiconductors, power electronics, automotive and industrial electronics, drives, defence,
-   medical devices, test and measurement, energy, in Germany first. Measure each step with a
-   full search for the made-up graduate power-electronics engineer.
+   Ireland.** The first full cloud searches (DECISIONS.md, 2026-09-24 evening) found no job at
+   all through the directory's career sites for a hardware engineer around Munich or in Dublin.
+   **Measure every step** with `tools/made_up_search.py` (the made-up graduate
+   power-electronics engineer; its own data folder), over **72 hours** too: 24 hours is too
+   narrow to tell sources apart. Baseline (2026-09-24, 24 hours, "Munich or within 40 km, or
+   Dublin", no Adzuna key in the cloud): 5 jobs shown before Eightfold, 7 after; career sites 0
+   both times. In order:
+   (a) Done 2026-09-24: **Eightfold** (Infineon, Qualcomm, Ericsson, Vodafone) and robots.txt
+   read as RFC 9309. Next: find out whether the robots fix now lets more Workday and
+   SuccessFactors companies through (compare `tools/check_employers.py` before and after), and
+   add Micron's Eightfold site if its Workday list is gone.
+   (b) **Personio** and **softgarden** career pages (many German engineering SMEs; check terms,
+   robots.txt and JobPosting first), and **Avature** (Siemens, Siemens Energy).
+   (c) More employers on the systems Jobcu reads (Workday, SuccessFactors, Teamtailor,
+   Greenhouse, d.vinci, Eightfold): semiconductors, power electronics, automotive and industrial
+   electronics, drives, defence, medical devices, test and measurement, energy; Germany first,
+   then the UK and Ireland (Cork, Limerick, Galway, Dublin; Cambridge, Bristol, Manchester…).
+   Candidates already seen: Rohde & Schwarz, Renesas, Arm, Bosch (SOURCES.md, career systems).
 3. **The best legal routes to the jobs on LinkedIn and StepStone:** the person's AI searches the
    web for fresh jobs (HANDOVER §9.6), and each is shown once Jobcu confirms it at a source it
    may read, above all the employer's own career page (DECISIONS.md, 2026-09-24 evening).
@@ -222,11 +235,11 @@ here.
 
 ### Phase 3: Maximum coverage
 
-- [x] 24 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
+- [x] 25 sources: Adzuna, Reed, Bundesagentur für Arbeit, service.bund.de, JobsIreland.ie,
       jobs.ac.uk, Teaching Vacancies, NHS Jobs, Le Forem, Werken voor Nederland, NAV,
-      EURAXESS, Arbeitnow, Arbetsförmedlingen, and company career sites in 10 systems
+      EURAXESS, Arbeitnow, Arbetsförmedlingen, and company career sites in 11 systems
       (Greenhouse, Lever, Ashby, Workable, Recruitee, Workday, Teamtailor, SuccessFactors,
-      prospective.ch, d.vinci) for 368 employers
+      prospective.ch, d.vinci, Eightfold) for 372 employers
 - [x] Per-source status, unique-job counts and on/off switches
 - [ ] A source for every supported country (HANDOVER §9.0)
 - [ ] More career systems and employers; live AI web search for jobs (HANDOVER §9.6)

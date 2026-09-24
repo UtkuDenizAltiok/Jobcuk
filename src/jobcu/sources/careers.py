@@ -23,7 +23,6 @@ from datetime import datetime
 from functools import cache
 from pathlib import Path
 from urllib.parse import urlsplit
-from urllib.robotparser import RobotFileParser
 
 import httpx
 
@@ -34,7 +33,7 @@ from jobcu.location import Place
 from jobcu.placenames import OTHER, countries_in, is_europe_wide
 from jobcu.sources.base import FoundJob, JobQuery, JobSource, SourceContext, SourceError
 from jobcu.sources.budget import BudgetExhausted, Limits, RequestBudget
-from jobcu.sources.http import Blocked
+from jobcu.sources.http import Blocked, RobotsRules
 from jobcu.sources.matching import DEFAULT_RADIUS_KM, matches_places, matches_terms
 from jobcu.text import normalise
 
@@ -198,22 +197,20 @@ class CareerSystemSource(JobSource):
         site and search; a site without robots.txt allows everything, one that refuses to show
         it allows nothing."""
         host = urlsplit(url).hostname or ""
-        robots: dict[str, RobotFileParser] = self.__dict__.setdefault("_robots", {})
+        robots: dict[str, RobotsRules] = self.__dict__.setdefault("_robots", {})
         if host not in robots:
-            parser = RobotFileParser()
             try:
                 response = ctx.http.get(f"https://{host}/robots.txt")
                 ctx.report.requests += 1
             except Exception:
                 response = None
             if response is not None and response.status_code in (401, 403):
-                parser.disallow_all = True
+                robots[host] = RobotsRules(disallow_all=True)
             elif response is not None and response.status_code == 200:
-                parser.parse(response.text.splitlines())
+                robots[host] = RobotsRules(response.text)
             else:
-                parser.allow_all = True
-            robots[host] = parser
-        return robots[host].can_fetch("Jobcu", url)
+                robots[host] = RobotsRules(allow_all=True)
+        return robots[host].allows(url)
 
     def get_json(self, url: str, ctx: SourceContext, **kwargs):
         response = self.get(url, ctx, **kwargs)

@@ -409,6 +409,12 @@ short script with that `JOBCU_DATA_DIR`.
   2,000-token answer; `ai/client.py` now adds room for thinking to every request.
 - **A site that blocks Jobcu stays blocked.** Find the data another way (the same job elsewhere,
   the person's AI reading it online) instead of trying again each search.
+- **Python's robots.txt reader gets the standard wrong.** `urllib.robotparser` takes the first
+  matching rule, so "Disallow: /" followed by "Allow: /careers" refused allowed pages. Use
+  `sources.http.RobotsRules` (RFC 9309: the longest rule wins).
+- **Measure coverage with a whole search, not a source on its own.** Each new source looked fine
+  alone; only `tools/made_up_search.py` showed that the directory's career sites gave nothing
+  for a hardware engineer around Munich or in Dublin.
 - The secrets check can flag public identifiers. Only if a value is clearly not a secret, add
   `# jobcu-guard: allow` with a comment explaining why.
 
