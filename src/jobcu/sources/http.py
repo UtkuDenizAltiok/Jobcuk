@@ -60,6 +60,8 @@ SITE_INTERVALS = {
     "www.service.bund.de": 30.0,
     # The Dutch government's job site: its robots.txt allows "Request-rate: 10/1".
     "www.werkenvoornederland.nl": 0.3,
+    # NAV's job feed (Norway): no stated limit; each full ad is one small answer.
+    "pam-stilling-feed.nav.no": 0.5,
 }
 
 

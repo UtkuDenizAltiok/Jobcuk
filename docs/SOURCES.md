@@ -387,6 +387,38 @@ The Dutch central government's own job site: ministries, agencies, courts, the t
   (2026-09-24, deliberately broad words "Beleidsmedewerker", "Jurist", "Adviseur", 72 hours):**
   43 jobs before the 80-page cap, from the Foreign Office, the tax office, a court, Defence.
 
+## NAV Arbeidsplassen, Norway (`src/jobcu/sources/nav.py`), checked 2026-09-24
+
+Norway's public employment service and its job ad database (every kind of work: municipal
+care homes, hospitals, shops, trades, offices).
+
+- **The stilling-feed** (navikt.github.io/pam-stilling-feed): `GET https://pam-stilling-feed.nav
+  .no/api/v1/feed` with `Authorization: Bearer <token>` and `If-Modified-Since` (RFC 1123), then
+  `next_url` page by page (1,000 entries an answer, about 500 KB). Since yesterday noon: **2,394
+  new or changed entries in 4 requests**. Each entry: `title`, `businessName`, `municipal`,
+  `status` (ACTIVE/INACTIVE), `date_modified`, `uuid`. **An ad changed twice appears twice**, so
+  Jobcu reads each `uuid` once.
+- **The public token** is served at `/api/publicToken` as text ("Current public token for Nav
+  Job Vacancy Feed:" and the token), "for experimentation", rotating at irregular intervals; Jobcu
+  fetches it each search. A **private token** is issued on request by e-mail with a name, contact
+  and written acceptance of the terms (a question for the owner, PROGRESS.md).
+- **Full entry:** `GET /api/v1/feedentry/{uuid}` gives `ad_content`: `title`, `jobtitle`,
+  `published` (Norwegian midnight, so a day), `expires`, `updated`, **`applicationDue`**
+  ("2026-10-18T00:00:00", or words like "snarest"), `workLocations` (country "NORGE", city,
+  municipal, county, postcode), `employer` (name, organisation number, description),
+  `engagementtype` (Fast, Vikariat, Engasjement, Sesong, Lærling…), `extent` (Heltid/Deltid),
+  **`applicationUrl`** (the employer's own application system), `link` (arbeidsplassen.nav.no),
+  `categoryList` (**ESCO**, JANZZ and STYRK-08 occupation codes), `description` (HTML), and
+  `contactList` with **names, e-mails and phone numbers** (personal data: Jobcu never keeps it).
+- **Terms** (arbeidsplassen.nav.no/vilkar-api): "Alle kan bruke tenesta", free; ads must be
+  removed when they become inactive and updated when they change; the apply function must
+  deep-link to the original application system (Jobcu's main link is `applicationUrl`);
+  Norwegian data protection rules apply to personal data in ads. No stated rate limit; Jobcu
+  waits 0.5 s. The old public-feed API was switched off on 1 May 2025.
+- **Live run (2026-09-24, a made-up nurse, 24 hours, "Sykepleier" and two variants):** 37
+  distinct ads from 54 requests in 29 s (municipal care homes, Oslo University Hospital, a
+  school nurse), with closing dates and hours.
+
 ## Google Maps, for travel times (`src/jobcu/travel.py`), checked 2026-09-21
 
 Not a job source: used only for conditions like "at most 50 minutes by public transport to a
@@ -657,20 +689,7 @@ systems. No Swiss public or national source yet.
 ### Denmark, Norway and Sweden
 
 - **Sweden:** built (Arbetsförmedlingen, above).
-- **NAV Arbeidsplassen, Norway's public employment service (checked 2026-09-24).** The
-  **stilling-feed API** (navikt.github.io/pam-stilling-feed): `GET https://pam-stilling-feed.nav
-  .no/api/v1/feed` with `Authorization: Bearer <token>`, `If-Modified-Since` for "changed since",
-  then `next_url` page by page (1,000 entries a page). A **public token** is served at
-  `/api/publicToken` ("for experimentation", it rotates at irregular intervals); a **private
-  token** is issued on request by e-mail with a name, contact and written acceptance of the terms.
-  Since yesterday noon: **2,394 new or changed ads in 4 requests** (495 KB a page). Each entry:
-  `title`, `businessName`, `municipal`, `status` (ACTIVE/INACTIVE), `date_modified`; the full ad
-  (description, places, published and expiry dates, employment type, extent, occupation codes,
-  application link) is one request per ad at `/api/v1/feedentry/{uuid}`. **Terms**
-  (arbeidsplassen.nav.no/vilkar-api): "Alle kan bruke tenesta", free; ads must be removed when
-  they become inactive and updated when they change; the apply function must deep-link to the
-  original application system; Norwegian data protection rules apply to personal data in ads.
-  The old public-feed API was switched off on 1 May 2025.
+- **NAV Arbeidsplassen (Norway):** built (above).
 - **Jobnet, Denmark's public job service (STAR, checked 2026-09-24):** every address answers a
   redirect to MitID login, even robots.txt, for automated requests. STAR offers a **Jobnet web
   service** to import its job ads into one's own portal, free, by agreement (spoc@star.dk). Asking
