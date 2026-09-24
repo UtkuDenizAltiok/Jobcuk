@@ -173,7 +173,9 @@ here.
    "Heeley, Sheffield" against "Sheffield" (Adecco); and the directory's company name "Rolls-Royce
    (professional)" with no town. Summaries could merge when one's text is contained in the
    other's (`_text_similarity` already measures containment).
-   (f) **Scoring** (score check, 32 ads rated by Claude): 23 of 32 (72%) where expected with the
+   (f) **Partly done (cloud, 2026-09-24): 3+ years short is limited to 80** (a senior role asking
+   4+ years scored 88 with the owner's CV; DECISIONS.md, "What the owner's CV showed in the
+   cloud"). Still open: neighbouring fields. **Scoring** (score check, 32 ads rated by Claude): 23 of 32 (72%) where expected with the
    scores given at the time, **26 of 32 (81%) re-scored with today's code** (the owner's limits
    now hold 8+ and 10+ years to 60). Still too high: senior jobs asking 4–7 years for someone with
    no full-time years (Tactilia 68, Stark 68, Orbem 64) and neighbouring fields (analog chip design

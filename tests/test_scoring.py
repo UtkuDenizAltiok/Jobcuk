@@ -159,14 +159,19 @@ def test_the_owners_limits_for_citizenship_doctorate_and_experience():
     assert unclear["limits"] == []
     assert scored(doctorate="required_person_lacks_it")["score"] == 50
     assert scored(doctorate="required_person_has_it")["limits"] == []
-    assert scored(years_required=4)["limits"] == []
+    assert scored(years_required=2)["limits"] == []
+    # Search with the owner's CV (2026-09-24): a senior role asking 4+ years scored 88.
+    four = scored(years_required=4)
+    assert four["score"] == 80 and four["limits"][0]["why"] == (
+        "Asks for 4+ years of experience, you have no full-time years yet")
     five = scored(years_required=5)
     assert five["score"] == 75 and five["limits"][0]["why"] == (
         "Asks for 5+ years of experience, you have no full-time years yet")
     assert scored(years_required=8)["score"] == 60
-    # Years the person already has count: 6 full-time years against 10 asked is 4 short.
+    # Years the person already has count: 6 full-time years against 8 asked is 2 short.
     senior = SPEAKER.model_copy(update={"years_full_time_experience": 6.0})
-    assert scored(profile=senior, years_required=10)["limits"] == []
+    assert scored(profile=senior, years_required=8)["limits"] == []
+    assert scored(profile=senior, years_required=10)["score"] == 80
 
 
 def test_the_lowest_limit_wins_and_every_reason_is_kept():

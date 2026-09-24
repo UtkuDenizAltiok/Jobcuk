@@ -138,7 +138,10 @@ Since 2026-09-24 the owner mostly works through cloud sessions; Jobcu itself run
   that the first request is answered. Python 3.13 rejects the proxy's certificate for that host
   ("CA cert does not include key usage extension"): at the top of the test script, before
   importing Jobcu, wrap `ssl.create_default_context` so it clears `ssl.VERIFY_X509_STRICT`
-  (a cloud-only workaround; never in Jobcu's code). Jobcu's job-site client ignores the
+  (a cloud-only workaround; never in Jobcu's code). The gateway also cuts any AI request after
+  **30 seconds** (502 "upstream request failed"), which web research at medium effort exceeds:
+  set both efforts to "low" in the scratch folder's settings for cloud tests, and judge those
+  steps' quality on his Mac. Jobcu's job-site client ignores the
   environment's settings, so a live source check in the cloud passes
   `PoliteClient(transport=httpx.HTTPTransport(verify=ssl.create_default_context(
   cafile=os.environ["SSL_CERT_FILE"])))`. Without such a credential, name the checks that must run

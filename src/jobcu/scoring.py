@@ -51,7 +51,7 @@ IMPLIED_POINTS_FURTHER = 3
 LIMIT_LANGUAGE = 65  # a must-have language two or more levels above the person's
 LIMIT_CITIZENSHIP = 30  # a citizenship or clearance the person definitely can't get
 LIMIT_DOCTORATE = 50  # a required doctorate the person doesn't have
-LIMITS_YEARS = [(8, 60), (5, 75)]  # this many years short of what the ad asks: at most this
+LIMITS_YEARS = [(8, 60), (5, 75), (3, 80)]  # this many years short of what the ad asks: at most
 
 Level = Literal["A1", "A2", "B1", "B2", "C1", "C2", "not_needed"]
 Doctorate = Literal["not_required", "required_person_has_it", "required_person_lacks_it"]
