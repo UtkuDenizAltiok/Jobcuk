@@ -25,6 +25,8 @@ or a language level. Without your citizenship, Jobcu never assumes one.
    or with conditions such as *Germany, only towns with at least 100,000 people* or *at most 50
    minutes by public transport to a big city*. Jobcu checks conditions itself or looks them up on
    the web. Travel times come from Google Maps if you added a key, otherwise they're AI estimates.
+   They go to the nearest part of a town, since you could live anywhere in it; write *city
+   centre* if you mean the centre.
 2. Choose **Posted within** (72 hours or 1 week finds more) and the **job types**.
 3. Click **Search**. It takes a few minutes.
 

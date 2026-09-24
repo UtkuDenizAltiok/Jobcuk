@@ -254,7 +254,9 @@ parties are strong"*, *"a top-10 country for work-life balance"*, *"a Turkish su
   towns to avoid, a size rule or countries (which also narrow the countries searched), with
   sources. When nothing lists every place, the AI reasons to a rule and labels it an estimate.
 - **Limits to reference places are one condition** ("near"): a time or distance, measured to
-  places defined by size, name or any looked-up fact, from where the job ad says the job is.
+  places defined by size, name or any looked-up fact, from where the job ad says the job is to
+  the nearest edge of each place (the person could live anywhere in it), or to its centre only
+  when the person says so.
 - **Show the working.** "Understood as" lists every condition, how it was checked and its
   sources; estimates are labelled; the person can correct everything with Edit.
 - **Shipped data is only a ruler.** The town list (coordinates, population, local names) measures

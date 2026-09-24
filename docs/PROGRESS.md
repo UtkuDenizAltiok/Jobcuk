@@ -6,7 +6,7 @@ Where the project stands, and nothing else: git history says what was done, and
 
 ## Right now
 
-*Updated 2026-09-24. All 488 tests pass; GitHub's tests pass on macOS and Windows.*
+*Updated 2026-09-24. All 494 tests pass; GitHub's tests pass on macOS and Windows.*
 
 ### State
 
@@ -58,6 +58,13 @@ Nothing.
 
 ### Verify before relying on
 
+- **The fixes from search 9 (cloud, 2026-09-24), in the next search on the Mac:** trips to the
+  nearest edge of a reference place with Google Maps (jobs like Weichs, Weßling and Potsdam pass;
+  no job much farther away passes wrongly; "city centre" still means the centre); Reed postcodes
+  read as towns ("BB113BP, near Burnley") and merged with the same job elsewhere; council
+  districts (Thanet…) applied; one question for more web look-ups, with its time; the online
+  look-up's citizenship and clearance limits; no wrong merges of summaries; senior roles asking
+  3–4 more years at most 80.
 - **The robots.txt reader** (RFC 9309, 2026-09-24): Workday and SuccessFactors companies now
   read differently where their robots.txt has Allow lines after a Disallow. Check that no
   company newly read is one that clearly forbids it (the next `tools/check_employers.py` run).
@@ -136,7 +143,10 @@ here.
    Actana, IC Resources' graduate job in Cambridge). Search 9 had only 2 Irish cards. So task 2
    (the directory: Moog runs Workday; the others' systems are in SOURCES.md) and task 3 (the AI
    searching the web) matter most, with Ireland first among the two.
-   (b) **Travel limits measured to a city's centre leave jobs out wrongly.** Google gave Weichs →
+   (b) **Done (cloud, 2026-09-24): trips end at the nearest edge of a reference place, and a
+   city's districts are part of it** (DECISIONS.md, "Travel limits measured to a reference
+   place's nearest edge"); check with Google Maps in the next search. What search 9 showed:
+   **Travel limits measured to a city's centre leave jobs out wrongly.** Google gave Weichs →
    Munich 53 minutes (Munich's centre), so three PCB-layout jobs in Weichs were left out at
    "Augsburg, 50 min"; Forchheim → Nuremberg 44, Schrobenhausen → Augsburg 41. A reference place
    is where the person would live (DECISIONS.md, 2026-09-24), so measure to the nearest part of
